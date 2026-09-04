@@ -1,0 +1,34 @@
+{
+  "dicer_attack": {
+    "sounds": [
+      "opposing_force:mob/dicer/attack"
+    ],
+    "subtitle": "subtitles.opposing_force.dicer_attack"
+  },
+  "dicer_death": {
+    "sounds": [
+      "opposing_force:mob/dicer/death"
+    ],
+    "subtitle": "subtitles.opposing_force.dicer_death"
+  },
+  "dicer_hurt": {
+    "sounds": [
+      "opposing_force:mob/dicer/hurt1",
+      "opposing_force:mob/dicer/hurt2"
+    ],
+    "subtitle": "subtitles.opposing_force.dicer_hurt"
+  },
+  "dicer_idle": {
+    "sounds": [
+      "opposing_force:mob/dicer/idle1",
+      "opposing_force:mob/dicer/idle2"
+    ],
+    "subtitle": "subtitles.opposing_force.dicer_idle"
+  },
+  "dicer_laser": {
+    "sounds": [
+      "opposing_force:mob/dicer/laser"
+    ],
+    "subtitle": "subtitles.opposing_force.dicer_laser"
+  }
+}

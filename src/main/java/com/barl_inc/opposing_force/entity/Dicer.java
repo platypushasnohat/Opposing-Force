@@ -1,8 +1,12 @@
 package com.barl_inc.opposing_force.entity;
 
 import com.barl_inc.opposing_force.entity.base.OFMonster;
+import com.barl_inc.opposing_force.registry.OFSoundEvents;
 import com.platypushasnohat.sinew.entity.ai.goal.AttackGoal;
 import com.platypushasnohat.sinew.entity.animation.SmoothAnimationState;
+import net.minecraft.sounds.SoundEvent;
+import net.minecraft.world.damagesource.DamageSource;
+import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.Mob;
@@ -14,9 +18,12 @@ import net.minecraft.world.entity.ai.goal.RandomLookAroundGoal;
 import net.minecraft.world.entity.ai.goal.WaterAvoidingRandomStrollGoal;
 import net.minecraft.world.entity.ai.goal.target.HurtByTargetGoal;
 import net.minecraft.world.entity.ai.goal.target.NearestAttackableTargetGoal;
+import net.minecraft.world.entity.ai.targeting.TargetingConditions;
 import net.minecraft.world.entity.animal.IronGolem;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.Level;
+
+import java.util.List;
 
 public class Dicer extends OFMonster {
 
@@ -74,9 +81,35 @@ public class Dicer extends OFMonster {
         this.setSprinting(this.isAggressive() && this.getDeltaMovement().horizontalDistance() > 0.05D);
     }
 
+    @Override
+    public boolean doHurtTarget(Entity entity) {
+        if (super.doHurtTarget(entity)) {
+            this.playSound(OFSoundEvents.DICER_ATTACK.get(), 1.0F, 1.0F / (this.getRandom().nextFloat() * 0.4F + 0.8F));
+            return true;
+        } else {
+            return false;
+        }
+    }
+
+    @Override
+    protected SoundEvent getAmbientSound() {
+        return OFSoundEvents.DICER_IDLE.get();
+    }
+
+    @Override
+    protected SoundEvent getHurtSound(DamageSource damageSource) {
+        return OFSoundEvents.DICER_HURT.get();
+    }
+
+    @Override
+    protected SoundEvent getDeathSound() {
+        return OFSoundEvents.DICER_DEATH.get();
+    }
+
     private static class DicerAttackGoal extends AttackGoal {
 
         private final Dicer dicer;
+        private int crossSlashCooldown;
 
         public DicerAttackGoal(Dicer dicer) {
             super(dicer);
@@ -87,12 +120,14 @@ public class Dicer extends OFMonster {
         public void start() {
             super.start();
             this.dicer.setAttackAnimation(0);
+            this.crossSlashCooldown = 0;
         }
 
         @Override
         public void stop() {
             super.stop();
             this.dicer.setAttackAnimation(0);
+            this.crossSlashCooldown = 0;
         }
 
         @Override
@@ -103,18 +138,27 @@ public class Dicer extends OFMonster {
                 if (this.attackState != 2 && this.attackState != 3) {
                     this.lookAtTarget(target, 30.0F, 30.0F);
                 }
+                if (this.crossSlashCooldown > 0) {
+                    this.crossSlashCooldown--;
+                }
+
                 if (this.attackState == 1) {
                     this.dicer.getNavigation().stop();
                     this.tickSlash(target);
                 }
                 else if (this.attackState == 2) {
                     this.dicer.getNavigation().stop();
-//                    this.tickCrossSlash();
+                    this.tickCrossSlash(target);
                 }
                 else {
-                    this.dicer.getNavigation().moveTo(target, 1.3D);
-                    if (distance < this.getAttackReachSqr(target, 1.5D)) {
+                    if (this.dicer.tickCount % 5 == 0) {
+                        this.dicer.getNavigation().moveTo(target, 1.25D);
+                    }
+                    if (distance < this.getAttackReachSqr(target)) {
                         this.attackState = 1;
+                    }
+                    else if (this.crossSlashCooldown == 0 && distance < this.getAttackReachSqr(target, 4.0D)) {
+                        this.attackState = 2;
                     }
                 }
             }
@@ -135,40 +179,38 @@ public class Dicer extends OFMonster {
             }
         }
 
-//        private void tickCrossSlash() {
-//            this.timer++;
-//            LivingEntity target = dicer.getTarget();
-//            if (timer == 1) dicer.setPose(OPPoses.CROSS_SLASHING.get());
-//            if (timer < 19) {
-//                this.dicer.lookAt(target, 30F, 30F);
-//                this.dicer.getLookControl().setLookAt(target, 30F, 30F);
-//            }
-//            if (timer == 28) dicer.addDeltaMovement(dicer.getLookAngle().scale(3.25D).multiply(1.0D, 0, 1.0D));
-//            if (timer > 28 && timer < 32) {
-//                this.hurtNearbyEntities();
-//            }
-//            if (timer > 50) {
-//                this.dicer.setPose(Pose.STANDING);
-//                this.timer = 0;
-//                this.dicer.setAttackState(0);
-//                this.dicer.crossSlashCooldown = 80 + dicer.getRandom().nextInt(50);
-//            }
-//        }
-//
-//        private void hurtNearbyEntities() {
-//            List<LivingEntity> nearbyEntities = this.dicer.level().getNearbyEntities(LivingEntity.class, TargetingConditions.forCombat(), this.dicer, this.dicer.getBoundingBox().inflate(1.6D));
-//            if (!nearbyEntities.isEmpty()) {
-//                LivingEntity entity = nearbyEntities.getFirst();
-//                if (!(entity instanceof Dicer)) {
-//                    if (entity.hurt(entity.damageSources().mobAttack(this.dicer), (float) this.dicer.getAttributeValue(Attributes.ATTACK_DAMAGE))) {
-//                        this.dicer.playSound(OPSoundEvents.DICER_ATTACK.get(), 1.0F, 1.0F / (this.dicer.getRandom().nextFloat() * 0.4F + 0.8F));
-//                    }
-//                    entity.knockback(0.3F, this.dicer.position().x - entity.getX(), this.dicer.position().z - entity.getZ());
-//                    if (entity.isDamageSourceBlocked(this.dicer.damageSources().mobAttack(this.dicer)) && entity instanceof Player player) {
-//                        player.disableShield();
-//                    }
-//                }
-//            }
-//        }
+        private void tickCrossSlash(LivingEntity target) {
+            this.timer++;
+            if (this.timer == 1) {
+                this.dicer.setAttackAnimation(CROSS_SLASH_ANIMATION);
+            }
+            if (this.timer < 19) {
+                this.lookAtTarget(target, 30.0F, 30.0F);
+            }
+            if (timer == 28) {
+                this.dicer.addDeltaMovement(this.dicer.getLookAngle().scale(3.5D).multiply(1.0D, 0.0D, 1.0D));
+            }
+            if (this.timer > 28 && this.timer < 32) {
+                this.hurtNearbyEntities();
+            }
+            if (this.timer > 50) {
+                this.timer = 0;
+                this.attackState = 0;
+                this.crossSlashCooldown = 80 + this.dicer.getRandom().nextInt(50);
+                this.dicer.setAttackAnimation(0);
+            }
+        }
+
+        private void hurtNearbyEntities() {
+            List<LivingEntity> nearbyEntities = this.dicer.level().getNearbyEntities(LivingEntity.class, TargetingConditions.forCombat(), this.dicer, this.dicer.getBoundingBox().inflate(1.75D));
+            if (!nearbyEntities.isEmpty()) {
+                nearbyEntities.stream().filter(entity -> entity != this.dicer && !(entity instanceof Dicer)).limit(8).forEach(entity -> {
+                    this.dicer.doHurtTarget(entity);
+                    if (entity.isDamageSourceBlocked(this.dicer.damageSources().mobAttack(this.dicer)) && entity instanceof Player player) {
+                        player.disableShield();
+                    }
+                });
+            }
+        }
     }
 }

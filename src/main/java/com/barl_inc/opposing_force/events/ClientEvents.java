@@ -2,6 +2,7 @@ package com.barl_inc.opposing_force.events;
 
 import com.barl_inc.opposing_force.OpposingForce;
 import com.barl_inc.opposing_force.client.model.entity.DicerModel;
+import com.barl_inc.opposing_force.client.render.entity.DicerLaserRenderer;
 import com.barl_inc.opposing_force.client.render.entity.DicerRenderer;
 import com.barl_inc.opposing_force.registry.OFEntities;
 import com.barl_inc.opposing_force.registry.OFModelLayers;
@@ -16,6 +17,7 @@ public class ClientEvents {
     @SubscribeEvent
     public static void registerEntityRenderers(EntityRenderersEvent.RegisterRenderers event) {
         event.registerEntityRenderer(OFEntities.DICER.get(), DicerRenderer::new);
+        event.registerEntityRenderer(OFEntities.DICER_LASER.get(), DicerLaserRenderer::new);
     }
 
     @SubscribeEvent

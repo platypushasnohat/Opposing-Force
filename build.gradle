@@ -105,7 +105,7 @@ repositories {
 }
 
 dependencies {
-    implementation files('../Opposing-Force/libs/Sinew-1.21.1-1.0.9.jar')
+    implementation files('../Opposing-Force/libs/Sinew-1.21.1-1.0.10.jar')
 
     compileOnly "mezz.jei:jei-$minecraft_version-common-api:$jei_version"
     compileOnly "mezz.jei:jei-$minecraft_version-neoforge-api:$jei_version"

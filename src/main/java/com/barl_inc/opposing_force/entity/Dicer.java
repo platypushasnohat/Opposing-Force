@@ -1,10 +1,13 @@
 package com.barl_inc.opposing_force.entity;
 
 import com.barl_inc.opposing_force.entity.base.OFMonster;
+import com.barl_inc.opposing_force.entity.misc.DicerLaser;
+import com.barl_inc.opposing_force.registry.OFEntities;
 import com.barl_inc.opposing_force.registry.OFSoundEvents;
 import com.platypushasnohat.sinew.entity.ai.goal.AttackGoal;
 import com.platypushasnohat.sinew.entity.animation.SmoothAnimationState;
 import net.minecraft.sounds.SoundEvent;
+import net.minecraft.util.Mth;
 import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntityType;
@@ -109,7 +112,9 @@ public class Dicer extends OFMonster {
     private static class DicerAttackGoal extends AttackGoal {
 
         private final Dicer dicer;
+        private DicerLaser laser;
         private int crossSlashCooldown;
+        private int laserCooldown;
 
         public DicerAttackGoal(Dicer dicer) {
             super(dicer);
@@ -121,6 +126,10 @@ public class Dicer extends OFMonster {
             super.start();
             this.dicer.setAttackAnimation(0);
             this.crossSlashCooldown = 0;
+            this.laserCooldown = 50 + this.dicer.getRandom().nextInt(50);
+            if (this.laser != null) {
+                this.laser.discard();
+            }
         }
 
         @Override
@@ -128,6 +137,10 @@ public class Dicer extends OFMonster {
             super.stop();
             this.dicer.setAttackAnimation(0);
             this.crossSlashCooldown = 0;
+            this.laserCooldown = 50 + this.dicer.getRandom().nextInt(50);
+            if (this.laser != null) {
+                this.laser.discard();
+            }
         }
 
         @Override
@@ -141,6 +154,9 @@ public class Dicer extends OFMonster {
                 if (this.crossSlashCooldown > 0) {
                     this.crossSlashCooldown--;
                 }
+                if (this.laserCooldown > 0) {
+                    this.laserCooldown--;
+                }
 
                 if (this.attackState == 1) {
                     this.dicer.getNavigation().stop();
@@ -149,6 +165,10 @@ public class Dicer extends OFMonster {
                 else if (this.attackState == 2) {
                     this.dicer.getNavigation().stop();
                     this.tickCrossSlash(target);
+                }
+                else if (this.attackState == 3) {
+                    this.dicer.getNavigation().stop();
+                    this.tickLaser(target);
                 }
                 else {
                     if (this.dicer.tickCount % 5 == 0) {
@@ -159,6 +179,9 @@ public class Dicer extends OFMonster {
                     }
                     else if (this.crossSlashCooldown == 0 && distance < this.getAttackReachSqr(target, 4.0D)) {
                         this.attackState = 2;
+                    }
+                    else if (this.laserCooldown == 0 && distance < 256.0D && distance > 9.0D) {
+                        this.attackState = 3;
                     }
                 }
             }
@@ -197,6 +220,32 @@ public class Dicer extends OFMonster {
                 this.timer = 0;
                 this.attackState = 0;
                 this.crossSlashCooldown = 80 + this.dicer.getRandom().nextInt(50);
+                this.dicer.setAttackAnimation(0);
+            }
+        }
+
+        private void tickLaser(LivingEntity target) {
+            this.timer++;
+            if (this.timer < 10) {
+                this.lookAtTarget(target, 30.0F, 30.0F);
+            }
+            if (this.timer == 10) {
+                this.dicer.setAttackAnimation(LASER_ANIMATION);
+                Level level = this.dicer.level();
+                float distance = 0.3F;
+                float height = 2.45F;
+                int duration = 62;
+                this.laser = new DicerLaser(OFEntities.DICER_LASER.get(), level, this.dicer, this.dicer.getX() + distance * Math.sin(-this.dicer.getYRot() * Mth.DEG_TO_RAD), this.dicer.getY() + height, this.dicer.getZ() + distance * Math.cos(-this.dicer.getYRot() * Mth.DEG_TO_RAD), (this.dicer.yHeadRot + 90.0F) * Mth.DEG_TO_RAD, -this.dicer.getXRot() * Mth.DEG_TO_RAD, duration);
+                level.addFreshEntity(this.laser);
+            }
+
+            if (this.timer > 10) {
+                this.dicer.getLookControl().setLookAt(target.getX(), target.getY() + target.getBbHeight() / 2, target.getZ(), 0.75F, 90.0F);
+            }
+            if (this.timer > 110) {
+                this.timer = 0;
+                this.attackState = 0;
+                this.laserCooldown = 150 + this.dicer.getRandom().nextInt(100);
                 this.dicer.setAttackAnimation(0);
             }
         }

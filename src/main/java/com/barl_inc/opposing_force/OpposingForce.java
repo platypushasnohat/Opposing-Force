@@ -1,15 +1,15 @@
 package com.barl_inc.opposing_force;
 
-import com.barl_inc.opposing_force.registry.*;
-import com.barl_inc.opposing_force.utils.ClientProxy;
 import com.barl_inc.opposing_force.datagen.client.OFItemModelProvider;
 import com.barl_inc.opposing_force.datagen.client.OFLanguageProvider;
 import com.barl_inc.opposing_force.datagen.client.OFSoundDefinitionsProvider;
+import com.barl_inc.opposing_force.registry.*;
+import com.barl_inc.opposing_force.utils.ClientProxy;
 import com.barl_inc.opposing_force.utils.CommonProxy;
 import com.platypushasnohat.sinew.Sinew;
+import net.minecraft.core.HolderLookup.Provider;
 import net.minecraft.data.DataGenerator;
 import net.minecraft.data.PackOutput;
-import net.minecraft.core.HolderLookup.Provider;
 import net.minecraft.resources.ResourceLocation;
 import net.neoforged.bus.api.IEventBus;
 import net.neoforged.fml.ModContainer;

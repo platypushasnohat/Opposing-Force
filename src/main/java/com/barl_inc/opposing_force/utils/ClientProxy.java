@@ -1,7 +1,6 @@
 package com.barl_inc.opposing_force.utils;
 
 import com.barl_inc.opposing_force.client.sound.DicerLaserSound;
-import com.barl_inc.opposing_force.entity.Dicer;
 import com.barl_inc.opposing_force.entity.misc.DicerLaser;
 import com.platypushasnohat.sinew.mixins.client.SoundEngineAccessor;
 import com.platypushasnohat.sinew.mixins.client.SoundManagerAccessor;

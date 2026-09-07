@@ -6,6 +6,10 @@ import com.barl_inc.opposing_force.registry.OFEntities;
 import com.barl_inc.opposing_force.registry.OFSoundEvents;
 import com.platypushasnohat.sinew.entity.ai.goal.AttackGoal;
 import com.platypushasnohat.sinew.entity.animation.SmoothAnimationState;
+import com.platypushasnohat.sinew.utils.SinewParticleUtils;
+import net.minecraft.network.syncher.EntityDataAccessor;
+import net.minecraft.network.syncher.EntityDataSerializers;
+import net.minecraft.network.syncher.SynchedEntityData;
 import net.minecraft.sounds.SoundEvent;
 import net.minecraft.util.Mth;
 import net.minecraft.world.damagesource.DamageSource;
@@ -25,10 +29,13 @@ import net.minecraft.world.entity.ai.targeting.TargetingConditions;
 import net.minecraft.world.entity.animal.IronGolem;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.Level;
+import net.minecraft.world.phys.Vec3;
 
 import java.util.List;
 
 public class Dicer extends OFMonster {
+
+    private static final EntityDataAccessor<Boolean> HAS_AFTERIMAGE = SynchedEntityData.defineId(Dicer.class, EntityDataSerializers.BOOLEAN);
 
     private static final int SLASH1_ANIMATION = 1;
     private static final int SLASH2_ANIMATION = 2;
@@ -51,12 +58,13 @@ public class Dicer extends OFMonster {
 
     public static AttributeSupplier.Builder registerAttributes() {
         return Mob.createMobAttributes()
-                .add(Attributes.MAX_HEALTH, 36.0D)
+                .add(Attributes.MAX_HEALTH, 50.0D)
                 .add(Attributes.MOVEMENT_SPEED, 0.24D)
                 .add(Attributes.ATTACK_DAMAGE, 10.0D)
                 .add(Attributes.FOLLOW_RANGE, 28.0D)
                 .add(Attributes.STEP_HEIGHT, 1.2D)
-                .add(Attributes.KNOCKBACK_RESISTANCE, 0.25D);
+                .add(Attributes.KNOCKBACK_RESISTANCE, 0.25D)
+                .add(Attributes.ARMOR, 5.0D);
     }
 
     @Override
@@ -69,6 +77,20 @@ public class Dicer extends OFMonster {
         this.targetSelector.addGoal(0, new HurtByTargetGoal(this));
         this.targetSelector.addGoal(1, new NearestAttackableTargetGoal<>(this, Player.class, false, false));
         this.targetSelector.addGoal(2, new NearestAttackableTargetGoal<>(this, IronGolem.class, false, false));
+    }
+
+    @Override
+    protected void defineSynchedData(SynchedEntityData.Builder builder) {
+        super.defineSynchedData(builder);
+        builder.define(HAS_AFTERIMAGE, false);
+    }
+
+    public boolean hasAfterimage() {
+        return this.getEntityData().get(HAS_AFTERIMAGE);
+    }
+
+    public void setHasAfterimage(boolean flag) {
+        this.getEntityData().set(HAS_AFTERIMAGE, flag);
     }
 
     @Override
@@ -97,6 +119,9 @@ public class Dicer extends OFMonster {
         }
         if (this.getAttackAnimation() != LASER_ANIMATION && this.laserProgress > 0.0F) {
             this.laserProgress--;
+        }
+        if (this.level().isClientSide && this.isAlive() && this.hasAfterimage()) {
+            SinewParticleUtils.createAfterImage(this, Vec3.directionFromRotation(0.0F, this.yHeadRot));
         }
     }
 
@@ -147,6 +172,7 @@ public class Dicer extends OFMonster {
             this.dicer.setAttackAnimation(0);
             this.crossSlashCooldown = 30 + this.dicer.getRandom().nextInt(30);
             this.laserCooldown = 50 + this.dicer.getRandom().nextInt(50);
+            this.dicer.setHasAfterimage(false);
             if (this.laser != null) {
                 this.laser.discard();
             }
@@ -158,6 +184,7 @@ public class Dicer extends OFMonster {
             this.dicer.setAttackAnimation(0);
             this.crossSlashCooldown = 30 + this.dicer.getRandom().nextInt(30);
             this.laserCooldown = 50 + this.dicer.getRandom().nextInt(50);
+            this.dicer.setHasAfterimage(false);
             if (this.laser != null) {
                 this.laser.discard();
             }
@@ -197,7 +224,7 @@ public class Dicer extends OFMonster {
                     if (distance < this.getAttackReachSqr(target)) {
                         this.attackState = 1;
                     }
-                    else if (this.crossSlashCooldown == 0 && distance < this.getAttackReachSqr(target, 4.0D)) {
+                    else if (this.crossSlashCooldown == 0 && distance < 64.0D) {
                         this.attackState = 2;
                     }
                     else if (this.laserCooldown == 0 && distance < 256.0D && distance > 9.0D) {
@@ -231,13 +258,17 @@ public class Dicer extends OFMonster {
                 this.lookAtTarget(target, 60.0F, 30.0F);
             }
             if (timer == 28) {
-                this.dicer.addDeltaMovement(this.dicer.getLookAngle().scale(4.5D).multiply(1.0D, 0.0D, 1.0D));
+                this.dicer.setHasAfterimage(true);
+                this.dicer.addDeltaMovement(this.dicer.getLookAngle().scale(5.0D).multiply(1.0D, 0.0D, 1.0D));
             }
             if (this.timer > 28 && this.timer < 32) {
                 this.hurtNearbyEntities();
             }
             if (this.timer < 40) {
-                this.dicer.setDeltaMovement(this.dicer.getDeltaMovement().multiply(1.0D, 0.3D, 1.0D));
+                this.dicer.setDeltaMovement(this.dicer.getDeltaMovement().add(0.0D, -0.3D, 0.0D));
+            }
+            if (this.timer == 40) {
+                this.dicer.setHasAfterimage(false);
             }
             if (this.timer > 50) {
                 this.timer = 0;
@@ -283,7 +314,7 @@ public class Dicer extends OFMonster {
         private void hurtNearbyEntities() {
             List<LivingEntity> nearbyEntities = this.dicer.level().getNearbyEntities(LivingEntity.class, TargetingConditions.forCombat(), this.dicer, this.dicer.getBoundingBox().inflate(1.75D));
             if (!nearbyEntities.isEmpty()) {
-                nearbyEntities.stream().filter(entity -> entity != this.dicer && !(entity instanceof Dicer)).limit(8).forEach(entity -> {
+                nearbyEntities.stream().filter(entity -> entity != this.dicer).limit(8).forEach(entity -> {
                     this.dicer.doHurtTarget(entity);
                     if (entity.isDamageSourceBlocked(this.dicer.damageSources().mobAttack(this.dicer)) && entity instanceof Player player) {
                         player.disableShield();

@@ -13,11 +13,11 @@ import net.minecraft.client.renderer.entity.LivingEntityRenderer;
 import net.minecraft.client.renderer.entity.RenderLayerParent;
 import net.minecraft.client.renderer.entity.layers.RenderLayer;
 
-public class DicerGlowLayer extends RenderLayer<Dicer, DicerModel> {
+public class DicerLaserLayer extends RenderLayer<Dicer, DicerModel> {
 
-    private static final RenderType TEXTURE_LOCATION = SinewRenderTypes.getEyesAlphaEnabled(OpposingForce.location("textures/entity/dicer/dicer_glow.png"));
+    private static final RenderType TEXTURE_LOCATION = SinewRenderTypes.getEyesAlphaEnabled(OpposingForce.location("textures/entity/dicer/dicer_glow_laser.png"));
 
-    public DicerGlowLayer(RenderLayerParent<Dicer, DicerModel> renderer) {
+    public DicerLaserLayer(RenderLayerParent<Dicer, DicerModel> renderer) {
         super(renderer);
     }
 
@@ -27,6 +27,9 @@ public class DicerGlowLayer extends RenderLayer<Dicer, DicerModel> {
             return;
         }
         VertexConsumer consumer = buffer.getBuffer(TEXTURE_LOCATION);
-        this.getParentModel().renderToBuffer(poseStack, consumer, packedLight, LivingEntityRenderer.getOverlayCoords(dicer, 0.0F), SinewColorUtils.packColor(1.0F, 1.0F, 1.0F, 0.7F));
+        float laserProgress = dicer.getLaserProgress(partialTicks);
+        if (laserProgress > 0.0F) {
+            this.getParentModel().renderToBuffer(poseStack, consumer, packedLight, LivingEntityRenderer.getOverlayCoords(dicer, 0.0F), SinewColorUtils.packColor(1.0F, 1.0F, 1.0F, laserProgress));
+        }
     }
 }

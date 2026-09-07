@@ -30,5 +30,17 @@
       "opposing_force:mob/dicer/laser"
     ],
     "subtitle": "subtitles.opposing_force.dicer_laser"
+  },
+  "dicer_laser_end": {
+    "sounds": [
+      "opposing_force:mob/dicer/laser_end"
+    ],
+    "subtitle": "subtitles.opposing_force.dicer_laser_end"
+  },
+  "dicer_laser_start": {
+    "sounds": [
+      "opposing_force:mob/dicer/laser_start"
+    ],
+    "subtitle": "subtitles.opposing_force.dicer_laser_start"
   }
 }

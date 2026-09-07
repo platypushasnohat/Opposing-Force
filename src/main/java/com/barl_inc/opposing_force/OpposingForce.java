@@ -1,12 +1,12 @@
 package com.barl_inc.opposing_force;
 
+import com.barl_inc.opposing_force.registry.*;
+import com.barl_inc.opposing_force.utils.ClientProxy;
 import com.barl_inc.opposing_force.datagen.client.OFItemModelProvider;
 import com.barl_inc.opposing_force.datagen.client.OFLanguageProvider;
 import com.barl_inc.opposing_force.datagen.client.OFSoundDefinitionsProvider;
-import com.barl_inc.opposing_force.registry.OFCreativeTabs;
-import com.barl_inc.opposing_force.registry.OFEntities;
-import com.barl_inc.opposing_force.registry.OFItems;
-import com.barl_inc.opposing_force.registry.OFSoundEvents;
+import com.barl_inc.opposing_force.utils.CommonProxy;
+import com.platypushasnohat.sinew.Sinew;
 import net.minecraft.data.DataGenerator;
 import net.minecraft.data.PackOutput;
 import net.minecraft.core.HolderLookup.Provider;
@@ -24,6 +24,7 @@ import java.util.concurrent.CompletableFuture;
 public class OpposingForce {
 
     public static final String MOD_ID = "opposing_force";
+    public static final CommonProxy PROXY = Sinew.unsafeRunForDist(() -> ClientProxy::new, () -> CommonProxy::new);
 
     public static ResourceLocation location(String path) {
         return ResourceLocation.fromNamespaceAndPath(MOD_ID, path.toLowerCase(Locale.ROOT));
@@ -31,9 +32,10 @@ public class OpposingForce {
 
     public OpposingForce(IEventBus modEventBus, ModContainer modContainer) {
         OFEntities.ENTITY_TYPE.register(modEventBus);
-        OFItems.ITEMS.register(modEventBus);
-        OFSoundEvents.SOUND_EVENTS.register(modEventBus);
-        OFCreativeTabs.CREATIVE_MODE_TABS.register(modEventBus);
+        OFItems.ITEM.register(modEventBus);
+        OFParticleTypes.PARTICLE_TYPE.register(modEventBus);
+        OFSoundEvents.SOUND_EVENT.register(modEventBus);
+        OFCreativeTabs.CREATIVE_MODE_TAB.register(modEventBus);
         modEventBus.addListener(this::dataSetup);
     }
 

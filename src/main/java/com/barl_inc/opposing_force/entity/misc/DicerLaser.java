@@ -1,8 +1,10 @@
 package com.barl_inc.opposing_force.entity.misc;
 
+import com.barl_inc.opposing_force.OpposingForce;
 import com.barl_inc.opposing_force.entity.Dicer;
+import com.barl_inc.opposing_force.registry.OFDamageTypes;
+import com.barl_inc.opposing_force.registry.OFParticleTypes;
 import net.minecraft.core.Direction;
-import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.syncher.EntityDataAccessor;
 import net.minecraft.network.syncher.EntityDataSerializers;
@@ -27,12 +29,15 @@ import java.util.Optional;
 
 public class DicerLaser extends Entity {
 
-    public static final double RADIUS = 30;
+    private static final EntityDataAccessor<Float> YAW = SynchedEntityData.defineId(DicerLaser.class, EntityDataSerializers.FLOAT);
+    private static final EntityDataAccessor<Float> PITCH = SynchedEntityData.defineId(DicerLaser.class, EntityDataSerializers.FLOAT);
+    private static final EntityDataAccessor<Integer> DURATION = SynchedEntityData.defineId(DicerLaser.class, EntityDataSerializers.INT);
+    private static final EntityDataAccessor<Integer> CASTER = SynchedEntityData.defineId(DicerLaser.class, EntityDataSerializers.INT);
 
+    public static final double RADIUS = 30;
     public static final float DAMAGE = 4.0F;
 
     public LivingEntity caster;
-
     public double endPosX;
     public double endPosY;
     public double endPosZ;
@@ -42,25 +47,13 @@ public class DicerLaser extends Entity {
     public double prevCollidePosX;
     public double prevCollidePosY;
     public double prevCollidePosZ;
-
     public float prevYaw;
     public float renderYaw;
     public float prevPitch;
     public float renderPitch;
-
     public int timer;
-
-    public boolean on = true;
-
+    public boolean active = true;
     public Direction blockSide = null;
-
-    private static final EntityDataAccessor<Float> YAW = SynchedEntityData.defineId(DicerLaser.class, EntityDataSerializers.FLOAT);
-
-    private static final EntityDataAccessor<Float> PITCH = SynchedEntityData.defineId(DicerLaser.class, EntityDataSerializers.FLOAT);
-
-    private static final EntityDataAccessor<Integer> DURATION = SynchedEntityData.defineId(DicerLaser.class, EntityDataSerializers.INT);
-
-    private static final EntityDataAccessor<Integer> CASTER = SynchedEntityData.defineId(DicerLaser.class, EntityDataSerializers.INT);
 
     public DicerLaser(EntityType<? extends DicerLaser> entityType, Level level) {
         super(entityType, level);
@@ -75,7 +68,6 @@ public class DicerLaser extends Entity {
         this.setDuration(duration);
         this.setPos(x, y, z);
         this.calculateEndPos();
-//        MMCommon.PROXY.playSolarBeamSound(this);
         if (!level.isClientSide) {
             this.setCasterID(caster.getId());
         }
@@ -108,66 +100,65 @@ public class DicerLaser extends Entity {
                 this.updateWithDicer();
             }
         }
+
         if (this.caster != null) {
-            this.renderYaw = (float) ((this.caster.yHeadRot + 90.0D) * Math.PI / 180.0D);
-            this.renderPitch = (float) (-this.caster.getXRot() * Math.PI / 180.0D);
+            this.renderYaw = (this.caster.yHeadRot + 90.0F) * Mth.DEG_TO_RAD;
+            this.renderPitch = -this.caster.getXRot() * Mth.DEG_TO_RAD;
         }
 
-        if (!this.on && this.timer == 0) {
+        if (!this.active && this.timer == 0) {
             this.discard();
         }
-        if (this.on && this.tickCount > 20) {
+        if (this.active && this.tickCount > 3) {
             if (this.timer < 3) {
                 this.timer++;
             }
-        } else {
+        }
+        else {
             if (this.timer > 0) {
                 this.timer--;
             }
         }
 
+
         if (this.caster != null && !this.caster.isAlive()) {
             this.discard();
         }
 
-        if (this.tickCount > 20) {
+        if (this.tickCount > 3) {
+            OpposingForce.PROXY.playSound(this, (byte) 0);
             this.calculateEndPos();
-            List<Entity> hit = this.raytraceEntities(level(), new Vec3(this.getX(), this.getY(), this.getZ()), new Vec3(this.endPosX, this.endPosY, this.endPosZ), true).entities;
+            List<Entity> hit = this.raytraceEntities(this.level(), new Vec3(this.getX(), this.getY(), this.getZ()), new Vec3(this.endPosX, this.endPosY, this.endPosZ)).entities;
             if (this.blockSide != null) {
-                this.spawnExplosionParticles(2);
+                this.spawnExplosionParticles();
             }
             if (!this.level().isClientSide) {
                 for (Entity target : hit) {
                     if (!(target instanceof Mob) && !(target instanceof Player)) {
                         continue;
                     }
-                    target.hurt(this.damageSources().mobProjectile(this, this.caster), DAMAGE);
+                    target.hurt(OFDamageTypes.causeLaserDamage(this.level().registryAccess(), this.caster), DAMAGE);
                 }
             }
         }
-        if (this.tickCount - 20 > this.getDuration()) {
-            this.on = false;
+        if (this.tickCount - 3 > this.getDuration()) {
+            this.active = false;
         }
     }
 
-    private void spawnExplosionParticles(int amount) {
-        for (int i = 0; i < amount; i++) {
-            final float velocity = 0.1F;
-            float yaw = (float) (this.getRandom().nextFloat() * 2 * Math.PI);
-            float motionY = this.getRandom().nextFloat() * 0.08F;
-            float motionX = velocity * Mth.cos(yaw);
-            float motionZ = velocity * Mth.sin(yaw);
-            this.level().addParticle(ParticleTypes.FLAME, this.collidePosX, this.collidePosY + 0.1F, this.collidePosZ, motionX, motionY, motionZ);
-        }
-        for (int i = 0; i < amount / 2; i++) {
-            this.level().addParticle(ParticleTypes.LAVA, this.collidePosX, this.collidePosY + 0.1F, this.collidePosZ, 0, 0, 0);
-        }
+    private void spawnExplosionParticles() {
+        float velocity = 0.1F;
+        float yaw = (float) (this.getRandom().nextFloat() * 2 * Math.PI);
+        float motionY = this.getRandom().nextFloat() * 0.08F;
+        float motionX = velocity * Mth.cos(yaw);
+        float motionZ = velocity * Mth.sin(yaw);
+        this.level().addParticle(OFParticleTypes.LASER_DUST.get(), this.collidePosX, this.collidePosY + 0.1F, this.collidePosZ, motionX, motionY, motionZ);
     }
 
     @Override
     protected void defineSynchedData(SynchedEntityData.Builder builder) {
-        builder.define(YAW, 0F);
-        builder.define(PITCH, 0F);
+        builder.define(YAW, 0.0F);
+        builder.define(PITCH, 0.0F);
         builder.define(DURATION, 0);
         builder.define(CASTER, -1);
     }
@@ -226,7 +217,7 @@ public class DicerLaser extends Entity {
         }
     }
 
-    public LaserHitResult raytraceEntities(Level world, Vec3 from, Vec3 to, boolean ignoreBlockWithoutBoundingBox) {
+    public LaserHitResult raytraceEntities(Level world, Vec3 from, Vec3 to) {
         LaserHitResult result = new LaserHitResult();
         result.setBlockHit(world.clip(new ClipContext(from, to, ClipContext.Block.COLLIDER, ClipContext.Fluid.NONE, this)));
         if (result.blockHit != null) {
@@ -277,17 +268,18 @@ public class DicerLaser extends Entity {
         return distance < 1024;
     }
 
+    @Override
+    public void remove(RemovalReason reason) {
+        OpposingForce.PROXY.clearSoundCacheFor(this);
+        super.remove(reason);
+    }
+
     private void updateWithDicer() {
         this.setYaw((this.caster.yHeadRot + 90.0F) * Mth.DEG_TO_RAD);
         this.setPitch(-this.caster.getXRot() * Mth.DEG_TO_RAD);
         Vec3 vecOffset1 = new Vec3(0.0D, 0.0D, 0.3D).yRot((float) Math.toRadians(-this.caster.getYRot()));
         Vec3 vecOffset2 = new Vec3(0.6D, 0.0D, 0.0D).yRot(-this.getYaw()).xRot(this.getPitch());
-        this.setPos(this.caster.getX() + vecOffset1.x + vecOffset2.x, this.caster.getY() + 2.45F + vecOffset1.y + vecOffset2.y, this.caster.getZ() + vecOffset1.z + vecOffset2.z);
-    }
-
-    @Override
-    public void remove(RemovalReason reason) {
-        super.remove(reason);
+        this.setPos(this.caster.getX() + vecOffset1.x + vecOffset2.x, this.caster.getEyeY(), this.caster.getZ() + vecOffset1.z + vecOffset2.z);
     }
 
     public static class LaserHitResult {

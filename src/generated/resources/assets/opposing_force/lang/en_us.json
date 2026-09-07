@@ -1,10 +1,17 @@
 {
   "creative_tab.opposing_force": "Opposing Force",
+  "death.attack.laser_0": "%s was disintegrated",
+  "death.attack.laser_0.entity": "%s was disintegrated by %s",
+  "death.attack.laser_1": "%s was vaporized",
+  "death.attack.laser_1.entity": "%s was vaporized by %s",
   "entity.opposing_force.dicer": "Dicer",
+  "entity.opposing_force.dicer_laser": "Dicer Laser",
   "item.opposing_force.dicer_spawn_egg": "Dicer Spawn Egg",
   "subtitles.opposing_force.dicer_attack": "Dicer slices",
   "subtitles.opposing_force.dicer_death": "Dicer dies",
   "subtitles.opposing_force.dicer_hurt": "Dicer hurts",
   "subtitles.opposing_force.dicer_idle": "Dicer gurgles",
-  "subtitles.opposing_force.dicer_laser": "Dicer lasers"
+  "subtitles.opposing_force.dicer_laser": "Dicer lasers",
+  "subtitles.opposing_force.dicer_laser_end": "Dicer powers down laser",
+  "subtitles.opposing_force.dicer_laser_start": "Dicer powers up laser"
 }

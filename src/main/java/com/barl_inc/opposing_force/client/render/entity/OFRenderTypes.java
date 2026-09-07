@@ -14,7 +14,7 @@ public class OFRenderTypes extends RenderType {
 
     public static RenderType getGlowingEffect(ResourceLocation resourceLocation) {
         RenderStateShard.TextureStateShard shard = new RenderStateShard.TextureStateShard(resourceLocation, false, false);
-        RenderType.CompositeState compositeState = RenderType.CompositeState.builder().setTextureState(shard).setShaderState(RENDERTYPE_BEACON_BEAM_SHADER).setTransparencyState(TRANSLUCENT_TRANSPARENCY).setCullState(NO_CULL).setOverlayState(OVERLAY).setWriteMaskState(COLOR_WRITE).createCompositeState(false);
+        RenderType.CompositeState compositeState = RenderType.CompositeState.builder().setTextureState(shard).setShaderState(RENDERTYPE_EYES_SHADER).setTransparencyState(TRANSLUCENT_TRANSPARENCY).setCullState(NO_CULL).setOverlayState(OVERLAY).setWriteMaskState(COLOR_WRITE).createCompositeState(false);
         return create("glow_effect", DefaultVertexFormat.NEW_ENTITY, VertexFormat.Mode.QUADS, 256, true, true, compositeState);
     }
 }

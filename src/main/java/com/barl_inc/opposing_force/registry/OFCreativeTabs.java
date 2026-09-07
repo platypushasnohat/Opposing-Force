@@ -10,9 +10,9 @@ import net.neoforged.neoforge.registries.DeferredRegister;
 
 public class OFCreativeTabs {
 
-    public static final DeferredRegister<CreativeModeTab> CREATIVE_MODE_TABS = DeferredRegister.create(Registries.CREATIVE_MODE_TAB, OpposingForce.MOD_ID);
+    public static final DeferredRegister<CreativeModeTab> CREATIVE_MODE_TAB = DeferredRegister.create(Registries.CREATIVE_MODE_TAB, OpposingForce.MOD_ID);
 
-    public static final DeferredHolder<CreativeModeTab, CreativeModeTab> OPPOSING_FORCE_TAB = CREATIVE_MODE_TABS.register("opposing_force_creative_tab",
+    public static final DeferredHolder<CreativeModeTab, CreativeModeTab> OPPOSING_FORCE_TAB = CREATIVE_MODE_TAB.register("opposing_force_creative_tab",
             () -> CreativeModeTab.builder().icon(() -> new ItemStack(OFItems.DICER_SPAWN_EGG.get()))
                     .title(Component.translatable("creative_tab.opposing_force"))
                     .displayItems((parameters, output) -> {

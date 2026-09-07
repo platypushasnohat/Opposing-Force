@@ -14,14 +14,14 @@ import java.util.function.Supplier;
 
 public class OFItems {
 
-    public static final DeferredRegister.Items ITEMS = DeferredRegister.createItems(OpposingForce.MOD_ID);
+    public static final DeferredRegister.Items ITEM = DeferredRegister.createItems(OpposingForce.MOD_ID);
 
     public static List<DeferredItem<? extends Item>> ITEM_TRANSLATIONS = new ArrayList<>();
 
     public static final DeferredItem<Item> DICER_SPAWN_EGG = registerSpawnEggItem("dicer", OFEntities.DICER, 0x0a020a, 0x8943ff);
 
     private static <I extends Item> DeferredItem<I> registerItem(String name, Supplier<? extends I> supplier) {
-        DeferredItem<I> item = ITEMS.register(name, supplier);
+        DeferredItem<I> item = ITEM.register(name, supplier);
         ITEM_TRANSLATIONS.add(item);
         return item;
     }

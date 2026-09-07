@@ -35,6 +35,9 @@ public class Dicer extends OFMonster {
     private static final int CROSS_SLASH_ANIMATION = 3;
     private static final int LASER_ANIMATION = 4;
 
+    public float prevLaserProgress;
+    public float laserProgress;
+
     public final SmoothAnimationState runAnimationState = new SmoothAnimationState();
     public final SmoothAnimationState slash1AnimationState = new SmoothAnimationState(1.0F);
     public final SmoothAnimationState slash2AnimationState = new SmoothAnimationState(1.0F);
@@ -49,10 +52,11 @@ public class Dicer extends OFMonster {
     public static AttributeSupplier.Builder registerAttributes() {
         return Mob.createMobAttributes()
                 .add(Attributes.MAX_HEALTH, 36.0D)
-                .add(Attributes.MOVEMENT_SPEED, 0.23D)
+                .add(Attributes.MOVEMENT_SPEED, 0.24D)
                 .add(Attributes.ATTACK_DAMAGE, 10.0D)
                 .add(Attributes.FOLLOW_RANGE, 28.0D)
-                .add(Attributes.STEP_HEIGHT, 1.2D);
+                .add(Attributes.STEP_HEIGHT, 1.2D)
+                .add(Attributes.KNOCKBACK_RESISTANCE, 0.25D);
     }
 
     @Override
@@ -82,6 +86,22 @@ public class Dicer extends OFMonster {
     public void aiStep() {
         super.aiStep();
         this.setSprinting(this.isAggressive() && this.getDeltaMovement().horizontalDistance() > 0.05D);
+    }
+
+    @Override
+    public void tick() {
+        super.tick();
+        this.prevLaserProgress = this.laserProgress;
+        if (this.getAttackAnimation() == LASER_ANIMATION && this.laserProgress < 5.0F) {
+            this.laserProgress++;
+        }
+        if (this.getAttackAnimation() != LASER_ANIMATION && this.laserProgress > 0.0F) {
+            this.laserProgress--;
+        }
+    }
+
+    public float getLaserProgress(float partialTicks) {
+        return Mth.lerp(partialTicks, this.prevLaserProgress, this.laserProgress) * 0.2F;
     }
 
     @Override
@@ -125,7 +145,7 @@ public class Dicer extends OFMonster {
         public void start() {
             super.start();
             this.dicer.setAttackAnimation(0);
-            this.crossSlashCooldown = 0;
+            this.crossSlashCooldown = 30 + this.dicer.getRandom().nextInt(30);
             this.laserCooldown = 50 + this.dicer.getRandom().nextInt(50);
             if (this.laser != null) {
                 this.laser.discard();
@@ -136,7 +156,7 @@ public class Dicer extends OFMonster {
         public void stop() {
             super.stop();
             this.dicer.setAttackAnimation(0);
-            this.crossSlashCooldown = 0;
+            this.crossSlashCooldown = 30 + this.dicer.getRandom().nextInt(30);
             this.laserCooldown = 50 + this.dicer.getRandom().nextInt(50);
             if (this.laser != null) {
                 this.laser.discard();
@@ -208,41 +228,51 @@ public class Dicer extends OFMonster {
                 this.dicer.setAttackAnimation(CROSS_SLASH_ANIMATION);
             }
             if (this.timer < 19) {
-                this.lookAtTarget(target, 30.0F, 30.0F);
+                this.lookAtTarget(target, 60.0F, 30.0F);
             }
             if (timer == 28) {
-                this.dicer.addDeltaMovement(this.dicer.getLookAngle().scale(3.5D).multiply(1.0D, 0.0D, 1.0D));
+                this.dicer.addDeltaMovement(this.dicer.getLookAngle().scale(4.5D).multiply(1.0D, 0.0D, 1.0D));
             }
             if (this.timer > 28 && this.timer < 32) {
                 this.hurtNearbyEntities();
             }
+            if (this.timer < 40) {
+                this.dicer.setDeltaMovement(this.dicer.getDeltaMovement().multiply(1.0D, 0.3D, 1.0D));
+            }
             if (this.timer > 50) {
                 this.timer = 0;
                 this.attackState = 0;
-                this.crossSlashCooldown = 80 + this.dicer.getRandom().nextInt(50);
+                this.crossSlashCooldown = 100 + this.dicer.getRandom().nextInt(50);
                 this.dicer.setAttackAnimation(0);
             }
         }
 
         private void tickLaser(LivingEntity target) {
             this.timer++;
-            if (this.timer < 10) {
-                this.lookAtTarget(target, 30.0F, 30.0F);
+            if (this.timer == 6) {
+                this.dicer.playSound(OFSoundEvents.DICER_LASER_START.get(), 1.5F, 1.0F);
             }
             if (this.timer == 10) {
                 this.dicer.setAttackAnimation(LASER_ANIMATION);
+            }
+            if (this.timer < 30) {
+                this.lookAtTarget(target, 30.0F, 30.0F);
+            }
+            if (this.timer == 30) {
                 Level level = this.dicer.level();
                 float distance = 0.3F;
-                float height = 2.45F;
-                int duration = 62;
-                this.laser = new DicerLaser(OFEntities.DICER_LASER.get(), level, this.dicer, this.dicer.getX() + distance * Math.sin(-this.dicer.getYRot() * Mth.DEG_TO_RAD), this.dicer.getY() + height, this.dicer.getZ() + distance * Math.cos(-this.dicer.getYRot() * Mth.DEG_TO_RAD), (this.dicer.yHeadRot + 90.0F) * Mth.DEG_TO_RAD, -this.dicer.getXRot() * Mth.DEG_TO_RAD, duration);
+                int duration = 72;
+                this.laser = new DicerLaser(OFEntities.DICER_LASER.get(), level, this.dicer, this.dicer.getX() + distance * Math.sin(-this.dicer.getYRot() * Mth.DEG_TO_RAD), this.dicer.getEyeY(), this.dicer.getZ() + distance * Math.cos(-this.dicer.getYRot() * Mth.DEG_TO_RAD), (this.dicer.yHeadRot + 90.0F) * Mth.DEG_TO_RAD, -this.dicer.getXRot() * Mth.DEG_TO_RAD, duration);
                 level.addFreshEntity(this.laser);
             }
 
-            if (this.timer > 10) {
-                this.dicer.getLookControl().setLookAt(target.getX(), target.getY() + target.getBbHeight() / 2, target.getZ(), 0.75F, 90.0F);
+            if (this.timer > 30) {
+                this.dicer.getLookControl().setLookAt(target.getX(), target.getEyeY(), target.getZ(), 0.95F, 90.0F);
             }
-            if (this.timer > 110) {
+            if (this.timer == 78) {
+                this.dicer.playSound(OFSoundEvents.DICER_LASER_END.get(), 1.5F, 1.0F);
+            }
+            if (this.timer > 130) {
                 this.timer = 0;
                 this.attackState = 0;
                 this.laserCooldown = 150 + this.dicer.getRandom().nextInt(100);

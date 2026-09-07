@@ -31,5 +31,11 @@ public class OFSoundDefinitionsProvider extends SinewSoundDefinitionsProvider {
         this.registerSound(OFSoundEvents.DICER_LASER,
                 sound(OpposingForce.location("mob/dicer/laser"))
         );
+        this.registerSound(OFSoundEvents.DICER_LASER_START,
+                sound(OpposingForce.location("mob/dicer/laser_start"))
+        );
+        this.registerSound(OFSoundEvents.DICER_LASER_END,
+                sound(OpposingForce.location("mob/dicer/laser_end"))
+        );
     }
 }

@@ -4,6 +4,7 @@ import com.barl_inc.opposing_force.entity.projectile.LaserBolt;
 import com.barl_inc.opposing_force.registry.OFItems;
 import com.barl_inc.opposing_force.registry.OFSoundEvents;
 import com.platypushasnohat.sinew.client.animation.ItemAnimationState;
+import com.platypushasnohat.sinew.utils.SinewSoundUtils;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.stats.Stats;
 import net.minecraft.world.InteractionHand;
@@ -61,24 +62,24 @@ public class BlasterItem extends Item {
             if (!level.isClientSide) {
                 player.getCooldowns().addCooldown(stack.getItem(), 10);
             }
-            return InteractionResultHolder.pass(stack);
+            return InteractionResultHolder.consume(stack);
         }
-        if (level.isClientSide) {
-            this.blastAnimationState.start(player.tickCount, player);
-        }
-        else {
+        if (!level.isClientSide) {
             LaserBolt laserBolt = new LaserBolt(level, player, player.getX(), player.getY() + player.getBbHeight() * 0.8F, player.getZ());
             laserBolt.setDamage(6.0F);
             Vec3 look = player.getLookAngle();
-            laserBolt.shoot(look.x, look.y, look.z, 1.25F, 1.0F);
+            laserBolt.shoot(look.x, look.y, look.z, 1.3F, 1.0F);
             level.addFreshEntity(laserBolt);
-            level.playSound(null, player.getX(), player.getY(), player.getZ(), OFSoundEvents.BLASTER_SHOOT.get(), SoundSource.PLAYERS, 1.0F, 1.0F + level.getRandom().nextFloat() * 0.25F);
-            player.getCooldowns().addCooldown(stack.getItem(), 8);
+            level.playSound(null, player.getX(), player.getY(), player.getZ(), OFSoundEvents.BLASTER_SHOOT.get(), SoundSource.PLAYERS, 1.0F, SinewSoundUtils.randomizePitch(level));
+            player.getCooldowns().addCooldown(stack.getItem(), 7);
             player.awardStat(Stats.ITEM_USED.get(this));
             if (!player.getAbilities().instabuild) {
                 ammoStack.shrink(1);
                 stack.hurtAndBreak(1, player, LivingEntity.getSlotForHand(hand));
             }
+        }
+        else {
+            this.blastAnimationState.start(player.tickCount, player);
         }
         return InteractionResultHolder.pass(stack);
     }

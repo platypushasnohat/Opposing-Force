@@ -7,6 +7,7 @@ import com.platypushasnohat.sinew.client.animation.SmoothAnimationState;
 import com.platypushasnohat.sinew.entity.ai.goal.AttackGoal;
 import com.platypushasnohat.sinew.entity.base.AnimatedMonster;
 import com.platypushasnohat.sinew.utils.SinewParticleUtils;
+import com.platypushasnohat.sinew.utils.SinewSoundUtils;
 import net.minecraft.network.syncher.EntityDataAccessor;
 import net.minecraft.network.syncher.EntityDataSerializers;
 import net.minecraft.network.syncher.SynchedEntityData;
@@ -132,7 +133,7 @@ public class Dicer extends AnimatedMonster {
     @Override
     public boolean doHurtTarget(Entity entity) {
         if (super.doHurtTarget(entity)) {
-            this.playSound(OFSoundEvents.DICER_ATTACK.get(), 1.0F, 1.0F / (this.getRandom().nextFloat() * 0.4F + 0.8F));
+            this.playSound(OFSoundEvents.DICER_ATTACK.get(), 1.0F, SinewSoundUtils.randomizePitch(this));
             return true;
         } else {
             return false;

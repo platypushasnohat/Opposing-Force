@@ -33,6 +33,9 @@ public class OFLanguageProvider extends SinewLanguageProvider {
 
         this.addSound(OFSoundEvents.SLAYSER_DISC, "Music Disc");
         this.addMusicDisc(OFItems.MUSIC_DISC_SLAYSER.get(), "ChipsTheCat - Slayser");
+
+        this.add(OFItems.TRI_BLASTER.get(), "Tri-Blaster");
+
         this.add("jukebox_song.opposing_force.slayser", "ChipsTheCat - Slayser");
 
         this.add("death.attack.laser_0", "%s was disintegrated");

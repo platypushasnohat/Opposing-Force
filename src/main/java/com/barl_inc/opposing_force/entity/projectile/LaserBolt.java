@@ -31,6 +31,8 @@ public class LaserBolt extends Projectile {
 
     private static final byte HIT_EFFECTS = 3;
 
+    private int pierceCount = 0;
+
     private final Vec3[] trailPositions = new Vec3[64];
     private int trailPointer = -1;
 
@@ -97,10 +99,15 @@ public class LaserBolt extends Projectile {
         Entity entity = result.getEntity();
         DamageSource damageSource = OFDamageTypes.causeLaserBoltDamage(this.level().registryAccess(), this.getOwner());
         if (!this.level().isClientSide) {
-            entity.hurt(damageSource, this.getDamage());
+            if (entity.hurt(damageSource, this.getDamage())) {
+                this.pierceCount++;
+                this.setDamage(this.getDamage() * 0.66F);
+            }
             this.playImpactSound(entity.getX(), entity.getY(), entity.getZ());
             this.level().broadcastEntityEvent(this, HIT_EFFECTS);
-            this.discard();
+            if (this.pierceCount > 1) {
+                this.discard();
+            }
         }
     }
 

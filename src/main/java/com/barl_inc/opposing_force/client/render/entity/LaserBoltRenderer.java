@@ -9,6 +9,7 @@ import com.mojang.blaze3d.vertex.VertexConsumer;
 import com.platypushasnohat.sinew.utils.SinewColorUtils;
 import net.minecraft.client.renderer.LightTexture;
 import net.minecraft.client.renderer.MultiBufferSource;
+import net.minecraft.client.renderer.RenderType;
 import net.minecraft.client.renderer.entity.EntityRenderer;
 import net.minecraft.client.renderer.entity.EntityRendererProvider;
 import net.minecraft.client.renderer.texture.OverlayTexture;
@@ -43,7 +44,7 @@ public class LaserBoltRenderer extends EntityRenderer<LaserBolt> {
             float xRot = Mth.lerp(partialTicks, laserBolt.xRotO, laserBolt.getXRot());
             this.model.setupRotation(yRot, xRot);
             this.model.renderToBuffer(poseStack, innerTexture, LightTexture.FULL_BRIGHT, OverlayTexture.NO_OVERLAY, -1);
-            VertexConsumer outerTexture = buffer.getBuffer(OFRenderTypes.eyes(this.getOuterTextureLocation()));
+            VertexConsumer outerTexture = buffer.getBuffer(RenderType.eyes(this.getOuterTextureLocation()));
             this.model.renderToBuffer(poseStack, outerTexture, LightTexture.FULL_BRIGHT, OverlayTexture.NO_OVERLAY, SinewColorUtils.packColor(1.0F, 1.0F, 1.0F, 1.0F));
             poseStack.popPose();
             if (laserBolt.hasTrail()) {
@@ -64,7 +65,7 @@ public class LaserBoltRenderer extends EntityRenderer<LaserBolt> {
     private void renderTrail(LaserBolt laserBolt, float partialTicks, PoseStack poseStack, MultiBufferSource bufferSource, float red, float green, float blue, float alpha) {
         int samples = 0;
         int sampleSize = 2;
-        float trailHeight = 0.1F;
+        float trailHeight = 0.08F;
         float trailZRot = 0;
         Vec3 topAngleVec = new Vec3(0, trailHeight, 0).zRot(trailZRot);
         Vec3 bottomAngleVec = new Vec3(0, -trailHeight, 0).zRot(trailZRot);

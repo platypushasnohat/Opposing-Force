@@ -12,7 +12,7 @@ import net.minecraft.world.entity.Entity;
 import net.minecraft.world.item.ItemDisplayContext;
 import net.minecraft.world.item.ItemStack;
 
-public class BlasterModel extends AnimatedItemModel<BlasterItem> {
+public class BlasterModel<I extends BlasterItem> extends AnimatedItemModel<I> {
 
     private final ModelPart root;
 
@@ -21,9 +21,9 @@ public class BlasterModel extends AnimatedItemModel<BlasterItem> {
     }
 
     @Override
-    public void setupAnim(Entity entity, BlasterItem item, ItemStack stack, ItemDisplayContext displayContext, float ageInTicks) {
+    public void setupAnim(Entity entity, I item, ItemStack stack, ItemDisplayContext displayContext, float ageInTicks) {
         this.root().getAllParts().forEach(ModelPart::resetPose);
-        this.animate(entity, item.blastAnimationState, BlasterAnimations.SHOOT, ageInTicks);
+        this.animate(entity, item.blastAnimationState, BlasterAnimations.BLASTER_SHOOT, ageInTicks);
     }
 
     public static LayerDefinition createBodyLayer() {

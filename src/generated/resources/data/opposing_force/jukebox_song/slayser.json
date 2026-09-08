@@ -1,0 +1,8 @@
+{
+  "comparator_output": 15,
+  "description": {
+    "translate": "jukebox_song.opposing_force.slayser"
+  },
+  "length_in_seconds": 115.0,
+  "sound_event": "opposing_force:slayser_disc"
+}

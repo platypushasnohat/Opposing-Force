@@ -1,10 +1,10 @@
 {
   "type": "neoforge:add_spawns",
-  "biomes": "minecraft:forest",
+  "biomes": "#opposing_force:has_monster/overworld",
   "spawners": {
     "type": "opposing_force:dicer",
     "maxCount": 1,
     "minCount": 1,
-    "weight": 3
+    "weight": 5
   }
 }

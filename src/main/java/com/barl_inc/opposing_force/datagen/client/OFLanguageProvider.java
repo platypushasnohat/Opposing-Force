@@ -29,8 +29,11 @@ public class OFLanguageProvider extends SinewLanguageProvider {
         this.addSound(OFSoundEvents.DICER_LASER_END, "Dicer powers down laser");
 
         this.addSound(OFSoundEvents.LASER_BOLT_IMPACT, "Laser bolt disintegrates");
-
         this.addSound(OFSoundEvents.BLASTER_SHOOT, "Blaster shoots");
+
+        this.addSound(OFSoundEvents.SLAYSER_DISC, "Music Disc");
+        this.addMusicDisc(OFItems.MUSIC_DISC_SLAYSER.get(), "ChipsTheCat - Slayser");
+        this.add("jukebox_song.opposing_force.slayser", "ChipsTheCat - Slayser");
 
         this.add("death.attack.laser_0", "%s was disintegrated");
         this.add("death.attack.laser_1", "%s was vaporized");

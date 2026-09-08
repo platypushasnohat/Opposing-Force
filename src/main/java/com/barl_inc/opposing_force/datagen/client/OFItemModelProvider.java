@@ -17,7 +17,10 @@ public class OFItemModelProvider extends SinewItemModelProvider {
 
     @Override
     protected void registerModels() {
-        this.generatedItem(OFItems.DICER_LENS);
+        this.generatedItem(
+                OFItems.LASER_FOCUS,
+                OFItems.MUSIC_DISC_SLAYSER
+        );
 
         for (Item item : BuiltInRegistries.ITEM) {
             if (item instanceof DeferredSpawnEggItem && BuiltInRegistries.ITEM.getKey(item).getNamespace().equals(OpposingForce.MOD_ID)) {

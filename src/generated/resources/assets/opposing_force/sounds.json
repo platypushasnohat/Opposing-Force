@@ -54,5 +54,14 @@
       "opposing_force:entity/laser_bolt/impact"
     ],
     "subtitle": "subtitles.opposing_force.laser_bolt_impact"
+  },
+  "slayser_disc": {
+    "sounds": [
+      {
+        "name": "opposing_force:record/slayser",
+        "stream": true
+      }
+    ],
+    "subtitle": "subtitles.opposing_force.slayser_disc"
   }
 }

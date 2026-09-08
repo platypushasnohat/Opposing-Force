@@ -1,6 +1,6 @@
 {
   "parent": "minecraft:item/generated",
   "textures": {
-    "layer0": "opposing_force:item/dicer_lens"
+    "layer0": "opposing_force:item/laser_focus"
   }
 }

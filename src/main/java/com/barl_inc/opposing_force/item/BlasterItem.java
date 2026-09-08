@@ -67,10 +67,10 @@ public class BlasterItem extends Item {
             this.blastAnimationState.start(player.tickCount, player);
         }
         else {
-            LaserBolt laserBolt = new LaserBolt(level, player, player.getX(), player.getY() + 1.5F, player.getZ());
+            LaserBolt laserBolt = new LaserBolt(level, player, player.getX(), player.getY() + player.getBbHeight() * 0.8F, player.getZ());
             laserBolt.setDamage(6.0F);
             Vec3 look = player.getLookAngle();
-            laserBolt.shoot(look.x, look.y, look.z, 1.2F, 1.0F);
+            laserBolt.shoot(look.x, look.y, look.z, 1.25F, 1.0F);
             level.addFreshEntity(laserBolt);
             level.playSound(null, player.getX(), player.getY(), player.getZ(), OFSoundEvents.BLASTER_SHOOT.get(), SoundSource.PLAYERS, 1.0F, 1.0F + level.getRandom().nextFloat() * 0.25F);
             player.getCooldowns().addCooldown(stack.getItem(), 8);

@@ -3,6 +3,8 @@ package com.barl_inc.opposing_force;
 import com.barl_inc.opposing_force.datagen.client.OFItemModelProvider;
 import com.barl_inc.opposing_force.datagen.client.OFLanguageProvider;
 import com.barl_inc.opposing_force.datagen.client.OFSoundDefinitionsProvider;
+import com.barl_inc.opposing_force.datagen.server.OFBiomeTagsProvider;
+import com.barl_inc.opposing_force.datagen.server.OFDatapackBuiltinEntriesProvider;
 import com.barl_inc.opposing_force.registry.*;
 import com.barl_inc.opposing_force.utils.ClientProxy;
 import com.barl_inc.opposing_force.utils.CommonProxy;
@@ -47,6 +49,12 @@ public class OpposingForce {
 
         boolean server = event.includeServer();
         boolean client = event.includeClient();
+
+        OFDatapackBuiltinEntriesProvider datapackEntries = new OFDatapackBuiltinEntriesProvider(output, provider);
+        generator.addProvider(server, datapackEntries);
+        provider = datapackEntries.getRegistryProvider();
+
+        generator.addProvider(server, new OFBiomeTagsProvider(output, provider, helper));
 
         generator.addProvider(client, new OFItemModelProvider(output, helper));
         generator.addProvider(client, new OFSoundDefinitionsProvider(output, helper));

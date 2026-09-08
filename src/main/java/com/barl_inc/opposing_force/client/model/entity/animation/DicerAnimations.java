@@ -1,4 +1,4 @@
-package com.barl_inc.opposing_force.client.model.entity.animations;
+package com.barl_inc.opposing_force.client.model.entity.animation;
 
 import net.minecraft.client.animation.AnimationChannel;
 import net.minecraft.client.animation.AnimationDefinition;

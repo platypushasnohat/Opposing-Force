@@ -1,0 +1,159 @@
+package com.barl_inc.opposing_force.entity.projectile;
+
+import com.barl_inc.opposing_force.registry.OFDamageTypes;
+import com.barl_inc.opposing_force.registry.OFEntities;
+import com.barl_inc.opposing_force.registry.OFParticleTypes;
+import com.barl_inc.opposing_force.registry.OFSoundEvents;
+import net.minecraft.core.BlockPos;
+import net.minecraft.network.protocol.game.ClientboundAddEntityPacket;
+import net.minecraft.network.syncher.EntityDataAccessor;
+import net.minecraft.network.syncher.EntityDataSerializers;
+import net.minecraft.network.syncher.SynchedEntityData;
+import net.minecraft.sounds.SoundSource;
+import net.minecraft.world.damagesource.DamageSource;
+import net.minecraft.world.entity.*;
+import net.minecraft.world.entity.projectile.Projectile;
+import net.minecraft.world.entity.projectile.ProjectileUtil;
+import net.minecraft.world.level.Level;
+import net.minecraft.world.phys.BlockHitResult;
+import net.minecraft.world.phys.EntityHitResult;
+import net.minecraft.world.phys.HitResult;
+import net.minecraft.world.phys.Vec3;
+import net.neoforged.neoforge.event.EventHooks;
+
+import java.util.Arrays;
+
+public class LaserBolt extends Projectile {
+
+    private static final EntityDataAccessor<Float> DAMAGE = SynchedEntityData.defineId(LaserBolt.class, EntityDataSerializers.FLOAT);
+
+    private static final byte HIT_EFFECTS = 3;
+
+    private final Vec3[] trailPositions = new Vec3[64];
+    private int trailPointer = -1;
+
+    public LaserBolt(EntityType<? extends Projectile> entityType, Level level) {
+        super(entityType, level);
+    }
+
+    public LaserBolt(Level level, LivingEntity owner, double x, double y, double z) {
+        this(OFEntities.LASER_BOLT.get(), level);
+        this.setPos(x, y, z);
+        this.setOwner(owner);
+    }
+
+    @Override
+    public void recreateFromPacket(ClientboundAddEntityPacket packet) {
+        super.recreateFromPacket(packet);
+        this.xRotO = this.getXRot();
+        this.yRotO = this.getYRot();
+    }
+
+    @Override
+    protected void defineSynchedData(SynchedEntityData.Builder builder) {
+        builder.define(DAMAGE, 6.0F);
+    }
+
+    public float getDamage() {
+        return this.entityData.get(DAMAGE);
+    }
+
+    public void setDamage(float damage) {
+        this.entityData.set(DAMAGE, damage);
+    }
+
+    @Override
+    public void tick() {
+        super.tick();
+        Vec3 deltaMovement = this.getDeltaMovement();
+        double x = this.getX() + deltaMovement.x;
+        double y = this.getY() + deltaMovement.y;
+        double z = this.getZ() + deltaMovement.z;
+        ProjectileUtil.rotateTowardsMovement(this, 1.0F);
+        this.setPos(x, y, z);
+
+        HitResult hitResult = ProjectileUtil.getHitResultOnMoveVector(this, this::canHitEntity);
+        if (hitResult.getType() != HitResult.Type.MISS && !EventHooks.onProjectileImpact(this, hitResult)) {
+            this.onHit(hitResult);
+        }
+        this.checkInsideBlocks();
+
+        this.level().addParticle(OFParticleTypes.LASER_DUST.get(), this.getX(), this.getY() + 0.2F, this.getZ(), 0, 0, 0);
+        if (this.tickCount > 160 || this.getBlockY() > this.level().getMaxBuildHeight() + 30) {
+            if (!this.level().isClientSide) {
+                this.level().broadcastEntityEvent(this, HIT_EFFECTS);
+                this.playImpactSound(this.getX(), this.getY(), this.getZ());
+                this.discard();
+            }
+        }
+        this.tickTrail();
+    }
+
+    @Override
+    protected void onHitEntity(EntityHitResult result) {
+        super.onHitEntity(result);
+        Entity entity = result.getEntity();
+        DamageSource damageSource = OFDamageTypes.causeLaserBoltDamage(this.level().registryAccess(), this.getOwner());
+        if (!this.level().isClientSide) {
+            entity.hurt(damageSource, this.getDamage());
+            this.playImpactSound(entity.getX(), entity.getY(), entity.getZ());
+            this.level().broadcastEntityEvent(this, HIT_EFFECTS);
+            this.discard();
+        }
+    }
+
+    @Override
+    protected void onHitBlock(BlockHitResult result) {
+        super.onHitBlock(result);
+        BlockPos pos = result.getBlockPos();
+        if (!this.level().isClientSide) {
+            this.level().broadcastEntityEvent(this, HIT_EFFECTS);
+            this.playImpactSound(pos.getX(), pos.getY(), pos.getZ());
+            this.discard();
+        }
+    }
+
+    @Override
+    public void push(double x, double y, double z) {
+    }
+
+    private void playImpactSound(double x, double y, double z) {
+        this.level().playSound(null, x, y, z, OFSoundEvents.LASER_BOLT_IMPACT.get(), SoundSource.NEUTRAL, 1.0F, 1.0F + (this.getRandom().nextFloat() - this.getRandom().nextFloat()) * 0.2F);
+    }
+
+    private void tickTrail() {
+        Vec3 trailAt = this.position().add(0, this.getBbHeight() / 2.0F, 0);
+        if (this.trailPointer == -1) {
+            Arrays.fill(this.trailPositions, trailAt);
+        }
+        if (++this.trailPointer == this.trailPositions.length) {
+            this.trailPointer = 0;
+        }
+        this.trailPositions[this.trailPointer] = trailAt;
+    }
+
+    public Vec3 getTrailPosition(int pointer, float partialTick) {
+        if (this.isRemoved()) {
+            partialTick = 1.0F;
+        }
+        int i = this.trailPointer - pointer & 63;
+        int j = this.trailPointer - pointer - 1 & 63;
+        Vec3 positions = this.trailPositions[j];
+        Vec3 subtracted = this.trailPositions[i].subtract(positions);
+        return positions.add(subtracted.scale(partialTick));
+    }
+
+    public boolean hasTrail() {
+        return trailPointer != -1;
+    }
+
+    @Override
+    public void handleEntityEvent(byte id) {
+        if (id == HIT_EFFECTS) {
+            this.level().addParticle(OFParticleTypes.LASER_IMPACT.get(), this.getX(), this.getY() + 0.2F, this.getZ(), 0, 0, 0);
+            for (int i = 0; i < 3; i++) {
+                this.level().addParticle(OFParticleTypes.LASER_DUST.get(), this.getX(), this.getY() + 0.2F, this.getZ(), 0, 0, 0);
+            }
+        }
+    }
+}

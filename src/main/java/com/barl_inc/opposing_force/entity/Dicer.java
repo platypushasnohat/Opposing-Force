@@ -1,11 +1,11 @@
 package com.barl_inc.opposing_force.entity;
 
-import com.barl_inc.opposing_force.entity.base.OFMonster;
 import com.barl_inc.opposing_force.entity.misc.DicerLaser;
 import com.barl_inc.opposing_force.registry.OFEntities;
 import com.barl_inc.opposing_force.registry.OFSoundEvents;
+import com.platypushasnohat.sinew.client.animation.SmoothAnimationState;
 import com.platypushasnohat.sinew.entity.ai.goal.AttackGoal;
-import com.platypushasnohat.sinew.entity.animation.SmoothAnimationState;
+import com.platypushasnohat.sinew.entity.base.AnimatedMonster;
 import com.platypushasnohat.sinew.utils.SinewParticleUtils;
 import net.minecraft.network.syncher.EntityDataAccessor;
 import net.minecraft.network.syncher.EntityDataSerializers;
@@ -33,7 +33,7 @@ import net.minecraft.world.phys.Vec3;
 
 import java.util.List;
 
-public class Dicer extends OFMonster {
+public class Dicer extends AnimatedMonster {
 
     private static final EntityDataAccessor<Boolean> HAS_AFTERIMAGE = SynchedEntityData.defineId(Dicer.class, EntityDataSerializers.BOOLEAN);
 
@@ -51,20 +51,20 @@ public class Dicer extends OFMonster {
     public final SmoothAnimationState crossSlashAnimationState = new SmoothAnimationState();
     public final SmoothAnimationState laserAnimationState = new SmoothAnimationState();
 
-    public Dicer(EntityType<? extends OFMonster> entityType, Level level) {
+    public Dicer(EntityType<? extends AnimatedMonster> entityType, Level level) {
         super(entityType, level);
         this.xpReward = 20;
     }
 
     public static AttributeSupplier.Builder registerAttributes() {
         return Mob.createMobAttributes()
-                .add(Attributes.MAX_HEALTH, 50.0D)
+                .add(Attributes.MAX_HEALTH, 60.0D)
                 .add(Attributes.MOVEMENT_SPEED, 0.24D)
                 .add(Attributes.ATTACK_DAMAGE, 10.0D)
                 .add(Attributes.FOLLOW_RANGE, 28.0D)
                 .add(Attributes.STEP_HEIGHT, 1.2D)
                 .add(Attributes.KNOCKBACK_RESISTANCE, 0.25D)
-                .add(Attributes.ARMOR, 5.0D);
+                .add(Attributes.ARMOR, 6.0D);
     }
 
     @Override
@@ -95,13 +95,13 @@ public class Dicer extends OFMonster {
 
     @Override
     public void setupAnimationStates() {
-        this.idleAnimationState.animateWhen(this.getAttackAnimation() == 0, this.tickCount);
-        this.walkAnimationState.animateWhen(this.getAttackAnimation() == 0 && !this.isSprinting(), this.tickCount);
-        this.runAnimationState.animateWhen(this.getAttackAnimation() == 0 && this.isSprinting(), this.tickCount);
-        this.slash1AnimationState.animateWhen(this.getAttackAnimation() == SLASH1_ANIMATION, this.tickCount);
-        this.slash2AnimationState.animateWhen(this.getAttackAnimation() == SLASH2_ANIMATION, this.tickCount);
-        this.crossSlashAnimationState.animateWhen(this.getAttackAnimation() == CROSS_SLASH_ANIMATION, this.tickCount);
-        this.laserAnimationState.animateWhen(this.getAttackAnimation() == LASER_ANIMATION, this.tickCount);
+        this.idleAnimationState.animateWhen(this.getAnimationState() == 0, this.tickCount);
+        this.walkAnimationState.animateWhen(this.getAnimationState() == 0 && !this.isSprinting(), this.tickCount);
+        this.runAnimationState.animateWhen(this.getAnimationState() == 0 && this.isSprinting(), this.tickCount);
+        this.slash1AnimationState.animateWhen(this.getAnimationState() == SLASH1_ANIMATION, this.tickCount);
+        this.slash2AnimationState.animateWhen(this.getAnimationState() == SLASH2_ANIMATION, this.tickCount);
+        this.crossSlashAnimationState.animateWhen(this.getAnimationState() == CROSS_SLASH_ANIMATION, this.tickCount);
+        this.laserAnimationState.animateWhen(this.getAnimationState() == LASER_ANIMATION, this.tickCount);
     }
 
     @Override
@@ -114,10 +114,10 @@ public class Dicer extends OFMonster {
     public void tick() {
         super.tick();
         this.prevLaserProgress = this.laserProgress;
-        if (this.getAttackAnimation() == LASER_ANIMATION && this.laserProgress < 5.0F) {
+        if (this.getAnimationState() == LASER_ANIMATION && this.laserProgress < 5.0F) {
             this.laserProgress++;
         }
-        if (this.getAttackAnimation() != LASER_ANIMATION && this.laserProgress > 0.0F) {
+        if (this.getAnimationState() != LASER_ANIMATION && this.laserProgress > 0.0F) {
             this.laserProgress--;
         }
         if (this.level().isClientSide && this.isAlive() && this.hasAfterimage()) {
@@ -169,7 +169,7 @@ public class Dicer extends OFMonster {
         @Override
         public void start() {
             super.start();
-            this.dicer.setAttackAnimation(0);
+            this.dicer.setAnimationState(0);
             this.crossSlashCooldown = 30 + this.dicer.getRandom().nextInt(30);
             this.laserCooldown = 50 + this.dicer.getRandom().nextInt(50);
             this.dicer.setHasAfterimage(false);
@@ -181,7 +181,7 @@ public class Dicer extends OFMonster {
         @Override
         public void stop() {
             super.stop();
-            this.dicer.setAttackAnimation(0);
+            this.dicer.setAnimationState(0);
             this.crossSlashCooldown = 30 + this.dicer.getRandom().nextInt(30);
             this.laserCooldown = 50 + this.dicer.getRandom().nextInt(50);
             this.dicer.setHasAfterimage(false);
@@ -237,7 +237,7 @@ public class Dicer extends OFMonster {
         private void tickSlash(LivingEntity target) {
             this.timer++;
             if (this.timer == 1) {
-                this.dicer.setAttackAnimation(this.dicer.getRandom().nextBoolean() ? SLASH2_ANIMATION : SLASH1_ANIMATION);
+                this.dicer.setAnimationState(this.dicer.getRandom().nextBoolean() ? SLASH2_ANIMATION : SLASH1_ANIMATION);
             }
             if (this.timer == 9 && this.isInAttackRange(target, 1.5D)) {
                 this.dicer.doHurtTarget(target);
@@ -245,14 +245,14 @@ public class Dicer extends OFMonster {
             if (this.timer > 20) {
                 this.timer = 0;
                 this.attackState = 0;
-                this.dicer.setAttackAnimation(0);
+                this.dicer.setAnimationState(0);
             }
         }
 
         private void tickCrossSlash(LivingEntity target) {
             this.timer++;
             if (this.timer == 1) {
-                this.dicer.setAttackAnimation(CROSS_SLASH_ANIMATION);
+                this.dicer.setAnimationState(CROSS_SLASH_ANIMATION);
             }
             if (this.timer < 19) {
                 this.lookAtTarget(target, 60.0F, 30.0F);
@@ -274,24 +274,24 @@ public class Dicer extends OFMonster {
                 this.timer = 0;
                 this.attackState = 0;
                 this.crossSlashCooldown = 100 + this.dicer.getRandom().nextInt(50);
-                this.dicer.setAttackAnimation(0);
+                this.dicer.setAnimationState(0);
             }
         }
 
         private void tickLaser(LivingEntity target) {
             this.timer++;
             if (this.timer == 6) {
-                this.dicer.playSound(OFSoundEvents.DICER_LASER_START.get(), 1.5F, 1.0F);
+                this.dicer.playSound(OFSoundEvents.DICER_LASER_START.get(), 2.0F, 1.0F);
             }
             if (this.timer == 10) {
-                this.dicer.setAttackAnimation(LASER_ANIMATION);
+                this.dicer.setAnimationState(LASER_ANIMATION);
             }
             if (this.timer < 30) {
                 this.lookAtTarget(target, 30.0F, 30.0F);
             }
             if (this.timer == 30) {
                 Level level = this.dicer.level();
-                float distance = 0.3F;
+                float distance = 0.2F;
                 int duration = 72;
                 this.laser = new DicerLaser(OFEntities.DICER_LASER.get(), level, this.dicer, this.dicer.getX() + distance * Math.sin(-this.dicer.getYRot() * Mth.DEG_TO_RAD), this.dicer.getEyeY(), this.dicer.getZ() + distance * Math.cos(-this.dicer.getYRot() * Mth.DEG_TO_RAD), (this.dicer.yHeadRot + 90.0F) * Mth.DEG_TO_RAD, -this.dicer.getXRot() * Mth.DEG_TO_RAD, duration);
                 level.addFreshEntity(this.laser);
@@ -301,18 +301,18 @@ public class Dicer extends OFMonster {
                 this.dicer.getLookControl().setLookAt(target.getX(), target.getEyeY(), target.getZ(), 0.95F, 90.0F);
             }
             if (this.timer == 78) {
-                this.dicer.playSound(OFSoundEvents.DICER_LASER_END.get(), 1.5F, 1.0F);
+                this.dicer.playSound(OFSoundEvents.DICER_LASER_END.get(), 2.0F, 1.0F);
             }
             if (this.timer > 130) {
                 this.timer = 0;
                 this.attackState = 0;
                 this.laserCooldown = 150 + this.dicer.getRandom().nextInt(100);
-                this.dicer.setAttackAnimation(0);
+                this.dicer.setAnimationState(0);
             }
         }
 
         private void hurtNearbyEntities() {
-            List<LivingEntity> nearbyEntities = this.dicer.level().getNearbyEntities(LivingEntity.class, TargetingConditions.forCombat(), this.dicer, this.dicer.getBoundingBox().inflate(1.75D));
+            List<LivingEntity> nearbyEntities = this.dicer.level().getNearbyEntities(LivingEntity.class, TargetingConditions.forCombat(), this.dicer, this.dicer.getBoundingBox().inflate(1.8D));
             if (!nearbyEntities.isEmpty()) {
                 nearbyEntities.stream().filter(entity -> entity != this.dicer).limit(8).forEach(entity -> {
                     this.dicer.doHurtTarget(entity);

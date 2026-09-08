@@ -1,6 +1,7 @@
 package com.barl_inc.opposing_force.datagen.client;
 
 import com.barl_inc.opposing_force.OpposingForce;
+import com.barl_inc.opposing_force.registry.OFItems;
 import com.platypushasnohat.sinew.datagen.client.SinewItemModelProvider;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.data.PackOutput;
@@ -16,6 +17,8 @@ public class OFItemModelProvider extends SinewItemModelProvider {
 
     @Override
     protected void registerModels() {
+        this.generatedItem(OFItems.DICER_LENS);
+
         for (Item item : BuiltInRegistries.ITEM) {
             if (item instanceof DeferredSpawnEggItem && BuiltInRegistries.ITEM.getKey(item).getNamespace().equals(OpposingForce.MOD_ID)) {
                 this.withExistingParent(name(item), "item/template_spawn_egg");

@@ -3,6 +3,7 @@ package com.barl_inc.opposing_force.client.particle;
 import com.platypushasnohat.sinew.utils.SinewColorUtils;
 import net.minecraft.client.multiplayer.ClientLevel;
 import net.minecraft.client.particle.*;
+import net.minecraft.client.renderer.LightTexture;
 import net.minecraft.core.particles.SimpleParticleType;
 import net.minecraft.util.Mth;
 
@@ -37,7 +38,7 @@ public class LaserDustParticle extends TextureSheetParticle {
     }
 
     public int getLightColor(float partialTicks) {
-        return 240;
+        return LightTexture.FULL_BRIGHT;
     }
 
     public static class Factory implements ParticleProvider<SimpleParticleType> {

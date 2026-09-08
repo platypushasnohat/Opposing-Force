@@ -1,4 +1,10 @@
 {
+  "blaster_shoot": {
+    "sounds": [
+      "opposing_force:item/blaster/shoot"
+    ],
+    "subtitle": "subtitles.opposing_force.blaster_shoot"
+  },
   "dicer_attack": {
     "sounds": [
       "opposing_force:mob/dicer/attack"
@@ -42,5 +48,11 @@
       "opposing_force:mob/dicer/laser_start"
     ],
     "subtitle": "subtitles.opposing_force.dicer_laser_start"
+  },
+  "laser_bolt_impact": {
+    "sounds": [
+      "opposing_force:entity/laser_bolt/impact"
+    ],
+    "subtitle": "subtitles.opposing_force.laser_bolt_impact"
   }
 }

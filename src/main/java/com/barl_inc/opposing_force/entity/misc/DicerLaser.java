@@ -237,7 +237,7 @@ public class DicerLaser extends Entity {
             if (entity == this.caster) {
                 continue;
             }
-            float pad = entity.getPickRadius() + 0.25F;
+            float pad = entity.getPickRadius() + 0.3F;
             AABB aabb = entity.getBoundingBox().inflate(pad, pad, pad);
             Optional<Vec3> hit = aabb.clip(from, to);
             if (aabb.contains(from)) {
@@ -277,8 +277,8 @@ public class DicerLaser extends Entity {
     private void updateWithDicer() {
         this.setYaw((this.caster.yHeadRot + 90.0F) * Mth.DEG_TO_RAD);
         this.setPitch(-this.caster.getXRot() * Mth.DEG_TO_RAD);
-        Vec3 vecOffset1 = new Vec3(0.0D, 0.0D, 0.3D).yRot((float) Math.toRadians(-this.caster.getYRot()));
-        Vec3 vecOffset2 = new Vec3(0.6D, 0.0D, 0.0D).yRot(-this.getYaw()).xRot(this.getPitch());
+        Vec3 vecOffset1 = new Vec3(0.0D, 0.0D, 0.2D).yRot((float) Math.toRadians(-this.caster.getYRot()));
+        Vec3 vecOffset2 = new Vec3(0.4D, 0.0D, 0.0D).yRot(-this.getYaw()).xRot(this.getPitch());
         this.setPos(this.caster.getX() + vecOffset1.x + vecOffset2.x, this.caster.getEyeY(), this.caster.getZ() + vecOffset1.z + vecOffset2.z);
     }
 

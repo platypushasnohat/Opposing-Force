@@ -20,9 +20,10 @@ import org.joml.Vector3f;
 public class DicerLaserRenderer extends EntityRenderer<DicerLaser> {
 
     private static final ResourceLocation TEXTURE_LOCATION = OpposingForce.location("textures/entity/misc/dicer_laser.png");
+
     private static final float TEXTURE_WIDTH = 256;
     private static final float TEXTURE_HEIGHT = 32;
-    private static final float START_RADIUS = 1.0F;
+    private static final float START_RADIUS = 1.3F;
     private static final float BEAM_RADIUS = 1.0F;
 
     public DicerLaserRenderer(EntityRendererProvider.Context context) {
@@ -50,10 +51,10 @@ public class DicerLaserRenderer extends EntityRenderer<DicerLaser> {
         if (frame < 0) {
             frame = 6;
         }
-        VertexConsumer consumer = bufferSource.getBuffer(OFRenderTypes.getGlowingEffect(getTextureLocation(laser)));
+        VertexConsumer consumer = bufferSource.getBuffer(OFRenderTypes.getGlowingEffect(this.getTextureLocation(laser)));
 
         this.renderStart(frame, poseStack, consumer, packedLight);
-        this.renderBeam(length, 180f / (float) Math.PI * yaw, 180f / (float) Math.PI * pitch, frame, poseStack, consumer, packedLight);
+        this.renderBeam(length, 180.0F / (float) Math.PI * yaw, 180.0F / (float) Math.PI * pitch, frame, poseStack, consumer, packedLight);
 
         poseStack.pushPose();
         poseStack.translate(collidePosX - posX, collidePosY - posY, collidePosZ - posZ);

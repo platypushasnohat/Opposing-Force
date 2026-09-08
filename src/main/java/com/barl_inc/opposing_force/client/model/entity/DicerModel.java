@@ -1,6 +1,6 @@
 package com.barl_inc.opposing_force.client.model.entity;
 
-import com.barl_inc.opposing_force.client.model.entity.animations.DicerAnimations;
+import com.barl_inc.opposing_force.client.model.entity.animation.DicerAnimations;
 import com.barl_inc.opposing_force.entity.Dicer;
 import com.platypushasnohat.sinew.client.model.entity.SinewEntityModel;
 import net.minecraft.client.model.geom.ModelPart;

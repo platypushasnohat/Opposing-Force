@@ -17,6 +17,8 @@ public class OFCreativeTabs {
                     .title(Component.translatable("creative_tab.opposing_force"))
                     .displayItems((parameters, output) -> {
                         output.accept(OFItems.DICER_SPAWN_EGG.get());
+                        output.accept(OFItems.DICER_LENS.get());
+                        output.accept(OFItems.BLASTER.get());
                     })
                     .build());
 }

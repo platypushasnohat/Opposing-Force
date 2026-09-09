@@ -52,14 +52,12 @@ public class ScatterBlasterItem extends BlasterItem {
                 ammoStack.shrink(1);
                 stack.hurtAndBreak(1, player, LivingEntity.getSlotForHand(hand));
             }
-        }
-        else {
+        } else {
             this.blastAnimationState.start(player.tickCount, player);
         }
 
         Vec3 pushBack = new Vec3(-look.x, -look.y, -look.z).normalize();
         player.push(pushBack.scale(0.8F));
-
         return InteractionResultHolder.pass(stack);
     }
 }

@@ -55,7 +55,7 @@ public class LaserBolt extends Projectile {
 
     @Override
     protected void defineSynchedData(SynchedEntityData.Builder builder) {
-        builder.define(DAMAGE, 6.0F);
+        builder.define(DAMAGE, 1.0F);
     }
 
     public float getDamage() {

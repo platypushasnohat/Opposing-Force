@@ -60,7 +60,7 @@ public class TriBlasterItem extends BlasterItem {
             if (shootTime == 1 && shooting) {
                 this.shootLaser(level, player);
                 if (!level.isClientSide) {
-                    player.getCooldowns().addCooldown(stack.getItem(), 15);
+                    player.getCooldowns().addCooldown(stack.getItem(), 16);
                     player.awardStat(Stats.ITEM_USED.get(this));
                     if (!player.getAbilities().instabuild) {
                         ammoStack.shrink(1);

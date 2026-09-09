@@ -69,18 +69,18 @@ public class LaserBolt extends Projectile {
     @Override
     public void tick() {
         super.tick();
+        HitResult hitresult = ProjectileUtil.getHitResultOnMoveVector(this, this::canHitEntity);
+        if (hitresult.getType() != HitResult.Type.MISS && !EventHooks.onProjectileImpact(this, hitresult)) {
+            this.hitTargetOrDeflectSelf(hitresult);
+        }
+        this.checkInsideBlocks();
+
         Vec3 deltaMovement = this.getDeltaMovement();
         double x = this.getX() + deltaMovement.x;
         double y = this.getY() + deltaMovement.y;
         double z = this.getZ() + deltaMovement.z;
         ProjectileUtil.rotateTowardsMovement(this, 1.0F);
         this.setPos(x, y, z);
-
-        HitResult hitResult = ProjectileUtil.getHitResultOnMoveVector(this, this::canHitEntity);
-        if (hitResult.getType() != HitResult.Type.MISS && !EventHooks.onProjectileImpact(this, hitResult)) {
-            this.onHit(hitResult);
-        }
-        this.checkInsideBlocks();
 
         this.level().addParticle(OFParticleTypes.LASER_DUST.get(), this.getX(), this.getY() + 0.2F, this.getZ(), 0, 0, 0);
         if (this.tickCount > 160 || this.getBlockY() > this.level().getMaxBuildHeight() + 30) {

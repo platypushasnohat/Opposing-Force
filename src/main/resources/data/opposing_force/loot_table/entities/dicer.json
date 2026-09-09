@@ -3,6 +3,36 @@
   "pools": [
     {
       "bonus_rolls": 0.0,
+      "entries": [
+        {
+          "type": "minecraft:item",
+          "functions": [
+            {
+              "add": false,
+              "count": {
+                "type": "minecraft:uniform",
+                "max": 12.0,
+                "min": 7.0
+              },
+              "function": "minecraft:set_count"
+            },
+            {
+              "count": {
+                "type": "minecraft:uniform",
+                "max": 1.0,
+                "min": 0.0
+              },
+              "enchantment": "minecraft:looting",
+              "function": "minecraft:enchanted_count_increase"
+            }
+          ],
+          "name": "minecraft:redstone"
+        }
+      ],
+      "rolls": 1.0
+    },
+    {
+      "bonus_rolls": 0.0,
       "conditions": [
         {
           "condition": "minecraft:killed_by_player"
@@ -15,7 +45,7 @@
             "per_level_above_first": 0.01
           },
           "enchantment": "minecraft:looting",
-          "unenchanted_chance": 0.125
+          "unenchanted_chance": 0.1
         }
       ],
       "entries": [

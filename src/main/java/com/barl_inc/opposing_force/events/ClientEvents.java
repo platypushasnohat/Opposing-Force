@@ -4,6 +4,7 @@ import com.barl_inc.opposing_force.OpposingForce;
 import com.barl_inc.opposing_force.client.model.entity.DicerModel;
 import com.barl_inc.opposing_force.client.model.entity.LaserBoltModel;
 import com.barl_inc.opposing_force.client.model.item.BlasterModel;
+import com.barl_inc.opposing_force.client.model.item.ScatterBlasterModel;
 import com.barl_inc.opposing_force.client.model.item.TriBlasterModel;
 import com.barl_inc.opposing_force.client.particle.LaserDustParticle;
 import com.barl_inc.opposing_force.client.particle.LaserImpactParticle;
@@ -44,6 +45,7 @@ public class ClientEvents {
         event.registerLayerDefinition(OFModelLayers.LASER_BOLT, LaserBoltModel::createBodyLayer);
         event.registerLayerDefinition(OFModelLayers.BLASTER, BlasterModel::createBodyLayer);
         event.registerLayerDefinition(OFModelLayers.TRI_BLASTER, TriBlasterModel::createBodyLayer);
+        event.registerLayerDefinition(OFModelLayers.SCATTER_BLASTER, ScatterBlasterModel::createBodyLayer);
     }
 
     @SubscribeEvent
@@ -56,6 +58,7 @@ public class ClientEvents {
     private static void registerClientExtensions(RegisterClientExtensionsEvent event) {
         event.registerItem(OFItemExtensions.itemExtensions, OFItems.BLASTER.get());
         event.registerItem(OFItemExtensions.itemExtensions, OFItems.TRI_BLASTER.get());
+        event.registerItem(OFItemExtensions.itemExtensions, OFItems.SCATTER_BLASTER.get());
     }
 
     @SubscribeEvent

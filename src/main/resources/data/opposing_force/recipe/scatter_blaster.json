@@ -1,0 +1,24 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "equipment",
+  "key": {
+    "I": {
+      "item": "minecraft:iron_ingot"
+    },
+    "L": {
+      "item": "opposing_force:laser_focus"
+    },
+    "B": {
+      "item": "opposing_force:blaster"
+    }
+  },
+  "pattern": [
+    "IIB",
+    "ILL",
+    "IIB"
+  ],
+  "result": {
+    "count": 1,
+    "id": "opposing_force:scatter_blaster"
+  }
+}

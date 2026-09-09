@@ -20,6 +20,7 @@ public class OFCreativeTabs {
                         output.accept(OFItems.LASER_FOCUS.get());
                         output.accept(OFItems.BLASTER.get());
                         output.accept(OFItems.TRI_BLASTER.get());
+                        output.accept(OFItems.SCATTER_BLASTER.get());
                         output.accept(OFItems.MUSIC_DISC_SLAYSER.get());
                     })
                     .build());

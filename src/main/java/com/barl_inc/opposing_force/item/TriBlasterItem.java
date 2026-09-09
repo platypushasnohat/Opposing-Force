@@ -60,7 +60,7 @@ public class TriBlasterItem extends BlasterItem {
             if (shootTime == 1 && shooting) {
                 this.shootLaser(level, player);
                 if (!level.isClientSide) {
-                    player.getCooldowns().addCooldown(stack.getItem(), 16);
+                    player.getCooldowns().addCooldown(stack.getItem(), 15);
                     player.awardStat(Stats.ITEM_USED.get(this));
                     if (!player.getAbilities().instabuild) {
                         ammoStack.shrink(1);
@@ -68,14 +68,14 @@ public class TriBlasterItem extends BlasterItem {
                     }
                 }
             }
-            if (shootTime == 4 && shooting) {
+            if (shootTime == 5 && shooting) {
                 this.shootLaser(level, player);
             }
-            if (shootTime == 7 && shooting) {
+            if (shootTime == 9 && shooting) {
                 this.shootLaser(level, player);
                 setShooting(stack, false);
             }
-            if (shooting && shootTime <= 7) {
+            if (shooting && shootTime <= 9) {
                 setShootTime(stack, shootTime + 1);
             }
             if (!shooting && shootTime > 0) {
@@ -91,11 +91,11 @@ public class TriBlasterItem extends BlasterItem {
             this.blastAnimationState.start(player.tickCount, player);
         } else {
             LaserBolt laserBolt = new LaserBolt(level, player, player.getX(), player.getY() + player.getBbHeight() * 0.8F, player.getZ());
-            laserBolt.setDamage(5.0F);
+            laserBolt.setDamage(7.0F);
             Vec3 look = player.getLookAngle();
-            laserBolt.shoot(look.x, look.y, look.z, 1.8F, 0.5F);
+            laserBolt.shoot(look.x, look.y, look.z, 1.7F, 0.5F);
             level.addFreshEntity(laserBolt);
-            level.playSound(null, player.getX(), player.getY(), player.getZ(), OFSoundEvents.BLASTER_SHOOT.get(), SoundSource.PLAYERS, 1.0F, SinewSoundUtils.randomizePitch(level));
+            level.playSound(null, player.getX(), player.getY(), player.getZ(), OFSoundEvents.BLASTER_SHOOT.get(), SoundSource.PLAYERS, 1.0F, 0.8F * SinewSoundUtils.randomizePitch(level));
         }
     }
 

@@ -49,6 +49,15 @@
     ],
     "subtitle": "subtitles.opposing_force.dicer_laser_start"
   },
+  "laser_blade_swing": {
+    "sounds": [
+      "opposing_force:item/laser_blade/swing1",
+      "opposing_force:item/laser_blade/swing2",
+      "opposing_force:item/laser_blade/swing3",
+      "opposing_force:item/laser_blade/swing4"
+    ],
+    "subtitle": "subtitles.opposing_force.laser_blade_swing"
+  },
   "laser_bolt_impact": {
     "sounds": [
       "opposing_force:entity/laser_bolt/impact"

@@ -16,6 +16,7 @@ import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.projectile.Projectile;
 import net.minecraft.world.entity.projectile.ProjectileUtil;
+import net.minecraft.world.level.Explosion;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.phys.BlockHitResult;
 import net.minecraft.world.phys.EntityHitResult;
@@ -95,7 +96,6 @@ public class LaserBolt extends Projectile {
 
     @Override
     protected void onHitEntity(EntityHitResult result) {
-        super.onHitEntity(result);
         Entity entity = result.getEntity();
         DamageSource damageSource = OFDamageTypes.causeLaserBoltDamage(this.level().registryAccess(), this.getOwner());
         if (!this.level().isClientSide) {
@@ -109,6 +109,7 @@ public class LaserBolt extends Projectile {
                 this.discard();
             }
         }
+        super.onHitEntity(result);
     }
 
     @Override
@@ -126,12 +127,17 @@ public class LaserBolt extends Projectile {
     public void push(double x, double y, double z) {
     }
 
+    @Override
+    public boolean ignoreExplosion(Explosion explosion) {
+        return true;
+    }
+
     private void playImpactSound(double x, double y, double z) {
         this.level().playSound(null, x, y, z, OFSoundEvents.LASER_BOLT_IMPACT.get(), SoundSource.NEUTRAL, 1.0F, 1.0F + (this.getRandom().nextFloat() - this.getRandom().nextFloat()) * 0.2F);
     }
 
     private void tickTrail() {
-        Vec3 trailAt = this.position().add(0, this.getBbHeight() / 2.0F, 0);
+        Vec3 trailAt = this.position().add(0.0F, this.getBbHeight() / 2.0F, 0.0F);
         if (this.trailPointer == -1) {
             Arrays.fill(this.trailPositions, trailAt);
         }

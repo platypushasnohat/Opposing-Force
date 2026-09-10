@@ -2,12 +2,14 @@ package com.barl_inc.opposing_force.registry;
 
 import com.barl_inc.opposing_force.OpposingForce;
 import com.barl_inc.opposing_force.item.BlasterItem;
+import com.barl_inc.opposing_force.item.LaserBladeItem;
 import com.barl_inc.opposing_force.item.ScatterBlasterItem;
 import com.barl_inc.opposing_force.item.TriBlasterItem;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.Mob;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.Rarity;
+import net.minecraft.world.item.Tiers;
 import net.neoforged.neoforge.common.DeferredSpawnEggItem;
 import net.neoforged.neoforge.registries.DeferredItem;
 import net.neoforged.neoforge.registries.DeferredRegister;
@@ -29,6 +31,7 @@ public class OFItems {
     public static final DeferredItem<Item> BLASTER = registerItem("blaster", () -> new BlasterItem(new Item.Properties()));
     public static final DeferredItem<Item> TRI_BLASTER = registerItemNoLang("tri_blaster", () -> new TriBlasterItem(new Item.Properties()));
     public static final DeferredItem<Item> SCATTER_BLASTER = registerItem("scatter_blaster", () -> new ScatterBlasterItem(new Item.Properties()));
+    public static final DeferredItem<Item> LASER_BLADE = registerItem("laser_blade", () -> new LaserBladeItem(Tiers.NETHERITE, new Item.Properties().stacksTo(1)));
 
     private static <I extends Item> DeferredItem<I> registerItem(String name, Supplier<? extends I> supplier) {
         DeferredItem<I> item = ITEM.register(name, supplier);

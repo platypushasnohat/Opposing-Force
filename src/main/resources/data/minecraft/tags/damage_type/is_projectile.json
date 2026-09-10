@@ -2,6 +2,7 @@
   "replace": false,
   "values": [
     "opposing_force:laser",
-    "opposing_force:laser_bolt"
+    "opposing_force:laser_bolt",
+    "opposing_force:laser_blade"
   ]
 }

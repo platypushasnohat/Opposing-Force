@@ -10,6 +10,7 @@ import com.barl_inc.opposing_force.client.particle.LaserDustParticle;
 import com.barl_inc.opposing_force.client.particle.LaserImpactParticle;
 import com.barl_inc.opposing_force.client.render.entity.DicerLaserRenderer;
 import com.barl_inc.opposing_force.client.render.entity.DicerRenderer;
+import com.barl_inc.opposing_force.client.render.entity.LaserBladeRenderer;
 import com.barl_inc.opposing_force.client.render.entity.LaserBoltRenderer;
 import com.barl_inc.opposing_force.client.render.item.OFItemExtensions;
 import com.barl_inc.opposing_force.item.BlasterItem;
@@ -37,6 +38,7 @@ public class ClientEvents {
         event.registerEntityRenderer(OFEntities.DICER.get(), DicerRenderer::new);
         event.registerEntityRenderer(OFEntities.DICER_LASER.get(), DicerLaserRenderer::new);
         event.registerEntityRenderer(OFEntities.LASER_BOLT.get(), LaserBoltRenderer::new);
+        event.registerEntityRenderer(OFEntities.LASER_BLADE.get(), LaserBladeRenderer::new);
     }
 
     @SubscribeEvent

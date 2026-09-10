@@ -31,6 +31,8 @@ public class OFLanguageProvider extends SinewLanguageProvider {
         this.addSound(OFSoundEvents.LASER_BOLT_IMPACT, "Laser bolt disintegrates");
         this.addSound(OFSoundEvents.BLASTER_SHOOT, "Blaster shoots");
 
+        this.addSound(OFSoundEvents.LASER_BLADE_SWING, "Laser blade swings");
+
         this.addSound(OFSoundEvents.SLAYSER_DISC, "Music Disc");
         this.addMusicDisc(OFItems.MUSIC_DISC_SLAYSER.get(), "ChipsTheCat - Slayser");
 

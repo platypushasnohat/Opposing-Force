@@ -46,6 +46,13 @@ public class OFSoundDefinitionsProvider extends SinewSoundDefinitionsProvider {
                 sound(OpposingForce.location("item/blaster/shoot"))
         );
 
+        this.registerSound(OFSoundEvents.LASER_BLADE_SWING,
+                sound(OpposingForce.location("item/laser_blade/swing1")),
+                sound(OpposingForce.location("item/laser_blade/swing2")),
+                sound(OpposingForce.location("item/laser_blade/swing3")),
+                sound(OpposingForce.location("item/laser_blade/swing4"))
+        );
+
         this.registerSound(OFSoundEvents.SLAYSER_DISC,
                 sound(OpposingForce.location("record/slayser")).stream()
         );

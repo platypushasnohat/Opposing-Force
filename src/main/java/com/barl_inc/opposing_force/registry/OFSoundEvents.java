@@ -22,6 +22,8 @@ public class OFSoundEvents {
 
     public static final DeferredHolder<SoundEvent, SoundEvent> BLASTER_SHOOT = registerSoundEvent("blaster_shoot");
 
+    public static final DeferredHolder<SoundEvent, SoundEvent> LASER_BLADE_SWING = registerSoundEvent("laser_blade_swing");
+
     public static final DeferredHolder<SoundEvent, SoundEvent> SLAYSER_DISC = registerSoundEvent("slayser_disc");
 
     private static DeferredHolder<SoundEvent, SoundEvent> registerSoundEvent(String soundName) {

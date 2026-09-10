@@ -10,9 +10,11 @@
   "death.attack.laser_bolt_1.entity": "%s was vaporized by %s",
   "entity.opposing_force.dicer": "Dicer",
   "entity.opposing_force.dicer_laser": "Dicer Laser",
+  "entity.opposing_force.laser_blade": "Laser Blade",
   "entity.opposing_force.laser_bolt": "Laser Bolt",
   "item.opposing_force.blaster": "Blaster",
   "item.opposing_force.dicer_spawn_egg": "Dicer Spawn Egg",
+  "item.opposing_force.laser_blade": "Laser Blade",
   "item.opposing_force.laser_focus": "Laser Focus",
   "item.opposing_force.music_disc_slayser": "Music Disc",
   "item.opposing_force.music_disc_slayser.desc": "ChipsTheCat - Slayser",
@@ -27,6 +29,7 @@
   "subtitles.opposing_force.dicer_laser": "Dicer lasers",
   "subtitles.opposing_force.dicer_laser_end": "Dicer powers down laser",
   "subtitles.opposing_force.dicer_laser_start": "Dicer powers up laser",
+  "subtitles.opposing_force.laser_blade_swing": "Laser blade swings",
   "subtitles.opposing_force.laser_bolt_impact": "Laser bolt disintegrates",
   "subtitles.opposing_force.slayser_disc": "Music Disc"
 }

@@ -3,7 +3,9 @@
   "package": "com.barl_inc.opposing_force.mixins",
   "compatibilityLevel": "JAVA_21",
   "refmap": "opposing_force.refmap.json",
-  "mixins": [],
+  "mixins": [
+    "PlayerMixin"
+  ],
   "client": [],
   "injectors": {
     "defaultRequire": 1

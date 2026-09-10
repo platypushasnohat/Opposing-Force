@@ -32,6 +32,9 @@ public class OFLanguageProvider extends SinewLanguageProvider {
         this.addSound(OFSoundEvents.BLASTER_SHOOT, "Blaster shoots");
 
         this.addSound(OFSoundEvents.LASER_BLADE_SWING, "Laser blade swings");
+        this.addSound(OFSoundEvents.LASER_BLADE_SPIN, "Laser blade spins");
+        this.addSound(OFSoundEvents.LASER_BLADE_IMPACT, "Laser blade slices");
+        this.addSound(OFSoundEvents.LASER_BLADE_CATCH, "Laser blade caught");
 
         this.addSound(OFSoundEvents.SLAYSER_DISC, "Music Disc");
         this.addMusicDisc(OFItems.MUSIC_DISC_SLAYSER.get(), "ChipsTheCat - Slayser");
@@ -49,5 +52,10 @@ public class OFLanguageProvider extends SinewLanguageProvider {
         this.add("death.attack.laser_bolt_1", "%s was vaporized");
         this.add("death.attack.laser_bolt_0.entity", "%s was disintegrated by %s");
         this.add("death.attack.laser_bolt_1.entity", "%s was vaporized by %s");
+
+        this.add("death.attack.laser_blade_0", "%s was sliced in half");
+        this.add("death.attack.laser_blade_1", "%s was bisected");
+        this.add("death.attack.laser_blade_0.entity", "%s was sliced in half by %s");
+        this.add("death.attack.laser_blade_1.entity", "%s was bisected by %s");
     }
 }

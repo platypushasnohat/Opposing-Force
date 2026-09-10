@@ -27,7 +27,7 @@ public class OFEntities {
 
     public static final DeferredHolder<EntityType<?>, EntityType<LaserBolt>> LASER_BOLT = registerEntity("laser_bolt", LaserBolt::new, MobCategory.MISC, builder -> builder.sized(0.3F, 0.3F).setShouldReceiveVelocityUpdates(true).fireImmune().clientTrackingRange(4));
 
-    public static final DeferredHolder<EntityType<?>, EntityType<LaserBlade>> LASER_BLADE = registerEntity("laser_blade", LaserBlade::new, MobCategory.MISC, builder -> builder.sized(0.95F, 0.95F).fireImmune().clientTrackingRange(4));
+    public static final DeferredHolder<EntityType<?>, EntityType<LaserBlade>> LASER_BLADE = registerEntity("laser_blade", LaserBlade::new, MobCategory.MISC, builder -> builder.sized(2.25F, 0.95F).fireImmune().clientTrackingRange(4));
 
     public static <E extends Entity> DeferredHolder<EntityType<?>, EntityType<E>> registerEntity(String name, EntityType.EntityFactory<E> factory, MobCategory entityClassification, Consumer<EntityType.Builder<E>> builderConsumer) {
         DeferredHolder<EntityType<?>, EntityType<E>> entity = registerEntityNoLang(name, factory, entityClassification, builderConsumer);

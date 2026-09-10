@@ -49,6 +49,28 @@
     ],
     "subtitle": "subtitles.opposing_force.dicer_laser_start"
   },
+  "laser_blade_catch": {
+    "sounds": [
+      "opposing_force:item/laser_blade/catch1",
+      "opposing_force:item/laser_blade/catch2",
+      "opposing_force:item/laser_blade/catch3"
+    ],
+    "subtitle": "subtitles.opposing_force.laser_blade_catch"
+  },
+  "laser_blade_impact": {
+    "sounds": [
+      "opposing_force:item/laser_blade/impact1",
+      "opposing_force:item/laser_blade/impact2",
+      "opposing_force:item/laser_blade/impact3"
+    ],
+    "subtitle": "subtitles.opposing_force.laser_blade_impact"
+  },
+  "laser_blade_spin": {
+    "sounds": [
+      "opposing_force:item/laser_blade/spin"
+    ],
+    "subtitle": "subtitles.opposing_force.laser_blade_spin"
+  },
   "laser_blade_swing": {
     "sounds": [
       "opposing_force:item/laser_blade/swing1",

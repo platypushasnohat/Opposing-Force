@@ -29,20 +29,18 @@ public class LaserBladeItem extends SwordItem {
     public InteractionResultHolder<ItemStack> use(Level level, Player player, InteractionHand hand) {
         ItemStack stack = player.getItemInHand(hand);
         stack.hurtAndBreak(1, player, LivingEntity.getSlotForHand(hand));
-        if (!level.isClientSide) {
-            Vec3 position = player.position().add(0, player.getBbHeight() * 0.5F, 0);
-            LaserBlade laserBlade = new LaserBlade(level, position.x, position.y, position.z);
-            laserBlade.setOwner(player);
-            laserBlade.setItem(stack);
-            laserBlade.setReturnTime(20);
-            laserBlade.setDamage(12.0F);
-            laserBlade.shootFromRotation(player, player.getXRot(), player.getYRot(), 0.0F, 2.0F, 0.0F);
-            level.addFreshEntity(laserBlade);
-//            player.getInventory().removeItem(stack);
-            level.playSound(null, laserBlade.blockPosition(), OFSoundEvents.LASER_BLADE_SWING.get(), SoundSource.PLAYERS, 1.0F, SinewSoundUtils.randomizePitch(level));
-            player.awardStat(Stats.ITEM_USED.get(stack.getItem()));
-            player.swing(hand, true);
-        }
+        Vec3 position = player.position().add(0, player.getBbHeight() * 0.5F, 0);
+        LaserBlade laserBlade = new LaserBlade(level, position.x, position.y, position.z);
+        laserBlade.setOwner(player);
+        laserBlade.setItem(stack);
+        laserBlade.setReturnTime(12);
+        laserBlade.setDamage(12.0F);
+        laserBlade.shootFromRotation(player, player.getXRot(), player.getYRot(), 0.0F, 1.5F, 0.0F);
+        level.addFreshEntity(laserBlade);
+        player.getInventory().removeItem(stack);
+        level.playSound(null, laserBlade.blockPosition(), OFSoundEvents.LASER_BLADE_SWING.get(), SoundSource.PLAYERS, 1.0F, SinewSoundUtils.randomizePitch(level));
+        player.awardStat(Stats.ITEM_USED.get(stack.getItem()));
+        player.swing(hand, true);
         return InteractionResultHolder.success(stack);
     }
 
@@ -51,6 +49,15 @@ public class LaserBladeItem extends SwordItem {
         if (this.swingSoundCooldown > 0) {
             this.swingSoundCooldown--;
         }
+    }
+
+    @Override
+    public boolean hurtEnemy(ItemStack stack, LivingEntity target, LivingEntity attacker) {
+        if (super.hurtEnemy(stack, target, attacker)) {
+            target.playSound(OFSoundEvents.LASER_BLADE_IMPACT.get(), 1.0F, SinewSoundUtils.randomizePitch(attacker));
+            return true;
+        }
+        return false;
     }
 
     @Override

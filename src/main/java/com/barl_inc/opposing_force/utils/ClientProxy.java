@@ -1,7 +1,9 @@
 package com.barl_inc.opposing_force.utils;
 
 import com.barl_inc.opposing_force.client.sound.DicerLaserSound;
+import com.barl_inc.opposing_force.client.sound.LaserBladeSpinSound;
 import com.barl_inc.opposing_force.entity.misc.DicerLaser;
+import com.barl_inc.opposing_force.entity.projectile.LaserBlade;
 import com.platypushasnohat.sinew.mixins.client.SoundEngineAccessor;
 import com.platypushasnohat.sinew.mixins.client.SoundManagerAccessor;
 import it.unimi.dsi.fastutil.ints.Int2ObjectMap;
@@ -32,6 +34,21 @@ public class ClientProxy extends CommonProxy {
                     ENTITY_SOUND_INSTANCE_MAP.put(laser.getId(), sound);
                 } else {
                     sound = laserSound;
+                }
+                if (!this.isSoundPlaying(sound) && sound.canPlaySound()) {
+                    Minecraft.getInstance().getSoundManager().queueTickingSound(sound);
+                }
+            }
+        }
+        if (type == 1) {
+            if (soundEmitter instanceof LaserBlade laserBlade) {
+                LaserBladeSpinSound sound;
+                AbstractTickableSoundInstance oldSound = ENTITY_SOUND_INSTANCE_MAP.get(laserBlade.getId());
+                if (oldSound == null || !(oldSound instanceof LaserBladeSpinSound spinSound && spinSound.isSameEntity(laserBlade))) {
+                    sound = new LaserBladeSpinSound(laserBlade);
+                    ENTITY_SOUND_INSTANCE_MAP.put(laserBlade.getId(), sound);
+                } else {
+                    sound = spinSound;
                 }
                 if (!this.isSoundPlaying(sound) && sound.canPlaySound()) {
                     Minecraft.getInstance().getSoundManager().queueTickingSound(sound);

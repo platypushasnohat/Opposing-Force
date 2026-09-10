@@ -4,6 +4,7 @@ import com.barl_inc.opposing_force.registry.OFDamageTypes;
 import com.barl_inc.opposing_force.registry.OFEntities;
 import com.barl_inc.opposing_force.registry.OFParticleTypes;
 import com.barl_inc.opposing_force.registry.OFSoundEvents;
+import com.platypushasnohat.sinew.utils.SinewSoundUtils;
 import net.minecraft.core.BlockPos;
 import net.minecraft.network.protocol.game.ClientboundAddEntityPacket;
 import net.minecraft.network.syncher.EntityDataAccessor;
@@ -102,8 +103,8 @@ public class LaserBolt extends Projectile {
             if (entity.hurt(damageSource, this.getDamage())) {
                 this.pierceCount++;
                 this.setDamage(this.getDamage() * 0.66F);
+                this.playImpactSound(entity.getX(), entity.getY(), entity.getZ());
             }
-            this.playImpactSound(entity.getX(), entity.getY(), entity.getZ());
             this.level().broadcastEntityEvent(this, HIT_EFFECTS);
             if (this.pierceCount > 1) {
                 this.discard();
@@ -133,7 +134,7 @@ public class LaserBolt extends Projectile {
     }
 
     private void playImpactSound(double x, double y, double z) {
-        this.level().playSound(null, x, y, z, OFSoundEvents.LASER_BOLT_IMPACT.get(), SoundSource.NEUTRAL, 1.0F, 1.0F + (this.getRandom().nextFloat() - this.getRandom().nextFloat()) * 0.2F);
+        this.level().playSound(null, x, y, z, OFSoundEvents.LASER_BOLT_IMPACT.get(), SoundSource.NEUTRAL, 1.0F, SinewSoundUtils.randomizePitch(this.level()));
     }
 
     private void tickTrail() {

@@ -8,6 +8,7 @@ import com.barl_inc.opposing_force.client.model.item.ScatterBlasterModel;
 import com.barl_inc.opposing_force.client.model.item.TriBlasterModel;
 import com.barl_inc.opposing_force.client.particle.LaserDustParticle;
 import com.barl_inc.opposing_force.client.particle.LaserImpactParticle;
+import com.barl_inc.opposing_force.client.particle.LaserSweepParticle;
 import com.barl_inc.opposing_force.client.render.entity.DicerLaserRenderer;
 import com.barl_inc.opposing_force.client.render.entity.DicerRenderer;
 import com.barl_inc.opposing_force.client.render.entity.LaserBladeRenderer;
@@ -54,6 +55,7 @@ public class ClientEvents {
     public static void registerParticleProviders(RegisterParticleProvidersEvent event) {
         event.registerSpriteSet(OFParticleTypes.LASER_DUST.get(), LaserDustParticle.Factory::new);
         event.registerSpriteSet(OFParticleTypes.LASER_IMPACT.get(), LaserImpactParticle.Factory::new);
+        event.registerSpriteSet(OFParticleTypes.LASER_SWEEP.get(), LaserSweepParticle.Factory::new);
     }
 
     @SubscribeEvent

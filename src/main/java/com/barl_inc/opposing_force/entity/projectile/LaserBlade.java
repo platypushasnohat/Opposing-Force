@@ -1,11 +1,13 @@
 package com.barl_inc.opposing_force.entity.projectile;
 
-import com.barl_inc.opposing_force.registry.OFDamageTypes;
-import com.barl_inc.opposing_force.registry.OFEntities;
-import com.barl_inc.opposing_force.registry.OFItems;
+import com.barl_inc.opposing_force.OpposingForce;
+import com.barl_inc.opposing_force.registry.*;
+import com.platypushasnohat.sinew.utils.SinewSoundUtils;
+import net.minecraft.core.BlockPos;
 import net.minecraft.network.syncher.EntityDataAccessor;
 import net.minecraft.network.syncher.EntityDataSerializers;
 import net.minecraft.network.syncher.SynchedEntityData;
+import net.minecraft.sounds.SoundSource;
 import net.minecraft.util.Mth;
 import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.entity.Entity;
@@ -25,8 +27,6 @@ public class LaserBlade extends ThrowableItemProjectile {
 
     private static final EntityDataAccessor<Float> DAMAGE = SynchedEntityData.defineId(LaserBlade.class, EntityDataSerializers.FLOAT);
     private static final EntityDataAccessor<Integer> RETURN_TIME = SynchedEntityData.defineId(LaserBlade.class, EntityDataSerializers.INT);
-
-    private int pierceCount = 0;
 
     public LaserBlade(EntityType<? extends ThrowableItemProjectile> entityType, Level level) {
         super(entityType, level);
@@ -96,11 +96,7 @@ public class LaserBlade extends ThrowableItemProjectile {
         DamageSource damageSource = OFDamageTypes.causeLaserBladeDamage(this.level().registryAccess(), this.getOwner());
         if (!this.level().isClientSide) {
             if (entity.hurt(damageSource, this.getDamage())) {
-                this.pierceCount++;
-            }
-            if (this.pierceCount > 2 && this.getOwner() != null) {
-                this.setReturnTime(0);
-                this.flyBack(this.getOwner());
+                this.playImpactSound(entity.getX(), entity.getY(), entity.getZ());
             }
         }
         super.onHitEntity(result);
@@ -109,7 +105,9 @@ public class LaserBlade extends ThrowableItemProjectile {
     @Override
     protected void onHitBlock(BlockHitResult result) {
         super.onHitBlock(result);
+        BlockPos pos = result.getBlockPos();
         this.setReturnTime(0);
+        this.playImpactSound(pos.getX(), pos.getY(), pos.getZ());
         if (this.getOwner() != null) {
             this.flyBack(this.getOwner());
         }
@@ -123,26 +121,34 @@ public class LaserBlade extends ThrowableItemProjectile {
         if (!this.level().isClientSide) {
             Entity owner = this.getOwner();
             if (owner == null || !owner.isAlive() || !owner.level().equals(this.level()) || this.distanceTo(owner) > 1000.0F) {
-                this.setDeltaMovement(Vec3.ZERO);
+                this.spawnAtLocation(this.getItem(), 0.1F);
+                this.discard();
                 return;
             }
             if (owner instanceof LivingEntity living) {
                 if (this.getReturnTime() > 0) {
                     this.setReturnTime(this.getReturnTime() - 1);
-                } else {
+                }
+                else {
                     float height = living.getBbHeight();
                     Vec3 ownerPos = living.position().add(0, height * 0.6F, 0);
-                    double velocity = Mth.clamp(deltaMovement.length() * 3.0D, 0.5F, 2.5F);
+                    double velocity = Mth.clamp(deltaMovement.length() * 3.0D, 0.5F, 1.5F);
                     Vec3 returnMotion = ownerPos.subtract(position()).normalize().scale(velocity);
                     this.setDeltaMovement(deltaMovement.lerp(returnMotion, 0.2F));
                     if (this.isAlive() && this.distanceTo(living) < 3.0F) {
-                        if (living instanceof Player player && !player.isCreative()) {
-                            player.getCooldowns().addCooldown(stack.getItem(), 70);
+                        if (living instanceof Player player) {
+                            player.getCooldowns().addCooldown(stack.getItem(), 35);
+                            player.getInventory().add(stack);
+                            player.take(this, 1);
                         }
+                        this.level().playSound(null, this.getX(), this.getY(), this.getZ(), OFSoundEvents.LASER_BLADE_CATCH.get(), SoundSource.NEUTRAL, 1.0F, SinewSoundUtils.randomizePitch(this.level()));
                         this.discard();
                     }
                 }
             }
+        } else {
+            OpposingForce.PROXY.playSound(this, (byte) 1);
+            this.level().addParticle(OFParticleTypes.LASER_DUST.get(), this.getX(), this.getY() + this.getBbHeight() * 0.5F, this.getZ(), 0, 0, 0);
         }
     }
 
@@ -154,6 +160,16 @@ public class LaserBlade extends ThrowableItemProjectile {
         this.shoot(x, y, z, velocity, inaccuracy);
         Vec3 shooterMovement = shooter.getDeltaMovement();
         this.setDeltaMovement(this.getDeltaMovement().add(shooterMovement.x, 0.0F, shooterMovement.z));
+    }
+
+    @Override
+    public void remove(RemovalReason reason) {
+        OpposingForce.PROXY.clearSoundCacheFor(this);
+        super.remove(reason);
+    }
+
+    private void playImpactSound(double x, double y, double z) {
+        this.level().playSound(null, x, y, z, OFSoundEvents.LASER_BLADE_IMPACT.get(), SoundSource.NEUTRAL, 1.0F, SinewSoundUtils.randomizePitch(this.level()));
     }
 
     public void flyBack(Entity owner) {

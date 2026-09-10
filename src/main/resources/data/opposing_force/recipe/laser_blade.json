@@ -1,0 +1,21 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "equipment",
+  "key": {
+    "N": {
+      "item": "minecraft:netherite_ingot"
+    },
+    "L": {
+      "item": "opposing_force:laser_focus"
+    }
+  },
+  "pattern": [
+    "L",
+    "L",
+    "N"
+  ],
+  "result": {
+    "count": 1,
+    "id": "opposing_force:laser_blade"
+  }
+}

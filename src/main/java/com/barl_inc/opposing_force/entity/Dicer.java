@@ -52,7 +52,7 @@ public class Dicer extends AnimatedMonster {
     public final SmoothAnimationState crossSlashAnimationState = new SmoothAnimationState();
     public final SmoothAnimationState laserAnimationState = new SmoothAnimationState();
 
-    public Dicer(EntityType<? extends AnimatedMonster> entityType, Level level) {
+    public Dicer(EntityType<? extends Dicer> entityType, Level level) {
         super(entityType, level);
         this.xpReward = 20;
     }

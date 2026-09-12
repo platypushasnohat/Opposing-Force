@@ -28,7 +28,7 @@ public class LaserBlade extends ThrowableItemProjectile {
     private static final EntityDataAccessor<Float> DAMAGE = SynchedEntityData.defineId(LaserBlade.class, EntityDataSerializers.FLOAT);
     private static final EntityDataAccessor<Integer> RETURN_TIME = SynchedEntityData.defineId(LaserBlade.class, EntityDataSerializers.INT);
 
-    public LaserBlade(EntityType<? extends ThrowableItemProjectile> entityType, Level level) {
+    public LaserBlade(EntityType<? extends LaserBlade> entityType, Level level) {
         super(entityType, level);
         this.noPhysics = true;
     }

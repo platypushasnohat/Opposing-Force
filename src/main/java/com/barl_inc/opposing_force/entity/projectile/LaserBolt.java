@@ -38,7 +38,7 @@ public class LaserBolt extends Projectile {
     private final Vec3[] trailPositions = new Vec3[64];
     private int trailPointer = -1;
 
-    public LaserBolt(EntityType<? extends Projectile> entityType, Level level) {
+    public LaserBolt(EntityType<? extends LaserBolt> entityType, Level level) {
         super(entityType, level);
     }
 

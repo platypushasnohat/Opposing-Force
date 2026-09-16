@@ -1,6 +1,8 @@
 package com.barl_inc.opposing_force.events;
 
 import com.barl_inc.opposing_force.OpposingForce;
+import com.barl_inc.opposing_force.client.model.armor.EmeraldArmorModel;
+import com.barl_inc.opposing_force.client.model.armor.MoonShoesModel;
 import com.barl_inc.opposing_force.client.model.entity.DicerModel;
 import com.barl_inc.opposing_force.client.model.entity.LaserBoltModel;
 import com.barl_inc.opposing_force.client.model.item.BlasterModel;
@@ -20,14 +22,18 @@ import com.barl_inc.opposing_force.registry.OFItems;
 import com.barl_inc.opposing_force.registry.OFModelLayers;
 import com.barl_inc.opposing_force.registry.OFParticleTypes;
 import com.platypushasnohat.sinew.events.custom.PoseHandEvent;
+import net.minecraft.client.model.HumanoidModel;
 import net.minecraft.world.InteractionHand;
+import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.entity.HumanoidArm;
 import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.world.item.ItemStack;
 import net.neoforged.api.distmarker.Dist;
 import net.neoforged.bus.api.SubscribeEvent;
 import net.neoforged.fml.common.EventBusSubscriber;
 import net.neoforged.neoforge.client.event.EntityRenderersEvent;
 import net.neoforged.neoforge.client.event.RegisterParticleProvidersEvent;
+import net.neoforged.neoforge.client.extensions.common.IClientItemExtensions;
 import net.neoforged.neoforge.client.extensions.common.RegisterClientExtensionsEvent;
 import net.neoforged.neoforge.common.util.TriState;
 
@@ -59,10 +65,24 @@ public class ClientEvents {
     }
 
     @SubscribeEvent
-    private static void registerClientExtensions(RegisterClientExtensionsEvent event) {
+    public static void registerClientExtensions(RegisterClientExtensionsEvent event) {
         event.registerItem(OFItemExtensions.itemExtensions, OFItems.BLASTER.get());
         event.registerItem(OFItemExtensions.itemExtensions, OFItems.TRI_BLASTER.get());
         event.registerItem(OFItemExtensions.itemExtensions, OFItems.SCATTER_BLASTER.get());
+
+        event.registerItem(new IClientItemExtensions() {
+            @Override
+            public HumanoidModel<?> getHumanoidArmorModel(LivingEntity entity, ItemStack stack, EquipmentSlot slot, HumanoidModel<?> properties) {
+                return EmeraldArmorModel.INSTANCE;
+            }
+        }, OFItems.EMERALD_MASK, OFItems.EMERALD_CHESTPLATE, OFItems.EMERALD_LEGGINGS, OFItems.EMERALD_BOOTS);
+
+        event.registerItem(new IClientItemExtensions() {
+            @Override
+            public HumanoidModel<?> getHumanoidArmorModel(LivingEntity entity, ItemStack stack, EquipmentSlot slot, HumanoidModel<?> properties) {
+                return MoonShoesModel.INSTANCE.withAnimations(entity);
+            }
+        }, OFItems.MOON_SHOES);
     }
 
     @SubscribeEvent

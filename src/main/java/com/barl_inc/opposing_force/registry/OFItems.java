@@ -1,12 +1,11 @@
 package com.barl_inc.opposing_force.registry;
 
 import com.barl_inc.opposing_force.OpposingForce;
-import com.barl_inc.opposing_force.item.BlasterItem;
-import com.barl_inc.opposing_force.item.LaserBladeItem;
-import com.barl_inc.opposing_force.item.ScatterBlasterItem;
-import com.barl_inc.opposing_force.item.TriBlasterItem;
+import com.barl_inc.opposing_force.item.*;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.Mob;
+import net.minecraft.world.item.ArmorItem.Type;
+import net.minecraft.world.item.ArmorMaterials;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.Rarity;
 import net.minecraft.world.item.SwordItem;
@@ -32,6 +31,13 @@ public class OFItems {
     public static final DeferredItem<Item> TRI_BLASTER = registerItemNoLang("tri_blaster", () -> new TriBlasterItem(new Item.Properties()));
     public static final DeferredItem<Item> SCATTER_BLASTER = registerItem("scatter_blaster", () -> new ScatterBlasterItem(new Item.Properties()));
     public static final DeferredItem<Item> LASER_BLADE = registerItem("laser_blade", () -> new LaserBladeItem(OFItemTiers.LASER_BLADE, new Item.Properties().attributes(SwordItem.createAttributes(OFItemTiers.LASER_BLADE, 4, -2.4F))));
+
+    public static final DeferredItem<Item> EMERALD_MASK = registerItem("emerald_mask", () -> new EmeraldArmorItem(ArmorMaterials.DIAMOND, Type.HELMET, new Item.Properties().durability(Type.HELMET.getDurability(23))));
+    public static final DeferredItem<Item> EMERALD_CHESTPLATE = registerItem("emerald_chestplate", () -> new EmeraldArmorItem(ArmorMaterials.DIAMOND, Type.CHESTPLATE, new Item.Properties().durability(Type.CHESTPLATE.getDurability(23))));
+    public static final DeferredItem<Item> EMERALD_LEGGINGS = registerItem("emerald_leggings", () -> new EmeraldArmorItem(ArmorMaterials.DIAMOND, Type.LEGGINGS, new Item.Properties().durability(Type.LEGGINGS.getDurability(23))));
+    public static final DeferredItem<Item> EMERALD_BOOTS = registerItem("emerald_boots", () -> new EmeraldArmorItem(ArmorMaterials.DIAMOND, Type.BOOTS, new Item.Properties().durability(Type.BOOTS.getDurability(23))));
+
+    public static final DeferredItem<Item> MOON_SHOES = registerItem("moon_shoes", () -> new MoonShoesItem(new Item.Properties().durability(Type.BOOTS.getDurability(23))));
 
     private static <I extends Item> DeferredItem<I> registerItem(String name, Supplier<? extends I> supplier) {
         DeferredItem<I> item = ITEM.register(name, supplier);

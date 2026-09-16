@@ -16,13 +16,18 @@ public class OFCreativeTabs {
             () -> CreativeModeTab.builder().icon(() -> new ItemStack(OFItems.DICER_SPAWN_EGG.get()))
                     .title(Component.translatable("creative_tab.opposing_force"))
                     .displayItems((parameters, output) -> {
-                        output.accept(OFItems.DICER_SPAWN_EGG.get());
-                        output.accept(OFItems.LASER_FOCUS.get());
-                        output.accept(OFItems.BLASTER.get());
-                        output.accept(OFItems.TRI_BLASTER.get());
-                        output.accept(OFItems.SCATTER_BLASTER.get());
-                        output.accept(OFItems.LASER_BLADE.get());
-                        output.accept(OFItems.MUSIC_DISC_SLAYSER.get());
+                        output.accept(OFItems.DICER_SPAWN_EGG);
+                        output.accept(OFItems.LASER_FOCUS);
+                        output.accept(OFItems.BLASTER);
+                        output.accept(OFItems.TRI_BLASTER);
+                        output.accept(OFItems.SCATTER_BLASTER);
+                        output.accept(OFItems.LASER_BLADE);
+                        output.accept(OFItems.MUSIC_DISC_SLAYSER);
+                        output.accept(OFItems.EMERALD_MASK);
+                        output.accept(OFItems.EMERALD_CHESTPLATE);
+                        output.accept(OFItems.EMERALD_LEGGINGS);
+                        output.accept(OFItems.EMERALD_BOOTS);
+                        output.accept(OFItems.MOON_SHOES);
                     })
                     .build());
 }

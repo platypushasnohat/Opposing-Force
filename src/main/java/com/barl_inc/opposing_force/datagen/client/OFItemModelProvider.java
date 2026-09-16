@@ -19,7 +19,12 @@ public class OFItemModelProvider extends SinewItemModelProvider {
     protected void registerModels() {
         this.generatedItem(
                 OFItems.LASER_FOCUS,
-                OFItems.MUSIC_DISC_SLAYSER
+                OFItems.MUSIC_DISC_SLAYSER,
+                OFItems.EMERALD_MASK,
+                OFItems.EMERALD_CHESTPLATE,
+                OFItems.EMERALD_LEGGINGS,
+                OFItems.EMERALD_BOOTS,
+                OFItems.MOON_SHOES
         );
 
         for (Item item : BuiltInRegistries.ITEM) {

@@ -40,9 +40,9 @@ public class EmeraldArmorModel extends HumanoidModel<LivingEntity> {
 
         leftLeg.addOrReplaceChild("left_leggings", CubeListBuilder.create().texOffs(97, 111).addBox(-1.75F, 0.26F, -2.5F, 4.0F, 7.0F, 5.0F, new CubeDeformation(0.25F)), PartPose.ZERO);
 
-        leftLeg.addOrReplaceChild("left_boot", CubeListBuilder.create().texOffs(112, 120).addBox(-1.75F, 8.0F, -2.0F, 4.0F, 4.0F, 4.0F, new CubeDeformation(0.25F)), PartPose.ZERO);
+        leftLeg.addOrReplaceChild("left_boot", CubeListBuilder.create().texOffs(112, 120).addBox(-1.75F, 7.8F, -2.0F, 4.0F, 4.0F, 4.0F, new CubeDeformation(0.25F)), PartPose.ZERO);
 
-        rightLeg.addOrReplaceChild("right_boot", CubeListBuilder.create().texOffs(112, 120).mirror().addBox(-2.25F, 8.0F, -2.0F, 4.0F, 4.0F, 4.0F, new CubeDeformation(0.25F)).mirror(false), PartPose.ZERO);
+        rightLeg.addOrReplaceChild("right_boot", CubeListBuilder.create().texOffs(112, 120).mirror().addBox(-2.25F, 7.8F, -2.0F, 4.0F, 4.0F, 4.0F, new CubeDeformation(0.25F)).mirror(false), PartPose.ZERO);
 
         return LayerDefinition.create(meshdefinition, 128, 128);
     }

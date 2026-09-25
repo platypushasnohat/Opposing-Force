@@ -3,13 +3,20 @@ package com.barl_inc.opposing_force.events;
 import com.barl_inc.opposing_force.OpposingForce;
 import com.barl_inc.opposing_force.entity.Dicer;
 import com.barl_inc.opposing_force.registry.OFEntities;
+import com.barl_inc.opposing_force.registry.OFItems;
+import com.platypushasnohat.sinew.entity.villager.MultipleInputsTrade;
 import net.minecraft.world.entity.SpawnPlacementTypes;
 import net.minecraft.world.entity.monster.Monster;
+import net.minecraft.world.entity.npc.VillagerTrades;
+import net.minecraft.world.item.Items;
 import net.minecraft.world.level.levelgen.Heightmap;
 import net.neoforged.bus.api.SubscribeEvent;
 import net.neoforged.fml.common.EventBusSubscriber;
 import net.neoforged.neoforge.event.entity.EntityAttributeCreationEvent;
 import net.neoforged.neoforge.event.entity.RegisterSpawnPlacementsEvent;
+import net.neoforged.neoforge.event.village.WandererTradesEvent;
+
+import java.util.List;
 
 @EventBusSubscriber(modid = OpposingForce.MOD_ID)
 public class CommonEvents {
@@ -22,5 +29,19 @@ public class CommonEvents {
     @SubscribeEvent
     private static void registerSpawnPlacements(RegisterSpawnPlacementsEvent event) {
         event.register(OFEntities.DICER.get(), SpawnPlacementTypes.ON_GROUND, Heightmap.Types.MOTION_BLOCKING_NO_LEAVES, Monster::checkMonsterSpawnRules, RegisterSpawnPlacementsEvent.Operation.REPLACE);
+    }
+
+    @SubscribeEvent
+    public static void wandererTradesEvent(WandererTradesEvent event) {
+        List<VillagerTrades.ItemListing> rareTrades = event.getRareTrades();
+        rareTrades.add(new MultipleInputsTrade(Items.DIAMOND_SWORD, 1, 32, OFItems.EMERALD_SWORD.get(), 1, 1, 20));
+        rareTrades.add(new MultipleInputsTrade(Items.DIAMOND_SHOVEL, 1, 32, OFItems.EMERALD_SHOVEL.get(), 1, 1, 20));
+        rareTrades.add(new MultipleInputsTrade(Items.DIAMOND_PICKAXE, 1, 32, OFItems.EMERALD_PICKAXE.get(), 1, 1, 20));
+        rareTrades.add(new MultipleInputsTrade(Items.DIAMOND_AXE, 1, 32, OFItems.EMERALD_AXE.get(), 1, 1, 20));
+        rareTrades.add(new MultipleInputsTrade(Items.DIAMOND_HOE, 1, 32, OFItems.EMERALD_HOE.get(), 1, 1, 20));
+        rareTrades.add(new MultipleInputsTrade(Items.DIAMOND_HELMET, 1, 32, OFItems.EMERALD_MASK.get(), 1, 1, 20));
+        rareTrades.add(new MultipleInputsTrade(Items.DIAMOND_CHESTPLATE, 1, 32, OFItems.EMERALD_CHESTPLATE.get(), 1, 1, 20));
+        rareTrades.add(new MultipleInputsTrade(Items.DIAMOND_LEGGINGS, 1, 32, OFItems.EMERALD_LEGGINGS.get(), 1, 1, 20));
+        rareTrades.add(new MultipleInputsTrade(Items.DIAMOND_BOOTS, 1, 32, OFItems.EMERALD_BOOTS.get(), 1, 1, 20));
     }
 }

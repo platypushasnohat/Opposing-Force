@@ -2,7 +2,7 @@ package com.barl_inc.opposing_force.registry;
 
 import com.barl_inc.opposing_force.OpposingForce;
 import com.barl_inc.opposing_force.item.*;
-import com.platypushasnohat.sinew.item.SkinLayerHidingArmorItem;
+import com.platypushasnohat.sinew.item.*;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.Mob;
 import net.minecraft.world.item.ArmorItem.Type;
@@ -30,7 +30,13 @@ public class OFItems {
     public static final DeferredItem<Item> BLASTER = registerItem("blaster", () -> new BlasterItem(new Item.Properties()));
     public static final DeferredItem<Item> TRI_BLASTER = registerItemNoLang("tri_blaster", () -> new TriBlasterItem(new Item.Properties()));
     public static final DeferredItem<Item> SCATTER_BLASTER = registerItem("scatter_blaster", () -> new ScatterBlasterItem(new Item.Properties()));
-    public static final DeferredItem<Item> LASER_BLADE = registerItem("laser_blade", () -> new LaserBladeItem(OFItemTiers.LASER_BLADE, new Item.Properties().attributes(SwordItem.createAttributes(OFItemTiers.LASER_BLADE, 4, -2.4F))));
+    public static final DeferredItem<Item> LASER_BLADE = registerItem("laser_blade", () -> new LaserBladeItem(OFItemTiers.LASER_BLADE, new Item.Properties().attributes(SwordItem.createAttributes(OFItemTiers.LASER_BLADE, 4.0F, -2.4F))));
+
+    public static final DeferredItem<Item> EMERALD_SWORD = registerItem("emerald_sword", () -> new SinewSwordItem(OFToolDefinitions.EMERALD, 3.0F, -2.4F, new Item.Properties().rarity(Rarity.UNCOMMON)));
+    public static final DeferredItem<Item> EMERALD_PICKAXE = registerItem("emerald_pickaxe", () -> new SinewPickaxeItem(OFToolDefinitions.EMERALD, 1.0F, -2.8F, new Item.Properties().rarity(Rarity.UNCOMMON)));
+    public static final DeferredItem<Item> EMERALD_AXE = registerItem("emerald_axe", () -> new SinewAxeItem(OFToolDefinitions.EMERALD, 5.0F, -3.0F, new Item.Properties().rarity(Rarity.UNCOMMON)));
+    public static final DeferredItem<Item> EMERALD_SHOVEL = registerItem("emerald_shovel", () -> new SinewShovelItem(OFToolDefinitions.EMERALD, 1.5F, -3.0F, new Item.Properties().rarity(Rarity.UNCOMMON)));
+    public static final DeferredItem<Item> EMERALD_HOE = registerItem("emerald_hoe", () -> new SinewHoeItem(OFToolDefinitions.EMERALD, -3.0F, 0.0F, new Item.Properties().rarity(Rarity.UNCOMMON)));
 
     public static final DeferredItem<Item> EMERALD_MASK = registerItem("emerald_mask", () -> new SkinLayerHidingArmorItem(Type.HELMET, new Item.Properties().rarity(Rarity.UNCOMMON).durability(Type.HELMET.getDurability(33)), OFArmorDefinitions.EMERALD_ARMOR));
     public static final DeferredItem<Item> EMERALD_CHESTPLATE = registerItem("emerald_chestplate", () -> new SkinLayerHidingArmorItem(Type.CHESTPLATE, new Item.Properties().rarity(Rarity.UNCOMMON).durability(Type.CHESTPLATE.getDurability(33)), OFArmorDefinitions.EMERALD_ARMOR));

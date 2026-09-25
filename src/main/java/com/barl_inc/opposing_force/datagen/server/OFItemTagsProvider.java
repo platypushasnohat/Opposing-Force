@@ -20,6 +20,26 @@ public class OFItemTagsProvider extends ItemTagsProvider {
 
 	@Override
 	public void addTags(Provider provider) {
-		this.tag(ItemTags.SWORDS).add(OFItems.LASER_BLADE.get());
+
+		this.tag(ItemTags.SWORDS).add(
+				OFItems.LASER_BLADE.get(),
+				OFItems.EMERALD_SWORD.get()
+		);
+
+		this.tag(ItemTags.PICKAXES).add(
+				OFItems.EMERALD_PICKAXE.get()
+		);
+
+		this.tag(ItemTags.AXES).add(
+				OFItems.EMERALD_AXE.get()
+		);
+
+		this.tag(ItemTags.SHOVELS).add(
+				OFItems.EMERALD_SHOVEL.get()
+		);
+
+		this.tag(ItemTags.HOES).add(
+				OFItems.EMERALD_HOE.get()
+		);
 	}
 }

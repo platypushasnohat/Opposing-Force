@@ -27,6 +27,14 @@ public class OFItemModelProvider extends SinewItemModelProvider {
                 OFItems.MOON_SHOES
         );
 
+        this.handheldItem(
+                OFItems.EMERALD_SWORD,
+                OFItems.EMERALD_PICKAXE,
+                OFItems.EMERALD_AXE,
+                OFItems.EMERALD_SHOVEL,
+                OFItems.EMERALD_HOE
+        );
+
         for (Item item : BuiltInRegistries.ITEM) {
             if (item instanceof DeferredSpawnEggItem && BuiltInRegistries.ITEM.getKey(item).getNamespace().equals(OpposingForce.MOD_ID)) {
                 this.withExistingParent(name(item), "item/template_spawn_egg");

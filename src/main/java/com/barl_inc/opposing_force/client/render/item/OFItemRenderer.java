@@ -54,7 +54,7 @@ public class OFItemRenderer extends BlockEntityWithoutLevelRenderer {
             poseStack.scale(1.0F, 1.0F, 1.0F);
             BLASTER_MODEL.setupAnim(player, (BlasterItem) stack.getItem(), stack, displayContext, ageInTicks);
             BLASTER_MODEL.renderToBuffer(poseStack, buffer.getBuffer(RenderType.entityCutout(BLASTER_TEXTURE)), packedLight, packedOverlay, 0xFFFFFF);
-            BLASTER_MODEL.renderToBuffer(poseStack, buffer.getBuffer(RenderType.entityTranslucentEmissive(BLASTER_GLOW_TEXTURE)), LightTexture.FULL_BRIGHT, packedOverlay, 0xFFFFFF);
+            BLASTER_MODEL.renderToBuffer(poseStack, buffer.getBuffer(RenderType.eyes(BLASTER_GLOW_TEXTURE)), LightTexture.FULL_BRIGHT, packedOverlay, 0xFFFFFF);
             if (stack.hasFoil()) {
                 BLASTER_MODEL.renderToBuffer(poseStack, ItemRenderer.getFoilBuffer(buffer, RenderType.entityCutout(BLASTER_TEXTURE), false, true), packedLight, packedOverlay, 0xFFFFFF);
             }
@@ -68,7 +68,7 @@ public class OFItemRenderer extends BlockEntityWithoutLevelRenderer {
             poseStack.scale(1.0F, 1.0F, 1.0F);
             TRI_BLASTER_MODEL.setupAnim(player, (TriBlasterItem) stack.getItem(), stack, displayContext, ageInTicks);
             TRI_BLASTER_MODEL.renderToBuffer(poseStack, buffer.getBuffer(RenderType.entityCutout(TRI_BLASTER_TEXTURE)), packedLight, packedOverlay, 0xFFFFFF);
-            TRI_BLASTER_MODEL.renderToBuffer(poseStack, buffer.getBuffer(RenderType.entityTranslucentEmissive(TRI_BLASTER_GLOW_TEXTURE)), LightTexture.FULL_BRIGHT, packedOverlay, 0xFFFFFF);
+            TRI_BLASTER_MODEL.renderToBuffer(poseStack, buffer.getBuffer(RenderType.eyes(TRI_BLASTER_GLOW_TEXTURE)), LightTexture.FULL_BRIGHT, packedOverlay, 0xFFFFFF);
             if (stack.hasFoil()) {
                 TRI_BLASTER_MODEL.renderToBuffer(poseStack, ItemRenderer.getFoilBuffer(buffer, RenderType.entityCutout(TRI_BLASTER_TEXTURE), false, true), packedLight, packedOverlay, 0xFFFFFF);
             }
@@ -82,7 +82,7 @@ public class OFItemRenderer extends BlockEntityWithoutLevelRenderer {
             poseStack.scale(1.0F, 1.0F, 1.0F);
             SCATTER_BLASTER_MODEL.setupAnim(player, (ScatterBlasterItem) stack.getItem(), stack, displayContext, ageInTicks);
             SCATTER_BLASTER_MODEL.renderToBuffer(poseStack, buffer.getBuffer(RenderType.entityCutout(SCATTER_BLASTER_TEXTURE)), packedLight, packedOverlay, 0xFFFFFF);
-            SCATTER_BLASTER_MODEL.renderToBuffer(poseStack, buffer.getBuffer(RenderType.entityTranslucentEmissive(SCATTER_BLASTER_GLOW_TEXTURE)), LightTexture.FULL_BRIGHT, packedOverlay, 0xFFFFFF);
+            SCATTER_BLASTER_MODEL.renderToBuffer(poseStack, buffer.getBuffer(RenderType.eyes(SCATTER_BLASTER_GLOW_TEXTURE)), LightTexture.FULL_BRIGHT, packedOverlay, 0xFFFFFF);
             if (stack.hasFoil()) {
                 SCATTER_BLASTER_MODEL.renderToBuffer(poseStack, ItemRenderer.getFoilBuffer(buffer, RenderType.entityCutout(SCATTER_BLASTER_TEXTURE), false, true), packedLight, packedOverlay, 0xFFFFFF);
             }

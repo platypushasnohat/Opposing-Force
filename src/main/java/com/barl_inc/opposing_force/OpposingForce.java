@@ -36,6 +36,7 @@ public class OpposingForce {
 
     public OpposingForce(IEventBus modEventBus, ModContainer modContainer) {
         OFEntities.ENTITY_TYPE.register(modEventBus);
+        OFArmorMaterials.ARMOR_MATERIALS.register(modEventBus);
         OFItems.ITEM.register(modEventBus);
         OFParticleTypes.PARTICLE_TYPE.register(modEventBus);
         OFSoundEvents.SOUND_EVENT.register(modEventBus);

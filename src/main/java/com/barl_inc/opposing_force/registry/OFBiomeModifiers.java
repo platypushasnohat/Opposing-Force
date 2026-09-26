@@ -24,6 +24,7 @@ public class OFBiomeModifiers {
 
     public static void bootstrap(BootstrapContext<BiomeModifier> context) {
         addSpawn(context, "dicer", OFBiomeTags.HAS_OVERWORLD_MONSTERS, new MobSpawnSettings.SpawnerData(OFEntities.DICER.get(), 5, 1, 1));
+        addSpawn(context, "bewilder", OFBiomeTags.HAS_SAVANNA_MONSTERS, new MobSpawnSettings.SpawnerData(OFEntities.BEWILDER.get(), 25, 1, 2));
     }
 
     @SafeVarargs

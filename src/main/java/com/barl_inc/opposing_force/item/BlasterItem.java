@@ -5,6 +5,7 @@ import com.barl_inc.opposing_force.registry.OFItems;
 import com.barl_inc.opposing_force.registry.OFSoundEvents;
 import com.platypushasnohat.sinew.client.animation.ItemAnimationState;
 import com.platypushasnohat.sinew.utils.SinewSoundUtils;
+import net.minecraft.server.level.ServerLevel;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.stats.Stats;
 import net.minecraft.world.InteractionHand;
@@ -13,7 +14,6 @@ import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.item.Items;
 import net.minecraft.world.item.UseAnim;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.phys.Vec3;
@@ -47,11 +47,18 @@ public class BlasterItem extends Item {
         }
         for (int i = 0; i < player.getInventory().getContainerSize(); i++) {
             ItemStack stack = player.getInventory().getItem(i);
-            if (stack.is(Items.REDSTONE)) {
+            if (stack.is(OFItems.POWER_CELL)) {
                 return stack;
             }
         }
         return ItemStack.EMPTY;
+    }
+
+    public void consumeAmmo(Level level, ItemStack ammoStack) {
+        if (level instanceof ServerLevel serverLevel) {
+            ammoStack.hurtAndBreak(1, serverLevel, null, item -> {
+            });
+        }
     }
 
     @Override
@@ -64,7 +71,10 @@ public class BlasterItem extends Item {
             }
             return InteractionResultHolder.consume(stack);
         }
-        if (!level.isClientSide) {
+        if (level.isClientSide) {
+            this.blastAnimationState.start(player.tickCount, player);
+        }
+        else {
             LaserBolt laserBolt = new LaserBolt(level, player, player.getX(), player.getY() + player.getBbHeight() * 0.8F, player.getZ());
             laserBolt.setDamage(6.0F);
             Vec3 look = player.getLookAngle();
@@ -74,12 +84,9 @@ public class BlasterItem extends Item {
             player.getCooldowns().addCooldown(stack.getItem(), 8);
             player.awardStat(Stats.ITEM_USED.get(this));
             if (!player.getAbilities().instabuild) {
-                ammoStack.shrink(1);
+                this.consumeAmmo(level, ammoStack);
                 stack.hurtAndBreak(1, player, LivingEntity.getSlotForHand(hand));
             }
-        }
-        else {
-            this.blastAnimationState.start(player.tickCount, player);
         }
         return InteractionResultHolder.pass(stack);
     }

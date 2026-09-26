@@ -58,21 +58,34 @@ public class TriBlasterItem extends BlasterItem {
         if (isSelected && entity instanceof Player player) {
             ItemStack ammoStack = this.getAmmo(player);
             if (shootTime == 1 && shooting) {
-                this.shootLaser(level, player);
-                if (!level.isClientSide) {
+                if (level.isClientSide) {
+                    this.blastAnimationState.start(player.tickCount, player);
+                }
+                else {
+                    this.shootLaser(level, player);
                     player.getCooldowns().addCooldown(stack.getItem(), 16);
                     player.awardStat(Stats.ITEM_USED.get(this));
                     if (!player.getAbilities().instabuild) {
-                        ammoStack.shrink(1);
+                        this.consumeAmmo(level, ammoStack);
                         stack.hurtAndBreak(1, player, LivingEntity.getSlotForHand(player.getUsedItemHand()));
                     }
                 }
             }
             if (shootTime == 5 && shooting) {
-                this.shootLaser(level, player);
+                if (level.isClientSide) {
+                    this.blastAnimationState.start(player.tickCount, player);
+                }
+                else {
+                    this.shootLaser(level, player);
+                }
             }
             if (shootTime == 9 && shooting) {
-                this.shootLaser(level, player);
+                if (level.isClientSide) {
+                    this.blastAnimationState.start(player.tickCount, player);
+                }
+                else {
+                    this.shootLaser(level, player);
+                }
                 setShooting(stack, false);
             }
             if (shooting && shootTime <= 9) {
@@ -87,16 +100,12 @@ public class TriBlasterItem extends BlasterItem {
     }
 
     private void shootLaser(Level level, Player player) {
-        if (level.isClientSide) {
-            this.blastAnimationState.start(player.tickCount, player);
-        } else {
-            LaserBolt laserBolt = new LaserBolt(level, player, player.getX(), player.getY() + player.getBbHeight() * 0.8F, player.getZ());
-            laserBolt.setDamage(7.0F);
-            Vec3 look = player.getLookAngle();
-            laserBolt.shoot(look.x, look.y, look.z, 1.7F, 0.5F);
-            level.addFreshEntity(laserBolt);
-            level.playSound(null, player.getX(), player.getY(), player.getZ(), OFSoundEvents.BLASTER_SHOOT.get(), SoundSource.PLAYERS, 1.0F, 0.8F * SinewSoundUtils.randomizePitch(level));
-        }
+        LaserBolt laserBolt = new LaserBolt(level, player, player.getX(), player.getY() + player.getBbHeight() * 0.8F, player.getZ());
+        laserBolt.setDamage(7.0F);
+        Vec3 look = player.getLookAngle();
+        laserBolt.shoot(look.x, look.y, look.z, 1.7F, 0.5F);
+        level.addFreshEntity(laserBolt);
+        level.playSound(null, player.getX(), player.getY(), player.getZ(), OFSoundEvents.BLASTER_SHOOT.get(), SoundSource.PLAYERS, 1.0F, 0.8F * SinewSoundUtils.randomizePitch(level));
     }
 
     public static int getShootTime(ItemStack stack) {

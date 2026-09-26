@@ -10,6 +10,8 @@ public class OFBiomeTags {
 
     public static final TagKey<Biome> HAS_OVERWORLD_MONSTERS = modBiomeTag("has_monster/overworld");
 
+    public static final TagKey<Biome> HAS_SAVANNA_MONSTERS = modBiomeTag("has_monster/savanna");
+
     private static TagKey<Biome> modBiomeTag(String name) {
         return biomeTag(OpposingForce.MOD_ID, name);
     }

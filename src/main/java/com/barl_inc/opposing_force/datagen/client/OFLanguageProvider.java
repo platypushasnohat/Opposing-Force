@@ -41,6 +41,8 @@ public class OFLanguageProvider extends SinewLanguageProvider {
 
         this.add(OFItems.TRI_BLASTER.get(), "Tri-Blaster");
 
+        this.add("item.opposing_force.power_cell.power", "Power: %s / %s");
+
         this.add("jukebox_song.opposing_force.slayser", "ChipsTheCat - Slayser");
 
         this.add("death.attack.laser_0", "%s was disintegrated");

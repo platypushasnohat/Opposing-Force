@@ -37,7 +37,10 @@ public class ScatterBlasterItem extends BlasterItem {
         }
 
         Vec3 look = player.getLookAngle();
-        if (!level.isClientSide) {
+        if (level.isClientSide) {
+            this.blastAnimationState.start(player.tickCount, player);
+        }
+        else {
             int count = 7;
             for (int i = 0; i < count; i++) {
                 LaserBolt laserBolt = new LaserBolt(level, player, player.getX(), player.getY() + player.getBbHeight() * 0.8F, player.getZ());
@@ -49,11 +52,9 @@ public class ScatterBlasterItem extends BlasterItem {
             player.getCooldowns().addCooldown(stack.getItem(), 45);
             player.awardStat(Stats.ITEM_USED.get(this));
             if (!player.getAbilities().instabuild) {
-                ammoStack.shrink(1);
+                this.consumeAmmo(level, ammoStack);
                 stack.hurtAndBreak(1, player, LivingEntity.getSlotForHand(hand));
             }
-        } else {
-            this.blastAnimationState.start(player.tickCount, player);
         }
 
         Vec3 pushBack = new Vec3(-look.x, -look.y, -look.z).normalize();

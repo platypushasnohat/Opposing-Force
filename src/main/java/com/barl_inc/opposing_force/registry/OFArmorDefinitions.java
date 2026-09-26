@@ -13,7 +13,7 @@ public class OFArmorDefinitions {
             .material(OFArmorMaterials.MOON_SHOES)
             .attribute(Attributes.MOVEMENT_SPEED, 0.15F, AttributeModifier.Operation.ADD_MULTIPLIED_TOTAL)
             .attribute(Attributes.JUMP_STRENGTH, 0.1F, AttributeModifier.Operation.ADD_VALUE)
-            .attribute(Attributes.GRAVITY, -0.5F, AttributeModifier.Operation.ADD_MULTIPLIED_TOTAL)
+            .attribute(Attributes.GRAVITY, -0.3F, AttributeModifier.Operation.ADD_MULTIPLIED_TOTAL)
             .texture(slot -> OpposingForce.location("textures/models/armor/moon_shoes.png"))
             .build();
 

@@ -18,12 +18,17 @@ public class OFCreativeTabs {
                     .displayItems((parameters, output) -> {
                         output.accept(OFItems.BEWILDER_SPAWN_EGG);
                         output.accept(OFItems.DICER_SPAWN_EGG);
+
+                        output.accept(OFItems.CHITIN);
+
                         output.accept(OFItems.LASER_FOCUS);
+                        output.accept(OFItems.POWER_CELL);
                         output.accept(OFItems.BLASTER);
                         output.accept(OFItems.TRI_BLASTER);
                         output.accept(OFItems.SCATTER_BLASTER);
                         output.accept(OFItems.LASER_BLADE);
                         output.accept(OFItems.MUSIC_DISC_SLAYSER);
+
                         output.accept(OFItems.EMERALD_SWORD);
                         output.accept(OFItems.EMERALD_SHOVEL);
                         output.accept(OFItems.EMERALD_PICKAXE);

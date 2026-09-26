@@ -24,7 +24,9 @@ public class OFItemModelProvider extends SinewItemModelProvider {
                 OFItems.EMERALD_CHESTPLATE,
                 OFItems.EMERALD_LEGGINGS,
                 OFItems.EMERALD_BOOTS,
-                OFItems.MOON_SHOES
+                OFItems.MOON_SHOES,
+                OFItems.CHITIN,
+                OFItems.POWER_CELL
         );
 
         this.handheldItem(

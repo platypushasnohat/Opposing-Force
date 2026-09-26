@@ -195,7 +195,7 @@ public class Dicer extends AnimatedMonster {
         public void tick() {
             LivingEntity target = this.dicer.getTarget();
             if (target != null) {
-                double distance = this.dicer.distanceToSqr(target.getX(), target.getY(), target.getZ());
+                double distance = this.dicer.distanceToSqr(target);
                 if (this.attackState != 2 && this.attackState != 3) {
                     this.lookAtTarget(target, 30.0F, 30.0F);
                 }

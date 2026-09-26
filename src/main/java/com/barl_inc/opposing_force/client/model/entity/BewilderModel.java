@@ -28,6 +28,8 @@ public class BewilderModel extends SinewEntityModel<Bewilder> {
         this.animateWalkSmooth(entity.chargeAnimationState, BewilderAnimations.CHARGE, limbSwing, limbSwingAmount, 1.5F, 2.0F, partialTicks);
         this.animateIdleSmooth(entity.idleAnimationState, BewilderAnimations.IDLE, ageInTicks, partialTicks, limbSwingAmount);
         this.animateSmooth(entity.warnAnimationState, BewilderAnimations.SCREECH, ageInTicks, partialTicks);
+        this.animateSmooth(entity.stopAnimationState, BewilderAnimations.STOP, ageInTicks, partialTicks);
+        this.animateSmooth(entity.stunAnimationState, BewilderAnimations.STUNNED, ageInTicks, partialTicks);
     }
 
     public static LayerDefinition createBodyLayer() {

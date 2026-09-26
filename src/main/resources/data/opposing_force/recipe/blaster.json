@@ -8,8 +8,8 @@
     "N": {
       "item": "minecraft:iron_nugget"
     },
-    "R": {
-      "item": "minecraft:redstone"
+    "P": {
+      "item": "opposing_force:power_cell"
     },
     "Q": {
       "item": "minecraft:quartz"
@@ -20,7 +20,7 @@
   },
   "pattern": [
     "II ",
-    "RQL",
+    "PQL",
     "IN "
   ],
   "result": {

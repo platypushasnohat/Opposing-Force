@@ -32,6 +32,8 @@ public class OFItems {
     public static final DeferredItem<Item> SCATTER_BLASTER = registerItem("scatter_blaster", () -> new ScatterBlasterItem(new Item.Properties()));
     public static final DeferredItem<Item> LASER_BLADE = registerItem("laser_blade", () -> new LaserBladeItem(OFItemTiers.LASER_BLADE, new Item.Properties().attributes(SwordItem.createAttributes(OFItemTiers.LASER_BLADE, 4.0F, -2.4F))));
 
+    public static final DeferredItem<Item> BEWILDER_SPAWN_EGG = registerSpawnEggItem("bewilder", OFEntities.BEWILDER, 0x653847, 0x1e1014);
+
     public static final DeferredItem<Item> EMERALD_SWORD = registerItem("emerald_sword", () -> new SinewSwordItem(OFToolDefinitions.EMERALD, 3.0F, -2.4F, new Item.Properties().rarity(Rarity.UNCOMMON)));
     public static final DeferredItem<Item> EMERALD_PICKAXE = registerItem("emerald_pickaxe", () -> new SinewPickaxeItem(OFToolDefinitions.EMERALD, 1.0F, -2.8F, new Item.Properties().rarity(Rarity.UNCOMMON)));
     public static final DeferredItem<Item> EMERALD_AXE = registerItem("emerald_axe", () -> new SinewAxeItem(OFToolDefinitions.EMERALD, 5.0F, -3.0F, new Item.Properties().rarity(Rarity.UNCOMMON)));

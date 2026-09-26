@@ -13,9 +13,10 @@ public class OFCreativeTabs {
     public static final DeferredRegister<CreativeModeTab> CREATIVE_MODE_TAB = DeferredRegister.create(Registries.CREATIVE_MODE_TAB, OpposingForce.MOD_ID);
 
     public static final DeferredHolder<CreativeModeTab, CreativeModeTab> OPPOSING_FORCE_TAB = CREATIVE_MODE_TAB.register("opposing_force_creative_tab",
-            () -> CreativeModeTab.builder().icon(() -> new ItemStack(OFItems.DICER_SPAWN_EGG.get()))
+            () -> CreativeModeTab.builder().icon(() -> new ItemStack(OFItems.EMERALD_MASK.get()))
                     .title(Component.translatable("creative_tab.opposing_force"))
                     .displayItems((parameters, output) -> {
+                        output.accept(OFItems.BEWILDER_SPAWN_EGG);
                         output.accept(OFItems.DICER_SPAWN_EGG);
                         output.accept(OFItems.LASER_FOCUS);
                         output.accept(OFItems.BLASTER);

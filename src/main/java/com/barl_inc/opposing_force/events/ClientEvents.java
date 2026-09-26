@@ -3,6 +3,7 @@ package com.barl_inc.opposing_force.events;
 import com.barl_inc.opposing_force.OpposingForce;
 import com.barl_inc.opposing_force.client.model.armor.EmeraldArmorModel;
 import com.barl_inc.opposing_force.client.model.armor.MoonShoesModel;
+import com.barl_inc.opposing_force.client.model.entity.BewilderModel;
 import com.barl_inc.opposing_force.client.model.entity.DicerModel;
 import com.barl_inc.opposing_force.client.model.entity.LaserBoltModel;
 import com.barl_inc.opposing_force.client.model.item.BlasterModel;
@@ -11,10 +12,7 @@ import com.barl_inc.opposing_force.client.model.item.TriBlasterModel;
 import com.barl_inc.opposing_force.client.particle.LaserDustParticle;
 import com.barl_inc.opposing_force.client.particle.LaserImpactParticle;
 import com.barl_inc.opposing_force.client.particle.LaserSweepParticle;
-import com.barl_inc.opposing_force.client.render.entity.DicerLaserRenderer;
-import com.barl_inc.opposing_force.client.render.entity.DicerRenderer;
-import com.barl_inc.opposing_force.client.render.entity.LaserBladeRenderer;
-import com.barl_inc.opposing_force.client.render.entity.LaserBoltRenderer;
+import com.barl_inc.opposing_force.client.render.entity.*;
 import com.barl_inc.opposing_force.client.render.item.OFItemExtensions;
 import com.barl_inc.opposing_force.item.BlasterItem;
 import com.barl_inc.opposing_force.registry.OFEntities;
@@ -44,6 +42,7 @@ public class ClientEvents {
     public static void registerEntityRenderers(EntityRenderersEvent.RegisterRenderers event) {
         event.registerEntityRenderer(OFEntities.DICER.get(), DicerRenderer::new);
         event.registerEntityRenderer(OFEntities.DICER_LASER.get(), DicerLaserRenderer::new);
+        event.registerEntityRenderer(OFEntities.BEWILDER.get(), BewilderRenderer::new);
         event.registerEntityRenderer(OFEntities.LASER_BOLT.get(), LaserBoltRenderer::new);
         event.registerEntityRenderer(OFEntities.LASER_BLADE.get(), LaserBladeRenderer::new);
     }
@@ -51,7 +50,10 @@ public class ClientEvents {
     @SubscribeEvent
     public static void registerEntityLayers(EntityRenderersEvent.RegisterLayerDefinitions event) {
         event.registerLayerDefinition(OFModelLayers.DICER, DicerModel::createBodyLayer);
+        event.registerLayerDefinition(OFModelLayers.BEWILDER, BewilderModel::createBodyLayer);
+
         event.registerLayerDefinition(OFModelLayers.LASER_BOLT, LaserBoltModel::createBodyLayer);
+
         event.registerLayerDefinition(OFModelLayers.BLASTER, BlasterModel::createBodyLayer);
         event.registerLayerDefinition(OFModelLayers.TRI_BLASTER, TriBlasterModel::createBodyLayer);
         event.registerLayerDefinition(OFModelLayers.SCATTER_BLASTER, ScatterBlasterModel::createBodyLayer);

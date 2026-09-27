@@ -23,7 +23,7 @@ public class MoonShoesItem extends SkinLayerHidingArmorItem {
         if (entity instanceof LivingEntity living && living.getItemBySlot(EquipmentSlot.FEET).is(OFItems.MOON_SHOES.get())) {
             living.resetFallDistance();
             if (level.isClientSide && !living.onGround() && !living.onClimbable() && !living.isInWaterOrBubble() && !living.isPassenger()) {
-                if (level.getRandom().nextFloat() < 0.4F) {
+                if (living.getDeltaMovement().lengthSqr() >= 0.002D && level.getRandom().nextFloat() < 0.4F) {
                     Vec3 position = living.position();
                     level.addParticle(ParticleTypes.CLOUD, position.x, position.y, position.z, (level.getRandom().nextFloat() - 0.5F) / 3.0F, 0.0D, (level.getRandom().nextFloat() - 0.5F) / 3.0F);
                 }

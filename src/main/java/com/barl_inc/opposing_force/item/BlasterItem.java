@@ -5,7 +5,6 @@ import com.barl_inc.opposing_force.registry.OFItems;
 import com.barl_inc.opposing_force.registry.OFSoundEvents;
 import com.platypushasnohat.sinew.client.animation.ItemAnimationState;
 import com.platypushasnohat.sinew.utils.SinewSoundUtils;
-import net.minecraft.server.level.ServerLevel;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.stats.Stats;
 import net.minecraft.world.InteractionHand;
@@ -54,18 +53,25 @@ public class BlasterItem extends Item {
         return ItemStack.EMPTY;
     }
 
-    public void consumeAmmo(Level level, ItemStack ammoStack) {
-        if (level instanceof ServerLevel serverLevel) {
-            ammoStack.hurtAndBreak(1, serverLevel, null, item -> {
-            });
+    public void consumePower(ItemStack ammoStack) {
+        if (ammoStack.getItem() instanceof PoweredItem poweredItem) {
+            poweredItem.drainPower(ammoStack, 1, null);
         }
+    }
+
+    public boolean isPowerCellFilled(ItemStack ammoStack) {
+        return ammoStack.getItem() instanceof PoweredItem poweredItem && poweredItem.getPower(ammoStack) < poweredItem.getMaxPower(ammoStack);
+    }
+
+    public boolean powerDepleted(Player player, ItemStack ammoStack) {
+        return this.getAmmo(player).isEmpty() || !this.isPowerCellFilled(ammoStack);
     }
 
     @Override
     public InteractionResultHolder<ItemStack> use(Level level, Player player, InteractionHand hand) {
         ItemStack stack = player.getItemInHand(hand);
         ItemStack ammoStack = this.getAmmo(player);
-        if (ammoStack.isEmpty() && !player.isCreative()) {
+        if (this.powerDepleted(player, ammoStack) && !player.isCreative()) {
             if (!level.isClientSide) {
                 player.getCooldowns().addCooldown(stack.getItem(), 10);
             }
@@ -84,7 +90,7 @@ public class BlasterItem extends Item {
             player.getCooldowns().addCooldown(stack.getItem(), 8);
             player.awardStat(Stats.ITEM_USED.get(this));
             if (!player.getAbilities().instabuild) {
-                this.consumeAmmo(level, ammoStack);
+                this.consumePower(ammoStack);
                 stack.hurtAndBreak(1, player, LivingEntity.getSlotForHand(hand));
             }
         }

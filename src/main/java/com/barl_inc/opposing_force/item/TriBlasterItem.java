@@ -38,7 +38,7 @@ public class TriBlasterItem extends BlasterItem {
     public InteractionResultHolder<ItemStack> use(Level level, Player player, InteractionHand hand) {
         ItemStack stack = player.getItemInHand(hand);
         ItemStack ammoStack = this.getAmmo(player);
-        if (hand == InteractionHand.OFF_HAND || (ammoStack.isEmpty() && !player.isCreative())) {
+        if (hand == InteractionHand.OFF_HAND || (this.powerDepleted(player, ammoStack) && !player.isCreative())) {
             if (!level.isClientSide) {
                 player.getCooldowns().addCooldown(stack.getItem(), 10);
             }
@@ -66,7 +66,7 @@ public class TriBlasterItem extends BlasterItem {
                     player.getCooldowns().addCooldown(stack.getItem(), 16);
                     player.awardStat(Stats.ITEM_USED.get(this));
                     if (!player.getAbilities().instabuild) {
-                        this.consumeAmmo(level, ammoStack);
+                        this.consumePower(ammoStack);
                         stack.hurtAndBreak(1, player, LivingEntity.getSlotForHand(player.getUsedItemHand()));
                     }
                 }

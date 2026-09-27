@@ -36,7 +36,7 @@
   "item.opposing_force.music_disc_slayser": "Music Disc",
   "item.opposing_force.music_disc_slayser.desc": "ChipsTheCat - Slayser",
   "item.opposing_force.power_cell": "Power Cell",
-  "item.opposing_force.power_cell.power": "Power: %s / %s",
+  "item.opposing_force.powered_item.power": "Power: %s / %s",
   "item.opposing_force.scatter_blaster": "Scatter Blaster",
   "item.opposing_force.tri_blaster": "Tri-Blaster",
   "jukebox_song.opposing_force.slayser": "ChipsTheCat - Slayser",

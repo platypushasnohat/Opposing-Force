@@ -53,7 +53,7 @@ public class Bewilder extends AnimatedMonster {
 
     public Bewilder(EntityType<? extends Bewilder> entityType, Level level) {
         super(entityType, level);
-        this.xpReward = 15;
+        this.xpReward = 10;
     }
 
     public static AttributeSupplier.Builder registerAttributes() {

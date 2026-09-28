@@ -3,6 +3,7 @@ package com.barl_inc.opposing_force.events;
 import com.barl_inc.opposing_force.OpposingForce;
 import com.barl_inc.opposing_force.entity.Bewilder;
 import com.barl_inc.opposing_force.entity.Dicer;
+import com.barl_inc.opposing_force.entity.Gusher;
 import com.barl_inc.opposing_force.registry.OFEntities;
 import com.barl_inc.opposing_force.registry.OFItems;
 import com.platypushasnohat.sinew.entity.villager.MultipleInputsTrade;
@@ -26,6 +27,7 @@ public class CommonEvents {
     public static void registerEntityAttributes(EntityAttributeCreationEvent event) {
         event.put(OFEntities.DICER.get(), Dicer.registerAttributes().build());
         event.put(OFEntities.BEWILDER.get(), Bewilder.registerAttributes().build());
+        event.put(OFEntities.GUSHER.get(), Gusher.registerAttributes().build());
     }
 
     @SubscribeEvent

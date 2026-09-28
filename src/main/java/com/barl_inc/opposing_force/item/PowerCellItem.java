@@ -17,7 +17,7 @@ import java.util.List;
 public class PowerCellItem extends PoweredItem {
 
     public PowerCellItem(Properties properties) {
-        super(properties, 128);
+        super(properties, 64);
     }
 
     @Override

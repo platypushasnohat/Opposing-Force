@@ -5,6 +5,7 @@ import com.barl_inc.opposing_force.client.model.armor.EmeraldArmorModel;
 import com.barl_inc.opposing_force.client.model.armor.MoonShoesModel;
 import com.barl_inc.opposing_force.client.model.entity.BewilderModel;
 import com.barl_inc.opposing_force.client.model.entity.DicerModel;
+import com.barl_inc.opposing_force.client.model.entity.GusherModel;
 import com.barl_inc.opposing_force.client.model.entity.LaserBoltModel;
 import com.barl_inc.opposing_force.client.model.item.BlasterModel;
 import com.barl_inc.opposing_force.client.model.item.ScatterBlasterModel;
@@ -43,6 +44,7 @@ public class ClientEvents {
         event.registerEntityRenderer(OFEntities.DICER.get(), DicerRenderer::new);
         event.registerEntityRenderer(OFEntities.DICER_LASER.get(), DicerLaserRenderer::new);
         event.registerEntityRenderer(OFEntities.BEWILDER.get(), BewilderRenderer::new);
+        event.registerEntityRenderer(OFEntities.GUSHER.get(), GusherRenderer::new);
         event.registerEntityRenderer(OFEntities.LASER_BOLT.get(), LaserBoltRenderer::new);
         event.registerEntityRenderer(OFEntities.LASER_BLADE.get(), LaserBladeRenderer::new);
     }
@@ -51,6 +53,7 @@ public class ClientEvents {
     public static void registerEntityLayers(EntityRenderersEvent.RegisterLayerDefinitions event) {
         event.registerLayerDefinition(OFModelLayers.DICER, DicerModel::createBodyLayer);
         event.registerLayerDefinition(OFModelLayers.BEWILDER, BewilderModel::createBodyLayer);
+        event.registerLayerDefinition(OFModelLayers.GUSHER, GusherModel::createBodyLayer);
 
         event.registerLayerDefinition(OFModelLayers.LASER_BOLT, LaserBoltModel::createBodyLayer);
 

@@ -7,14 +7,20 @@ import com.barl_inc.opposing_force.entity.Gusher;
 import com.barl_inc.opposing_force.registry.OFEntities;
 import com.barl_inc.opposing_force.registry.OFItems;
 import com.platypushasnohat.sinew.entity.villager.MultipleInputsTrade;
+import net.minecraft.world.entity.Entity;
+import net.minecraft.world.entity.Mob;
 import net.minecraft.world.entity.SpawnPlacementTypes;
+import net.minecraft.world.entity.ai.goal.AvoidEntityGoal;
 import net.minecraft.world.entity.monster.Monster;
+import net.minecraft.world.entity.monster.Spider;
 import net.minecraft.world.entity.npc.VillagerTrades;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.level.levelgen.Heightmap;
+import net.neoforged.bus.api.EventPriority;
 import net.neoforged.bus.api.SubscribeEvent;
 import net.neoforged.fml.common.EventBusSubscriber;
 import net.neoforged.neoforge.event.entity.EntityAttributeCreationEvent;
+import net.neoforged.neoforge.event.entity.EntityJoinLevelEvent;
 import net.neoforged.neoforge.event.entity.RegisterSpawnPlacementsEvent;
 import net.neoforged.neoforge.event.village.WandererTradesEvent;
 
@@ -48,5 +54,15 @@ public class CommonEvents {
         rareTrades.add(new MultipleInputsTrade(Items.DIAMOND_CHESTPLATE, 1, 32, OFItems.EMERALD_CHESTPLATE.get(), 1, 1, 20));
         rareTrades.add(new MultipleInputsTrade(Items.DIAMOND_LEGGINGS, 1, 32, OFItems.EMERALD_LEGGINGS.get(), 1, 1, 20));
         rareTrades.add(new MultipleInputsTrade(Items.DIAMOND_BOOTS, 1, 32, OFItems.EMERALD_BOOTS.get(), 1, 1, 20));
+    }
+
+    @SubscribeEvent(priority = EventPriority.LOWEST)
+    public static void onEntityJoinWorld(EntityJoinLevelEvent event) {
+        Entity entity = event.getEntity();
+        if (entity instanceof Mob mob) {
+            if (mob instanceof Spider spider) {
+                spider.goalSelector.addGoal(2, new AvoidEntityGoal<>(spider, Gusher.class, 8.0F, 1.0D, 1.2D));
+            }
+        }
     }
 }

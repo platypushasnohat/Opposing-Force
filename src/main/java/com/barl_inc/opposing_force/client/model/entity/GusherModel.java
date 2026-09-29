@@ -36,6 +36,7 @@ public class GusherModel extends SinewEntityModel<Gusher> {
         this.animateSmooth(entity.attackOverlayAnimationState, GusherAnimations.IDLE, ageInTicks, partialTicks);
         this.animateSmooth(entity.gushAnimationState, GusherAnimations.GUSH, ageInTicks, partialTicks);
         this.head.yRot += Math.clamp(netHeadYaw * Mth.DEG_TO_RAD, Mth.PI / -4.0F, Mth.PI / 4.0F);
+        this.head.xRot += Math.clamp(headPitch * Mth.DEG_TO_RAD, Mth.PI / -4.0F, 4.0F * Mth.DEG_TO_RAD);
     }
 
     public static LayerDefinition createBodyLayer() {

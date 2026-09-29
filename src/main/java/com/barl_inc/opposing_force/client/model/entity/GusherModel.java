@@ -7,14 +7,20 @@ import net.minecraft.client.model.geom.ModelPart;
 import net.minecraft.client.model.geom.PartPose;
 import net.minecraft.client.model.geom.builders.*;
 import net.minecraft.client.renderer.RenderType;
+import net.minecraft.util.Mth;
 
 public class GusherModel extends SinewEntityModel<Gusher> {
 
     private final ModelPart root;
+    private final ModelPart head;
 
     public GusherModel(ModelPart root) {
         super(RenderType::entityCutoutNoCull);
         this.root = root.getChild("root");
+        ModelPart body_main = this.root.getChild("body_main");
+        ModelPart body = body_main.getChild("body");
+        ModelPart neck = body.getChild("neck");
+        this.head = neck.getChild("head");
     }
 
     @Override
@@ -24,10 +30,12 @@ public class GusherModel extends SinewEntityModel<Gusher> {
 
     @Override
     protected void setupAnimations(Gusher entity, float limbSwing, float limbSwingAmount, float ageInTicks, float partialTicks, float netHeadYaw, float headPitch) {
-        this.animateWalkSmooth(entity.walkAnimationState, GusherAnimations.WALK, limbSwing, limbSwingAmount, 1.5F, 2.5F, partialTicks);
+        this.animateWalkSmooth(entity.walkAnimationState, GusherAnimations.WALK, limbSwing, limbSwingAmount, partialTicks);
         this.animateIdleSmooth(entity.idleAnimationState, GusherAnimations.IDLE, ageInTicks, partialTicks, limbSwingAmount);
         this.animateSmooth(entity.attackAnimationState, GusherAnimations.ATTACK_BLEND, ageInTicks, partialTicks);
+        this.animateSmooth(entity.attackOverlayAnimationState, GusherAnimations.IDLE, ageInTicks, partialTicks);
         this.animateSmooth(entity.gushAnimationState, GusherAnimations.GUSH, ageInTicks, partialTicks);
+        this.head.yRot += Math.clamp(netHeadYaw * Mth.DEG_TO_RAD, Mth.PI / -4.0F, Mth.PI / 4.0F);
     }
 
     public static LayerDefinition createBodyLayer() {

@@ -170,7 +170,6 @@ public class Dicer extends AnimatedMonster {
         @Override
         public void start() {
             super.start();
-            this.dicer.setAnimationState(0);
             this.crossSlashCooldown = 30 + this.dicer.getRandom().nextInt(30);
             this.laserCooldown = 50 + this.dicer.getRandom().nextInt(50);
             this.dicer.setHasAfterimage(false);
@@ -182,7 +181,6 @@ public class Dicer extends AnimatedMonster {
         @Override
         public void stop() {
             super.stop();
-            this.dicer.setAnimationState(0);
             this.crossSlashCooldown = 30 + this.dicer.getRandom().nextInt(30);
             this.laserCooldown = 50 + this.dicer.getRandom().nextInt(50);
             this.dicer.setHasAfterimage(false);

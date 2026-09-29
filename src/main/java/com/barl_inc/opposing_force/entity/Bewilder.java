@@ -145,7 +145,6 @@ public class Bewilder extends AnimatedMonster {
         @Override
         public void start() {
             super.start();
-            this.bewilder.setAnimationState(0);
             this.bewilder.setSprinting(false);
             this.attackCooldown();
         }
@@ -153,7 +152,6 @@ public class Bewilder extends AnimatedMonster {
         @Override
         public void stop() {
             super.stop();
-            this.bewilder.setAnimationState(0);
             this.bewilder.setSprinting(false);
         }
 

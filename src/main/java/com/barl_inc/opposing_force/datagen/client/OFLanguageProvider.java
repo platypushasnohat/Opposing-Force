@@ -59,5 +59,10 @@ public class OFLanguageProvider extends SinewLanguageProvider {
         this.add("death.attack.laser_blade_1", "%s was bisected");
         this.add("death.attack.laser_blade_0.entity", "%s was sliced in half by %s");
         this.add("death.attack.laser_blade_1.entity", "%s was bisected by %s");
+
+        this.add("death.attack.acid_0", "%s was melted by acid");
+        this.add("death.attack.acid_1", "%s was liquefied");
+        this.add("death.attack.acid_0.entity", "%s was dunked in acid by %s");
+        this.add("death.attack.acid_1.entity", "%s was liquefied by %s");
     }
 }

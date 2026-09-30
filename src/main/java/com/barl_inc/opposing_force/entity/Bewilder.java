@@ -128,8 +128,8 @@ public class Bewilder extends AnimatedMonster {
         return 0.8F;
     }
 
-    public static boolean checkBewilderSpawnRules(EntityType<Bewilder> bewilder, ServerLevelAccessor level, MobSpawnType spawnType, BlockPos pos, RandomSource random) {
-        return level.getBlockState(pos.below()).is(BlockTags.ANIMALS_SPAWNABLE_ON) && Monster.checkMonsterSpawnRules(bewilder, level, spawnType, pos, random);
+    public static boolean checkBewilderSpawnRules(EntityType<Bewilder> entityType, ServerLevelAccessor level, MobSpawnType spawnType, BlockPos pos, RandomSource random) {
+        return level.getBlockState(pos.below()).is(BlockTags.ANIMALS_SPAWNABLE_ON) && Monster.checkMonsterSpawnRules(entityType, level, spawnType, pos, random);
     }
 
     private static class BewilderAttackGoal extends AttackGoal {

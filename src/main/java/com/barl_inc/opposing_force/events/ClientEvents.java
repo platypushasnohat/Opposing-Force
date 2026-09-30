@@ -10,6 +10,7 @@ import com.barl_inc.opposing_force.client.model.entity.LaserBoltModel;
 import com.barl_inc.opposing_force.client.model.item.BlasterModel;
 import com.barl_inc.opposing_force.client.model.item.ScatterBlasterModel;
 import com.barl_inc.opposing_force.client.model.item.TriBlasterModel;
+import com.barl_inc.opposing_force.client.particle.AcidParticle;
 import com.barl_inc.opposing_force.client.particle.LaserDustParticle;
 import com.barl_inc.opposing_force.client.particle.LaserImpactParticle;
 import com.barl_inc.opposing_force.client.particle.LaserSweepParticle;
@@ -22,6 +23,8 @@ import com.barl_inc.opposing_force.registry.OFModelLayers;
 import com.barl_inc.opposing_force.registry.OFParticleTypes;
 import com.platypushasnohat.sinew.events.custom.PoseHandEvent;
 import net.minecraft.client.model.HumanoidModel;
+import net.minecraft.client.renderer.entity.NoopRenderer;
+import net.minecraft.client.renderer.entity.ThrownItemRenderer;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.entity.HumanoidArm;
@@ -47,6 +50,8 @@ public class ClientEvents {
         event.registerEntityRenderer(OFEntities.GUSHER.get(), GusherRenderer::new);
         event.registerEntityRenderer(OFEntities.LASER_BOLT.get(), LaserBoltRenderer::new);
         event.registerEntityRenderer(OFEntities.LASER_BLADE.get(), LaserBladeRenderer::new);
+        event.registerEntityRenderer(OFEntities.ACID_CHARGE.get(), ThrownItemRenderer::new);
+        event.registerEntityRenderer(OFEntities.AREA_DAMAGE_CLOUD.get(), NoopRenderer::new);
     }
 
     @SubscribeEvent
@@ -67,6 +72,7 @@ public class ClientEvents {
         event.registerSpriteSet(OFParticleTypes.LASER_DUST.get(), LaserDustParticle.Factory::new);
         event.registerSpriteSet(OFParticleTypes.LASER_IMPACT.get(), LaserImpactParticle.Factory::new);
         event.registerSpriteSet(OFParticleTypes.LASER_SWEEP.get(), LaserSweepParticle.Factory::new);
+        event.registerSpriteSet(OFParticleTypes.ACID.get(), AcidParticle.Factory::new);
     }
 
     @SubscribeEvent

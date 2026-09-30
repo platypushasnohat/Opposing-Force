@@ -50,6 +50,7 @@ public class LaserImpactParticle extends TextureSheetParticle {
             this.spriteSet = spriteSet;
         }
 
+        @Override
         public Particle createParticle(SimpleParticleType particleType, ClientLevel level, double x, double y, double z, double xSpeed, double ySpeed, double zSpeed) {
             return new LaserImpactParticle(level, x, y, z, xSpeed, ySpeed, zSpeed, this.spriteSet);
         }

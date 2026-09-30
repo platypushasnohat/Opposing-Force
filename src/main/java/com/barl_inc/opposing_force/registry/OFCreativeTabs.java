@@ -30,6 +30,8 @@ public class OFCreativeTabs {
                         output.accept(OFItems.LASER_BLADE);
                         output.accept(OFItems.MUSIC_DISC_SLAYSER);
 
+                        output.accept(OFItems.ACID_CHARGE);
+
                         output.accept(OFItems.EMERALD_SWORD);
                         output.accept(OFItems.EMERALD_SHOVEL);
                         output.accept(OFItems.EMERALD_PICKAXE);

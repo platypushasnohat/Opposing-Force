@@ -14,5 +14,6 @@ public class OFParticleTypes {
     public static final DeferredHolder<ParticleType<?>, SimpleParticleType> LASER_DUST = PARTICLE_TYPE.register("laser_dust", () -> new SimpleParticleType(false));
     public static final DeferredHolder<ParticleType<?>, SimpleParticleType> LASER_IMPACT = PARTICLE_TYPE.register("laser_impact", () -> new SimpleParticleType(false));
     public static final DeferredHolder<ParticleType<?>, SimpleParticleType> LASER_SWEEP = PARTICLE_TYPE.register("laser_sweep", () -> new SimpleParticleType(true));
+    public static final DeferredHolder<ParticleType<?>, SimpleParticleType> ACID = PARTICLE_TYPE.register("acid", () -> new SimpleParticleType(false));
 
 }

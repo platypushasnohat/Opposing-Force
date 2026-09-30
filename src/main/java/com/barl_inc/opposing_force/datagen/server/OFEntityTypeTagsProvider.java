@@ -19,8 +19,10 @@ public class OFEntityTypeTagsProvider extends EntityTypeTagsProvider {
 
 	@Override
 	public void addTags(Provider provider) {
+
 		this.tag(EntityTypeTags.ARTHROPOD).add(
-				OFEntities.BEWILDER.get()
+				OFEntities.BEWILDER.get(),
+				OFEntities.GUSHER.get()
 		);
 	}
 }

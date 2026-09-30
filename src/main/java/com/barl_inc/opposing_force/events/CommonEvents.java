@@ -38,8 +38,9 @@ public class CommonEvents {
 
     @SubscribeEvent
     private static void registerSpawnPlacements(RegisterSpawnPlacementsEvent event) {
-        event.register(OFEntities.DICER.get(), SpawnPlacementTypes.ON_GROUND, Heightmap.Types.MOTION_BLOCKING_NO_LEAVES, Monster::checkMonsterSpawnRules, RegisterSpawnPlacementsEvent.Operation.REPLACE);
-        event.register(OFEntities.BEWILDER.get(), SpawnPlacementTypes.ON_GROUND, Heightmap.Types.MOTION_BLOCKING_NO_LEAVES, Bewilder::checkBewilderSpawnRules, RegisterSpawnPlacementsEvent.Operation.REPLACE);
+        event.register(OFEntities.DICER.get(), SpawnPlacementTypes.ON_GROUND, Heightmap.Types.MOTION_BLOCKING_NO_LEAVES, Monster::checkMonsterSpawnRules, RegisterSpawnPlacementsEvent.Operation.AND);
+        event.register(OFEntities.BEWILDER.get(), SpawnPlacementTypes.ON_GROUND, Heightmap.Types.MOTION_BLOCKING_NO_LEAVES, Bewilder::checkBewilderSpawnRules, RegisterSpawnPlacementsEvent.Operation.AND);
+        event.register(OFEntities.GUSHER.get(), SpawnPlacementTypes.ON_GROUND, Heightmap.Types.MOTION_BLOCKING_NO_LEAVES, Gusher::checkGusherSpawnRules, RegisterSpawnPlacementsEvent.Operation.AND);
     }
 
     @SubscribeEvent

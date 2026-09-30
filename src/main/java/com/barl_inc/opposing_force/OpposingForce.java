@@ -7,6 +7,7 @@ import com.barl_inc.opposing_force.datagen.server.*;
 import com.barl_inc.opposing_force.registry.*;
 import com.barl_inc.opposing_force.utils.ClientProxy;
 import com.barl_inc.opposing_force.utils.CommonProxy;
+import com.mojang.logging.LogUtils;
 import com.platypushasnohat.sinew.Sinew;
 import net.minecraft.core.HolderLookup.Provider;
 import net.minecraft.data.DataGenerator;
@@ -17,6 +18,7 @@ import net.neoforged.fml.ModContainer;
 import net.neoforged.fml.common.Mod;
 import net.neoforged.neoforge.common.data.ExistingFileHelper;
 import net.neoforged.neoforge.data.event.GatherDataEvent;
+import org.slf4j.Logger;
 
 import java.util.Locale;
 import java.util.concurrent.CompletableFuture;
@@ -26,6 +28,7 @@ public class OpposingForce {
 
     public static final String MOD_ID = "opposing_force";
     public static final CommonProxy PROXY = Sinew.unsafeRunForDist(() -> ClientProxy::new, () -> CommonProxy::new);
+    public static final Logger LOGGER = LogUtils.getLogger();
 
     public static ResourceLocation location(String path) {
         return ResourceLocation.fromNamespaceAndPath(MOD_ID, path.toLowerCase(Locale.ROOT));

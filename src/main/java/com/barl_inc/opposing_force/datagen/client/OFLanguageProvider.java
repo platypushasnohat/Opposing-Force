@@ -36,6 +36,9 @@ public class OFLanguageProvider extends SinewLanguageProvider {
         this.addSound(OFSoundEvents.LASER_BLADE_IMPACT, "Laser blade slices");
         this.addSound(OFSoundEvents.LASER_BLADE_CATCH, "Laser blade caught");
 
+        this.addSound(OFSoundEvents.ACID_CHARGE_EXPLODE, "Acid charge explodes");
+        this.addSound(OFSoundEvents.ACID_BURNING, "Acid burns");
+
         this.addSound(OFSoundEvents.SLAYSER_DISC, "Music Disc");
         this.addMusicDisc(OFItems.MUSIC_DISC_SLAYSER.get(), "ChipsTheCat - Slayser");
 

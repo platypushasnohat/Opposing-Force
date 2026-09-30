@@ -1,8 +1,6 @@
 package com.barl_inc.opposing_force.client.model.entity;
 
 import com.barl_inc.opposing_force.entity.projectile.LaserBolt;
-import com.mojang.blaze3d.vertex.PoseStack;
-import com.mojang.blaze3d.vertex.VertexConsumer;
 import net.minecraft.client.model.HierarchicalModel;
 import net.minecraft.client.model.geom.ModelPart;
 import net.minecraft.client.model.geom.PartPose;
@@ -25,11 +23,6 @@ public class LaserBoltModel extends HierarchicalModel<LaserBolt> {
 		this.root.yRot = yRot * Mth.DEG_TO_RAD;
 		this.root.xRot = xRot * Mth.DEG_TO_RAD;
 		this.root.y = -2.25F;
-	}
-
-	@Override
-	public void renderToBuffer(PoseStack poseStack, VertexConsumer vertexConsumer, int packedLight, int packedOverlay, int color) {
-		this.root().render(poseStack, vertexConsumer, packedLight, packedOverlay, color);
 	}
 
 	@Override

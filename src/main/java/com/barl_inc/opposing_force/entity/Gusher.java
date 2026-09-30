@@ -39,7 +39,6 @@ public class Gusher extends AnimatedMonster {
     private static final int ATTACK_ANIMATION = 1;
     private static final int GUSH_ANIMATION = 2;
 
-    public final SmoothAnimationState attackOverlayAnimationState = new SmoothAnimationState();
     public final SmoothAnimationState attackAnimationState = new SmoothAnimationState(1.0F);
     public final SmoothAnimationState gushAnimationState = new SmoothAnimationState();
 
@@ -84,16 +83,10 @@ public class Gusher extends AnimatedMonster {
     }
 
     @Override
-    public void tick() {
-        super.tick();
-    }
-
-    @Override
     public void setupAnimationStates() {
-        this.idleAnimationState.animateWhen(this.getAnimationState() == 0, this.tickCount);
-        this.walkAnimationState.animateWhen(this.getAnimationState() == 0, this.tickCount);
+        this.idleAnimationState.animateWhen(this.getAnimationState() != GUSH_ANIMATION, this.tickCount);
+        this.walkAnimationState.animateWhen(this.getAnimationState() != GUSH_ANIMATION, this.tickCount);
         this.attackAnimationState.animateWhen(this.getAnimationState() == ATTACK_ANIMATION, this.tickCount);
-        this.attackOverlayAnimationState.animateWhen(this.getAnimationState() == ATTACK_ANIMATION, this.tickCount);
         this.gushAnimationState.animateWhen(this.getAnimationState() == GUSH_ANIMATION, this.tickCount);
     }
 
@@ -222,9 +215,9 @@ public class Gusher extends AnimatedMonster {
         private void shootAcidCharge() {
             Vec3 lookAngle = this.gusher.getLookAngle().scale(1.8D);
             AcidCharge acidCharge = new AcidCharge(this.gusher.level(), this.gusher.getX() + lookAngle.x, this.gusher.getY() + this.gusher.getBbHeight() + 2.0F, this.gusher.getZ() + lookAngle.z);
-            float shootAngle = Mth.clamp(this.gusher.getXRot() - 72.5F, -90.0F, -72.5F);
+            float shootAngle = Mth.clamp(this.gusher.getXRot() - 72.5F, -85.0F, -72.5F);
             acidCharge.shootFromRotation(this.gusher, shootAngle, this.gusher.getYRot(), 0.0F, 0.55F, 20.0F);
-            this.gusher.playSound(SoundEvents.SNOW_GOLEM_SHOOT, 1.0F, SinewSoundUtils.randomizePitch(this.gusher));
+            this.gusher.playSound(SoundEvents.SNOW_GOLEM_SHOOT, 1.0F, 0.4F * SinewSoundUtils.randomizePitch(this.gusher));
             this.gusher.level().addFreshEntity(acidCharge);
         }
 

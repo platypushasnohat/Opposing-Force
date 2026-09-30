@@ -1,4 +1,17 @@
 {
+  "acid_burning": {
+    "sounds": [
+      "opposing_force:entity/acid_charge/burn1",
+      "opposing_force:entity/acid_charge/burn2"
+    ],
+    "subtitle": "subtitles.opposing_force.acid_burning"
+  },
+  "acid_charge_explode": {
+    "sounds": [
+      "opposing_force:entity/acid_charge/explode"
+    ],
+    "subtitle": "subtitles.opposing_force.acid_charge_explode"
+  },
   "blaster_shoot": {
     "sounds": [
       "opposing_force:item/blaster/shoot"

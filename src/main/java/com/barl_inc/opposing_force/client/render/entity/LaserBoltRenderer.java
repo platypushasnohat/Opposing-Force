@@ -21,8 +21,8 @@ import org.joml.Matrix4f;
 
 public class LaserBoltRenderer extends EntityRenderer<LaserBolt> {
 
-    private static final ResourceLocation OUTER_LOCATION = OpposingForce.location("textures/entity/projectile/laser_bolt_outer.png");
-    private static final ResourceLocation INNER_LOCATION = OpposingForce.location("textures/entity/projectile/laser_bolt_inner.png");
+    private static final ResourceLocation OUTER_LOCATION = OpposingForce.location("textures/entity/projectiles/laser_bolt_outer.png");
+    private static final ResourceLocation INNER_LOCATION = OpposingForce.location("textures/entity/projectiles/laser_bolt_inner.png");
     private static final ResourceLocation TRAIL_LOCATION = OpposingForce.location("textures/particle/trail.png");
 
     private final LaserBoltModel model;

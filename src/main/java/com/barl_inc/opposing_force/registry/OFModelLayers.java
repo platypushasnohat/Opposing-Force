@@ -11,6 +11,8 @@ public class OFModelLayers {
 
     public static final ModelLayerLocation LASER_BOLT = register("laser_bolt");
 
+    public static final ModelLayerLocation ACID_CHARGE = register("acid_charge");
+
     public static final ModelLayerLocation BLASTER = register("blaster");
     public static final ModelLayerLocation TRI_BLASTER = register("tri_blaster");
     public static final ModelLayerLocation SCATTER_BLASTER = register("scatter_blaster");

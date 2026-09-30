@@ -18,6 +18,7 @@ import net.neoforged.bus.api.IEventBus;
 import net.neoforged.fml.ModContainer;
 import net.neoforged.fml.common.Mod;
 import net.neoforged.fml.config.ModConfig;
+import net.neoforged.fml.event.lifecycle.FMLCommonSetupEvent;
 import net.neoforged.neoforge.common.data.ExistingFileHelper;
 import net.neoforged.neoforge.data.event.GatherDataEvent;
 import org.slf4j.Logger;
@@ -44,8 +45,13 @@ public class OpposingForce {
         OFSoundEvents.SOUND_EVENT.register(modEventBus);
         OFDataComponents.DATA_COMPONENTS.register(modEventBus);
         OFCreativeTabs.CREATIVE_MODE_TAB.register(modEventBus);
+        modEventBus.addListener(this::commonSetup);
         modEventBus.addListener(this::dataSetup);
         modContainer.registerConfig(ModConfig.Type.COMMON, OFConfig.COMMON_CONFIG, "opposing_force-common.toml");
+    }
+
+    private void commonSetup(FMLCommonSetupEvent event) {
+        event.enqueueWork(OFCompat::registerCompat);
     }
 
     private void dataSetup(GatherDataEvent event) {

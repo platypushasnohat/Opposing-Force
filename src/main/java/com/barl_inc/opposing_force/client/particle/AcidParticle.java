@@ -20,13 +20,11 @@ public class AcidParticle extends TextureSheetParticle {
         this.xd += xSpeed;
         this.yd += ySpeed;
         this.zd += zSpeed;
-        float colorRand = level.getRandom().nextFloat() * 0.2F;
         this.rCol = SinewColorUtils.unpackRed(0xb5e430) - level.getRandom().nextFloat() * 0.2F;
         this.gCol = SinewColorUtils.unpackGreen(0xb5e430) - level.getRandom().nextFloat() * 0.2F;
         this.bCol = SinewColorUtils.unpackBlue(0xb5e430);
         this.quadSize *= 0.75F + this.random.nextFloat() * 0.5F;
-        this.lifetime = (int) ((double) 20 / (Math.random() * 0.8D + 0.2D));
-        this.lifetime = Math.max(this.lifetime, 1);
+        this.lifetime = 15 + this.random.nextInt(15);
         this.hasPhysics = false;
         this.setSpriteFromAge(spriteSet);
     }

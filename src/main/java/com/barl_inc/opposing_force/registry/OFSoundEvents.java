@@ -27,6 +27,9 @@ public class OFSoundEvents {
     public static final DeferredHolder<SoundEvent, SoundEvent> LASER_BLADE_SPIN = registerSoundEvent("laser_blade_spin");
     public static final DeferredHolder<SoundEvent, SoundEvent> LASER_BLADE_CATCH = registerSoundEvent("laser_blade_catch");
 
+    public static final DeferredHolder<SoundEvent, SoundEvent> ACID_CHARGE_EXPLODE = registerSoundEvent("acid_charge_explode");
+    public static final DeferredHolder<SoundEvent, SoundEvent> ACID_BURNING = registerSoundEvent("acid_burning");
+
     public static final DeferredHolder<SoundEvent, SoundEvent> SLAYSER_DISC = registerSoundEvent("slayser_disc");
 
     private static DeferredHolder<SoundEvent, SoundEvent> registerSoundEvent(String soundName) {

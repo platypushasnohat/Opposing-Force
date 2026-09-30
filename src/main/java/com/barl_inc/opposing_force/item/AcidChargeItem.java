@@ -25,13 +25,14 @@ public class AcidChargeItem extends Item implements ProjectileItem {
     @Override
     public InteractionResultHolder<ItemStack> use(Level level, Player player, InteractionHand hand) {
         ItemStack stack = player.getItemInHand(hand);
-        level.playSound(null, player.getX(), player.getY(), player.getZ(), SoundEvents.SNOWBALL_THROW, SoundSource.NEUTRAL, 0.5F, 0.8F * SinewSoundUtils.randomizePitch(level));
+        level.playSound(null, player.getX(), player.getY(), player.getZ(), SoundEvents.SNOWBALL_THROW, SoundSource.NEUTRAL, 0.5F, 0.4F * SinewSoundUtils.randomizePitch(level));
         if (!level.isClientSide) {
             AcidCharge acidCharge = new AcidCharge(level, player);
             acidCharge.setItem(stack);
             acidCharge.shootFromRotation(player, player.getXRot(), player.getYRot(), 0.0F, 1.0F, 1.0F);
             level.addFreshEntity(acidCharge);
         }
+        player.getCooldowns().addCooldown(this, 20);
         player.awardStat(Stats.ITEM_USED.get(this));
         stack.consume(1, player);
         return InteractionResultHolder.sidedSuccess(stack, level.isClientSide);

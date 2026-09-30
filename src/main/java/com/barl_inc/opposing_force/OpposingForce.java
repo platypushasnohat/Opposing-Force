@@ -1,5 +1,6 @@
 package com.barl_inc.opposing_force;
 
+import com.barl_inc.opposing_force.config.OFConfig;
 import com.barl_inc.opposing_force.datagen.client.OFItemModelProvider;
 import com.barl_inc.opposing_force.datagen.client.OFLanguageProvider;
 import com.barl_inc.opposing_force.datagen.client.OFSoundDefinitionsProvider;
@@ -16,6 +17,7 @@ import net.minecraft.resources.ResourceLocation;
 import net.neoforged.bus.api.IEventBus;
 import net.neoforged.fml.ModContainer;
 import net.neoforged.fml.common.Mod;
+import net.neoforged.fml.config.ModConfig;
 import net.neoforged.neoforge.common.data.ExistingFileHelper;
 import net.neoforged.neoforge.data.event.GatherDataEvent;
 import org.slf4j.Logger;
@@ -43,6 +45,7 @@ public class OpposingForce {
         OFDataComponents.DATA_COMPONENTS.register(modEventBus);
         OFCreativeTabs.CREATIVE_MODE_TAB.register(modEventBus);
         modEventBus.addListener(this::dataSetup);
+        modContainer.registerConfig(ModConfig.Type.COMMON, OFConfig.COMMON_CONFIG, "opposing_force-common.toml");
     }
 
     private void dataSetup(GatherDataEvent event) {

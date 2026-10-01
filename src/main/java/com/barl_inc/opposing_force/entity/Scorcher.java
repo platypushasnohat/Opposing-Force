@@ -273,11 +273,6 @@ public class Scorcher extends AnimatedMonster {
 
         public void hurtEntitiesAround(Vec3 center, float radius, float damageAmount) {
             AABB aabb = new AABB(center.subtract(radius, 0.0F, radius), center.add(radius, 0.95F, radius));
-//            if (!this.scorcher.level().isClientSide) {
-//                if (this.scorcher.level() instanceof ServerLevel serverLevel) {
-//                    SinewMiscUtils.outlineBounds(aabb, serverLevel, ParticleTypes.ELECTRIC_SPARK);
-//                }
-//            }
             DamageSource damageSource = OFDamageTypes.causeScorchDamage(this.scorcher.level().registryAccess(), this.scorcher);
             for (LivingEntity living : this.scorcher.level().getEntitiesOfClass(LivingEntity.class, aabb, EntitySelector.NO_CREATIVE_OR_SPECTATOR)) {
                 if (!living.is(this.scorcher) && !living.fireImmune() && living.distanceToSqr(center.x, center.y, center.z) <= radius * radius) {
@@ -289,7 +284,7 @@ public class Scorcher extends AnimatedMonster {
             }
         }
 
-        protected Vec3 rotateOffsetVec(Vec3 offset, float xRot, float yRot) {
+        public Vec3 rotateOffsetVec(Vec3 offset, float xRot, float yRot) {
             return offset.xRot(-xRot * Mth.DEG_TO_RAD).yRot(-yRot * Mth.DEG_TO_RAD);
         }
 

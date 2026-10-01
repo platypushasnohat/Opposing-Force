@@ -1,19 +1,21 @@
 package com.barl_inc.opposing_force.entity.projectile;
 
 import com.barl_inc.opposing_force.OpposingForce;
+import com.barl_inc.opposing_force.item.DisabledItem;
 import com.barl_inc.opposing_force.registry.*;
 import com.platypushasnohat.sinew.utils.SinewSoundUtils;
 import net.minecraft.core.BlockPos;
+import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.syncher.EntityDataAccessor;
 import net.minecraft.network.syncher.EntityDataSerializers;
 import net.minecraft.network.syncher.SynchedEntityData;
+import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.util.Mth;
 import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.LivingEntity;
-import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.entity.projectile.ThrowableItemProjectile;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
@@ -27,6 +29,7 @@ public class LaserBlade extends ThrowableItemProjectile {
 
     private static final EntityDataAccessor<Float> DAMAGE = SynchedEntityData.defineId(LaserBlade.class, EntityDataSerializers.FLOAT);
     private static final EntityDataAccessor<Integer> RETURN_TIME = SynchedEntityData.defineId(LaserBlade.class, EntityDataSerializers.INT);
+    private static final EntityDataAccessor<Integer> SLOT = SynchedEntityData.defineId(LaserBlade.class, EntityDataSerializers.INT);
 
     public LaserBlade(EntityType<? extends LaserBlade> entityType, Level level) {
         super(entityType, level);
@@ -43,6 +46,21 @@ public class LaserBlade extends ThrowableItemProjectile {
         super.defineSynchedData(builder);
         builder.define(DAMAGE, 1.0F);
         builder.define(RETURN_TIME, 0);
+        builder.define(SLOT, 0);
+    }
+
+    @Override
+    public void addAdditionalSaveData(CompoundTag compoundTag) {
+        super.addAdditionalSaveData(compoundTag);
+        compoundTag.putFloat("Damage", this.getDamage());
+        compoundTag.putInt("Slot", this.getSlot());
+    }
+
+    @Override
+    public void readAdditionalSaveData(CompoundTag compoundTag) {
+        super.readAdditionalSaveData(compoundTag);
+        this.setDamage(compoundTag.getInt("Damage"));
+        this.setSlot(compoundTag.getInt("Slot"));
     }
 
     public float getDamage() {
@@ -59,6 +77,14 @@ public class LaserBlade extends ThrowableItemProjectile {
 
     public void setReturnTime(int returnTime) {
         this.entityData.set(RETURN_TIME, returnTime);
+    }
+
+    public int getSlot() {
+        return this.entityData.get(SLOT);
+    }
+
+    public void setSlot(int slot) {
+        this.entityData.set(SLOT, slot);
     }
 
     @Override
@@ -121,7 +147,6 @@ public class LaserBlade extends ThrowableItemProjectile {
         if (!this.level().isClientSide) {
             Entity owner = this.getOwner();
             if (owner == null || !owner.isAlive() || !owner.level().equals(this.level()) || this.distanceTo(owner) > 1000.0F) {
-                this.spawnAtLocation(this.getItem(), 0.1F);
                 this.discard();
                 return;
             }
@@ -136,10 +161,9 @@ public class LaserBlade extends ThrowableItemProjectile {
                     Vec3 returnMotion = ownerPos.subtract(position()).normalize().scale(velocity);
                     this.setDeltaMovement(deltaMovement.lerp(returnMotion, 0.2F));
                     if (this.isAlive() && this.distanceTo(living) < 3.0F) {
-                        if (living instanceof Player player) {
-                            player.getCooldowns().addCooldown(stack.getItem(), 35);
-                            player.getInventory().add(stack);
-                            player.take(this, 1);
+                        if (living instanceof ServerPlayer player) {
+                            player.getCooldowns().addCooldown(stack.getItem(), 30);
+                            DisabledItem.enableItem(player, this.getSlot());
                         }
                         this.level().playSound(null, this.getX(), this.getY(), this.getZ(), OFSoundEvents.LASER_BLADE_CATCH.get(), SoundSource.NEUTRAL, 1.0F, SinewSoundUtils.randomizePitch(this.level()));
                         this.discard();
@@ -148,7 +172,7 @@ public class LaserBlade extends ThrowableItemProjectile {
             }
         } else {
             OpposingForce.PROXY.playSound(this, (byte) 1);
-            this.level().addParticle(OFParticleTypes.LASER_DUST.get(), this.getX(), this.getY() + this.getBbHeight() * 0.5F, this.getZ(), 0, 0, 0);
+            this.level().addParticle(OFParticleTypes.LASER_DUST.get(), this.getX(), this.getY() + this.getBbHeight() / 2, this.getZ(), 0, 0, 0);
         }
     }
 

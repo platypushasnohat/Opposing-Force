@@ -46,12 +46,17 @@ public class OpposingForce {
         OFDataComponents.DATA_COMPONENTS.register(modEventBus);
         OFCreativeTabs.CREATIVE_MODE_TAB.register(modEventBus);
         modEventBus.addListener(this::commonSetup);
+        modEventBus.addListener(this::clientSetup);
         modEventBus.addListener(this::dataSetup);
         modContainer.registerConfig(ModConfig.Type.COMMON, OFConfig.COMMON_CONFIG, "opposing_force-common.toml");
     }
 
     private void commonSetup(FMLCommonSetupEvent event) {
         event.enqueueWork(OFCompat::registerCompat);
+    }
+
+    private void clientSetup(FMLCommonSetupEvent event) {
+        event.enqueueWork(OFClientCompat::registerCompat);
     }
 
     private void dataSetup(GatherDataEvent event) {

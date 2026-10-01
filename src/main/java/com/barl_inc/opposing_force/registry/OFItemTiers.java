@@ -10,5 +10,6 @@ public class OFItemTiers {
 
 	public static final Tier LASER_BLADE = new SinewItemTier(BlockTags.INCORRECT_FOR_NETHERITE_TOOL, 1280, 9.0F, 4.0F, 10, () -> Ingredient.of(OFItems.LASER_FOCUS));
 	public static final Tier EMERALD = new SinewItemTier(BlockTags.INCORRECT_FOR_DIAMOND_TOOL, 1561, 8.0F, 3.0F, 15, () -> Ingredient.of(Tags.Items.GEMS_EMERALD));
+	public static final Tier CHITIN = new SinewItemTier(BlockTags.INCORRECT_FOR_IRON_TOOL, 300, 6.0F, 2.0F, 14, () -> Ingredient.of(OFItems.CHITIN));
 
 }

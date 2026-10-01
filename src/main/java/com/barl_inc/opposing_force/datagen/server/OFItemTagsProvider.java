@@ -24,7 +24,8 @@ public class OFItemTagsProvider extends ItemTagsProvider {
 
 		this.tag(ItemTags.SWORDS).add(
 				OFItems.LASER_BLADE.get(),
-				OFItems.EMERALD_SWORD.get()
+				OFItems.EMERALD_SWORD.get(),
+				OFItems.CHITIN_LANCE.get()
 		);
 
 		this.tag(ItemTags.PICKAXES).add(

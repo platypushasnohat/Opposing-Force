@@ -23,6 +23,7 @@ public class OFCreativeTabs {
                         output.accept(OFItems.SCORCHER_SPAWN_EGG);
 
                         output.accept(OFItems.CHITIN);
+                        output.accept(OFItems.CHITIN_LANCE);
 
                         output.accept(OFItems.LASER_FOCUS);
                         output.accept(OFItems.POWER_CELL);

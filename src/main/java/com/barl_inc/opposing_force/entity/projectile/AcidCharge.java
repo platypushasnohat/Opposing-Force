@@ -66,7 +66,7 @@ public class AcidCharge extends ThrowableItemProjectile {
                 if (entity instanceof LivingEntity living) {
                     acidCloud.setOwner(living);
                 }
-                acidCloud.setRadius(2.0F);
+                acidCloud.setRadius(2.5F);
                 acidCloud.setDamage(2.0F);
                 acidCloud.setDuration(300);
                 this.level().playSound(null, this.blockPosition(), OFSoundEvents.ACID_CHARGE_EXPLODE.get(), SoundSource.NEUTRAL, 1.0F, SinewSoundUtils.randomizePitch(this.level()));

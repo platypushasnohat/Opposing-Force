@@ -273,7 +273,7 @@ public class Bewilder extends AnimatedMonster {
                 nearbyEntities.stream().filter(entity -> entity != this.bewilder).limit(4).forEach(entity -> {
                     this.bewilder.doHurtTarget(entity);
                     float yawRad = this.bewilder.getYRot() * Mth.DEG_TO_RAD;
-                    entity.knockback(1.5F, Mth.sin(yawRad), (-Mth.cos(yawRad)));
+                    entity.knockback(1.5F, Mth.sin(yawRad), -Mth.cos(yawRad));
                     if (entity.isDamageSourceBlocked(this.bewilder.damageSources().mobAttack(this.bewilder)) && entity instanceof Player player) {
                         player.disableShield();
                         player.knockback(1.0F, Mth.sin(yawRad), (-Mth.cos(yawRad)));

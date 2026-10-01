@@ -1,0 +1,21 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "equipment",
+  "key": {
+    "I": {
+      "item": "minecraft:iron_sword"
+    },
+    "C": {
+      "item": "opposing_force:chitin"
+    }
+  },
+  "pattern": [
+    " C ",
+    "CIC",
+    " C "
+  ],
+  "result": {
+    "count": 1,
+    "id": "opposing_force:chitin_lance"
+  }
+}

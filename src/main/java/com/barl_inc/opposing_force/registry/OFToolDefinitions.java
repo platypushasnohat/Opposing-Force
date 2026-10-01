@@ -10,4 +10,8 @@ public class OFToolDefinitions {
             .tier(OFItemTiers.EMERALD)
             .attribute(SinewAttributes.EXPERIENCE_BOOST, 0.5F, AttributeModifier.Operation.ADD_MULTIPLIED_TOTAL)
             .build();
+
+    public static final ToolDefinition CHITIN = new ToolDefinition.Builder()
+            .tier(OFItemTiers.CHITIN)
+            .build();
 }

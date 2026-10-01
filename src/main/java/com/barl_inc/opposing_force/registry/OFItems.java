@@ -30,10 +30,12 @@ public class OFItems {
     public static final DeferredItem<Item> TRI_BLASTER = registerItemNoLang("tri_blaster", () -> new TriBlasterItem(new Item.Properties()));
     public static final DeferredItem<Item> SCATTER_BLASTER = registerItem("scatter_blaster", () -> new ScatterBlasterItem(new Item.Properties()));
     public static final DeferredItem<Item> LASER_BLADE = registerItem("laser_blade", () -> new LaserBladeItem(OFItemTiers.LASER_BLADE, new Item.Properties().attributes(SwordItem.createAttributes(OFItemTiers.LASER_BLADE, 4.0F, -2.4F))));
+    public static final DeferredItem<Item> DISABLED_LASER_BLADE = registerItemNoLang("disabled_laser_blade", () -> new DisabledItem(new Item.Properties().stacksTo(1)));
     public static final DeferredItem<Item> MUSIC_DISC_SLAYSER = registerItemNoLang("music_disc_slayser", () -> new Item(new Item.Properties().stacksTo(1).rarity(Rarity.RARE).jukeboxPlayable(OFJukeboxSongs.SLAYSER)));
 
     public static final DeferredItem<Item> BEWILDER_SPAWN_EGG = registerSpawnEggItem("bewilder", OFEntities.BEWILDER, 0x653847, 0x1e1014);
     public static final DeferredItem<Item> CHITIN = registerItem("chitin", () -> new Item(new Item.Properties()));
+    public static final DeferredItem<Item> CHITIN_LANCE = registerItem("chitin_lance", () -> new ChitinLanceItem(new Item.Properties()));
 
     public static final DeferredItem<Item> GUSHER_SPAWN_EGG = registerSpawnEggItem("gusher", OFEntities.GUSHER, 0x1b1d16, 0x8eeb60);
     public static final DeferredItem<Item> ACID_CHARGE = registerItem("acid_charge", () -> new AcidChargeItem(new Item.Properties()));

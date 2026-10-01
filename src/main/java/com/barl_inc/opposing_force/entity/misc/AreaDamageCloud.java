@@ -159,7 +159,7 @@ public abstract class AreaDamageCloud extends Entity implements TraceableEntity 
                 this.discard();
                 return;
             }
-            if (this.tickCount % 10 == 0) {
+            if (this.tickCount % 5 == 0) {
                 List<LivingEntity> entities = this.level().getEntitiesOfClass(LivingEntity.class, this.getBoundingBox());
                 if (!entities.isEmpty()) {
                     for (LivingEntity entity : entities) {

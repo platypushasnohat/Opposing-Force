@@ -1,6 +1,7 @@
 package com.barl_inc.opposing_force.item;
 
 import com.barl_inc.opposing_force.entity.projectile.LaserBlade;
+import com.barl_inc.opposing_force.registry.OFItems;
 import com.barl_inc.opposing_force.registry.OFSoundEvents;
 import com.platypushasnohat.sinew.utils.SinewSoundUtils;
 import net.minecraft.server.level.ServerPlayer;
@@ -10,6 +11,7 @@ import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResultHolder;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.SwordItem;
@@ -27,18 +29,27 @@ public class LaserBladeItem extends SwordItem {
 
     @Override
     public InteractionResultHolder<ItemStack> use(Level level, Player player, InteractionHand hand) {
+        int slot = player.getInventory().selected;
+        if (hand == InteractionHand.OFF_HAND) {
+            slot = Inventory.SLOT_OFFHAND;
+        }
         ItemStack stack = player.getItemInHand(hand);
-        stack.hurtAndBreak(1, player, LivingEntity.getSlotForHand(hand));
-        Vec3 position = player.position().add(0, player.getBbHeight() * 0.5F, 0);
-        LaserBlade laserBlade = new LaserBlade(level, position.x, position.y, position.z);
-        laserBlade.setOwner(player);
-        laserBlade.setItem(stack);
-        laserBlade.setReturnTime(12);
-        laserBlade.setDamage(12.0F);
-        laserBlade.shootFromRotation(player, player.getXRot(), player.getYRot(), 0.0F, 1.5F, 0.0F);
-        level.addFreshEntity(laserBlade);
-        player.getInventory().removeItem(stack);
-        level.playSound(null, laserBlade.blockPosition(), OFSoundEvents.LASER_BLADE_SWING.get(), SoundSource.PLAYERS, 1.0F, SinewSoundUtils.randomizePitch(level));
+        if (!level.isClientSide) {
+            stack.hurtAndBreak(1, player, LivingEntity.getSlotForHand(hand));
+            Vec3 position = player.position().add(0, player.getBbHeight() * 0.5F, 0);
+            LaserBlade laserBlade = new LaserBlade(level, position.x, position.y, position.z);
+            laserBlade.setOwner(player);
+            laserBlade.setItem(stack);
+            laserBlade.setReturnTime(12);
+            laserBlade.setDamage(12.0F);
+            laserBlade.setSlot(slot);
+            laserBlade.shootFromRotation(player, player.getXRot(), player.getYRot(), 0.0F, 1.5F, 0.0F);
+            level.addFreshEntity(laserBlade);
+            if (player instanceof ServerPlayer serverPlayer) {
+                DisabledItem.disableItem(serverPlayer, slot, OFItems.DISABLED_LASER_BLADE);
+            }
+            level.playSound(null, laserBlade.blockPosition(), OFSoundEvents.LASER_BLADE_SWING.get(), SoundSource.PLAYERS, 1.0F, SinewSoundUtils.randomizePitch(level));
+        }
         player.awardStat(Stats.ITEM_USED.get(stack.getItem()));
         player.swing(hand, true);
         return InteractionResultHolder.success(stack);

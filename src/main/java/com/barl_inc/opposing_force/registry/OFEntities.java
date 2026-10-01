@@ -1,10 +1,7 @@
 package com.barl_inc.opposing_force.registry;
 
 import com.barl_inc.opposing_force.OpposingForce;
-import com.barl_inc.opposing_force.entity.Bewilder;
-import com.barl_inc.opposing_force.entity.Dicer;
-import com.barl_inc.opposing_force.entity.Gnat;
-import com.barl_inc.opposing_force.entity.Gusher;
+import com.barl_inc.opposing_force.entity.*;
 import com.barl_inc.opposing_force.entity.misc.AcidCloud;
 import com.barl_inc.opposing_force.entity.misc.DicerLaser;
 import com.barl_inc.opposing_force.entity.projectile.AcidCharge;
@@ -33,7 +30,7 @@ public class OFEntities {
     public static final DeferredHolder<EntityType<?>, EntityType<Bewilder>> BEWILDER = registerEntity("bewilder", Bewilder::new, MobCategory.MONSTER, builder -> builder.sized(1.5F, 1.9F).eyeHeight(1.25F).clientTrackingRange(8));
     public static final DeferredHolder<EntityType<?>, EntityType<Gusher>> GUSHER = registerEntity("gusher", Gusher::new, MobCategory.MONSTER, builder -> builder.sized(1.8F, 2.55F).eyeHeight(2.15F).clientTrackingRange(8));
     public static final DeferredHolder<EntityType<?>, EntityType<Gnat>> GNAT = registerEntity("gnat", Gnat::new, MobCategory.MONSTER, builder -> builder.sized(0.65F, 0.65F).eyeHeight(0.45F).clientTrackingRange(8));
-
+    public static final DeferredHolder<EntityType<?>, EntityType<Scorcher>> SCORCHER = registerEntity("scorcher", Scorcher::new, MobCategory.MONSTER, builder -> builder.sized(0.95F, 0.95F).eyeHeight(0.7F).clientTrackingRange(8));
     public static final DeferredHolder<EntityType<?>, EntityType<AcidCharge>> ACID_CHARGE = registerEntity("acid_charge", AcidCharge::new, MobCategory.MISC, builder -> builder.sized(0.4F, 0.4F).setUpdateInterval(10).clientTrackingRange(4));
     public static final DeferredHolder<EntityType<?>, EntityType<AcidCloud>> ACID_CLOUD = registerEntity("acid_cloud", AcidCloud::new, MobCategory.MISC, builder -> builder.sized(4.0F, 0.5F).fireImmune().clientTrackingRange(10).setUpdateInterval(Integer.MAX_VALUE));
     public static final DeferredHolder<EntityType<?>, EntityType<LaserBolt>> LASER_BOLT = registerEntity("laser_bolt", LaserBolt::new, MobCategory.MISC, builder -> builder.sized(0.3F, 0.3F).setShouldReceiveVelocityUpdates(true).fireImmune().clientTrackingRange(4));

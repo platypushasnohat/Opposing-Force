@@ -69,5 +69,10 @@ public class OFLanguageProvider extends SinewLanguageProvider {
         this.add("death.attack.acid_1", "%s was liquefied");
         this.add("death.attack.acid_0.entity", "%s was dunked in acid by %s");
         this.add("death.attack.acid_1.entity", "%s was liquefied by %s");
+
+        this.add("death.attack.scorch_0", "%s was scorched");
+        this.add("death.attack.scorch_1", "%s was burnt to ash");
+        this.add("death.attack.scorch_0.entity", "%s was scorched by %s");
+        this.add("death.attack.scorch_1.entity", "%s was burnt to ash by %s");
     }
 }

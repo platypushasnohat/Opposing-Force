@@ -7,10 +7,7 @@ import com.barl_inc.opposing_force.client.model.entity.*;
 import com.barl_inc.opposing_force.client.model.item.BlasterModel;
 import com.barl_inc.opposing_force.client.model.item.ScatterBlasterModel;
 import com.barl_inc.opposing_force.client.model.item.TriBlasterModel;
-import com.barl_inc.opposing_force.client.particle.AcidParticle;
-import com.barl_inc.opposing_force.client.particle.LaserDustParticle;
-import com.barl_inc.opposing_force.client.particle.LaserImpactParticle;
-import com.barl_inc.opposing_force.client.particle.LaserSweepParticle;
+import com.barl_inc.opposing_force.client.particle.*;
 import com.barl_inc.opposing_force.client.render.entity.*;
 import com.barl_inc.opposing_force.client.render.item.OFItemExtensions;
 import com.barl_inc.opposing_force.item.BlasterItem;
@@ -45,6 +42,7 @@ public class ClientEvents {
         event.registerEntityRenderer(OFEntities.BEWILDER.get(), BewilderRenderer::new);
         event.registerEntityRenderer(OFEntities.GUSHER.get(), GusherRenderer::new);
         event.registerEntityRenderer(OFEntities.GNAT.get(), GnatRenderer::new);
+        event.registerEntityRenderer(OFEntities.SCORCHER.get(), ScorcherRenderer::new);
 
         event.registerEntityRenderer(OFEntities.LASER_BOLT.get(), LaserBoltRenderer::new);
         event.registerEntityRenderer(OFEntities.LASER_BLADE.get(), LaserBladeRenderer::new);
@@ -58,6 +56,7 @@ public class ClientEvents {
         event.registerLayerDefinition(OFModelLayers.BEWILDER, BewilderModel::createBodyLayer);
         event.registerLayerDefinition(OFModelLayers.GUSHER, GusherModel::createBodyLayer);
         event.registerLayerDefinition(OFModelLayers.GNAT, GnatModel::createBodyLayer);
+        event.registerLayerDefinition(OFModelLayers.SCORCHER, ScorcherModel::createBodyLayer);
 
         event.registerLayerDefinition(OFModelLayers.LASER_BOLT, LaserBoltModel::createBodyLayer);
         event.registerLayerDefinition(OFModelLayers.ACID_CHARGE, AcidChargeModel::createBodyLayer);
@@ -73,6 +72,7 @@ public class ClientEvents {
         event.registerSpriteSet(OFParticleTypes.LASER_IMPACT.get(), LaserImpactParticle.Factory::new);
         event.registerSpriteSet(OFParticleTypes.LASER_SWEEP.get(), LaserSweepParticle.Factory::new);
         event.registerSpriteSet(OFParticleTypes.ACID.get(), AcidParticle.Factory::new);
+        event.registerSpriteSet(OFParticleTypes.FIRE_BREATH.get(), FireBreathParticle.Factory::new);
     }
 
     @SubscribeEvent

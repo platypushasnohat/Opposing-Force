@@ -2,9 +2,9 @@
   "type": "neoforge:add_spawns",
   "biomes": "#opposing_force:has_monster/overworld",
   "spawners": {
-    "type": "opposing_force:gusher",
-    "maxCount": 1,
-    "minCount": 1,
+    "type": "opposing_force:scorcher",
+    "maxCount": 2,
+    "minCount": 2,
     "weight": 20
   }
 }

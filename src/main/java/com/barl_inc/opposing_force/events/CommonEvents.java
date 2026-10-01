@@ -1,10 +1,7 @@
 package com.barl_inc.opposing_force.events;
 
 import com.barl_inc.opposing_force.OpposingForce;
-import com.barl_inc.opposing_force.entity.Bewilder;
-import com.barl_inc.opposing_force.entity.Dicer;
-import com.barl_inc.opposing_force.entity.Gnat;
-import com.barl_inc.opposing_force.entity.Gusher;
+import com.barl_inc.opposing_force.entity.*;
 import com.barl_inc.opposing_force.entity.ai.goal.SpiderTargetGoal;
 import com.barl_inc.opposing_force.registry.OFEntities;
 import com.barl_inc.opposing_force.registry.OFItems;
@@ -37,6 +34,7 @@ public class CommonEvents {
         event.put(OFEntities.BEWILDER.get(), Bewilder.registerAttributes().build());
         event.put(OFEntities.GUSHER.get(), Gusher.registerAttributes().build());
         event.put(OFEntities.GNAT.get(), Gnat.registerAttributes().build());
+        event.put(OFEntities.SCORCHER.get(), Scorcher.registerAttributes().build());
     }
 
     @SubscribeEvent
@@ -45,6 +43,7 @@ public class CommonEvents {
         event.register(OFEntities.BEWILDER.get(), SpawnPlacementTypes.ON_GROUND, Heightmap.Types.MOTION_BLOCKING_NO_LEAVES, Bewilder::checkBewilderSpawnRules, RegisterSpawnPlacementsEvent.Operation.AND);
         event.register(OFEntities.GUSHER.get(), SpawnPlacementTypes.ON_GROUND, Heightmap.Types.MOTION_BLOCKING_NO_LEAVES, Gusher::checkGusherSpawnRules, RegisterSpawnPlacementsEvent.Operation.AND);
         event.register(OFEntities.GNAT.get(), SpawnPlacementTypes.ON_GROUND, Heightmap.Types.MOTION_BLOCKING_NO_LEAVES, Monster::checkMonsterSpawnRules, RegisterSpawnPlacementsEvent.Operation.AND);
+        event.register(OFEntities.SCORCHER.get(), SpawnPlacementTypes.ON_GROUND, Heightmap.Types.MOTION_BLOCKING_NO_LEAVES, Monster::checkMonsterSpawnRules, RegisterSpawnPlacementsEvent.Operation.AND);
     }
 
     @SubscribeEvent

@@ -15,6 +15,7 @@ public class OFDamageTypes {
     public static final ResourceKey<DamageType> LASER_BOLT = ResourceKey.create(Registries.DAMAGE_TYPE, OpposingForce.location("laser_bolt"));
     public static final ResourceKey<DamageType> LASER_BLADE = ResourceKey.create(Registries.DAMAGE_TYPE, OpposingForce.location("laser_blade"));
     public static final ResourceKey<DamageType> ACID = ResourceKey.create(Registries.DAMAGE_TYPE, OpposingForce.location("acid"));
+    public static final ResourceKey<DamageType> SCORCH = ResourceKey.create(Registries.DAMAGE_TYPE, OpposingForce.location("scorch"));
 
     public static DamageSource causeLaserDamage(RegistryAccess registryAccess, Entity source) {
         return new RandomMessageDamageSource(registryAccess.registry(Registries.DAMAGE_TYPE).get().getHolderOrThrow(LASER), source, 1);
@@ -30,5 +31,9 @@ public class OFDamageTypes {
 
     public static DamageSource causeAcidDamage(RegistryAccess registryAccess, Entity source) {
         return new RandomMessageDamageSource(registryAccess.registry(Registries.DAMAGE_TYPE).get().getHolderOrThrow(ACID), source, 1);
+    }
+
+    public static DamageSource causeScorchDamage(RegistryAccess registryAccess, Entity source) {
+        return new RandomMessageDamageSource(registryAccess.registry(Registries.DAMAGE_TYPE).get().getHolderOrThrow(SCORCH), source, 1);
     }
 }

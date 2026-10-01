@@ -35,7 +35,7 @@ public class DicerLaser extends Entity {
     private static final EntityDataAccessor<Integer> CASTER = SynchedEntityData.defineId(DicerLaser.class, EntityDataSerializers.INT);
 
     public static final double RADIUS = 30;
-    public static final float DAMAGE = 4.0F;
+    public static final float DAMAGE = 5.0F;
 
     public LivingEntity caster;
     public double endPosX;

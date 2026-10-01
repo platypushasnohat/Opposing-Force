@@ -24,9 +24,9 @@ public class OFBiomeModifiers {
 
     public static void bootstrap(BootstrapContext<BiomeModifier> context) {
         addSpawn(context, "dicer", OFBiomeTags.HAS_OVERWORLD_MONSTERS, new MobSpawnSettings.SpawnerData(OFEntities.DICER.get(), 5, 1, 1));
-        addSpawn(context, "bewilder", OFBiomeTags.HAS_SAVANNA_MONSTERS, new MobSpawnSettings.SpawnerData(OFEntities.BEWILDER.get(), 25, 1, 2));
+        addSpawn(context, "bewilder", OFBiomeTags.HAS_SAVANNA_MONSTERS, new MobSpawnSettings.SpawnerData(OFEntities.BEWILDER.get(), 25, 1, 1));
         addSpawn(context, "gusher", OFBiomeTags.HAS_OVERWORLD_MONSTERS, new MobSpawnSettings.SpawnerData(OFEntities.GUSHER.get(), 20, 1, 1));
-        addSpawn(context, "gnat", OFBiomeTags.HAS_PLAINS_MONSTERS, new MobSpawnSettings.SpawnerData(OFEntities.GNAT.get(), 50, 4, 8));
+        addSpawn(context, "gnat", OFBiomeTags.HAS_PLAINS_MONSTERS, new MobSpawnSettings.SpawnerData(OFEntities.GNAT.get(), 100, 4, 4));
         addSpawn(context, "scorcher", OFBiomeTags.HAS_OVERWORLD_MONSTERS, new MobSpawnSettings.SpawnerData(OFEntities.SCORCHER.get(), 20, 2, 2));
     }
 

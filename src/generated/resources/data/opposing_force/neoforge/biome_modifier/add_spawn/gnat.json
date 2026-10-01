@@ -3,8 +3,8 @@
   "biomes": "#opposing_force:has_monster/plains",
   "spawners": {
     "type": "opposing_force:gnat",
-    "maxCount": 8,
+    "maxCount": 4,
     "minCount": 4,
-    "weight": 50
+    "weight": 100
   }
 }

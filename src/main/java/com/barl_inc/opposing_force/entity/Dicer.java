@@ -30,6 +30,7 @@ import net.minecraft.world.entity.ai.targeting.TargetingConditions;
 import net.minecraft.world.entity.animal.IronGolem;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.Level;
+import net.minecraft.world.phys.AABB;
 import net.minecraft.world.phys.Vec3;
 
 import java.util.List;
@@ -311,7 +312,8 @@ public class Dicer extends AnimatedMonster {
         }
 
         private void hurtNearbyEntities() {
-            List<LivingEntity> nearbyEntities = this.dicer.level().getNearbyEntities(LivingEntity.class, TargetingConditions.forCombat(), this.dicer, this.dicer.getBoundingBox().inflate(1.8D));
+            AABB attackBox = this.dicer.getBoundingBox().inflate(1.5D, 0.0D, 1.5D);
+            List<LivingEntity> nearbyEntities = this.dicer.level().getNearbyEntities(LivingEntity.class, TargetingConditions.forCombat(), this.dicer, attackBox);
             if (!nearbyEntities.isEmpty()) {
                 nearbyEntities.stream().filter(entity -> entity != this.dicer).limit(8).forEach(entity -> {
                     this.dicer.doHurtTarget(entity);

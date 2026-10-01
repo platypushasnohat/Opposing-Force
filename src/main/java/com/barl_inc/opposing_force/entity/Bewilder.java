@@ -8,15 +8,12 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.sounds.SoundEvent;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.sounds.SoundSource;
-import net.minecraft.tags.BlockTags;
 import net.minecraft.tags.DamageTypeTags;
 import net.minecraft.util.Mth;
-import net.minecraft.util.RandomSource;
 import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.Mob;
-import net.minecraft.world.entity.MobSpawnType;
 import net.minecraft.world.entity.ai.attributes.AttributeSupplier;
 import net.minecraft.world.entity.ai.attributes.Attributes;
 import net.minecraft.world.entity.ai.goal.FloatGoal;
@@ -26,11 +23,9 @@ import net.minecraft.world.entity.ai.goal.WaterAvoidingRandomStrollGoal;
 import net.minecraft.world.entity.ai.goal.target.HurtByTargetGoal;
 import net.minecraft.world.entity.ai.goal.target.NearestAttackableTargetGoal;
 import net.minecraft.world.entity.ai.targeting.TargetingConditions;
-import net.minecraft.world.entity.monster.Monster;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.ClipContext;
 import net.minecraft.world.level.Level;
-import net.minecraft.world.level.ServerLevelAccessor;
 import net.minecraft.world.level.block.SoundType;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.AABB;
@@ -63,7 +58,7 @@ public class Bewilder extends AnimatedMonster {
                 .add(Attributes.ATTACK_DAMAGE, 5.0D)
                 .add(Attributes.STEP_HEIGHT, 1.2D)
                 .add(Attributes.KNOCKBACK_RESISTANCE, 0.5D)
-                .add(Attributes.ARMOR, 12.0D);
+                .add(Attributes.ARMOR, 10.0D);
     }
 
     @Override
@@ -128,10 +123,6 @@ public class Bewilder extends AnimatedMonster {
         return 0.8F;
     }
 
-    public static boolean checkBewilderSpawnRules(EntityType<Bewilder> entityType, ServerLevelAccessor level, MobSpawnType spawnType, BlockPos pos, RandomSource random) {
-        return level.getBlockState(pos.below()).is(BlockTags.ANIMALS_SPAWNABLE_ON) && Monster.checkMonsterSpawnRules(entityType, level, spawnType, pos, random);
-    }
-
     private static class BewilderAttackGoal extends AttackGoal {
 
         private final Bewilder bewilder;
@@ -182,10 +173,10 @@ public class Bewilder extends AnimatedMonster {
                     if (this.attackCooldown > 0) {
                         this.attackCooldown--;
                     }
-                    if (this.bewilder.tickCount % 5 == 0) {
+                    if (this.bewilder.tickCount % 3 == 0) {
                         this.bewilder.getNavigation().moveTo(target, 1.2D);
                     }
-                    if (this.attackCooldown <= 0 && distance < 144.0D) {
+                    if (this.attackCooldown <= 0 && distance < 144) {
                         this.attackState = 1;
                     }
                 }
@@ -215,13 +206,14 @@ public class Bewilder extends AnimatedMonster {
             double dx = target.getX() - this.bewilder.getX();
             double dz = target.getZ() - this.bewilder.getZ();
             float desiredYaw = (float) (Mth.atan2(dz, dx) * Mth.RAD_TO_DEG) - 90.0F;
-            this.bewilder.setYRot(Mth.approachDegrees(this.bewilder.getYRot(), desiredYaw, 1.9F));
+            this.bewilder.setYRot(Mth.approachDegrees(this.bewilder.getYRot(), desiredYaw, 0.3F));
             this.bewilder.yBodyRot = this.bewilder.getYRot();
             this.bewilder.yHeadRot = this.bewilder.getYRot();
             float yawRad = this.bewilder.getYRot() * Mth.DEG_TO_RAD;
             Vec3 forward = new Vec3(-Mth.sin(yawRad), 0.0F, Mth.cos(yawRad));
             this.bewilder.setDeltaMovement(forward.scale(0.4D).add(0.0F, this.bewilder.getDeltaMovement().y, 0.0F));
             this.hurtNearbyEntities();
+            double distance = this.bewilder.distanceTo(target);
             BlockHitResult hitResult = this.bewilder.level().clip(new ClipContext(this.bewilder.position().add(0.0F, this.bewilder.getBbHeight() - 0.2F, 0.0F), this.bewilder.position().add(0.0F, this.bewilder.getBbHeight() - 0.2F, 0.0F).add(this.bewilder.getLookAngle().scale(1.2D)), ClipContext.Block.COLLIDER, ClipContext.Fluid.NONE, this.bewilder));
             BlockPos hitPos = hitResult.getBlockPos();
             BlockState state = this.bewilder.level().getBlockState(hitPos);
@@ -232,7 +224,7 @@ public class Bewilder extends AnimatedMonster {
                 this.bewilder.setSprinting(false);
                 this.attackState = 4;
             }
-            else if (this.timer > 100) {
+            else if (this.timer > 100 || (this.timer > 20 && distance >= 13)) {
                 this.timer = 0;
                 this.bewilder.setSprinting(false);
                 this.attackState = 3;
@@ -275,7 +267,7 @@ public class Bewilder extends AnimatedMonster {
         }
 
         private void hurtNearbyEntities() {
-            AABB attackBox = this.bewilder.getBoundingBox().move(this.bewilder.getLookAngle().normalize().scale(0.6D)).inflate(0.4D, 0.0D, 0.4D);
+            AABB attackBox = this.bewilder.getBoundingBox().move(this.bewilder.getLookAngle().normalize().scale(1.2D)).inflate(0.5D, 0.0D, 0.5D);
             List<LivingEntity> nearbyEntities = this.bewilder.level().getNearbyEntities(LivingEntity.class, TargetingConditions.forCombat(), this.bewilder, attackBox);
             if (!nearbyEntities.isEmpty()) {
                 nearbyEntities.stream().filter(entity -> entity != this.bewilder).limit(4).forEach(entity -> {

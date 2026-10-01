@@ -49,6 +49,7 @@ public class Scorcher extends AnimatedMonster {
 
     public Scorcher(EntityType<? extends Scorcher> entityType, Level level) {
         super(entityType, level);
+        this.xpReward = 10;
     }
 
     public static AttributeSupplier.Builder registerAttributes() {
@@ -211,7 +212,7 @@ public class Scorcher extends AnimatedMonster {
                     if (distance <= this.getAttackReachSqr(target, 1.75D)) {
                         this.attackState = 1;
                     }
-                    if (distance <= 42 && this.fireCooldown <= 0 && this.isWithinYRange(target)) {
+                    if (distance <= 42 && this.fireCooldown <= 0 && this.isWithinYRange(target, 2)) {
                         this.attackState = 2;
                     }
                 }
@@ -282,17 +283,6 @@ public class Scorcher extends AnimatedMonster {
                     }
                 }
             }
-        }
-
-        public Vec3 rotateOffsetVec(Vec3 offset, float xRot, float yRot) {
-            return offset.xRot(-xRot * Mth.DEG_TO_RAD).yRot(-yRot * Mth.DEG_TO_RAD);
-        }
-
-        public boolean isWithinYRange(LivingEntity target) {
-            if (target == null) {
-                return false;
-            }
-            return Math.abs(target.getY() - this.scorcher.getY()) < 2;
         }
     }
 }

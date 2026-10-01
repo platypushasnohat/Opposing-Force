@@ -44,7 +44,7 @@ public class Gusher extends AnimatedMonster {
 
     public Gusher(EntityType<? extends Gusher> entityType, Level level) {
         super(entityType, level);
-        this.xpReward = 15;
+        this.xpReward = 20;
     }
 
     public static AttributeSupplier.Builder registerAttributes() {

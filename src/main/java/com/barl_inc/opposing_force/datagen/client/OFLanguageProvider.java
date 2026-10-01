@@ -28,6 +28,8 @@ public class OFLanguageProvider extends SinewLanguageProvider {
         this.addSound(OFSoundEvents.DICER_LASER_START, "Dicer powers up laser");
         this.addSound(OFSoundEvents.DICER_LASER_END, "Dicer powers down laser");
 
+        this.addSound(OFSoundEvents.GNAT_BUZZING, "Gnat buzzes");
+
         this.addSound(OFSoundEvents.LASER_BOLT_IMPACT, "Laser bolt disintegrates");
         this.addSound(OFSoundEvents.BLASTER_SHOOT, "Blaster shoots");
 

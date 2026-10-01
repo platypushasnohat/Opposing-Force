@@ -44,6 +44,8 @@ public class ClientEvents {
         event.registerEntityRenderer(OFEntities.DICER_LASER.get(), DicerLaserRenderer::new);
         event.registerEntityRenderer(OFEntities.BEWILDER.get(), BewilderRenderer::new);
         event.registerEntityRenderer(OFEntities.GUSHER.get(), GusherRenderer::new);
+        event.registerEntityRenderer(OFEntities.GNAT.get(), GnatRenderer::new);
+
         event.registerEntityRenderer(OFEntities.LASER_BOLT.get(), LaserBoltRenderer::new);
         event.registerEntityRenderer(OFEntities.LASER_BLADE.get(), LaserBladeRenderer::new);
         event.registerEntityRenderer(OFEntities.ACID_CHARGE.get(), AcidChargeRenderer::new);
@@ -55,6 +57,7 @@ public class ClientEvents {
         event.registerLayerDefinition(OFModelLayers.DICER, DicerModel::createBodyLayer);
         event.registerLayerDefinition(OFModelLayers.BEWILDER, BewilderModel::createBodyLayer);
         event.registerLayerDefinition(OFModelLayers.GUSHER, GusherModel::createBodyLayer);
+        event.registerLayerDefinition(OFModelLayers.GNAT, GnatModel::createBodyLayer);
 
         event.registerLayerDefinition(OFModelLayers.LASER_BOLT, LaserBoltModel::createBodyLayer);
         event.registerLayerDefinition(OFModelLayers.ACID_CHARGE, AcidChargeModel::createBodyLayer);

@@ -22,7 +22,8 @@ public class OFEntityTypeTagsProvider extends EntityTypeTagsProvider {
 
 		this.tag(EntityTypeTags.ARTHROPOD).add(
 				OFEntities.BEWILDER.get(),
-				OFEntities.GUSHER.get()
+				OFEntities.GUSHER.get(),
+				OFEntities.GNAT.get()
 		);
 	}
 }

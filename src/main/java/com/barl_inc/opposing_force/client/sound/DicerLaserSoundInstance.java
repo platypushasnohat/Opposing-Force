@@ -6,11 +6,11 @@ import net.minecraft.client.resources.sounds.AbstractTickableSoundInstance;
 import net.minecraft.client.resources.sounds.SoundInstance;
 import net.minecraft.sounds.SoundSource;
 
-public class DicerLaserSound extends AbstractTickableSoundInstance {
+public class DicerLaserSoundInstance extends AbstractTickableSoundInstance {
 
     private final DicerLaser laser;
 
-    public DicerLaserSound(DicerLaser laser) {
+    public DicerLaserSoundInstance(DicerLaser laser) {
         super(OFSoundEvents.DICER_LASER.get(), SoundSource.HOSTILE, SoundInstance.createUnseededRandom());
         this.laser = laser;
         this.volume = 2.0F;

@@ -38,6 +38,10 @@ public class OFSoundDefinitionsProvider extends SinewSoundDefinitionsProvider {
                 sound(OpposingForce.location("mob/dicer/laser_end"))
         );
 
+        this.registerSound(OFSoundEvents.GNAT_BUZZING,
+                sound(OpposingForce.location("mob/gnat/buzz"))
+        );
+
         this.registerSound(OFSoundEvents.LASER_BOLT_IMPACT,
                 sound(OpposingForce.location("entity/laser_bolt/impact"))
         );

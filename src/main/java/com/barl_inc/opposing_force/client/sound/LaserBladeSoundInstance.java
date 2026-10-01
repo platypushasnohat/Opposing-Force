@@ -6,11 +6,11 @@ import net.minecraft.client.resources.sounds.AbstractTickableSoundInstance;
 import net.minecraft.client.resources.sounds.SoundInstance;
 import net.minecraft.sounds.SoundSource;
 
-public class LaserBladeSpinSound extends AbstractTickableSoundInstance {
+public class LaserBladeSoundInstance extends AbstractTickableSoundInstance {
 
     private final LaserBlade laserBlade;
 
-    public LaserBladeSpinSound(LaserBlade laserBlade) {
+    public LaserBladeSoundInstance(LaserBlade laserBlade) {
         super(OFSoundEvents.LASER_BLADE_SPIN.get(), SoundSource.NEUTRAL, SoundInstance.createUnseededRandom());
         this.laserBlade = laserBlade;
         this.volume = 1.0F;

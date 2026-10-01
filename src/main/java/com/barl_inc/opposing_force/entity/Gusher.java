@@ -68,7 +68,7 @@ public class Gusher extends AnimatedMonster {
         this.goalSelector.addGoal(5, new RandomLookAroundGoal(this));
         this.targetSelector.addGoal(0, new HurtByTargetGoal(this));
         this.targetSelector.addGoal(1, new NearestAttackableTargetGoal<>(this, Player.class, true, false));
-        this.targetSelector.addGoal(3, new NearestAttackableTargetGoal<>(this, Spider.class, 100, true, true, this::canAttack));
+        this.targetSelector.addGoal(3, new NearestAttackableTargetGoal<>(this, Spider.class, 50, true, true, this::canAttack));
     }
 
     @SuppressWarnings("deprecation")

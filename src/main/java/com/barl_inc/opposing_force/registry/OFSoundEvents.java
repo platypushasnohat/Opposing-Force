@@ -18,6 +18,8 @@ public class OFSoundEvents {
     public static final DeferredHolder<SoundEvent, SoundEvent> DICER_LASER_START = registerSoundEvent("dicer_laser_start");
     public static final DeferredHolder<SoundEvent, SoundEvent> DICER_LASER_END = registerSoundEvent("dicer_laser_end");
 
+    public static final DeferredHolder<SoundEvent, SoundEvent> GNAT_BUZZING = registerSoundEvent("gnat_buzzing");
+
     public static final DeferredHolder<SoundEvent, SoundEvent> LASER_BOLT_IMPACT = registerSoundEvent("laser_bolt_impact");
 
     public static final DeferredHolder<SoundEvent, SoundEvent> BLASTER_SHOOT = registerSoundEvent("blaster_shoot");

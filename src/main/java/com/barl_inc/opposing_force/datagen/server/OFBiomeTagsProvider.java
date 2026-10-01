@@ -21,5 +21,6 @@ public class OFBiomeTagsProvider extends BiomeTagsProvider {
 	public void addTags(Provider provider) {
 		this.tag(OFBiomeTags.HAS_OVERWORLD_MONSTERS).addTag(BiomeTags.IS_OVERWORLD).remove(Tags.Biomes.NO_DEFAULT_MONSTERS);
 		this.tag(OFBiomeTags.HAS_SAVANNA_MONSTERS).addTag(BiomeTags.IS_SAVANNA);
+		this.tag(OFBiomeTags.HAS_PLAINS_MONSTERS).addTag(Tags.Biomes.IS_PLAINS);
 	}
 }

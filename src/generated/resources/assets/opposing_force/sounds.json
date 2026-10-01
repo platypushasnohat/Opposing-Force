@@ -62,6 +62,12 @@
     ],
     "subtitle": "subtitles.opposing_force.dicer_laser_start"
   },
+  "gnat_buzzing": {
+    "sounds": [
+      "opposing_force:mob/gnat/buzz"
+    ],
+    "subtitle": "subtitles.opposing_force.gnat_buzzing"
+  },
   "laser_blade_catch": {
     "sounds": [
       "opposing_force:item/laser_blade/catch1",

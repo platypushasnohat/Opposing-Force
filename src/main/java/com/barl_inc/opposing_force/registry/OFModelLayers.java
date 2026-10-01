@@ -8,6 +8,7 @@ public class OFModelLayers {
     public static final ModelLayerLocation DICER = register("dicer");
     public static final ModelLayerLocation BEWILDER = register("bewilder");
     public static final ModelLayerLocation GUSHER = register("gusher");
+    public static final ModelLayerLocation GNAT = register("gnat");
 
     public static final ModelLayerLocation LASER_BOLT = register("laser_bolt");
 

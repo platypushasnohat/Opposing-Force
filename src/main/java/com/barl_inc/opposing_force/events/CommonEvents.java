@@ -3,7 +3,9 @@ package com.barl_inc.opposing_force.events;
 import com.barl_inc.opposing_force.OpposingForce;
 import com.barl_inc.opposing_force.entity.Bewilder;
 import com.barl_inc.opposing_force.entity.Dicer;
+import com.barl_inc.opposing_force.entity.Gnat;
 import com.barl_inc.opposing_force.entity.Gusher;
+import com.barl_inc.opposing_force.entity.ai.goal.SpiderTargetGoal;
 import com.barl_inc.opposing_force.registry.OFEntities;
 import com.barl_inc.opposing_force.registry.OFItems;
 import com.platypushasnohat.sinew.entity.villager.MultipleInputsTrade;
@@ -34,6 +36,7 @@ public class CommonEvents {
         event.put(OFEntities.DICER.get(), Dicer.registerAttributes().build());
         event.put(OFEntities.BEWILDER.get(), Bewilder.registerAttributes().build());
         event.put(OFEntities.GUSHER.get(), Gusher.registerAttributes().build());
+        event.put(OFEntities.GNAT.get(), Gnat.registerAttributes().build());
     }
 
     @SubscribeEvent
@@ -41,6 +44,7 @@ public class CommonEvents {
         event.register(OFEntities.DICER.get(), SpawnPlacementTypes.ON_GROUND, Heightmap.Types.MOTION_BLOCKING_NO_LEAVES, Monster::checkMonsterSpawnRules, RegisterSpawnPlacementsEvent.Operation.AND);
         event.register(OFEntities.BEWILDER.get(), SpawnPlacementTypes.ON_GROUND, Heightmap.Types.MOTION_BLOCKING_NO_LEAVES, Bewilder::checkBewilderSpawnRules, RegisterSpawnPlacementsEvent.Operation.AND);
         event.register(OFEntities.GUSHER.get(), SpawnPlacementTypes.ON_GROUND, Heightmap.Types.MOTION_BLOCKING_NO_LEAVES, Gusher::checkGusherSpawnRules, RegisterSpawnPlacementsEvent.Operation.AND);
+        event.register(OFEntities.GNAT.get(), SpawnPlacementTypes.ON_GROUND, Heightmap.Types.MOTION_BLOCKING_NO_LEAVES, Monster::checkMonsterSpawnRules, RegisterSpawnPlacementsEvent.Operation.AND);
     }
 
     @SubscribeEvent
@@ -63,6 +67,7 @@ public class CommonEvents {
         if (entity instanceof Mob mob) {
             if (mob instanceof Spider spider) {
                 spider.goalSelector.addGoal(2, new AvoidEntityGoal<>(spider, Gusher.class, 8.0F, 1.0D, 1.2D));
+                spider.targetSelector.addGoal(3, new SpiderTargetGoal<>(spider, Gnat.class));
             }
         }
     }

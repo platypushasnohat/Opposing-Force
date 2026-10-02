@@ -97,6 +97,7 @@ public abstract class ZombieMixin extends Monster {
         this.getAttribute(Attributes.SPAWN_REINFORCEMENTS_CHANCE).addOrReplacePermanentModifier(new AttributeModifier(LEADER_ZOMBIE_BONUS_ID, 0.5F, AttributeModifier.Operation.ADD_VALUE));
         this.getAttribute(Attributes.MAX_HEALTH).addOrReplacePermanentModifier(new AttributeModifier(LEADER_ZOMBIE_BONUS_ID, 20.0F, AttributeModifier.Operation.ADD_VALUE));
         this.getAttribute(Attributes.SCALE).addOrReplacePermanentModifier(new AttributeModifier(LEADER_ZOMBIE_BONUS_ID, 0.3F, AttributeModifier.Operation.ADD_VALUE));
+        this.getAttribute(Attributes.ATTACK_DAMAGE).addOrReplacePermanentModifier(new AttributeModifier(LEADER_ZOMBIE_BONUS_ID, 2.0F, AttributeModifier.Operation.ADD_VALUE));
         this.setCanBreakDoors(this.supportsBreakDoorGoal());
     }
 

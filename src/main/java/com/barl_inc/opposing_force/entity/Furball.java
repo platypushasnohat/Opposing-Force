@@ -178,7 +178,7 @@ public class Furball extends AnimatedMonster {
                     if (this.attackCooldown <= 0 && distance <= this.getAttackReachSqr(target, 1.5D)) {
                         this.attackState = 1;
                     }
-                    else if (this.jumpCooldown <= 0 && distance >= 10 && this.isWithinYRange(target, 4)) {
+                    else if (this.jumpCooldown <= 0 && distance >= 15 && this.isWithinYRange(target, 3)) {
                         this.attackState = 2;
                     }
                 }

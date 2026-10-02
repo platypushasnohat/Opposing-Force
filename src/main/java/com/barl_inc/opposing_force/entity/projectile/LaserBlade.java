@@ -22,8 +22,9 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Explosion;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.phys.BlockHitResult;
-import net.minecraft.world.phys.EntityHitResult;
 import net.minecraft.world.phys.Vec3;
+
+import java.util.List;
 
 public class LaserBlade extends ThrowableItemProjectile {
 
@@ -112,23 +113,6 @@ public class LaserBlade extends ThrowableItemProjectile {
     }
 
     @Override
-    protected boolean canHitEntity(Entity target) {
-        return !target.equals(this.getOwner()) && super.canHitEntity(target);
-    }
-
-    @Override
-    protected void onHitEntity(EntityHitResult result) {
-        Entity entity = result.getEntity();
-        DamageSource damageSource = OFDamageTypes.causeLaserBladeDamage(this.level().registryAccess(), this.getOwner());
-        if (!this.level().isClientSide) {
-            if (entity.hurt(damageSource, this.getDamage())) {
-                this.playImpactSound(entity.getX(), entity.getY(), entity.getZ());
-            }
-        }
-        super.onHitEntity(result);
-    }
-
-    @Override
     protected void onHitBlock(BlockHitResult result) {
         super.onHitBlock(result);
         BlockPos pos = result.getBlockPos();
@@ -150,6 +134,17 @@ public class LaserBlade extends ThrowableItemProjectile {
                 this.discard();
                 return;
             }
+
+            List<LivingEntity> entities = this.level().getEntitiesOfClass(LivingEntity.class, this.getBoundingBox());
+            if (!entities.isEmpty()) {
+                DamageSource damageSource = OFDamageTypes.causeLaserBladeDamage(this.level().registryAccess(), owner);
+                entities.stream().filter(entity -> entity != owner && !entity.isAlliedTo(owner)).forEach(entity -> {
+                    if (entity.hurt(damageSource, this.getDamage())) {
+                        this.playImpactSound(entity.getX(), entity.getY(), entity.getZ());
+                    }
+                });
+            }
+
             if (owner instanceof LivingEntity living) {
                 if (this.getReturnTime() > 0) {
                     this.setReturnTime(this.getReturnTime() - 1);

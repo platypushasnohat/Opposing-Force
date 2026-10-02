@@ -26,6 +26,10 @@ import java.util.function.Supplier;
 
 public class DisabledItem extends Item {
 
+    public static final int MAX_TIME = 200;
+
+    private int time = 0;
+
     public DisabledItem(Properties properties) {
         super(properties);
     }
@@ -35,9 +39,10 @@ public class DisabledItem extends Item {
         if (entity instanceof ServerPlayer player) {
             DisabledComponent disabledComponent = stack.get(OFDataComponents.DISABLED);
             if (disabledComponent != null) {
-                long time = disabledComponent.time();
-                if (level.getGameTime() >= time) {
+                this.time++;
+                if (this.time >= disabledComponent.time()) {
                     enableItem(player, slotId);
+                    this.time = 0;
                     return;
                 }
             }
@@ -48,7 +53,7 @@ public class DisabledItem extends Item {
     public static void disableItem(ServerPlayer player, int slot, Supplier<Item> disabledItem) {
         Inventory inventory = player.getInventory();
         ItemStack disabled = disabledItem.get().getDefaultInstance();
-        disabled.set(OFDataComponents.DISABLED, new DisabledComponent(inventory.getItem(slot), player.level().getGameTime() + 200));
+        disabled.set(OFDataComponents.DISABLED, new DisabledComponent(inventory.getItem(slot), MAX_TIME));
         inventory.setItem(slot, disabled);
     }
 
@@ -64,17 +69,17 @@ public class DisabledItem extends Item {
         }
     }
 
-    public record DisabledComponent(ItemStack item, long time) {
+    public record DisabledComponent(ItemStack item, int time) {
 
         public static Codec<DisabledComponent> CODEC = RecordCodecBuilder.create(instance -> instance.group(
                 ItemStack.OPTIONAL_CODEC.fieldOf("item").forGetter(DisabledComponent::item),
-                Codec.LONG.fieldOf("time").forGetter(DisabledComponent::time)
+                Codec.INT.fieldOf("time").forGetter(DisabledComponent::time)
         ).apply(instance, DisabledComponent::new));
 
         public static StreamCodec<RegistryFriendlyByteBuf, DisabledComponent> STREAM_CODEC = StreamCodec.composite(
                 ItemStack.OPTIONAL_STREAM_CODEC,
                 disabledComponent -> disabledComponent.item,
-                ByteBufCodecs.VAR_LONG,
+                ByteBufCodecs.VAR_INT,
                 disabledComponent -> disabledComponent.time,
                 DisabledComponent::new
         );

@@ -113,5 +113,14 @@
       }
     ],
     "subtitle": "subtitles.opposing_force.slayser_disc"
+  },
+  "zombie_reinforcement": {
+    "sounds": [
+      {
+        "name": "mob/zombie/infect",
+        "pitch": 0.9
+      }
+    ],
+    "subtitle": "subtitles.opposing_force.zombie_reinforcement"
   }
 }

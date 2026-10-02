@@ -81,5 +81,9 @@ public class OFSoundDefinitionsProvider extends SinewSoundDefinitionsProvider {
         this.registerSound(OFSoundEvents.SLAYSER_DISC,
                 sound(OpposingForce.location("record/slayser")).stream()
         );
+
+        this.registerSound(OFSoundEvents.ZOMBIE_REINFORCEMENT,
+                sound("mob/zombie/infect").pitch(0.9F)
+        );
     }
 }

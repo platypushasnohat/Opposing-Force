@@ -5,7 +5,8 @@
   "refmap": "opposing_force.refmap.json",
   "mixins": [
     "MobCategoryMixin",
-    "PlayerMixin"
+    "PlayerMixin",
+    "ZombieMixin"
   ],
   "client": [
     "client.ItemInHandLayerMixin",

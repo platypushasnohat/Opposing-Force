@@ -34,6 +34,8 @@ public class OFSoundEvents {
 
     public static final DeferredHolder<SoundEvent, SoundEvent> SLAYSER_DISC = registerSoundEvent("slayser_disc");
 
+    public static final DeferredHolder<SoundEvent, SoundEvent> ZOMBIE_REINFORCEMENT = registerSoundEvent("zombie_reinforcement");
+
     private static DeferredHolder<SoundEvent, SoundEvent> registerSoundEvent(String soundName) {
         return SOUND_EVENT.register(soundName, () -> SoundEvent.createVariableRangeEvent(OpposingForce.location(soundName)));
     }

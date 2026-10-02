@@ -29,9 +29,16 @@ versionRange = "${minecraft_version_range}"
 ordering = "AFTER"
 side = "BOTH"
 
-[[dependencies.${mod_id}]]
+[[dependencies."${mod_id}"]]
 modId = "sinew"
 type = "required"
 versionRange = "${sinew_version_range}"
+ordering = "NONE"
+side = "BOTH"
+
+[[dependencies."${mod_id}"]]
+modId = "curios"
+type = "required"
+versionRange = "${curios_version_range}"
 ordering = "NONE"
 side = "BOTH"

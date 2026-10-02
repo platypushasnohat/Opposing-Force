@@ -62,6 +62,35 @@
     ],
     "subtitle": "subtitles.opposing_force.dicer_laser_start"
   },
+  "furball_attack": {
+    "sounds": [
+      "opposing_force:mob/furball/attack"
+    ],
+    "subtitle": "subtitles.opposing_force.furball_attack"
+  },
+  "furball_death": {
+    "sounds": [
+      "opposing_force:mob/furball/death"
+    ],
+    "subtitle": "subtitles.opposing_force.furball_death"
+  },
+  "furball_hurt": {
+    "sounds": [
+      "opposing_force:mob/furball/hurt1",
+      "opposing_force:mob/furball/hurt2"
+    ],
+    "subtitle": "subtitles.opposing_force.furball_hurt"
+  },
+  "furball_idle": {
+    "sounds": [
+      "opposing_force:mob/furball/idle1",
+      "opposing_force:mob/furball/idle2",
+      "opposing_force:mob/furball/idle3",
+      "opposing_force:mob/furball/idle4",
+      "opposing_force:mob/furball/idle5"
+    ],
+    "subtitle": "subtitles.opposing_force.furball_idle"
+  },
   "gnat_buzzing": {
     "sounds": [
       "opposing_force:mob/gnat/buzz"

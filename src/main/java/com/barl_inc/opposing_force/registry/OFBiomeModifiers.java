@@ -28,6 +28,7 @@ public class OFBiomeModifiers {
         addSpawn(context, "gusher", OFBiomeTags.HAS_OVERWORLD_MONSTERS, new MobSpawnSettings.SpawnerData(OFEntities.GUSHER.get(), 20, 1, 1));
         addSpawn(context, "gnat", OFBiomeTags.HAS_PLAINS_MONSTERS, new MobSpawnSettings.SpawnerData(OFEntities.GNAT.get(), 100, 4, 4));
         addSpawn(context, "scorcher", OFBiomeTags.HAS_OVERWORLD_MONSTERS, new MobSpawnSettings.SpawnerData(OFEntities.SCORCHER.get(), 20, 2, 2));
+        addSpawn(context, "furball", OFBiomeTags.HAS_FOREST_MONSTERS, new MobSpawnSettings.SpawnerData(OFEntities.FURBALL.get(), 100, 2, 2));
     }
 
     @SafeVarargs

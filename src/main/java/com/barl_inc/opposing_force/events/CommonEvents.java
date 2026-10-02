@@ -2,7 +2,7 @@ package com.barl_inc.opposing_force.events;
 
 import com.barl_inc.opposing_force.OpposingForce;
 import com.barl_inc.opposing_force.entity.*;
-import com.barl_inc.opposing_force.entity.ai.goal.SpiderTargetGoal;
+import com.barl_inc.opposing_force.entity.ai.goal.LightDependentTargetGoal;
 import com.barl_inc.opposing_force.registry.OFEntities;
 import com.barl_inc.opposing_force.registry.OFItems;
 import com.platypushasnohat.sinew.entity.base.AnimatedMonster;
@@ -13,7 +13,6 @@ import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.Mob;
 import net.minecraft.world.entity.SpawnPlacementTypes;
 import net.minecraft.world.entity.ai.goal.AvoidEntityGoal;
-import net.minecraft.world.entity.monster.Monster;
 import net.minecraft.world.entity.monster.Spider;
 import net.minecraft.world.entity.npc.VillagerTrades;
 import net.minecraft.world.item.Items;
@@ -39,15 +38,17 @@ public class CommonEvents {
         event.put(OFEntities.GUSHER.get(), Gusher.registerAttributes().build());
         event.put(OFEntities.GNAT.get(), Gnat.registerAttributes().build());
         event.put(OFEntities.SCORCHER.get(), Scorcher.registerAttributes().build());
+        event.put(OFEntities.FURBALL.get(), Furball.registerAttributes().build());
     }
 
     @SubscribeEvent
     private static void registerSpawnPlacements(RegisterSpawnPlacementsEvent event) {
-        event.register(OFEntities.DICER.get(), SpawnPlacementTypes.ON_GROUND, Heightmap.Types.MOTION_BLOCKING_NO_LEAVES, Monster::checkMonsterSpawnRules, RegisterSpawnPlacementsEvent.Operation.AND);
+        event.register(OFEntities.DICER.get(), SpawnPlacementTypes.ON_GROUND, Heightmap.Types.MOTION_BLOCKING_NO_LEAVES, AnimatedMonster::checkMonsterSpawnRules, RegisterSpawnPlacementsEvent.Operation.AND);
         event.register(OFEntities.BEWILDER.get(), SpawnPlacementTypes.ON_GROUND, Heightmap.Types.MOTION_BLOCKING_NO_LEAVES, AnimatedMonster::checkSurfaceMonsterSpawnRules, RegisterSpawnPlacementsEvent.Operation.AND);
         event.register(OFEntities.GUSHER.get(), SpawnPlacementTypes.ON_GROUND, Heightmap.Types.MOTION_BLOCKING_NO_LEAVES, Gusher::checkGusherSpawnRules, RegisterSpawnPlacementsEvent.Operation.AND);
         event.register(OFEntities.GNAT.get(), SpawnPlacementTypes.ON_GROUND, Heightmap.Types.MOTION_BLOCKING_NO_LEAVES, AnimatedMonster::checkSurfaceMonsterSpawnRules, RegisterSpawnPlacementsEvent.Operation.AND);
-        event.register(OFEntities.SCORCHER.get(), SpawnPlacementTypes.ON_GROUND, Heightmap.Types.MOTION_BLOCKING_NO_LEAVES, Monster::checkMonsterSpawnRules, RegisterSpawnPlacementsEvent.Operation.AND);
+        event.register(OFEntities.SCORCHER.get(), SpawnPlacementTypes.ON_GROUND, Heightmap.Types.MOTION_BLOCKING_NO_LEAVES, AnimatedMonster::checkMonsterSpawnRules, RegisterSpawnPlacementsEvent.Operation.AND);
+        event.register(OFEntities.FURBALL.get(), SpawnPlacementTypes.ON_GROUND, Heightmap.Types.MOTION_BLOCKING_NO_LEAVES, Furball::checkFurballSpawnRules, RegisterSpawnPlacementsEvent.Operation.AND);
     }
 
     @SubscribeEvent
@@ -70,7 +71,7 @@ public class CommonEvents {
         if (entity instanceof Mob mob) {
             if (mob instanceof Spider spider) {
                 spider.goalSelector.addGoal(2, new AvoidEntityGoal<>(spider, Gusher.class, 8.0F, 1.0D, 1.2D));
-                spider.targetSelector.addGoal(3, new SpiderTargetGoal<>(spider, Gnat.class));
+                spider.targetSelector.addGoal(3, new LightDependentTargetGoal<>(spider, Gnat.class, true));
             }
         }
     }

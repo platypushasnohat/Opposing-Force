@@ -39,15 +39,18 @@ public abstract class ZombieMixin extends Monster {
     @Shadow
     private static @Final ResourceLocation LEADER_ZOMBIE_BONUS_ID;
 
-    @SuppressWarnings("WrongEntityDataParameterClass")
-    @Unique
-    private static final EntityDataAccessor<Boolean> DATA_IS_LEADER = SynchedEntityData.defineId(Zombie.class, EntityDataSerializers.BOOLEAN);
-
     @Shadow
     protected abstract boolean supportsBreakDoorGoal();
 
     @Shadow
     public abstract void setCanBreakDoors(boolean canBreakDoors);
+
+    @SuppressWarnings("WrongEntityDataParameterClass")
+    @Unique
+    private static final EntityDataAccessor<Boolean> DATA_IS_LEADER = SynchedEntityData.defineId(Zombie.class, EntityDataSerializers.BOOLEAN);
+
+    @Unique
+    private boolean opposingForce$hasLeaderAttributes = false;
 
     protected ZombieMixin(EntityType<? extends Monster> entityType, Level level) {
         super(entityType, level);
@@ -61,11 +64,13 @@ public abstract class ZombieMixin extends Monster {
     @Inject(at = @At("TAIL"), method = "addAdditionalSaveData")
     private void opposingForce$addAdditionalSaveData(CompoundTag compoundTag, CallbackInfo ci) {
         compoundTag.putBoolean("Leader", this.opposingForce$isLeader());
+        compoundTag.putBoolean("HasLeaderAttributes", this.opposingForce$hasLeaderAttributes);
     }
 
     @Inject(at = @At("TAIL"), method = "readAdditionalSaveData")
     private void opposingForce$readAdditionalSaveData(CompoundTag compoundTag, CallbackInfo ci) {
         this.opposingForce$setLeader(compoundTag.getBoolean("Leader"));
+        this.opposingForce$hasLeaderAttributes = compoundTag.getBoolean("HasLeaderAttributes");
     }
 
     @Unique
@@ -76,7 +81,7 @@ public abstract class ZombieMixin extends Monster {
     @Unique
     public void opposingForce$setLeader(boolean leader) {
         this.entityData.set(DATA_IS_LEADER, leader);
-        if (OFConfig.ZOMBIE_TWEAKS.get() && leader) {
+        if (OFConfig.ZOMBIE_TWEAKS.get() && !this.opposingForce$hasLeaderAttributes && leader) {
             this.opposingForce$setupLeaderAttributes();
         }
     }
@@ -99,6 +104,8 @@ public abstract class ZombieMixin extends Monster {
         this.getAttribute(Attributes.SCALE).addOrReplacePermanentModifier(new AttributeModifier(LEADER_ZOMBIE_BONUS_ID, 0.3F, AttributeModifier.Operation.ADD_VALUE));
         this.getAttribute(Attributes.ATTACK_DAMAGE).addOrReplacePermanentModifier(new AttributeModifier(LEADER_ZOMBIE_BONUS_ID, 2.0F, AttributeModifier.Operation.ADD_VALUE));
         this.setCanBreakDoors(this.supportsBreakDoorGoal());
+        this.heal(this.getMaxHealth());
+        this.opposingForce$hasLeaderAttributes = true;
     }
 
     @Inject(at = @At("HEAD"), method = "handleAttributes", cancellable = true)
@@ -107,7 +114,6 @@ public abstract class ZombieMixin extends Monster {
             ci.cancel();
             if (this.getRandom().nextFloat() < 0.07F) {
                 this.opposingForce$setLeader(true);
-                this.heal(this.getMaxHealth());
             }
         }
     }

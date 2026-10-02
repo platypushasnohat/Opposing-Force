@@ -106,6 +106,7 @@ public class Gnat extends BasicFlyingMonster {
 
         @Override
         public void start() {
+            super.start();
             this.attackCooldown = 0;
         }
 
@@ -126,7 +127,7 @@ public class Gnat extends BasicFlyingMonster {
                     if (this.attackCooldown > 0) {
                         this.attackCooldown--;
                     }
-                    if (distance <= this.getAttackReachSqr(target)) {
+                    if (distance <= this.getAttackReachSqr(target) && this.attackCooldown <= 0) {
                         this.attackState = 1;
                     }
                 }

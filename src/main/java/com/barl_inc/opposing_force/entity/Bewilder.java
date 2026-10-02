@@ -1,6 +1,7 @@
 package com.barl_inc.opposing_force.entity;
 
 import com.platypushasnohat.sinew.client.animation.SmoothAnimationState;
+import com.platypushasnohat.sinew.entity.ai.control.UnrestrictedBodyRotationControl;
 import com.platypushasnohat.sinew.entity.ai.goal.AttackGoal;
 import com.platypushasnohat.sinew.entity.base.AnimatedMonster;
 import com.platypushasnohat.sinew.utils.SinewSoundUtils;
@@ -16,6 +17,7 @@ import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.Mob;
 import net.minecraft.world.entity.ai.attributes.AttributeSupplier;
 import net.minecraft.world.entity.ai.attributes.Attributes;
+import net.minecraft.world.entity.ai.control.BodyRotationControl;
 import net.minecraft.world.entity.ai.goal.FloatGoal;
 import net.minecraft.world.entity.ai.goal.LookAtPlayerGoal;
 import net.minecraft.world.entity.ai.goal.RandomLookAroundGoal;
@@ -71,6 +73,11 @@ public class Bewilder extends AnimatedMonster {
         this.goalSelector.addGoal(5, new RandomLookAroundGoal(this));
         this.targetSelector.addGoal(0, new HurtByTargetGoal(this, Bewilder.class));
         this.targetSelector.addGoal(1, new NearestAttackableTargetGoal<>(this, Player.class, true, false));
+    }
+
+    @Override
+    protected BodyRotationControl createBodyControl() {
+        return new UnrestrictedBodyRotationControl(this);
     }
 
     @Override

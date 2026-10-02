@@ -30,6 +30,11 @@ public class OFLanguageProvider extends SinewLanguageProvider {
 
         this.addSound(OFSoundEvents.GNAT_BUZZING, "Gnat buzzes");
 
+        this.addSound(OFSoundEvents.FURBALL_DEATH, "Furball dies");
+        this.addSound(OFSoundEvents.FURBALL_HURT, "Furball hurts");
+        this.addSound(OFSoundEvents.FURBALL_IDLE, "Furball snarls");
+        this.addSound(OFSoundEvents.FURBALL_ATTACK, "Furball attacks");
+
         this.addSound(OFSoundEvents.LASER_BOLT_IMPACT, "Laser bolt disintegrates");
         this.addSound(OFSoundEvents.BLASTER_SHOOT, "Blaster shoots");
 

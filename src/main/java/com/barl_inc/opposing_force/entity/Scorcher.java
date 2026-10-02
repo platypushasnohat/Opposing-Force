@@ -212,7 +212,7 @@ public class Scorcher extends AnimatedMonster {
                     if (distance <= this.getAttackReachSqr(target, 1.75D)) {
                         this.attackState = 1;
                     }
-                    if (distance <= 42 && this.fireCooldown <= 0 && this.isWithinYRange(target, 2)) {
+                    if (distance <= 42 && this.fireCooldown <= 0 && this.isWithinYRange(target, 1)) {
                         this.attackState = 2;
                     }
                 }

@@ -42,6 +42,24 @@ public class OFSoundDefinitionsProvider extends SinewSoundDefinitionsProvider {
                 sound(OpposingForce.location("mob/gnat/buzz"))
         );
 
+        this.registerSound(OFSoundEvents.FURBALL_DEATH,
+                sound(OpposingForce.location("mob/furball/death"))
+        );
+        this.registerSound(OFSoundEvents.FURBALL_HURT,
+                sound(OpposingForce.location("mob/furball/hurt1")),
+                sound(OpposingForce.location("mob/furball/hurt2"))
+        );
+        this.registerSound(OFSoundEvents.FURBALL_IDLE,
+                sound(OpposingForce.location("mob/furball/idle1")),
+                sound(OpposingForce.location("mob/furball/idle2")),
+                sound(OpposingForce.location("mob/furball/idle3")),
+                sound(OpposingForce.location("mob/furball/idle4")),
+                sound(OpposingForce.location("mob/furball/idle5"))
+        );
+        this.registerSound(OFSoundEvents.FURBALL_ATTACK,
+                sound(OpposingForce.location("mob/furball/attack"))
+        );
+
         this.registerSound(OFSoundEvents.LASER_BOLT_IMPACT,
                 sound(OpposingForce.location("entity/laser_bolt/impact"))
         );

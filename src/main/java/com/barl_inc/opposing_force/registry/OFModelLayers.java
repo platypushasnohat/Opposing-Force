@@ -10,6 +10,7 @@ public class OFModelLayers {
     public static final ModelLayerLocation GUSHER = register("gusher");
     public static final ModelLayerLocation GNAT = register("gnat");
     public static final ModelLayerLocation SCORCHER = register("scorcher");
+    public static final ModelLayerLocation FURBALL = register("furball");
 
     public static final ModelLayerLocation LASER_BOLT = register("laser_bolt");
 

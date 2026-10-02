@@ -20,6 +20,11 @@ public class OFSoundEvents {
 
     public static final DeferredHolder<SoundEvent, SoundEvent> GNAT_BUZZING = registerSoundEvent("gnat_buzzing");
 
+    public static final DeferredHolder<SoundEvent, SoundEvent> FURBALL_HURT = registerSoundEvent("furball_hurt");
+    public static final DeferredHolder<SoundEvent, SoundEvent> FURBALL_DEATH = registerSoundEvent("furball_death");
+    public static final DeferredHolder<SoundEvent, SoundEvent> FURBALL_IDLE = registerSoundEvent("furball_idle");
+    public static final DeferredHolder<SoundEvent, SoundEvent> FURBALL_ATTACK = registerSoundEvent("furball_attack");
+
     public static final DeferredHolder<SoundEvent, SoundEvent> LASER_BOLT_IMPACT = registerSoundEvent("laser_bolt_impact");
 
     public static final DeferredHolder<SoundEvent, SoundEvent> BLASTER_SHOOT = registerSoundEvent("blaster_shoot");

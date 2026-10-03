@@ -49,7 +49,7 @@ public class ScatterBlasterItem extends BlasterItem {
                 level.addFreshEntity(laserBolt);
             }
             level.playSound(null, player.getX(), player.getY(), player.getZ(), OFSoundEvents.BLASTER_SHOOT.get(), SoundSource.PLAYERS, 1.0F, 0.5F * SinewSoundUtils.randomizePitch(level));
-            player.getCooldowns().addCooldown(stack.getItem(), 45);
+            player.getCooldowns().addCooldown(stack.getItem(), 40);
             player.awardStat(Stats.ITEM_USED.get(this));
             if (!player.getAbilities().instabuild) {
                 this.consumePower(ammoStack);

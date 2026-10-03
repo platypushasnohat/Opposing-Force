@@ -14,11 +14,11 @@ import net.minecraft.network.syncher.EntityDataSerializers;
 import net.minecraft.network.syncher.SynchedEntityData;
 import net.minecraft.tags.FluidTags;
 import net.minecraft.util.Mth;
-import net.minecraft.world.entity.EntityType;
-import net.minecraft.world.entity.Mob;
-import net.minecraft.world.entity.MoverType;
+import net.minecraft.world.entity.*;
 import net.minecraft.world.entity.ai.attributes.AttributeSupplier;
 import net.minecraft.world.entity.ai.attributes.Attributes;
+import net.minecraft.world.entity.ai.control.LookControl;
+import net.minecraft.world.entity.ai.control.MoveControl;
 import net.minecraft.world.entity.ai.control.SmoothSwimmingLookControl;
 import net.minecraft.world.entity.ai.goal.LookAtPlayerGoal;
 import net.minecraft.world.entity.ai.goal.RandomLookAroundGoal;
@@ -41,12 +41,16 @@ public class Terror extends AnimatedMonster implements BodyChainMob {
     private static final int COOLDOWN_ANIMATION = 2;
     private static final int GROW_LEGS_ANIMATION = 3;
 
-    private final BodyChain bodyChain = new BodyChain(1.0F, 5.0F, 30.0F, 0.1F, new float[]{0.35F, 0.16F, 0.3F}, new float[]{0.24F, 0.12F, 0.2F});
+    private static final EntityDimensions FISH_OUT_OF_WATER_DIMENSIONS = EntityDimensions.scalable(1.25F, 1.75F).withEyeHeight(1.65F);
+
+    private final BodyChain bodyChain = new BodyChain(0.75F, 3.0F, 30.0F, 0.1F, new float[]{0.3F, 0.2F, 0.4F}, new float[]{0.3F, 0.2F, 0.4F});
 
     private float prevSwimPitch;
     private float swimPitch;
 
     private int growLegsTimer = 0;
+
+    private boolean isLandNavigator;
 
     public final SmoothAnimationState sprintAnimationState = new SmoothAnimationState();
     public final SmoothAnimationState swimAnimationState = new SmoothAnimationState();
@@ -59,10 +63,9 @@ public class Terror extends AnimatedMonster implements BodyChainMob {
 
     public Terror(EntityType<? extends Terror> entityType, Level level) {
         super(entityType, level);
-        this.moveControl = new SwimmingMoveControl(this, 85, 20, 0.2F, false);
-        this.lookControl = new SmoothSwimmingLookControl(this, 20);
         this.setPathfindingMalus(PathType.WATER, 0.0F);
         this.setPathfindingMalus(PathType.WATER_BORDER, 0.0F);
+        this.switchNavigator(true);
         this.xpReward = 10;
     }
 
@@ -80,23 +83,23 @@ public class Terror extends AnimatedMonster implements BodyChainMob {
         this.goalSelector.addGoal(2, new SwimWanderGoal(this, 1.0D, 30) {
             @Override
             public boolean canUse() {
-                return Terror.this.isInWater() && super.canUse();
+                return super.canUse() && Terror.this.isInWater();
             }
 
             @Override
             public boolean canContinueToUse() {
-                return Terror.this.isInWater() && super.canContinueToUse();
+                return super.canContinueToUse() && Terror.this.isInWater();
             }
         });
         this.goalSelector.addGoal(3, new RandomStrollGoal(this, 1.0D) {
             @Override
             public boolean canUse() {
-                return !Terror.this.isInWater() && super.canUse();
+                return super.canUse() && !Terror.this.isInWater();
             }
 
             @Override
             public boolean canContinueToUse() {
-                return !Terror.this.isInWater() && super.canContinueToUse();
+                return super.canContinueToUse() && !Terror.this.isInWater();
             }
         });
         this.goalSelector.addGoal(4, new LookAtPlayerGoal(this, Player.class, 6.0F));
@@ -144,6 +147,18 @@ public class Terror extends AnimatedMonster implements BodyChainMob {
         return new SmoothAmphibiousNavigation(this, level);
     }
 
+    protected void switchNavigator(boolean onLand) {
+        if (onLand) {
+            this.moveControl = new MoveControl(this);
+            this.lookControl = new LookControl(this);
+            this.isLandNavigator = true;
+        } else {
+            this.moveControl = new SwimmingMoveControl(this, 85, 15, 0.2F, false);
+            this.lookControl = new SmoothSwimmingLookControl(this, 15);
+            this.isLandNavigator = false;
+        }
+    }
+
     @Override
     public float getWalkTargetValue(BlockPos pos, LevelReader level) {
         if (level.getFluidState(pos).is(FluidTags.WATER)) {
@@ -185,6 +200,20 @@ public class Terror extends AnimatedMonster implements BodyChainMob {
     }
 
     @Override
+    public EntityDimensions getDefaultDimensions(Pose pose) {
+        return this.hasLegs() ? FISH_OUT_OF_WATER_DIMENSIONS.scale(this.getScale()) : super.getDefaultDimensions(pose);
+    }
+
+    @Override
+    public void refreshDimensions() {
+        double x = this.getX();
+        double y = this.getY();
+        double z = this.getZ();
+        super.refreshDimensions();
+        this.setPos(x, y, z);
+    }
+
+    @Override
     public BodyChain getBodyChain() {
         return this.bodyChain;
     }
@@ -216,6 +245,14 @@ public class Terror extends AnimatedMonster implements BodyChainMob {
     public void tick() {
         super.tick();
 
+        final boolean canLandNavigate = !this.isInWater() && this.hasLegs();
+        if (!canLandNavigate && this.isLandNavigator) {
+            this.switchNavigator(false);
+        }
+        if (canLandNavigate && !this.isLandNavigator) {
+            this.switchNavigator(true);
+        }
+
         this.prevSwimPitch = this.swimPitch;
         float targetPitch = 0.0F;
         if (this.isInWater()) {
@@ -245,6 +282,10 @@ public class Terror extends AnimatedMonster implements BodyChainMob {
                 this.setAnimationState(0);
                 this.setHasLegs(true);
             }
+        }
+
+        if (this.isInWaterOrBubble() && this.hasLegs()) {
+            this.setHasLegs(false);
         }
     }
 

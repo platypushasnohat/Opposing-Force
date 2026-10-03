@@ -55,16 +55,16 @@ public class ChitinLanceItem extends SinewSwordItem {
     public void releaseUsing(ItemStack stack, Level level, LivingEntity livingEntity, int useTime) {
         int timeUsed = Mth.clamp(this.getUseDuration(stack, livingEntity) - useTime, 0, 60);
         if (timeUsed >= 10) {
-            float boostFactor = 0.08F * timeUsed;
+            float boostFactor = 0.05F * timeUsed;
             Vec3 boost = livingEntity.getDeltaMovement().add(livingEntity.getViewVector(1.0F).normalize().multiply(boostFactor, 0.0F, boostFactor));
             if (!level.isClientSide) {
                 if (livingEntity instanceof Player player) {
-                    player.getCooldowns().addCooldown(stack.getItem(), 40);
+                    player.getCooldowns().addCooldown(stack.getItem(), 50);
                 }
                 this.hurtNearbyEntities(level, livingEntity);
                 stack.hurtAndBreak(1, livingEntity, EquipmentSlot.MAINHAND);
             }
-            this.damageTime = 12;
+            this.damageTime = 15;
             livingEntity.setDeltaMovement(boost.add(0, (livingEntity.onGround() ? 0.25F : 0), 0));
         }
     }
@@ -80,7 +80,7 @@ public class ChitinLanceItem extends SinewSwordItem {
                         double xSpeed = living.getRandom().nextGaussian() * 0.02D;
                         double ySpeed = living.getRandom().nextGaussian() * 0.02D;
                         double zSpeed = living.getRandom().nextGaussian() * 0.02D;
-                        serverLevel.sendParticles(ParticleTypes.CLOUD, living.getRandomX(1.0D), living.getRandomY(), living.getRandomZ(1.0D), 1, xSpeed, ySpeed, zSpeed, 0.1D);
+                        serverLevel.sendParticles(ParticleTypes.CLOUD, living.getRandomX(1.0D), living.getRandomY(), living.getRandomZ(1.0D), 1, xSpeed, ySpeed, zSpeed, 0.03D);
                     }
                     this.hurtNearbyEntities(level, living);
                 }
@@ -91,14 +91,14 @@ public class ChitinLanceItem extends SinewSwordItem {
     }
 
     private void hurtNearbyEntities(Level level, LivingEntity living) {
-        AABB aabb = living.getBoundingBox().move(living.getLookAngle().normalize().scale(1.25D)).inflate(0.5D, 0.0D, 0.5D);
+        AABB aabb = living.getBoundingBox().move(living.getLookAngle().normalize().scale(1.5D)).inflate(0.6D, 0.0D, 0.6D);
         DamageSource damageSource = living.damageSources().mobAttack(living);
         float yawRad = living.getYRot() * Mth.DEG_TO_RAD;
         for (LivingEntity target : level.getEntitiesOfClass(LivingEntity.class, aabb)) {
             if (!living.isAlliedTo(target) && !living.equals(target) && living.hasLineOfSight(target)) {
                 if (target.hurt(damageSource, 6.0F)) {
                     target.stopRiding();
-                    target.knockback(3.0F, Mth.sin(yawRad), -Mth.cos(yawRad));
+                    target.knockback(2.0F, Mth.sin(yawRad), -Mth.cos(yawRad));
                     living.level().playSound(null, living.getX(), living.getY(), living.getZ(), SoundEvents.PLAYER_ATTACK_CRIT, living.getSoundSource(), 1.0F, 0.9F * SinewSoundUtils.randomizePitch(level));
                     if (target instanceof Player player && target.getUseItem().canPerformAction(ItemAbilities.SHIELD_BLOCK)) {
                         player.disableShield();

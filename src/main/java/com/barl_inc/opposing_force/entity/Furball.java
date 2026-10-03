@@ -94,7 +94,7 @@ public class Furball extends AnimatedMonster {
     @Override
     public void calculateEntityAnimation(boolean flying) {
         float length = (float) Mth.length(this.getX() - this.xo, 0.0F, this.getZ() - this.zo);
-        float speed = Math.min(length * 8.0F, 1.0F);
+        float speed = Math.min(length * 6.0F, 1.0F);
         this.walkAnimation.update(speed, 0.5F);
     }
 
@@ -168,17 +168,17 @@ public class Furball extends AnimatedMonster {
                 }
                 else {
                     this.lookAtTarget(target, 30.0F, 20.0F);
-                    this.furball.getNavigation().moveTo(target, 1.0D);
+                    this.furball.getNavigation().moveTo(target, 1.1D);
                     if (this.attackCooldown > 0) {
                         this.attackCooldown--;
                     }
                     if (this.jumpCooldown > 0) {
                         this.jumpCooldown--;
                     }
-                    if (this.attackCooldown <= 0 && distance <= this.getAttackReachSqr(target, 1.5D)) {
+                    if (this.attackCooldown <= 0 && distance <= this.getAttackReachSqr(target, 1.55D)) {
                         this.attackState = 1;
                     }
-                    else if (this.jumpCooldown <= 0 && distance >= 15 && this.isWithinYRange(target, 3)) {
+                    else if (this.jumpCooldown <= 0 && distance >= 13 && this.isWithinYRange(target, 3)) {
                         this.attackState = 2;
                     }
                 }
@@ -191,7 +191,7 @@ public class Furball extends AnimatedMonster {
                 this.furball.setAnimationState(ATTACK_ANIMATION);
                 this.furball.playSound(OFSoundEvents.FURBALL_ATTACK.get(), 1.0F, SinewSoundUtils.randomizePitch(this.furball));
             }
-            if (this.timer == 6 && this.isInAttackRange(target, 0.6D)) {
+            if (this.timer == 6 && this.isInAttackRange(target, 0.65D)) {
                 this.furball.doHurtTarget(target);
             }
             if (this.timer > 10) {
@@ -210,7 +210,7 @@ public class Furball extends AnimatedMonster {
             Vec3 deltaMovement = this.furball.getDeltaMovement();
             Vec3 jumpVec = new Vec3(target.getX() - this.furball.getX(), 0.0F, target.getZ() - this.furball.getZ());
             if (jumpVec.lengthSqr() > 1.0E-7D) {
-                jumpVec = jumpVec.normalize().scale(1.5D).add(deltaMovement);
+                jumpVec = jumpVec.normalize().scale(1.45D).add(deltaMovement);
             }
             if (this.timer == 6 && this.furball.onGround()) {
                 this.furball.setAnimationState(JUMP_ANIMATION);
@@ -229,7 +229,7 @@ public class Furball extends AnimatedMonster {
             if (this.timer > 40 || (this.timer > 6 && stopJump)) {
                 this.furball.setAnimationState(0);
                 this.timer = 0;
-                this.jumpCooldown = 50 + this.furball.getRandom().nextInt(30);
+                this.jumpCooldown = 60 + this.furball.getRandom().nextInt(40);
                 this.attackCooldown = 5 + this.furball.getRandom().nextInt(3);
                 this.attackState = 0;
             }

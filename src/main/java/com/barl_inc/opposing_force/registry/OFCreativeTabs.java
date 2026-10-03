@@ -22,6 +22,7 @@ public class OFCreativeTabs {
                         output.accept(OFItems.GNAT_SPAWN_EGG);
                         output.accept(OFItems.GUSHER_SPAWN_EGG);
                         output.accept(OFItems.SCORCHER_SPAWN_EGG);
+                        output.accept(OFItems.TERROR_SPAWN_EGG);
 
                         output.accept(OFItems.CHITIN);
                         output.accept(OFItems.CHITIN_LANCE);

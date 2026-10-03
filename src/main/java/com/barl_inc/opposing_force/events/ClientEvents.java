@@ -43,6 +43,7 @@ public class ClientEvents {
         event.registerEntityRenderer(OFEntities.GNAT.get(), GnatRenderer::new);
         event.registerEntityRenderer(OFEntities.SCORCHER.get(), ScorcherRenderer::new);
         event.registerEntityRenderer(OFEntities.FURBALL.get(), FurballRenderer::new);
+        event.registerEntityRenderer(OFEntities.TERROR.get(), TerrorRenderer::new);
 
         event.registerEntityRenderer(OFEntities.DICER_LASER.get(), DicerLaserRenderer::new);
         event.registerEntityRenderer(OFEntities.LASER_BOLT.get(), LaserBoltRenderer::new);
@@ -59,6 +60,7 @@ public class ClientEvents {
         event.registerLayerDefinition(OFModelLayers.GNAT, GnatModel::createBodyLayer);
         event.registerLayerDefinition(OFModelLayers.SCORCHER, ScorcherModel::createBodyLayer);
         event.registerLayerDefinition(OFModelLayers.FURBALL, FurballModel::createBodyLayer);
+        event.registerLayerDefinition(OFModelLayers.TERROR, TerrorModel::createBodyLayer);
 
         event.registerLayerDefinition(OFModelLayers.LASER_BOLT, LaserBoltModel::createBodyLayer);
         event.registerLayerDefinition(OFModelLayers.ACID_CHARGE, AcidChargeModel::createBodyLayer);

@@ -35,6 +35,13 @@ public class OFLanguageProvider extends SinewLanguageProvider {
         this.addSound(OFSoundEvents.FURBALL_IDLE, "Furball snarls");
         this.addSound(OFSoundEvents.FURBALL_ATTACK, "Furball attacks");
 
+        this.addSound(OFSoundEvents.TERROR_DEATH, "Terror dies");
+        this.addSound(OFSoundEvents.TERROR_HURT, "Terror hurts");
+        this.addSound(OFSoundEvents.TERROR_IDLE, "Terror grumbles");
+        this.addSound(OFSoundEvents.TERROR_SAW_START, "Terror starts sawing");
+        this.addSound(OFSoundEvents.TERROR_SAW_LOOP, "Terror saws");
+        this.addSound(OFSoundEvents.TERROR_SAW_END, "Terror stops sawing");
+
         this.addSound(OFSoundEvents.LASER_BOLT_IMPACT, "Laser bolt disintegrates");
         this.addSound(OFSoundEvents.BLASTER_SHOOT, "Blaster shoots");
 

@@ -143,6 +143,43 @@
     ],
     "subtitle": "subtitles.opposing_force.slayser_disc"
   },
+  "terror_death": {
+    "sounds": [
+      "opposing_force:mob/terror/death"
+    ],
+    "subtitle": "subtitles.opposing_force.terror_death"
+  },
+  "terror_hurt": {
+    "sounds": [
+      "opposing_force:mob/terror/hurt"
+    ],
+    "subtitle": "subtitles.opposing_force.terror_hurt"
+  },
+  "terror_idle": {
+    "sounds": [
+      "opposing_force:mob/terror/idle1",
+      "opposing_force:mob/terror/idle2"
+    ],
+    "subtitle": "subtitles.opposing_force.terror_idle"
+  },
+  "terror_saw_end": {
+    "sounds": [
+      "opposing_force:mob/terror/saw_end"
+    ],
+    "subtitle": "subtitles.opposing_force.terror_saw_end"
+  },
+  "terror_saw_loop": {
+    "sounds": [
+      "opposing_force:mob/terror/saw_loop"
+    ],
+    "subtitle": "subtitles.opposing_force.terror_saw_loop"
+  },
+  "terror_saw_start": {
+    "sounds": [
+      "opposing_force:mob/terror/saw_start"
+    ],
+    "subtitle": "subtitles.opposing_force.terror_saw_start"
+  },
   "zombie_reinforcement": {
     "sounds": [
       {

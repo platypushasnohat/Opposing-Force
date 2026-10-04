@@ -8,7 +8,6 @@ import com.platypushasnohat.sinew.utils.SinewSoundUtils;
 import net.minecraft.core.BlockPos;
 import net.minecraft.sounds.SoundEvent;
 import net.minecraft.sounds.SoundEvents;
-import net.minecraft.sounds.SoundSource;
 import net.minecraft.tags.DamageTypeTags;
 import net.minecraft.util.Mth;
 import net.minecraft.world.damagesource.DamageSource;
@@ -226,12 +225,12 @@ public class Bewilder extends AnimatedMonster {
             BlockState state = this.bewilder.level().getBlockState(hitPos);
             SoundType soundType = state.getSoundType(this.bewilder.level(), hitPos, this.bewilder);
             if (hitResult.getType() == HitResult.Type.BLOCK) {
-                this.bewilder.level().playSound(null, hitPos.getX(), hitPos.getY(), hitPos.getZ(), soundType.getBreakSound(), SoundSource.HOSTILE, 1.0F, 0.8F);
+                this.bewilder.level().playSound(null, hitPos.getX(), hitPos.getY(), hitPos.getZ(), soundType.getBreakSound(), this.bewilder.getSoundSource(), 1.0F, 0.8F);
                 this.timer = 0;
                 this.bewilder.setSprinting(false);
                 this.attackState = 4;
             }
-            else if (this.timer > 100 || (this.timer > 20 && distance >= 13)) {
+            else if (this.timer > 100 || (this.timer > 20 && distance >= 12.5D)) {
                 this.timer = 0;
                 this.bewilder.setSprinting(false);
                 this.attackState = 3;

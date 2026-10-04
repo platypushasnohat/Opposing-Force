@@ -84,5 +84,11 @@
   "subtitles.opposing_force.laser_blade_swing": "Laser blade swings",
   "subtitles.opposing_force.laser_bolt_impact": "Laser bolt disintegrates",
   "subtitles.opposing_force.slayser_disc": "Music Disc",
+  "subtitles.opposing_force.terror_death": "Terror dies",
+  "subtitles.opposing_force.terror_hurt": "Terror hurts",
+  "subtitles.opposing_force.terror_idle": "Terror grumbles",
+  "subtitles.opposing_force.terror_saw_end": "Terror stops sawing",
+  "subtitles.opposing_force.terror_saw_loop": "Terror saws",
+  "subtitles.opposing_force.terror_saw_start": "Terror starts sawing",
   "subtitles.opposing_force.zombie_reinforcement": "Zombie summons reinforcement"
 }

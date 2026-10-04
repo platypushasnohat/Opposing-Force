@@ -60,6 +60,26 @@ public class OFSoundDefinitionsProvider extends SinewSoundDefinitionsProvider {
                 sound(OpposingForce.location("mob/furball/attack"))
         );
 
+        this.registerSound(OFSoundEvents.TERROR_DEATH,
+                sound(OpposingForce.location("mob/terror/death"))
+        );
+        this.registerSound(OFSoundEvents.TERROR_HURT,
+                sound(OpposingForce.location("mob/terror/hurt"))
+        );
+        this.registerSound(OFSoundEvents.TERROR_IDLE,
+                sound(OpposingForce.location("mob/terror/idle1")),
+                sound(OpposingForce.location("mob/terror/idle2"))
+        );
+        this.registerSound(OFSoundEvents.TERROR_SAW_START,
+                sound(OpposingForce.location("mob/terror/saw_start"))
+        );
+        this.registerSound(OFSoundEvents.TERROR_SAW_LOOP,
+                sound(OpposingForce.location("mob/terror/saw_loop"))
+        );
+        this.registerSound(OFSoundEvents.TERROR_SAW_END,
+                sound(OpposingForce.location("mob/terror/saw_end"))
+        );
+
         this.registerSound(OFSoundEvents.LASER_BOLT_IMPACT,
                 sound(OpposingForce.location("entity/laser_bolt/impact"))
         );

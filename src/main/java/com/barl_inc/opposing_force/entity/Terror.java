@@ -87,7 +87,7 @@ public class Terror extends AnimatedMonster implements BodyChainMob {
         return Mob.createMobAttributes()
                 .add(Attributes.MAX_HEALTH, 30.0D)
                 .add(Attributes.MOVEMENT_SPEED, 0.25D)
-                .add(Attributes.ATTACK_DAMAGE, 3.0D)
+                .add(Attributes.ATTACK_DAMAGE, 4.0D)
                 .add(Attributes.STEP_HEIGHT, 1.2D)
                 .add(Attributes.KNOCKBACK_RESISTANCE, 0.25D);
     }
@@ -475,10 +475,10 @@ public class Terror extends AnimatedMonster implements BodyChainMob {
                 nearbyEntities.stream().filter(entity -> entity != this.terror).limit(4).forEach(entity -> {
                     this.terror.doHurtTarget(entity);
                     float yawRad = this.terror.getYRot() * Mth.DEG_TO_RAD;
-                    entity.knockback(0.4F, Mth.sin(yawRad), -Mth.cos(yawRad));
+                    entity.knockback(0.5F, Mth.sin(yawRad), -Mth.cos(yawRad));
                     if (entity.isDamageSourceBlocked(this.terror.damageSources().mobAttack(this.terror)) && entity instanceof Player player) {
                         player.disableShield();
-                        player.knockback(0.2F, Mth.sin(yawRad), (-Mth.cos(yawRad)));
+                        player.knockback(0.25F, Mth.sin(yawRad), (-Mth.cos(yawRad)));
                         player.hurtMarked = true;
                         this.terror.addDeltaMovement(new Vec3(0, 0.25D, 0));
                         this.terror.addDeltaMovement(this.terror.getLookAngle().scale(1.0D).multiply(-0.5D, 0, -0.5D));

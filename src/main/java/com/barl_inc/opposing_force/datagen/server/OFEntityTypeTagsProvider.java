@@ -24,7 +24,8 @@ public class OFEntityTypeTagsProvider extends EntityTypeTagsProvider {
 				OFEntities.BEWILDER.get(),
 				OFEntities.GUSHER.get(),
 				OFEntities.GNAT.get(),
-				OFEntities.SCORCHER.get()
+				OFEntities.SCORCHER.get(),
+				OFEntities.TARANTULA.get()
 		);
 	}
 }

@@ -207,7 +207,7 @@ public class Gusher extends AnimatedMonster {
             if (this.timer > 80) {
                 this.gusher.setAnimationState(0);
                 this.timer = 0;
-                this.gushCooldown = 80 + this.gusher.getRandom().nextInt(40);
+                this.gushCooldown = 70 + this.gusher.getRandom().nextInt(35);
                 this.attackState = 0;
             }
         }

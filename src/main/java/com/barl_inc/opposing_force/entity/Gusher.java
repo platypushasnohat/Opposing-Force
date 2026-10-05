@@ -185,7 +185,7 @@ public class Gusher extends AnimatedMonster {
             if (this.timer == 1) {
                 this.gusher.setAnimationState(ATTACK_ANIMATION);
             }
-            if (this.timer == 14 && (this.isInAttackBox(target, 4.1D, 0.75D, -0.3D, true) || this.isInAttackRange(target, 0.6D))) {
+            if (this.timer == 14 && (this.isInAttackBox(target, 4.5D, 0.2D, -0.3D, true) || this.isInAttackRange(target, 0.7D))) {
                 this.gusher.doHurtTarget(target);
             }
             if (this.timer > 40) {
@@ -207,7 +207,7 @@ public class Gusher extends AnimatedMonster {
             if (this.timer > 80) {
                 this.gusher.setAnimationState(0);
                 this.timer = 0;
-                this.gushCooldown = 70 + this.gusher.getRandom().nextInt(35);
+                this.gushCooldown = 60 + this.gusher.getRandom().nextInt(30);
                 this.attackState = 0;
             }
         }

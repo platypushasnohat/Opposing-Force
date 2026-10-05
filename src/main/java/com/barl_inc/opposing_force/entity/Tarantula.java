@@ -55,7 +55,7 @@ public class Tarantula extends AnimatedMonster {
         return Mob.createMobAttributes()
                 .add(Attributes.MAX_HEALTH, 140.0D)
                 .add(Attributes.MOVEMENT_SPEED, 0.2D)
-                .add(Attributes.ATTACK_DAMAGE, 14.0D)
+                .add(Attributes.ATTACK_DAMAGE, 12.0D)
                 .add(Attributes.ATTACK_KNOCKBACK, 1.0D)
                 .add(Attributes.STEP_HEIGHT, 1.2D)
                 .add(Attributes.KNOCKBACK_RESISTANCE, 1.0D)

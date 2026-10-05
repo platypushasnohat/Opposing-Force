@@ -26,5 +26,6 @@ public class OFBiomeTagsProvider extends BiomeTagsProvider {
 		this.tag(OFBiomeTags.HAS_FOREST_MONSTERS).add(
 				Biomes.FOREST
 		);
+		this.tag(OFBiomeTags.HAS_DESERT_MONSTERS).addTag(Tags.Biomes.IS_DESERT);
 	}
 }

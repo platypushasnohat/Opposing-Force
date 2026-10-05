@@ -4,10 +4,12 @@ import com.barl_inc.opposing_force.entity.ai.goal.LightDependentTargetGoal;
 import com.platypushasnohat.sinew.client.animation.SmoothAnimationState;
 import com.platypushasnohat.sinew.entity.ai.goal.AttackGoal;
 import com.platypushasnohat.sinew.entity.base.AnimatedMonster;
-import com.platypushasnohat.sinew.utils.SinewMiscUtils;
-import net.minecraft.core.particles.ParticleTypes;
+import net.minecraft.core.BlockPos;
 import net.minecraft.network.syncher.EntityDataAccessor;
+import net.minecraft.sounds.SoundEvent;
+import net.minecraft.sounds.SoundEvents;
 import net.minecraft.util.Mth;
+import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.effect.MobEffectInstance;
 import net.minecraft.world.effect.MobEffects;
 import net.minecraft.world.entity.EntityType;
@@ -46,14 +48,15 @@ public class Tarantula extends AnimatedMonster {
 
     public Tarantula(EntityType<? extends Tarantula> entityType, Level level) {
         super(entityType, level);
-        this.xpReward = 20;
+        this.xpReward = 25;
     }
 
     public static AttributeSupplier.Builder registerAttributes() {
         return Mob.createMobAttributes()
-                .add(Attributes.MAX_HEALTH, 120.0D)
-                .add(Attributes.MOVEMENT_SPEED, 0.23D)
-                .add(Attributes.ATTACK_DAMAGE, 10.0D)
+                .add(Attributes.MAX_HEALTH, 140.0D)
+                .add(Attributes.MOVEMENT_SPEED, 0.2D)
+                .add(Attributes.ATTACK_DAMAGE, 14.0D)
+                .add(Attributes.ATTACK_KNOCKBACK, 1.0D)
                 .add(Attributes.STEP_HEIGHT, 1.2D)
                 .add(Attributes.KNOCKBACK_RESISTANCE, 1.0D)
                 .add(Attributes.ARMOR, 8.0D);
@@ -104,7 +107,7 @@ public class Tarantula extends AnimatedMonster {
     @Override
     public void calculateEntityAnimation(boolean flying) {
         float length = (float) Mth.length(this.getX() - this.xo, 0.0F, this.getZ() - this.zo);
-        float speed = Math.min(length * 7.0F, 1.0F);
+        float speed = Math.min(length * 6.0F, 1.0F);
         this.walkAnimation.update(speed, 0.2F);
     }
 
@@ -115,6 +118,26 @@ public class Tarantula extends AnimatedMonster {
                 this.attackAlt = this.getRandom().nextBoolean();
             }
         }
+    }
+
+    @Override
+    protected SoundEvent getAmbientSound() {
+        return SoundEvents.SPIDER_AMBIENT;
+    }
+
+    @Override
+    protected SoundEvent getHurtSound(DamageSource damageSource) {
+        return SoundEvents.SPIDER_HURT;
+    }
+
+    @Override
+    protected SoundEvent getDeathSound() {
+        return SoundEvents.SPIDER_DEATH;
+    }
+
+    @Override
+    protected void playStepSound(BlockPos pos, BlockState block) {
+        this.playSound(SoundEvents.SPIDER_STEP, 0.15F, 0.7F);
     }
 
     private static class TarantulaAttackGoal extends AttackGoal {
@@ -134,7 +157,7 @@ public class Tarantula extends AnimatedMonster {
             super.start();
             this.attackCooldown = 0;
             this.slamCooldown = 50;
-            this.jumpCooldown = 0;
+            this.jumpCooldown = 20;
         }
 
         @Override
@@ -158,7 +181,7 @@ public class Tarantula extends AnimatedMonster {
                 }
                 else {
                     this.lookAtTarget(target, 10.0F, 10.0F);
-                    this.tarantula.getNavigation().moveTo(target, 1.5D);
+                    this.tarantula.getNavigation().moveTo(target, 1.3D);
                     if (this.attackCooldown > 0) {
                         this.attackCooldown--;
                     }
@@ -171,10 +194,10 @@ public class Tarantula extends AnimatedMonster {
                     if (this.attackCooldown <= 0 && this.slamCooldown > 0 && distance <= this.getAttackReachSqr(target, 1.2D)) {
                         this.attackState = 1;
                     }
-                    else if (this.slamCooldown <= 0 && distance <= this.getAttackReachSqr(target, 1.3D)) {
+                    else if (this.slamCooldown <= 0 && distance <= this.getAttackReachSqr(target, 1.2D)) {
                         this.attackState = 2;
                     }
-                    else if (this.jumpCooldown <= 0 && distance >= 42 && this.isWithinYRange(target, 2)) {
+                    else if (this.jumpCooldown <= 0 && distance >= 42 && distance < 100 && this.isWithinYRange(target, 1) && this.isPathClear(target)) {
                         this.attackState = 3;
                     }
                 }
@@ -186,7 +209,7 @@ public class Tarantula extends AnimatedMonster {
             if (this.timer == 1) {
                 this.tarantula.setAnimationState(ATTACK_ANIMATION);
             }
-            if (this.timer == 13 && this.isInAttackRange(target, 0.8D)) {
+            if (this.timer == 13 && this.isInAttackRange(target, 0.9D)) {
                 this.tarantula.doHurtTarget(target);
             }
             if (this.timer > 20) {
@@ -215,24 +238,25 @@ public class Tarantula extends AnimatedMonster {
 
         private void tickJump(LivingEntity target) {
             this.timer++;
-            if (this.timer <= 10) {
+            if (this.timer <= 14) {
                 this.lookAtTarget(target, 25.0F, 25.0F);
             }
             Vec3 deltaMovement = this.tarantula.getDeltaMovement();
             Vec3 jumpVec = new Vec3(target.getX() - this.tarantula.getX(), 0.0F, target.getZ() - this.tarantula.getZ());
             if (jumpVec.lengthSqr() > 1.0E-7D) {
-                jumpVec = jumpVec.normalize().scale(1.8D).add(deltaMovement);
+                jumpVec = jumpVec.normalize().scale(1.6D).add(deltaMovement);
             }
-            if (this.timer == 11 && this.tarantula.onGround()) {
+            if (this.timer == 15 && this.tarantula.onGround()) {
                 this.tarantula.setAnimationState(JUMP_ANIMATION);
-                this.tarantula.setDeltaMovement(jumpVec.x, 0.6F, jumpVec.z);
+                this.tarantula.setDeltaMovement(jumpVec.x, 0.5F, jumpVec.z);
             }
             boolean stopJump = this.tarantula.onGround() || this.tarantula.onClimbable() || this.tarantula.isInWaterOrBubble();
-            if (this.timer > 60 || (this.timer > 11 && stopJump)) {
+            if (this.timer > 60 || (this.timer > 15 && stopJump)) {
                 this.tarantula.setAnimationState(0);
                 this.timer = 0;
                 this.jumpCooldown = 100 + this.tarantula.getRandom().nextInt(100);
                 this.attackCooldown();
+                this.slamCooldown = 0;
                 this.attackState = 0;
             }
         }
@@ -242,21 +266,36 @@ public class Tarantula extends AnimatedMonster {
         }
 
         private void hurtNearbyEntities() {
-            AABB attackBox = this.tarantula.getBoundingBox().move(this.tarantula.getLookAngle().normalize().scale(1.4D)).inflate(1.75D, -0.5D, 1.75D);
+            AABB attackBox = this.tarantula.getBoundingBox().move(this.tarantula.getLookAngle().normalize().multiply(2.0D, 0.0D, 2.0D)).inflate(1.5D, -0.25D, 1.5D);
             List<LivingEntity> nearbyEntities = this.tarantula.level().getNearbyEntities(LivingEntity.class, TargetingConditions.forCombat(), this.tarantula, attackBox);
-//            SinewMiscUtils.outlineBounds(attackBox, this.tarantula.level(), ParticleTypes.END_ROD);
             if (!nearbyEntities.isEmpty()) {
                 nearbyEntities.stream().filter(entity -> entity != this.tarantula).forEach(entity -> {
-                    this.tarantula.doHurtTarget(entity);
+                    entity.hurt(this.tarantula.damageSources().mobAttack(this.tarantula), (float) this.tarantula.getAttributeValue(Attributes.ATTACK_DAMAGE) * 1.5F);
                     float yawRad = this.tarantula.getYRot() * Mth.DEG_TO_RAD;
-                    entity.knockback(2.0F, Mth.sin(yawRad), -Mth.cos(yawRad));
+                    entity.knockback(1.5F, Mth.sin(yawRad), -Mth.cos(yawRad));
                     if (entity.isDamageSourceBlocked(this.tarantula.damageSources().mobAttack(this.tarantula)) && entity instanceof Player player) {
                         player.disableShield();
-                        player.knockback(1.5F, Mth.sin(yawRad), (-Mth.cos(yawRad)));
+                        player.knockback(1.0F, Mth.sin(yawRad), (-Mth.cos(yawRad)));
                         player.hurtMarked = true;
                     }
                 });
             }
+        }
+
+        private boolean isPathClear(LivingEntity target) {
+            double dx = target.getZ() - this.tarantula.getZ();
+            double dz = target.getX() - this.tarantula.getX();
+            double d2 = dx / dz;
+            for (int i = 0; i < 6; i++) {
+                double d3 = d2 == 0.0D ? 0.0D : dx * (i / 6.0D);
+                double d4 = d2 == 0.0D ? dz * (i / 6.0D) : d3 / d2;
+                for (int j = 1; j < 4; j++) {
+                    if (!this.tarantula.level().getBlockState(BlockPos.containing(this.tarantula.getX() + d4, this.tarantula.getY() + (double) j, this.tarantula.getZ() + d3)).canBeReplaced()) {
+                        return false;
+                    }
+                }
+            }
+            return true;
         }
     }
 }

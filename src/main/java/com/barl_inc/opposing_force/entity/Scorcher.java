@@ -54,7 +54,7 @@ public class Scorcher extends AnimatedMonster {
 
     public static AttributeSupplier.Builder registerAttributes() {
         return Mob.createMobAttributes()
-                .add(Attributes.MAX_HEALTH, 40.0D)
+                .add(Attributes.MAX_HEALTH, 50.0D)
                 .add(Attributes.MOVEMENT_SPEED, 0.23F)
                 .add(Attributes.ATTACK_DAMAGE, 7.0D)
                 .add(Attributes.ARMOR, 10.0D)
@@ -96,7 +96,7 @@ public class Scorcher extends AnimatedMonster {
         super.tick();
         this.prevFireProgress = this.fireProgress;
 
-        if (this.isPreparingFire() && this.fireProgress < 5.0F) {
+        if (this.isPreparingFire() && this.fireProgress < 10.0F) {
             this.fireProgress++;
         }
         if (!this.isPreparingFire() && this.fireProgress > 0.0F) {
@@ -128,7 +128,7 @@ public class Scorcher extends AnimatedMonster {
     }
 
     public float getFireProgress(float partialTicks) {
-        return Mth.lerp(partialTicks, this.prevFireProgress, this.fireProgress) * 0.2F;
+        return Mth.lerp(partialTicks, this.prevFireProgress, this.fireProgress) * 0.1F;
     }
 
     @Override
@@ -241,13 +241,13 @@ public class Scorcher extends AnimatedMonster {
             if (this.timer == 1) {
                 this.scorcher.setPreparingFire(true);
             }
-            if (this.timer == 15) {
+            if (this.timer == 20) {
                 this.scorcher.setAnimationState(FIRE_ANIMATION);
             }
-            if (this.timer < 15) {
+            if (this.timer < 20) {
                 this.lookAtTarget(target, 15.0F, 15.0F);
             }
-            if (this.timer > 15 && this.timer < 100) {
+            if (this.timer > 20 && this.timer < 100) {
                 this.lookAtTarget(target, 0.9F, 0.0F);
                 this.burnEntities();
             }
@@ -267,7 +267,7 @@ public class Scorcher extends AnimatedMonster {
             while (distanceBurned < 8) {
                 burnWidth += 0.04F;
                 Vec3 burnPos = headPos.add(this.rotateOffsetVec(new Vec3(0, 0, distanceBurned), 0, this.scorcher.getYRot()));
-                this.hurtEntitiesAround(burnPos, burnWidth, 4.0F);
+                this.hurtEntitiesAround(burnPos, burnWidth, 5.0F);
                 distanceBurned += burnWidth;
             }
         }

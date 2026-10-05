@@ -1,0 +1,10 @@
+{
+  "type": "neoforge:add_spawns",
+  "biomes": "#opposing_force:has_monster/desert",
+  "spawners": {
+    "type": "opposing_force:furball",
+    "maxCount": 1,
+    "minCount": 1,
+    "weight": 10
+  }
+}

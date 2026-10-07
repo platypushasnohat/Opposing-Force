@@ -206,11 +206,18 @@ public class Octovine extends AnimatedMonster {
     @Override
     public void travel(Vec3 travelVector) {
         if (this.isEffectiveAi() && this.isInWater()) {
+            double startY = this.getY();
             this.moveRelative(this.getSpeed(), travelVector);
             this.move(MoverType.SELF, this.getDeltaMovement());
             this.setDeltaMovement(this.getDeltaMovement().scale(0.9D));
-            if (this.horizontalCollision && this.isEyeInFluid(FluidTags.WATER) && this.isPathFinding()) {
-                this.setDeltaMovement(this.getDeltaMovement().add(0.0D, 0.05D, 0.0D));
+            if (this.horizontalCollision) {
+                Vec3 motion = this.getDeltaMovement();
+                if (this.isFree(motion.x, motion.y + 0.6D - this.getY() + startY, motion.z)) {
+                    this.setDeltaMovement(motion.x, 0.3D, motion.z);
+                }
+                else if (this.isEyeInFluid(FluidTags.WATER) && this.isPathFinding()) {
+                    this.setDeltaMovement(motion.add(0.0D, 0.05D, 0.0D));
+                }
             }
         } else {
             super.travel(travelVector);

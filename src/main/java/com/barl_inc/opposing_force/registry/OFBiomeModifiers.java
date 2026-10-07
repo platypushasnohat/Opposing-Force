@@ -29,7 +29,8 @@ public class OFBiomeModifiers {
         addSpawn(context, "gnat", OFBiomeTags.HAS_PLAINS_MONSTERS, new MobSpawnSettings.SpawnerData(OFEntities.GNAT.get(), 100, 4, 4));
         addSpawn(context, "scorcher", OFBiomeTags.HAS_OVERWORLD_MONSTERS, new MobSpawnSettings.SpawnerData(OFEntities.SCORCHER.get(), 20, 2, 2));
         addSpawn(context, "furball", OFBiomeTags.HAS_FOREST_MONSTERS, new MobSpawnSettings.SpawnerData(OFEntities.FURBALL.get(), 100, 2, 2));
-        addSpawn(context, "tarantula", OFBiomeTags.HAS_DESERT_MONSTERS, new MobSpawnSettings.SpawnerData(OFEntities.FURBALL.get(), 10, 1, 1));
+        addSpawn(context, "tarantula", OFBiomeTags.HAS_DESERT_MONSTERS, new MobSpawnSettings.SpawnerData(OFEntities.TARANTULA.get(), 10, 1, 1));
+        addSpawn(context, "octovine", OFBiomeTags.HAS_MANGROVE_MONSTERS, new MobSpawnSettings.SpawnerData(OFEntities.OCTOVINE.get(), 15, 1, 2));
     }
 
     @SafeVarargs

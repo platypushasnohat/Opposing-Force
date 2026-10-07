@@ -6,6 +6,7 @@ import com.barl_inc.opposing_force.client.render.entity.layer.MushyEyesLayer;
 import com.barl_inc.opposing_force.entity.Mushy;
 import com.barl_inc.opposing_force.registry.OFModelLayers;
 import com.mojang.blaze3d.vertex.PoseStack;
+import com.mojang.math.Axis;
 import net.minecraft.client.renderer.entity.EntityRendererProvider;
 import net.minecraft.client.renderer.entity.MobRenderer;
 import net.minecraft.resources.ResourceLocation;
@@ -27,10 +28,15 @@ public class MushyRenderer extends MobRenderer<Mushy, MushyModel> {
     @Override
     protected void setupRotations(Mushy mushy, PoseStack poseStack, float bob, float yBodyRot, float partialTicks, float scale) {
         super.setupRotations(mushy, poseStack, bob, yBodyRot, partialTicks, scale);
-        /*if (furball.getAnimationState() == Furball.JUMP_ANIMATION) {
-            float xRot = -Mth.lerp(partialTicks, furball.xRotO, furball.getXRot());
-            poseStack.mulPose(Axis.XP.rotationDegrees(xRot));
+        float tilt = mushy.getTilt(partialTicks);
+        if (tilt > 0.0F) {
+            float relativeYaw = yBodyRot - mushy.getLaunchTiltYaw();
+            float pivot = mushy.getBbHeight() * 0.5F;
+            poseStack.translate(0.0F, pivot, 0.0F);
+            poseStack.mulPose(Axis.YP.rotationDegrees(relativeYaw));
+            poseStack.mulPose(Axis.XP.rotationDegrees(-tilt));
+            poseStack.mulPose(Axis.YP.rotationDegrees(-relativeYaw));
+            poseStack.translate(0.0F, -pivot, 0.0F);
         }
-         */
     }
 }

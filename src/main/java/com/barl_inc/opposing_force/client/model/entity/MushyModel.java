@@ -9,6 +9,7 @@ import com.platypushasnohat.sinew.client.model.entity.SinewEntityModel;
 import net.minecraft.client.model.geom.ModelPart;
 import net.minecraft.client.model.geom.PartPose;
 import net.minecraft.client.model.geom.builders.*;
+import net.minecraft.util.Mth;
 
 public class MushyModel extends SinewEntityModel<Mushy> {
 	// This layer location should be baked with EntityRendererProvider.Context in the entity renderer and passed into this model's constructor
@@ -41,6 +42,7 @@ public class MushyModel extends SinewEntityModel<Mushy> {
         this.animateSmooth(entity.danceAnimationState, MushyAnimations.DANCE, ageInTicks, partialTicks);
         this.animateSmooth(entity.launchAnimationState, MushyAnimations.LAUNCH_START, ageInTicks, partialTicks);
         this.animateSmooth(entity.spinAnimationState, MushyAnimations.LAUNCH_LOOP, ageInTicks, partialTicks);
+        this.body_main.yRot += entity.getSpinAngle(partialTicks) * Mth.DEG_TO_RAD;
     }
 
 	public static LayerDefinition createBodyLayer() {

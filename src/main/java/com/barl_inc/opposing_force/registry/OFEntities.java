@@ -5,6 +5,7 @@ import com.barl_inc.opposing_force.entity.*;
 import com.barl_inc.opposing_force.entity.misc.AcidCloud;
 import com.barl_inc.opposing_force.entity.misc.DicerLaser;
 import com.barl_inc.opposing_force.entity.projectile.AcidCharge;
+import com.barl_inc.opposing_force.entity.projectile.BileGlob;
 import com.barl_inc.opposing_force.entity.projectile.LaserBlade;
 import com.barl_inc.opposing_force.entity.projectile.LaserBolt;
 import net.minecraft.core.registries.BuiltInRegistries;
@@ -40,6 +41,8 @@ public class OFEntities {
     public static final DeferredHolder<EntityType<?>, EntityType<AcidCloud>> ACID_CLOUD = registerEntity("acid_cloud", AcidCloud::new, MobCategory.MISC, builder -> builder.sized(4.0F, 0.5F).fireImmune().clientTrackingRange(10).setUpdateInterval(Integer.MAX_VALUE));
     public static final DeferredHolder<EntityType<?>, EntityType<LaserBolt>> LASER_BOLT = registerEntity("laser_bolt", LaserBolt::new, MobCategory.MISC, builder -> builder.sized(0.3F, 0.3F).setShouldReceiveVelocityUpdates(true).fireImmune().clientTrackingRange(4));
     public static final DeferredHolder<EntityType<?>, EntityType<LaserBlade>> LASER_BLADE = registerEntity("laser_blade", LaserBlade::new, MobCategory.MISC, builder -> builder.sized(2.25F, 0.95F).fireImmune().clientTrackingRange(4));
+    public static final DeferredHolder<EntityType<?>, EntityType<BileGlob>> BILE_GLOB = registerEntity("bile_glob", BileGlob::new, MobCategory.MISC, builder -> builder.sized(0.4F, 0.4F).setUpdateInterval(10).clientTrackingRange(4));
+
 
     public static <E extends Entity> DeferredHolder<EntityType<?>, EntityType<E>> registerEntity(String name, EntityType.EntityFactory<E> factory, MobCategory entityClassification, Consumer<EntityType.Builder<E>> builderConsumer) {
         DeferredHolder<EntityType<?>, EntityType<E>> entity = registerEntityNoLang(name, factory, entityClassification, builderConsumer);

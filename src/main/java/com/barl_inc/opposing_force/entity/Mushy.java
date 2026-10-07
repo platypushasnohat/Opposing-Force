@@ -36,16 +36,15 @@ import net.minecraft.world.level.ServerLevelAccessor;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.Vec3;
 
-import javax.annotation.Nullable;
 import java.util.List;
 
 public class Mushy extends AnimatedMonster {
     private static final EntityDataAccessor<Float> LAUNCH_TILT = SynchedEntityData.defineId(Mushy.class, EntityDataSerializers.FLOAT);
     private static final EntityDataAccessor<Float> LAUNCH_TILT_YAW = SynchedEntityData.defineId(Mushy.class, EntityDataSerializers.FLOAT);
     private float tilt;
-    private float tiltO;
-    private float spinAngle;
-    private float spinAngleO;
+    private float tilt_old;
+    private float angle;
+    private float angle_old;
 
     private static final int ATTACK_ANIMATION = 1;
     public static final int JUMP_ANIMATION = 2;
@@ -79,8 +78,7 @@ public class Mushy extends AnimatedMonster {
         this.goalSelector.addGoal(2, new MushyAttackGoal(this));
         this.goalSelector.addGoal(3, new WaterAvoidingRandomStrollGoal(this, 1.0D));
         this.goalSelector.addGoal(4, new LookAtPlayerGoal(this, Player.class, 8.0F));
-        this.goalSelector.addGoal(5, new LookAtPlayerGoal(this, Mob.class, 8.0F));
-        this.goalSelector.addGoal(6, new RandomLookAroundGoal(this));
+        this.goalSelector.addGoal(5, new RandomLookAroundGoal(this));
         this.targetSelector.addGoal(0, new HurtByTargetGoal(this));
         this.targetSelector.addGoal(1, new NearestAttackableTargetGoal<>(this, Player.class, true));
     }
@@ -111,32 +109,32 @@ public class Mushy extends AnimatedMonster {
     public void tick() {
         super.tick();
         if (this.level().isClientSide) {
-            this.tiltO = this.tilt;
+            this.tilt_old = this.tilt;
             this.tilt = this.getLaunchTilt();
             this.tickSpin();
         }
     }
 
     private void tickSpin() {
-        this.spinAngleO = this.spinAngle;
+        this.angle_old = this.angle;
         if (this.getAnimationState() == SPIN_ANIMATION) {
-            this.spinAngle -= 36.0F;
+            this.angle -= 36.0F;
             return;
         }
         // Coast to a stop on the next full turn in the spin direction
-        float stop = Mth.floor(this.spinAngle / 360.0F) * 360.0F;
-        float remaining = this.spinAngle - stop;
+        float stop = Mth.floor(this.angle / 360.0F) * 360.0F;
+        float remaining = this.angle - stop;
         if (remaining > 0.01F) {
-            this.spinAngle = Math.max(this.spinAngle - Math.min(36.0F, Math.max(remaining * 0.15F, 0.5F)), stop);
+            this.angle = Math.max(this.angle - Math.min(36.0F, Math.max(remaining * 0.15F, 0.5F)), stop);
         }
         else {
-            this.spinAngle = 0.0F;
-            this.spinAngleO = 0.0F;
+            this.angle = 0.0F;
+            this.angle_old = 0.0F;
         }
     }
 
     public float getSpinAngle(float partialTicks) {
-        return Mth.lerp(partialTicks, this.spinAngleO, this.spinAngle);
+        return Mth.lerp(partialTicks, this.angle_old, this.angle);
     }
 
     // 0-180 degrees
@@ -157,7 +155,7 @@ public class Mushy extends AnimatedMonster {
     }
 
     public float getTilt(float partialTicks) {
-        return Mth.lerp(partialTicks, this.tiltO, this.tilt);
+        return Mth.lerp(partialTicks, this.tilt_old, this.tilt);
     }
 
     public boolean isDancing() {
@@ -268,20 +266,19 @@ public class Mushy extends AnimatedMonster {
         }
 
         private void tickDecide(LivingEntity target) {
-            if (target == null) {
-                return;
-            }
-            this.lookAtTarget(target, 30.0F, 20.0F);
-            if (this.attackCooldown > 0) {
-                this.attackCooldown--;
-                return;
-            }
-            if (this.mushy.getRandom().nextFloat() < 0.33F && this.canLaunchAt(target)) {
-                this.setState(2);
-            }
-            else {
-                this.swinging = false;
-                this.setState(1);
+            if (target != null) {
+                this.lookAtTarget(target, 30.0F, 20.0F);
+                if (this.attackCooldown > 0) {
+                    this.attackCooldown--;
+                    return;
+                }
+                if (this.mushy.getRandom().nextFloat() < 0.33F && this.canLaunchAt(target)) {
+                    this.setState(2);
+                }
+                else {
+                    this.swinging = false;
+                    this.setState(1);
+                }
             }
         }
 
@@ -360,7 +357,7 @@ public class Mushy extends AnimatedMonster {
             this.timer++;
             this.mushy.getNavigation().stop();
             float progress = Mth.clamp((float) this.timer / 16, 0.0F, 1.0F);
-            float tilt = 180.0F * (progress * progress * (3.0F - 2.0F * progress));
+            float tilt = 180.0F * (progress * progress * (3.0F - (progress * 2.0F)));
             this.mushy.setLaunchTilt(tilt);
             if (tilt < 120.0F) {
                 this.steerOver(target);
@@ -372,16 +369,16 @@ public class Mushy extends AnimatedMonster {
             }
         }
 
+        //aim over player for fall
         private void steerOver(LivingEntity target) {
-            if (target == null) {
-                return;
+            if (target != null) {
+                this.lookAtTarget(target, 30.0F, 30.0F);
+                Vec3 motion = this.mushy.getDeltaMovement();
+                Vec3 offset = new Vec3(target.getX() - this.mushy.getX(), 0.0D, target.getZ() - this.mushy.getZ());
+                double distance = offset.length();
+                Vec3 wanted = distance > 1.0E-4D ? offset.scale(Math.min(distance * 0.25D, 0.45D) / distance) : Vec3.ZERO; //skip tiny angle to avoid snapping
+                this.mushy.setDeltaMovement(Mth.lerp(0.3D, motion.x, wanted.x), motion.y, Mth.lerp(0.3D, motion.z, wanted.z));
             }
-            this.lookAtTarget(target, 30.0F, 30.0F);
-            Vec3 motion = this.mushy.getDeltaMovement();
-            Vec3 offset = new Vec3(target.getX() - this.mushy.getX(), 0.0D, target.getZ() - this.mushy.getZ());
-            double distance = offset.length();
-            Vec3 wanted = distance > 1.0E-4D ? offset.scale(Math.min(distance * 0.25D, 0.45D) / distance) : Vec3.ZERO;
-            this.mushy.setDeltaMovement(Mth.lerp(0.3D, motion.x, wanted.x), motion.y, Mth.lerp(0.3D, motion.z, wanted.z));
         }
 
         private void tickDive() {
@@ -390,7 +387,6 @@ public class Mushy extends AnimatedMonster {
             Vec3 motion = this.mushy.getDeltaMovement();
             double y = Math.max(motion.y - 0.15D, -2.2D);
             this.mushy.setDeltaMovement(motion.x * 0.5D, y, motion.z * 0.5D);
-
             if (this.mushy.onGround() || this.isTouchingEntity()) {
                 this.impact(this.getEntitiesInImpactRange());
             }
@@ -430,24 +426,23 @@ public class Mushy extends AnimatedMonster {
         }
 
         private void spawnSporeBurst() {
-            if (!(this.mushy.level() instanceof ServerLevel level)) {
-                return;
-            }
-            RandomSource random = this.mushy.getRandom();
-            int clumps = 8;
-            for (int i = 0; i < clumps; i++) {
-                double angle = (Math.PI * 2.0D) * (i + random.nextDouble() * 0.5D) / clumps;
-                double dirX = Math.cos(angle);
-                double dirZ = Math.sin(angle);
-                double clumpX = this.mushy.getX() + dirX * 0.6D;
-                double clumpY = this.mushy.getY() + 0.1D + random.nextDouble() * 1.0D;
-                double clumpZ = this.mushy.getZ() + dirZ * 0.6D;
-                for (int j = 0; j < 8; j++) {
-                    double x = clumpX + (random.nextDouble() - 0.5D) * 0.5D;
-                    double y = clumpY + (random.nextDouble() - 0.5D) * 0.6D;
-                    double z = clumpZ + (random.nextDouble() - 0.5D) * 0.5D;
-                    double speed = 0.06D + random.nextDouble() * 0.06D;
-                    level.sendParticles(OFParticleTypes.SPORE_CLOUD.get(), x, y, z, 0, dirX * speed, 0.02D, dirZ * speed, 1.0D);
+            if ((this.mushy.level() instanceof ServerLevel level)) {
+                RandomSource random = this.mushy.getRandom();
+                int clumps = 8;
+                for (int i = 0; i < clumps; i++) {
+                    double angle = (Math.PI * 2.0D) * (i + random.nextDouble() * 0.5D) / clumps;
+                    double dirX = Math.cos(angle);
+                    double dirZ = Math.sin(angle);
+                    double clumpX = this.mushy.getX() + dirX * 0.6D;
+                    double clumpY = this.mushy.getY() + 0.1D + random.nextDouble();
+                    double clumpZ = this.mushy.getZ() + dirZ * 0.6D;
+                    for (int j = 0; j < 8; j++) {
+                        double x = clumpX + (random.nextDouble() - 0.5D) * 0.5D;
+                        double y = clumpY + (random.nextDouble() - 0.5D) * 0.6D;
+                        double z = clumpZ + (random.nextDouble() - 0.5D) * 0.5D;
+                        double speed = 0.06D + random.nextDouble() * 0.06D;
+                        level.sendParticles(OFParticleTypes.SPORE_CLOUD.get(), x, y, z, 0, dirX * speed, 0.02D, dirZ * speed, 1.0D);
+                    }
                 }
             }
         }
@@ -456,7 +451,7 @@ public class Mushy extends AnimatedMonster {
             this.timer++;
             this.mushy.getNavigation().stop();
             int bounceDelay = 3;
-            if (this.timer == bounceDelay) { // small bounce upwards after delay so it lands on ground visually
+            if (this.timer == bounceDelay) { //small bounce upwards after delay so it lands on ground visually
                 this.spawnSporeBurst();
                 this.mushy.setDeltaMovement(0.0D, 0.65D, 0.0D);
                 this.mushy.hasImpulse = true;
@@ -464,7 +459,7 @@ public class Mushy extends AnimatedMonster {
             if (this.timer > bounceDelay + 1 && this.mushy.onGround() && this.mushy.getAnimationState() == SPIN_ANIMATION) {
                 this.mushy.setAnimationState(0);
             }
-            // flip upright
+            //flip upright
             float revert = Mth.clamp(1.0F - (float) (this.timer - bounceDelay) / 8.0F, 0.0F, 1.0F);
             this.mushy.setLaunchTilt(180.0F * revert);
             if (this.timer >= 25 + bounceDelay) {
@@ -481,6 +476,7 @@ public class Mushy extends AnimatedMonster {
             this.setState(0);
         }
 
+        //launch timeout
         private void checkAirTime() {
             if (this.timer > 300) {
                 this.endLaunch();

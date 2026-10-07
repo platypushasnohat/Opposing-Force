@@ -41,6 +41,7 @@ public class CommonEvents {
         event.put(OFEntities.FURBALL.get(), Furball.registerAttributes().build());
         event.put(OFEntities.TERROR.get(), Terror.registerAttributes().build());
         event.put(OFEntities.TARANTULA.get(), Tarantula.registerAttributes().build());
+        event.put(OFEntities.MUSHY.get(), Mushy.registerAttributes().build());
     }
 
     @SubscribeEvent

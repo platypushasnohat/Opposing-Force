@@ -33,6 +33,7 @@ import net.minecraft.world.entity.ai.goal.target.NearestAttackableTargetGoal;
 import net.minecraft.world.entity.animal.Chicken;
 import net.minecraft.world.entity.animal.Cow;
 import net.minecraft.world.entity.animal.Squid;
+import net.minecraft.world.entity.item.ItemEntity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.ItemUtils;
@@ -43,7 +44,11 @@ import net.minecraft.world.level.ServerLevelAccessor;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.pathfinder.PathType;
 import net.minecraft.world.phys.Vec3;
+import net.neoforged.neoforge.common.Tags;
 import net.neoforged.neoforge.fluids.FluidType;
+
+import java.util.Comparator;
+import java.util.EnumSet;
 
 public class Octovine extends AnimatedMonster {
 
@@ -54,6 +59,8 @@ public class Octovine extends AnimatedMonster {
     private static final float SWIM_SPEED_MODIFIER = 1.5F;
 
     private boolean isLandNavigator;
+    private int angryTicks;
+    private boolean distractedByMeat;
 
     public final SmoothAnimationState swimAnimationState = new SmoothAnimationState();
     public final SmoothAnimationState sprintAnimationState = new SmoothAnimationState();
@@ -82,6 +89,7 @@ public class Octovine extends AnimatedMonster {
 
     @Override
     protected void registerGoals() {
+        this.goalSelector.addGoal(0, new OctovineEatGoal(this));
         this.goalSelector.addGoal(1, new OctovineAttackGoal(this));
         this.goalSelector.addGoal(2, new SwimWanderGoal(this, 1.0D, 30) {
             @Override
@@ -111,6 +119,7 @@ public class Octovine extends AnimatedMonster {
     }
 
     private boolean isPrey(LivingEntity entity) {
+        if (this.distractedByMeat) return false;
         if (entity instanceof Cow || entity instanceof Squid || entity instanceof Octovine) {
             return false;
         }
@@ -129,7 +138,19 @@ public class Octovine extends AnimatedMonster {
     @Override
     public void aiStep() {
         super.aiStep();
+        if (!this.level().isClientSide && this.angryTicks > 0) {
+            this.angryTicks--;
+        }
         this.setSprinting(!this.isInWater() && this.isAggressive() && this.getTarget() != null && !this.getNavigation().isDone());
+    }
+
+    @Override
+    public boolean hurt(DamageSource source, float amount) {
+        boolean hurt = super.hurt(source, amount);
+        if (hurt && this.distractedByMeat && source.getEntity() instanceof LivingEntity) {
+            this.angryTicks = 100 + this.random.nextInt(21);
+        }
+        return hurt;
     }
 
     @Override
@@ -303,6 +324,114 @@ public class Octovine extends AnimatedMonster {
                 this.attackCooldown = 10 + this.octovine.getRandom().nextInt(10);
                 this.attackState = 0;
             }
+        }
+    }
+
+    private static class OctovineEatGoal extends Goal {
+
+        private final Octovine octovine;
+        private ItemEntity meat;
+        private int eatTimer;
+        private int searchCooldown;
+
+        public OctovineEatGoal(Octovine octovine) {
+            this.octovine = octovine;
+            this.setFlags(EnumSet.of(Flag.MOVE, Flag.LOOK));
+        }
+
+        @Override
+        public boolean canUse() {
+            if (this.octovine.angryTicks > 0 || this.octovine.getAnimationState() != 0) {
+                return false;
+            }
+            if (this.searchCooldown > 0) {
+                this.searchCooldown--;
+                return false;
+            }
+            this.searchCooldown = 10;
+            this.meat = this.findMeat();
+            return this.meat != null;
+        }
+
+        @Override
+        public boolean canContinueToUse() {
+            return this.octovine.angryTicks <= 0 && this.meat != null;
+        }
+
+        @Override
+        public boolean requiresUpdateEveryTick() {
+            return true;
+        }
+
+        @Override
+        public void start() {
+            this.octovine.distractedByMeat = true;
+            this.octovine.setTarget(null);
+            this.octovine.setAggressive(false);
+            this.eatTimer = 0;
+        }
+
+        @Override
+        public void stop() {
+            this.octovine.distractedByMeat = false;
+            this.meat = null;
+            this.eatTimer = 0;
+            this.octovine.getNavigation().stop();
+            if (this.octovine.getAnimationState() == EAT_ANIMATION) {
+                this.octovine.setAnimationState(0);
+            }
+        }
+
+        @Override
+        public void tick() {
+            if (this.meat == null || !this.meat.isAlive() || this.meat.getItem().isEmpty()) {
+                this.meat = this.findMeat();
+                this.eatTimer = 0;
+                this.octovine.setAnimationState(0);
+                return;
+            }
+            this.octovine.getLookControl().setLookAt(this.meat, 30.0F, 30.0F);
+            boolean close = this.octovine.distanceToSqr(this.meat) < 4.0D;
+            if (this.eatTimer > 0) {
+                this.octovine.getNavigation().stop();
+                this.eatTimer--;
+                if (this.eatTimer == 0) {
+                    this.eatOne();
+                    if (!this.meat.getItem().isEmpty() && close) {
+                        this.eatTimer = this.rollEatTime();
+                    } else {
+                        this.octovine.setAnimationState(0);
+                    }
+                }
+            }
+            else if (close) {
+                this.octovine.getNavigation().stop();
+                this.octovine.setAnimationState(EAT_ANIMATION);
+                this.eatTimer = this.rollEatTime();
+            }
+            else {
+                this.octovine.getNavigation().moveTo(this.meat, this.octovine.isInWater() ? 1.0D : 1.3D);
+            }
+        }
+
+        private int rollEatTime() {
+            return 40 + this.octovine.getRandom().nextInt(41);
+        }
+
+        private void eatOne() {
+            this.meat.getItem().shrink(1);
+            if (this.meat.getItem().isEmpty()) {
+                this.meat.discard();
+            }
+            this.octovine.playSound(SoundEvents.GENERIC_EAT, 1.0F, 0.8F + this.octovine.getRandom().nextFloat() * 0.4F);
+        }
+
+        private ItemEntity findMeat() {
+            return this.octovine.level().getEntitiesOfClass(ItemEntity.class, this.octovine.getBoundingBox().inflate(16.0D, 8.0D, 16.0D),
+                            item -> item.isAlive() && item.getItem().is(Tags.Items.FOODS_RAW_MEAT) && this.octovine.hasLineOfSight(item))
+                    .stream()
+                    .min(Comparator.comparingDouble(this.octovine::distanceToSqr))
+                    .orElse(null);
         }
     }
 }

@@ -13,6 +13,7 @@ public class OFModelLayers {
     public static final ModelLayerLocation FURBALL = register("furball");
     public static final ModelLayerLocation TERROR = register("terror");
     public static final ModelLayerLocation TARANTULA = register("tarantula");
+    public static final ModelLayerLocation OCTOVINE = register("octovine");
 
     public static final ModelLayerLocation LASER_BOLT = register("laser_bolt");
 

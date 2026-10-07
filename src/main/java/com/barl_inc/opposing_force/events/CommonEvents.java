@@ -41,6 +41,7 @@ public class CommonEvents {
         event.put(OFEntities.FURBALL.get(), Furball.registerAttributes().build());
         event.put(OFEntities.TERROR.get(), Terror.registerAttributes().build());
         event.put(OFEntities.TARANTULA.get(), Tarantula.registerAttributes().build());
+        event.put(OFEntities.OCTOVINE.get(), Octovine.registerAttributes().build());
     }
 
     @SubscribeEvent
@@ -53,6 +54,7 @@ public class CommonEvents {
         event.register(OFEntities.FURBALL.get(), SpawnPlacementTypes.ON_GROUND, Heightmap.Types.MOTION_BLOCKING_NO_LEAVES, Furball::checkFurballSpawnRules, RegisterSpawnPlacementsEvent.Operation.AND);
         event.register(OFEntities.TERROR.get(), SpawnPlacementTypes.IN_WATER, Heightmap.Types.MOTION_BLOCKING_NO_LEAVES, AnimatedMonster::checkMonsterSpawnRules, RegisterSpawnPlacementsEvent.Operation.AND);
         event.register(OFEntities.TARANTULA.get(), SpawnPlacementTypes.ON_GROUND, Heightmap.Types.MOTION_BLOCKING_NO_LEAVES, AnimatedMonster::checkSurfaceMonsterSpawnRules, RegisterSpawnPlacementsEvent.Operation.AND);
+        event.register(OFEntities.OCTOVINE.get(), SpawnPlacementTypes.ON_GROUND, Heightmap.Types.MOTION_BLOCKING_NO_LEAVES, AnimatedMonster::checkSurfaceMonsterSpawnRules, RegisterSpawnPlacementsEvent.Operation.AND);
     }
 
     @SubscribeEvent

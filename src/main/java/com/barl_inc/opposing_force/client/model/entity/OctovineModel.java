@@ -56,12 +56,12 @@ public class OctovineModel extends SinewEntityModel<Octovine> {
 
     @Override
     protected void setupAnimations(Octovine entity, float limbSwing, float limbSwingAmount, float ageInTicks, float partialTicks, float netHeadYaw, float headPitch) {
-        this.animateWalkSmooth(entity.walkAnimationState, OctovineAnimations.MOVING, limbSwing, limbSwingAmount, partialTicks);
-        this.animateWalkSmooth(entity.sprintAnimationState, OctovineAnimations.RUN_AGGRO, limbSwing, limbSwingAmount, partialTicks);
+        this.animateWalkSmooth(entity.walkAnimationState, OctovineAnimations.MOVING, limbSwing, limbSwingAmount, 3.0F, 2.5F, partialTicks);
+        this.animateWalkSmooth(entity.sprintAnimationState, OctovineAnimations.RUN_AGGRO, limbSwing, limbSwingAmount, 2.0F, 2.5F, partialTicks);
         this.animateIdleSmooth(entity.idleAnimationState, OctovineAnimations.IDLE, ageInTicks, partialTicks, limbSwingAmount);
         this.animateSmooth(entity.swimAnimationState, OctovineAnimations.SWIM, ageInTicks, partialTicks);
-        this.animateSmooth(entity.swingAnimationState, OctovineAnimations.BITE_BLEND, ageInTicks, partialTicks);
-        this.animateSmooth(entity.biteAnimationState, OctovineAnimations.SWING_BLEND, ageInTicks, partialTicks);
+        this.animateSmooth(entity.biteAnimationState, OctovineAnimations.BITE_BLEND, ageInTicks, partialTicks);
+        this.animateSmooth(entity.swingAnimationState, OctovineAnimations.SWING_BLEND, ageInTicks, partialTicks);
         this.animateSmooth(entity.spitAnimationState, OctovineAnimations.SPIT_BLEND, ageInTicks, partialTicks);
         this.animateSmooth(entity.eatAnimationState, OctovineAnimations.EATING_BLEND, ageInTicks, partialTicks);
     }

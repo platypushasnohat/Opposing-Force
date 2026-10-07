@@ -3,7 +3,10 @@ package com.barl_inc.opposing_force.entity;
 import com.barl_inc.opposing_force.entity.ai.goal.LightDependentTargetGoal;
 import com.barl_inc.opposing_force.registry.OFSoundEvents;
 import com.platypushasnohat.sinew.client.animation.SmoothAnimationState;
+import com.platypushasnohat.sinew.entity.ai.control.SwimmingMoveControl;
 import com.platypushasnohat.sinew.entity.ai.goal.AttackGoal;
+import com.platypushasnohat.sinew.entity.ai.goal.SwimWanderGoal;
+import com.platypushasnohat.sinew.entity.ai.navigation.SmoothAmphibiousNavigation;
 import com.platypushasnohat.sinew.entity.base.AnimatedMonster;
 import com.platypushasnohat.sinew.entity.utils.BodyChain;
 import com.platypushasnohat.sinew.entity.utils.BodyChainMob;
@@ -12,28 +15,35 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.sounds.SoundEvent;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.tags.BlockTags;
+import net.minecraft.tags.FluidTags;
 import net.minecraft.util.Mth;
 import net.minecraft.util.RandomSource;
+import net.minecraft.world.InteractionHand;
+import net.minecraft.world.InteractionResult;
 import net.minecraft.world.damagesource.DamageSource;
-import net.minecraft.world.entity.EntityType;
-import net.minecraft.world.entity.LivingEntity;
-import net.minecraft.world.entity.Mob;
-import net.minecraft.world.entity.MobSpawnType;
+import net.minecraft.world.entity.*;
 import net.minecraft.world.entity.ai.attributes.AttributeSupplier;
 import net.minecraft.world.entity.ai.attributes.Attributes;
 import net.minecraft.world.entity.ai.control.LookControl;
-import net.minecraft.world.entity.ai.goal.FloatGoal;
-import net.minecraft.world.entity.ai.goal.LookAtPlayerGoal;
-import net.minecraft.world.entity.ai.goal.RandomLookAroundGoal;
-import net.minecraft.world.entity.ai.goal.WaterAvoidingRandomStrollGoal;
+import net.minecraft.world.entity.ai.control.MoveControl;
+import net.minecraft.world.entity.ai.control.SmoothSwimmingLookControl;
+import net.minecraft.world.entity.ai.goal.*;
 import net.minecraft.world.entity.ai.goal.target.HurtByTargetGoal;
 import net.minecraft.world.entity.ai.goal.target.NearestAttackableTargetGoal;
 import net.minecraft.world.entity.animal.Chicken;
+import net.minecraft.world.entity.animal.Cow;
+import net.minecraft.world.entity.animal.Squid;
 import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.ItemUtils;
+import net.minecraft.world.item.Items;
 import net.minecraft.world.level.Level;
+import net.minecraft.world.level.LevelReader;
 import net.minecraft.world.level.ServerLevelAccessor;
 import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.level.pathfinder.PathType;
 import net.minecraft.world.phys.Vec3;
+import net.neoforged.neoforge.fluids.FluidType;
 
 public class Octovine extends AnimatedMonster {
 
@@ -41,6 +51,9 @@ public class Octovine extends AnimatedMonster {
     public static final int SWING_ANIMATION = 2;
     public static final int SPIT_ANIMATION = 3;
     public static final int EAT_ANIMATION = 4;
+    private static final float SWIM_SPEED_MODIFIER = 1.5F;
+
+    private boolean isLandNavigator;
 
     public final SmoothAnimationState swimAnimationState = new SmoothAnimationState();
     public final SmoothAnimationState sprintAnimationState = new SmoothAnimationState();
@@ -51,6 +64,9 @@ public class Octovine extends AnimatedMonster {
 
     public Octovine(EntityType<? extends Octovine> entityType, Level level) {
         super(entityType, level);
+        this.setPathfindingMalus(PathType.WATER, 0.0F);
+        this.setPathfindingMalus(PathType.WATER_BORDER, 0.0F);
+        this.switchNavigator(true);
         this.xpReward = 15;
     }
 
@@ -66,24 +82,54 @@ public class Octovine extends AnimatedMonster {
 
     @Override
     protected void registerGoals() {
-        this.goalSelector.addGoal(0, new FloatGoal(this));
-        this.goalSelector.addGoal(2, new WaterAvoidingRandomStrollGoal(this, 1.0D));
-        this.goalSelector.addGoal(3, new LookAtPlayerGoal(this, Player.class, 8.0F));
-        this.goalSelector.addGoal(4, new LookAtPlayerGoal(this, Mob.class, 8.0F));
-        this.goalSelector.addGoal(5, new RandomLookAroundGoal(this));
+        this.goalSelector.addGoal(1, new OctovineAttackGoal(this));
+        this.goalSelector.addGoal(2, new SwimWanderGoal(this, 1.0D, 30) {
+            @Override
+            public boolean canUse() {
+                return super.canUse() && Octovine.this.isInWater();
+            }
+            @Override
+            public boolean canContinueToUse() {
+                return super.canContinueToUse() && Octovine.this.isInWater();
+            }
+        });
+        this.goalSelector.addGoal(3, new RandomStrollGoal(this, 1.0D) {
+            @Override
+            public boolean canUse() {
+                return super.canUse() && !Octovine.this.isInWater();
+            }
+            @Override
+            public boolean canContinueToUse() {
+                return super.canContinueToUse() && !Octovine.this.isInWater();
+            }
+        });
+        this.goalSelector.addGoal(4, new LookAtPlayerGoal(this, Player.class, 8.0F));
+        this.goalSelector.addGoal(5, new LookAtPlayerGoal(this, Mob.class, 8.0F));
+        this.goalSelector.addGoal(6, new RandomLookAroundGoal(this));
         this.targetSelector.addGoal(0, new HurtByTargetGoal(this));
-        this.targetSelector.addGoal(1, new NearestAttackableTargetGoal<>(this, Chicken.class, 50, true, true, this::canAttack));
+        this.targetSelector.addGoal(1, new NearestAttackableTargetGoal<>(this, LivingEntity.class, 50, true, false, this::isPrey));
+    }
+
+    private boolean isPrey(LivingEntity entity) {
+        if (entity instanceof Cow || entity instanceof Squid || entity instanceof Octovine) {
+            return false;
+        }
+        float preySize = entity.getBbWidth() * entity.getBbHeight();
+        float ownSize = this.getBbWidth() * this.getBbHeight();
+        return preySize < ownSize && this.canAttack(entity);
     }
 
     @Override
-    protected int calculateFallDamage(float fallDistance, float damageMultiplier) {
-        return 0;
+    public void calculateEntityAnimation(boolean flying) {
+        float length = (float) Mth.length(this.getX() - this.xo, 0.0F, this.getZ() - this.zo);
+        float speed = Math.min(length * 6.0F, 1.0F);
+        this.walkAnimation.update(speed, 0.5F);
     }
 
     @Override
     public void aiStep() {
         super.aiStep();
-        this.setSprinting(this.isAggressive() && this.getDeltaMovement().horizontalDistance() > 0.075D);
+        this.setSprinting(!this.isInWater() && this.isAggressive() && this.getTarget() != null && !this.getNavigation().isDone());
     }
 
     @Override
@@ -96,6 +142,68 @@ public class Octovine extends AnimatedMonster {
         this.swingAnimationState.animateWhen(this.getAnimationState() == SWING_ANIMATION, this.tickCount);
         this.spitAnimationState.animateWhen(this.getAnimationState() == SPIT_ANIMATION, this.tickCount);
         this.eatAnimationState.animateWhen(this.getAnimationState() == EAT_ANIMATION, this.tickCount);
+    }
+
+    @Override
+    public InteractionResult mobInteract(Player player, InteractionHand hand) {
+        ItemStack stack = player.getItemInHand(hand);
+        if (stack.is(Items.BUCKET) && !this.isBaby()) {
+            player.playSound(SoundEvents.COW_MILK, 1.0F, 1.0F);
+            ItemStack filled = ItemUtils.createFilledResult(stack, player, Items.MILK_BUCKET.getDefaultInstance());
+            player.setItemInHand(hand, filled);
+            return InteractionResult.sidedSuccess(this.level().isClientSide);
+        }
+        return super.mobInteract(player, hand);
+    }
+
+    private void switchNavigator(boolean onLand) {
+        if (onLand) {
+            this.moveControl = new MoveControl(this);
+            this.lookControl = new LookControl(this);
+            this.navigation = this.createNavigation(this.level());
+            this.isLandNavigator = true;
+        } else {
+            this.moveControl = new SwimmingMoveControl(this, 85, 15, SWIM_SPEED_MODIFIER, false);
+            this.lookControl = new SmoothSwimmingLookControl(this, 15);
+            this.navigation = new SmoothAmphibiousNavigation(this, this.level());
+            this.isLandNavigator = false;
+        }
+    }
+
+    @Override
+    public void tick() {
+        super.tick();
+        if (this.isInWater() && this.isLandNavigator) {
+            this.switchNavigator(false);
+        }
+        if (!this.isInWater() && !this.isLandNavigator) {
+            this.switchNavigator(true);
+        }
+    }
+
+    @SuppressWarnings("deprecation")
+    @Override
+    public void travel(Vec3 travelVector) {
+        if (this.isEffectiveAi() && this.isInWater()) {
+            this.moveRelative(this.getSpeed(), travelVector);
+            this.move(MoverType.SELF, this.getDeltaMovement());
+            this.setDeltaMovement(this.getDeltaMovement().scale(0.9D));
+            if (this.horizontalCollision && this.isEyeInFluid(FluidTags.WATER) && this.isPathFinding()) {
+                this.setDeltaMovement(this.getDeltaMovement().add(0.0D, 0.05D, 0.0D));
+            }
+        } else {
+            super.travel(travelVector);
+        }
+    }
+
+    @Override
+    public float getWalkTargetValue(BlockPos pos, LevelReader level) {
+        return level.getFluidState(pos).is(FluidTags.WATER) ? 10.0F : level.getPathfindingCostFromLightLevels(pos);
+    }
+
+    @Override
+    public boolean isPushedByFluid(FluidType type) {
+        return false;
     }
 
     @Override
@@ -121,5 +229,80 @@ public class Octovine extends AnimatedMonster {
     @Override
     protected void playStepSound(BlockPos pos, BlockState state) {
         this.playSound(SoundEvents.WOLF_STEP, 0.1F, 1.2F);
+    }
+
+    private static class OctovineAttackGoal extends AttackGoal {
+        private final Octovine octovine;
+        private int attackCooldown;
+        private boolean hasHit;
+
+        public OctovineAttackGoal(Octovine octovine) {
+            super(octovine);
+            this.octovine = octovine;
+        }
+
+        @Override
+        public boolean canContinueToUse() {
+            return this.attackState != 0 || super.canContinueToUse();
+        }
+
+        @Override
+        public void start() {
+            super.start();
+            this.attackCooldown = 0;
+        }
+
+        @Override
+        public void stop() {
+            super.stop();
+            this.octovine.setSprinting(false);
+        }
+
+        @Override
+        public void tick() {
+            LivingEntity target = this.octovine.getTarget();
+            boolean hasTarget = target != null && target.isAlive();
+            if (this.attackState != 0) {
+                this.octovine.getNavigation().stop();
+                if (hasTarget) {
+                    this.lookAtTarget(target, 30.0F, 30.0F);
+                }
+                if (this.attackState == 1) {
+                    this.tickAttack(target, BITE_ANIMATION, 8, 12);
+                } else {
+                    this.tickAttack(target, SWING_ANIMATION, 9, 12);
+                }
+                return;
+            }
+            if (hasTarget) {
+                double distance = this.octovine.distanceToSqr(target);
+                this.lookAtTarget(target, 30.0F, 30.0F);
+                this.octovine.getNavigation().moveTo(target, this.octovine.isInWater() ? 1.0D : 1.2D);
+                if (this.attackCooldown > 0) {
+                    this.attackCooldown--;
+                }
+                if (this.attackCooldown <= 0 && distance <= this.getAttackReachSqr(target, 1.55D)) {
+                    this.attackState = this.octovine.getRandom().nextBoolean() ? 1 : 2;
+                }
+            }
+        }
+
+        private void tickAttack(LivingEntity target, int animation, int hitStart, int hitEnd) {
+            this.timer++;
+            if (this.timer == 1) {
+                this.octovine.setAnimationState(animation);
+                this.hasHit = false;
+            }
+            if (!this.hasHit && target != null && target.isAlive() && this.timer >= hitStart && this.timer <= hitEnd && this.isInAttackRange(target, 0.65D)) {
+                this.octovine.doHurtTarget(target);
+                this.hasHit = true;
+            }
+            if (this.timer > 15) {
+                this.octovine.setAnimationState(0);
+                this.timer = 0;
+                this.attackCooldown = 10 + this.octovine.getRandom().nextInt(10);
+                this.attackState = 0;
+            }
+        }
     }
 }

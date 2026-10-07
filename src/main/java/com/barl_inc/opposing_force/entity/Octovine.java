@@ -1,6 +1,7 @@
 package com.barl_inc.opposing_force.entity;
 
-import com.barl_inc.opposing_force.entity.ai.goal.LightDependentTargetGoal;
+import com.barl_inc.opposing_force.entity.projectile.BileGlob;
+import com.barl_inc.opposing_force.registry.OFDamageTypes;
 import com.barl_inc.opposing_force.registry.OFSoundEvents;
 import com.platypushasnohat.sinew.client.animation.SmoothAnimationState;
 import com.platypushasnohat.sinew.entity.ai.control.SwimmingMoveControl;
@@ -8,16 +9,11 @@ import com.platypushasnohat.sinew.entity.ai.goal.AttackGoal;
 import com.platypushasnohat.sinew.entity.ai.goal.SwimWanderGoal;
 import com.platypushasnohat.sinew.entity.ai.navigation.SmoothAmphibiousNavigation;
 import com.platypushasnohat.sinew.entity.base.AnimatedMonster;
-import com.platypushasnohat.sinew.entity.utils.BodyChain;
-import com.platypushasnohat.sinew.entity.utils.BodyChainMob;
-import com.platypushasnohat.sinew.utils.SinewSoundUtils;
 import net.minecraft.core.BlockPos;
 import net.minecraft.sounds.SoundEvent;
 import net.minecraft.sounds.SoundEvents;
-import net.minecraft.tags.BlockTags;
 import net.minecraft.tags.FluidTags;
 import net.minecraft.util.Mth;
-import net.minecraft.util.RandomSource;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.damagesource.DamageSource;
@@ -30,7 +26,6 @@ import net.minecraft.world.entity.ai.control.SmoothSwimmingLookControl;
 import net.minecraft.world.entity.ai.goal.*;
 import net.minecraft.world.entity.ai.goal.target.HurtByTargetGoal;
 import net.minecraft.world.entity.ai.goal.target.NearestAttackableTargetGoal;
-import net.minecraft.world.entity.animal.Chicken;
 import net.minecraft.world.entity.animal.Cow;
 import net.minecraft.world.entity.animal.Squid;
 import net.minecraft.world.entity.item.ItemEntity;
@@ -40,7 +35,6 @@ import net.minecraft.world.item.ItemUtils;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.LevelReader;
-import net.minecraft.world.level.ServerLevelAccessor;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.pathfinder.PathType;
 import net.minecraft.world.phys.Vec3;
@@ -84,6 +78,7 @@ public class Octovine extends AnimatedMonster {
                 .add(Attributes.ATTACK_DAMAGE, 8.0D)
                 .add(Attributes.OXYGEN_BONUS, 20.0D)
                 .add(Attributes.KNOCKBACK_RESISTANCE, 0.25D)
+                .add(Attributes.FOLLOW_RANGE, 20.0D)
                 .add(Attributes.ARMOR, 3.0D);
     }
 
@@ -255,6 +250,11 @@ public class Octovine extends AnimatedMonster {
     }
 
     @Override
+    public boolean isInvulnerableTo(DamageSource source) {
+        return source.is(OFDamageTypes.BILE) || super.isInvulnerableTo(source);
+    }
+
+    @Override
     protected void playStepSound(BlockPos pos, BlockState state) {
         this.playSound(SoundEvents.WOLF_STEP, 0.1F, 1.2F);
     }
@@ -263,6 +263,7 @@ public class Octovine extends AnimatedMonster {
         private final Octovine octovine;
         private int attackCooldown;
         private boolean hasHit;
+        private int spitCheckCooldown;
 
         public OctovineAttackGoal(Octovine octovine) {
             super(octovine);
@@ -297,8 +298,10 @@ public class Octovine extends AnimatedMonster {
                 }
                 if (this.attackState == 1) {
                     this.tickAttack(target, BITE_ANIMATION, 8, 12);
-                } else {
+                } else if (this.attackState == 2) {
                     this.tickAttack(target, SWING_ANIMATION, 9, 12);
+                } else {
+                    this.tickSpit(target, 15, 30);
                 }
                 return;
             }
@@ -309,8 +312,16 @@ public class Octovine extends AnimatedMonster {
                 if (this.attackCooldown > 0) {
                     this.attackCooldown--;
                 }
+                if (this.spitCheckCooldown > 0) {
+                    this.spitCheckCooldown--;
+                }
                 if (this.attackCooldown <= 0 && distance <= this.getAttackReachSqr(target, 1.55D)) {
                     this.attackState = this.octovine.getRandom().nextBoolean() ? 1 : 2;
+                } else if (this.attackCooldown <= 0 && this.spitCheckCooldown <= 0 && distance > 5.25D && distance < 256.0D && !this.octovine.isUnderWater() && this.octovine.hasLineOfSight(target)) {
+                    this.spitCheckCooldown = 20;
+                    if (this.octovine.getRandom().nextInt(3) == 0) {
+                        this.attackState = 3;
+                    }
                 }
             }
         }
@@ -322,7 +333,11 @@ public class Octovine extends AnimatedMonster {
                 this.hasHit = false;
             }
             if (!this.hasHit && target != null && target.isAlive() && this.timer >= hitStart && this.timer <= hitEnd && this.isInAttackRange(target, 0.65D)) {
-                this.octovine.doHurtTarget(target);
+                float damage = (float) this.octovine.getAttributeValue(Attributes.ATTACK_DAMAGE);
+                if (this.octovine.angryTicks > 0) {
+                    damage *= 2.0F;
+                }
+                target.hurt(this.octovine.damageSources().mobAttack(this.octovine), damage);
                 this.hasHit = true;
             }
             if (this.timer > 15) {
@@ -331,6 +346,46 @@ public class Octovine extends AnimatedMonster {
                 this.attackCooldown = 10 + this.octovine.getRandom().nextInt(10);
                 this.attackState = 0;
             }
+        }
+
+        private void tickSpit(LivingEntity target, int fireTick, int endTick) {
+            this.timer++;
+            if (this.timer == 1) {
+                this.octovine.setAnimationState(SPIT_ANIMATION);
+                this.hasHit = false;
+            }
+            if (!this.hasHit && this.timer >= fireTick && target != null && target.isAlive()) {
+                this.spitBile(target);
+                this.hasHit = true;
+            }
+            if (this.timer > endTick) {
+                this.octovine.setAnimationState(0);
+                this.timer = 0;
+                this.attackCooldown = 20 + this.octovine.getRandom().nextInt(20);
+                this.attackState = 0;
+            }
+        }
+
+        private void spitBile(LivingEntity target) {
+            Level level = this.octovine.level();
+            BileGlob glob = new BileGlob(level, this.octovine);
+            Vec3 mouth = this.octovine.position().add(new Vec3(0.0D, this.octovine.getEyeHeight() - 0.2D, 1.0D).yRot(-this.octovine.getYHeadRot() * Mth.DEG_TO_RAD));
+            glob.setPos(mouth.x, mouth.y, mouth.z);
+            double dx = target.getX() - glob.getX();
+            double dy = target.getY(0.3333D) - glob.getY();
+            double dz = target.getZ() - glob.getZ();
+            double horizontal = Math.sqrt(dx * dx + dz * dz);
+            float inaccuracy = 1.0F + (float) horizontal * 0.6F;
+            float speed = 1.0F;
+            double lift = 0.0D;
+            for (int i = 0; i < 3; i++) {
+                double aimY = dy + lift;
+                double flightTicks = Math.sqrt(horizontal * horizontal + aimY * aimY) / speed;
+                lift = 0.55D * 0.03D * flightTicks * flightTicks;
+            }
+            glob.shoot(dx, dy + lift, dz, speed, inaccuracy);
+            level.playSound(null, this.octovine.getX(), this.octovine.getY(), this.octovine.getZ(), SoundEvents.LLAMA_SPIT, this.octovine.getSoundSource(), 1.0F, 0.8F + this.octovine.getRandom().nextFloat() * 0.2F);
+            level.addFreshEntity(glob);
         }
     }
 

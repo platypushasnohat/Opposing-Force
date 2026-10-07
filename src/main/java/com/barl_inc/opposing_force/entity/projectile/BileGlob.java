@@ -63,7 +63,14 @@ public class BileGlob extends ThrowableItemProjectile {
         super.onHit(result);
         if (result.getType() != HitResult.Type.ENTITY || !this.ownedBy(((EntityHitResult) result).getEntity())) {
             if (!this.level().isClientSide) {
-                BilePuddle bilePuddle = new BilePuddle(this.level(), this.getX(), this.getY(), this.getZ());
+                double x = this.getX(), y = this.getY(), z = this.getZ();
+                if (result instanceof EntityHitResult entityHit) {
+                    Entity hit = entityHit.getEntity();
+                    x = hit.getX();
+                    y = hit.getY();
+                    z = hit.getZ();
+                }
+                BilePuddle bilePuddle = new BilePuddle(this.level(), x, y, z);
                 Entity entity = this.getOwner();
                 if (entity instanceof LivingEntity living) {
                     bilePuddle.setOwner(living);

@@ -3,7 +3,7 @@ package com.barl_inc.opposing_force.entity;
 import com.barl_inc.opposing_force.entity.ai.goal.LightDependentTargetGoal;
 import com.platypushasnohat.sinew.client.animation.SmoothAnimationState;
 import com.platypushasnohat.sinew.entity.ai.goal.AttackGoal;
-import com.platypushasnohat.sinew.entity.base.AnimatedMonster;
+import com.platypushasnohat.sinew.entity.base.TamableMonster;
 import net.minecraft.core.BlockPos;
 import net.minecraft.network.syncher.EntityDataAccessor;
 import net.minecraft.sounds.SoundEvent;
@@ -31,7 +31,7 @@ import net.minecraft.world.phys.Vec3;
 
 import java.util.List;
 
-public class Tarantula extends AnimatedMonster {
+public class Tarantula extends TamableMonster {
 
     private static final int ATTACK_ANIMATION = 1;
     private static final int SLAM_ANIMATION = 2;

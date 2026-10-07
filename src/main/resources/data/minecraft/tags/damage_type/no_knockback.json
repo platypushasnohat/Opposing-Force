@@ -3,6 +3,7 @@
   "values": [
     "opposing_force:laser",
     "opposing_force:laser_bolt",
-    "opposing_force:acid"
+    "opposing_force:acid",
+    "opposing_force:bile"
   ]
 }

@@ -17,6 +17,7 @@ public class OFDamageTypes {
     public static final ResourceKey<DamageType> ACID = ResourceKey.create(Registries.DAMAGE_TYPE, OpposingForce.location("acid"));
     public static final ResourceKey<DamageType> SCORCH = ResourceKey.create(Registries.DAMAGE_TYPE, OpposingForce.location("scorch"));
     public static final ResourceKey<DamageType> SAW = ResourceKey.create(Registries.DAMAGE_TYPE, OpposingForce.location("saw"));
+    public static final ResourceKey<DamageType> BILE = ResourceKey.create(Registries.DAMAGE_TYPE, OpposingForce.location("bile"));
 
     public static DamageSource causeLaserDamage(RegistryAccess registryAccess, Entity source) {
         return new RandomMessageDamageSource(registryAccess.registry(Registries.DAMAGE_TYPE).get().getHolderOrThrow(LASER), source, 1);
@@ -40,5 +41,9 @@ public class OFDamageTypes {
 
     public static DamageSource causeSawDamage(RegistryAccess registryAccess, Entity source) {
         return new RandomMessageDamageSource(registryAccess.registry(Registries.DAMAGE_TYPE).get().getHolderOrThrow(SAW), source, 1);
+    }
+
+    public static DamageSource causeBileDamage(RegistryAccess registryAccess, Entity source) {
+        return new RandomMessageDamageSource(registryAccess.registry(Registries.DAMAGE_TYPE).get().getHolderOrThrow(BILE), source, 1);
     }
 }

@@ -53,6 +53,7 @@ public class ClientEvents {
         event.registerEntityRenderer(OFEntities.ACID_CHARGE.get(), AcidChargeRenderer::new);
         event.registerEntityRenderer(OFEntities.ACID_CLOUD.get(), NoopRenderer::new);
         event.registerEntityRenderer(OFEntities.BILE_GLOB.get(), BileGlobRenderer::new);
+        event.registerEntityRenderer(OFEntities.BILE_PUDDLE.get(), NoopRenderer::new);
     }
 
     @SubscribeEvent
@@ -83,6 +84,7 @@ public class ClientEvents {
         event.registerSpriteSet(OFParticleTypes.LASER_SWEEP.get(), LaserSweepParticle.Factory::new);
         event.registerSpriteSet(OFParticleTypes.ACID.get(), AcidParticle.Factory::new);
         event.registerSpriteSet(OFParticleTypes.FIRE_BREATH.get(), FireBreathParticle.Factory::new);
+        event.registerSpriteSet(OFParticleTypes.BILE.get(), BileParticle.Factory::new);
     }
 
     @SubscribeEvent

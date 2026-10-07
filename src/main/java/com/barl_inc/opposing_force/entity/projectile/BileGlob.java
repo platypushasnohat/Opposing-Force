@@ -1,6 +1,7 @@
 package com.barl_inc.opposing_force.entity.projectile;
 
 import com.barl_inc.opposing_force.entity.misc.AcidCloud;
+import com.barl_inc.opposing_force.entity.misc.BilePuddle;
 import com.barl_inc.opposing_force.registry.OFEntities;
 import com.barl_inc.opposing_force.registry.OFItems;
 import com.barl_inc.opposing_force.registry.OFParticleTypes;
@@ -43,7 +44,7 @@ public class BileGlob extends ThrowableItemProjectile {
     public void handleEntityEvent(byte id) {
         if (id == 3) {
             for (int i = 0; i < 8; i++) {
-                this.level().addParticle(OFParticleTypes.ACID.get(), this.getX(), this.getY(), this.getZ(), 0.0F, 0.0F, 0.0F);
+                this.level().addParticle(OFParticleTypes.BILE.get(), this.getX(), this.getY(), this.getZ(), 0.0F, 0.0F, 0.0F);
             }
         }
     }
@@ -53,7 +54,7 @@ public class BileGlob extends ThrowableItemProjectile {
         super.tick();
         if (this.level().isClientSide) {
             this.projectileAnimationState.animateWhen(this.isAlive(), this.tickCount);
-            this.level().addParticle(OFParticleTypes.ACID.get(), this.getX(), this.getY() + this.getBbHeight() / 2, this.getZ(), 0, 0, 0);
+            this.level().addParticle(OFParticleTypes.BILE.get(), this.getX(), this.getY() + this.getBbHeight() / 2, this.getZ(), 0, 0, 0);
         }
     }
 
@@ -62,17 +63,17 @@ public class BileGlob extends ThrowableItemProjectile {
         super.onHit(result);
         if (result.getType() != HitResult.Type.ENTITY || !this.ownedBy(((EntityHitResult) result).getEntity())) {
             if (!this.level().isClientSide) {
-                AcidCloud acidCloud = new AcidCloud(this.level(), this.getX(), this.getY(), this.getZ());
+                BilePuddle bilePuddle = new BilePuddle(this.level(), this.getX(), this.getY(), this.getZ());
                 Entity entity = this.getOwner();
                 if (entity instanceof LivingEntity living) {
-                    acidCloud.setOwner(living);
+                    bilePuddle.setOwner(living);
                 }
-                acidCloud.setRadius(2.5F);
-                acidCloud.setDamage(2.0F);
-                acidCloud.setDuration(300);
+                bilePuddle.setRadius(1.5F);
+                bilePuddle.setDamage(2.0F);
+                bilePuddle.setDuration(180);
                 this.level().playSound(null, this.blockPosition(), OFSoundEvents.ACID_CHARGE_EXPLODE.get(), SoundSource.NEUTRAL, 1.0F, SinewSoundUtils.randomizePitch(this.level()));
                 this.level().broadcastEntityEvent(this, (byte) 3);
-                this.level().addFreshEntity(acidCloud);
+                this.level().addFreshEntity(bilePuddle);
                 this.discard();
             }
         }

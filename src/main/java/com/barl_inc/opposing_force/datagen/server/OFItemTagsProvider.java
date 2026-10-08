@@ -47,5 +47,7 @@ public class OFItemTagsProvider extends ItemTagsProvider {
 		this.tag(Tags.Items.MUSIC_DISCS).add(
 				OFItems.MUSIC_DISC_SLAYSER.get()
 		);
+
+        this.tag(ItemTags.ARROWS).add(OFItems.BILE_BOMB_ARROW.get());
 	}
 }

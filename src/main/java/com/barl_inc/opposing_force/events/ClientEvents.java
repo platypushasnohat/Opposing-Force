@@ -54,6 +54,7 @@ public class ClientEvents {
         event.registerEntityRenderer(OFEntities.ACID_CLOUD.get(), NoopRenderer::new);
         event.registerEntityRenderer(OFEntities.BILE_GLOB.get(), BileGlobRenderer::new);
         event.registerEntityRenderer(OFEntities.BILE_PUDDLE.get(), NoopRenderer::new);
+        event.registerEntityRenderer(OFEntities.BILE_BOMB_ARROW.get(), BileBombArrowRenderer::new);
     }
 
     @SubscribeEvent
@@ -71,6 +72,7 @@ public class ClientEvents {
         event.registerLayerDefinition(OFModelLayers.LASER_BOLT, LaserBoltModel::createBodyLayer);
         event.registerLayerDefinition(OFModelLayers.ACID_CHARGE, AcidChargeModel::createBodyLayer);
         event.registerLayerDefinition(OFModelLayers.BILE_GLOB, BileGlobModel::createBodyLayer);
+        event.registerLayerDefinition(OFModelLayers.BILE_BOMB_ARROW, BileBombArrowModel::createBodyLayer);
 
         event.registerLayerDefinition(OFModelLayers.BLASTER, BlasterModel::createBodyLayer);
         event.registerLayerDefinition(OFModelLayers.TRI_BLASTER, TriBlasterModel::createBodyLayer);

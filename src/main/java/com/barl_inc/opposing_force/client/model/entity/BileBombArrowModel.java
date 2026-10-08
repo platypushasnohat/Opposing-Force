@@ -33,14 +33,13 @@ public class BileBombArrowModel extends HierarchicalModel<AcidCharge> {
 
 		PartDefinition root = partdefinition.addOrReplaceChild("root", CubeListBuilder.create().texOffs(-3, 9).addBox(-1.5F, -5.0F, -8.0F, 3.0F, 3.0F, 3.0F, new CubeDeformation(0.0F))
 		.texOffs(10, 11).addBox(-1.5F, -5.0F, -5.0F, 3.0F, 3.0F, 1.0F, new CubeDeformation(0.0F)), PartPose.offset(0.0F, 24.0F, 0.0F));
+        PartDefinition back = root.addOrReplaceChild("back", CubeListBuilder.create().texOffs(0, 0).addBox(0.0F, -2.5F, -2.5F, 0.0F, 5.0F, 5.0F, new CubeDeformation(0.0F, -0.5F, -0.5F)), PartPose.offsetAndRotation(0.0F, -3.5F, 7.0F, -2.3562F, 1.5708F, 0.0F));
 
-		PartDefinition back = root.addOrReplaceChild("back", CubeListBuilder.create().texOffs(0, 0).addBox(0.0F, -2.5F, -2.5F, 0.0F, 5.0F, 5.0F, new CubeDeformation(0.0F)), PartPose.offsetAndRotation(0.0F, -3.5F, 7.0F, -2.3562F, 1.5708F, 0.0F));
+        PartDefinition cross_1 = root.addOrReplaceChild("cross_1", CubeListBuilder.create().texOffs(0, 0).addBox(-12.0F, -2.5F, 0.0F, 16.0F, 5.0F, 0.0F, new CubeDeformation(0.0F, -0.5F, 0.0F)), PartPose.offsetAndRotation(0.0F, -3.5F, -4.0F, -2.3562F, 1.5708F, 0.0F));
 
-		PartDefinition cross_1 = root.addOrReplaceChild("cross_1", CubeListBuilder.create().texOffs(0, 0).addBox(-12.0F, -2.5F, 0.0F, 16.0F, 5.0F, 0.0F, new CubeDeformation(0.0F)), PartPose.offsetAndRotation(0.0F, -3.5F, -4.0F, -2.3562F, 1.5708F, 0.0F));
+        PartDefinition cross_2 = root.addOrReplaceChild("cross_2", CubeListBuilder.create().texOffs(0, 0).addBox(-12.0F, -2.5F, 0.0F, 16.0F, 5.0F, 0.0F, new CubeDeformation(0.0F, -0.5F, 0.0F)), PartPose.offsetAndRotation(0.0F, -3.5F, -4.0F, -0.7854F, 1.5708F, 0.0F));
 
-		PartDefinition cross_2 = root.addOrReplaceChild("cross_2", CubeListBuilder.create().texOffs(0, 0).addBox(-12.0F, -2.5F, 0.0F, 16.0F, 5.0F, 0.0F, new CubeDeformation(0.0F)), PartPose.offsetAndRotation(0.0F, -3.5F, -4.0F, -0.7854F, 1.5708F, 0.0F));
-
-		return LayerDefinition.create(meshdefinition, 32, 32);
+        return LayerDefinition.create(meshdefinition, 32, 32);
 	}
 
 	@Override

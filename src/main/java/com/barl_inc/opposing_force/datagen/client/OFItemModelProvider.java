@@ -27,7 +27,9 @@ public class OFItemModelProvider extends SinewItemModelProvider {
                 OFItems.MOON_SHOES,
                 OFItems.CHITIN,
                 OFItems.POWER_CELL,
-                OFItems.ACID_CHARGE
+                OFItems.ACID_CHARGE,
+                OFItems.BILE_GLOB,
+                OFItems.BILE_BOMB_ARROW
         );
 
         this.handheldItem(

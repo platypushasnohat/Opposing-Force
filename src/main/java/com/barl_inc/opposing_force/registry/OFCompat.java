@@ -10,5 +10,7 @@ public class OFCompat {
 
     private static void registerDispenserBehaviors() {
         DispenserBlock.registerProjectileBehavior(OFItems.ACID_CHARGE.get());
+        DispenserBlock.registerProjectileBehavior(OFItems.BILE_GLOB.get());
+        DispenserBlock.registerProjectileBehavior(OFItems.BILE_BOMB_ARROW.get());
     }
 }

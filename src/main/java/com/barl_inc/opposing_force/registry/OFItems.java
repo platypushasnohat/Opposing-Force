@@ -65,10 +65,6 @@ public class OFItems {
 
     public static final DeferredItem<Item> MOON_SHOES = registerItem("moon_shoes", () -> new MoonShoesItem(new Item.Properties().rarity(Rarity.UNCOMMON).durability(Type.BOOTS.getDurability(25))));
 
-    public static final DeferredItem<Item> BILE_GLOB = registerItem("bile_glob", () -> new BileGlobItem(new Item.Properties()));
-    public static final DeferredItem<Item> BILE_BOMB_ARROW = registerItem("bile_bomb_arrow", () -> new BileBombArrowItem(new Item.Properties()));
-
-
     private static <I extends Item> DeferredItem<I> registerItem(String name, Supplier<? extends I> supplier) {
         DeferredItem<I> item = ITEM.register(name, supplier);
         ITEM_TRANSLATIONS.add(item);

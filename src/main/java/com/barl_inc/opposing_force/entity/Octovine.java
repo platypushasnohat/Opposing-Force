@@ -1,6 +1,6 @@
 package com.barl_inc.opposing_force.entity;
 
-import com.barl_inc.opposing_force.entity.projectile.BileGlob;
+import com.barl_inc.opposing_force.entity.projectile.AcidCharge;
 import com.barl_inc.opposing_force.registry.OFDamageTypes;
 import com.barl_inc.opposing_force.registry.OFSoundEvents;
 import com.platypushasnohat.sinew.client.animation.SmoothAnimationState;
@@ -17,13 +17,19 @@ import net.minecraft.util.Mth;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.damagesource.DamageSource;
-import net.minecraft.world.entity.*;
+import net.minecraft.world.entity.EntityType;
+import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.world.entity.Mob;
+import net.minecraft.world.entity.MoverType;
 import net.minecraft.world.entity.ai.attributes.AttributeSupplier;
 import net.minecraft.world.entity.ai.attributes.Attributes;
 import net.minecraft.world.entity.ai.control.LookControl;
 import net.minecraft.world.entity.ai.control.MoveControl;
 import net.minecraft.world.entity.ai.control.SmoothSwimmingLookControl;
-import net.minecraft.world.entity.ai.goal.*;
+import net.minecraft.world.entity.ai.goal.Goal;
+import net.minecraft.world.entity.ai.goal.LookAtPlayerGoal;
+import net.minecraft.world.entity.ai.goal.RandomLookAroundGoal;
+import net.minecraft.world.entity.ai.goal.RandomStrollGoal;
 import net.minecraft.world.entity.ai.goal.target.HurtByTargetGoal;
 import net.minecraft.world.entity.ai.goal.target.NearestAttackableTargetGoal;
 import net.minecraft.world.entity.animal.Cow;
@@ -251,7 +257,7 @@ public class Octovine extends AnimatedMonster {
 
     @Override
     public boolean isInvulnerableTo(DamageSource source) {
-        return source.is(OFDamageTypes.BILE) || super.isInvulnerableTo(source);
+        return source.is(OFDamageTypes.ACID) || super.isInvulnerableTo(source);
     }
 
     @Override
@@ -368,12 +374,12 @@ public class Octovine extends AnimatedMonster {
 
         private void spitBile(LivingEntity target) {
             Level level = this.octovine.level();
-            BileGlob glob = new BileGlob(level, this.octovine);
+            AcidCharge charge = new AcidCharge(level, this.octovine);
             Vec3 mouth = this.octovine.position().add(new Vec3(0.0D, this.octovine.getEyeHeight() - 0.2D, 1.0D).yRot(-this.octovine.getYHeadRot() * Mth.DEG_TO_RAD));
-            glob.setPos(mouth.x, mouth.y, mouth.z);
-            double dx = target.getX() - glob.getX();
-            double dy = target.getY(0.3333D) - glob.getY();
-            double dz = target.getZ() - glob.getZ();
+            charge.setPos(mouth.x, mouth.y, mouth.z);
+            double dx = target.getX() - charge.getX();
+            double dy = target.getY(0.3333D) - charge.getY();
+            double dz = target.getZ() - charge.getZ();
             double horizontal = Math.sqrt(dx * dx + dz * dz);
             float inaccuracy = 1.0F + (float) horizontal * 0.6F;
             float speed = 1.0F;
@@ -383,9 +389,9 @@ public class Octovine extends AnimatedMonster {
                 double flightTicks = Math.sqrt(horizontal * horizontal + aimY * aimY) / speed;
                 lift = 0.55D * 0.03D * flightTicks * flightTicks;
             }
-            glob.shoot(dx, dy + lift, dz, speed, inaccuracy);
+            charge.shoot(dx, dy + lift, dz, speed, inaccuracy);
             level.playSound(null, this.octovine.getX(), this.octovine.getY(), this.octovine.getZ(), SoundEvents.LLAMA_SPIT, this.octovine.getSoundSource(), 1.0F, 0.8F + this.octovine.getRandom().nextFloat() * 0.2F);
-            level.addFreshEntity(glob);
+            level.addFreshEntity(charge);
         }
     }
 

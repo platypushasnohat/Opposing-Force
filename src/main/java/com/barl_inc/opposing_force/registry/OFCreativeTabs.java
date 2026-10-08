@@ -39,9 +39,6 @@ public class OFCreativeTabs {
 
                         output.accept(OFItems.ACID_CHARGE);
 
-                        output.accept(OFItems.BILE_GLOB);
-                        output.accept(OFItems.BILE_BOMB_ARROW);
-
                         output.accept(OFItems.EMERALD_SWORD);
                         output.accept(OFItems.EMERALD_SHOVEL);
                         output.accept(OFItems.EMERALD_PICKAXE);

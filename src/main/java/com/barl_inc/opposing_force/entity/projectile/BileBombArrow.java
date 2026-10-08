@@ -46,9 +46,13 @@ public class BileBombArrow extends AbstractArrow {
 
     @Override
     protected void onHitEntity(EntityHitResult result) {
-        super.onHitEntity(result);
         Entity hit = result.getEntity();
-        this.burst(hit.getX(), hit.getY(), hit.getZ());
+        double x = hit.getX(), y = hit.getY(), z = hit.getZ();
+        super.onHitEntity(result);
+        if (hit.getType() == EntityType.ENDERMAN) {
+            return;
+        }
+        this.burst(x, y, z);
     }
 
     @Override

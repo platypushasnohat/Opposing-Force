@@ -135,7 +135,7 @@ public class Tarantula extends TamableMonster implements KeybindUsingMount, Play
         }
         else {
             Player player = Sinew.PROXY.getClientSidePlayer();
-            if (player != null && player.isPassengerOfSameVehicle(this)) {
+            if (player != null && player.isPassengerOfSameVehicle(this) && this.riddenAttackCooldown <= 0) {
                 if (Sinew.PROXY.isKeyDown(2) && this.getAnimationState() == 0) {
                     PacketDistributor.sendToServer(new MountedEntityKeyPacket(this.getId(), player.getId(), 2));
                 }
@@ -186,7 +186,7 @@ public class Tarantula extends TamableMonster implements KeybindUsingMount, Play
     public void onKeyPacket(Entity keyPresser, int type) {
         if (keyPresser.isPassengerOfSameVehicle(this)) {
             if (type == 2) {
-                if (this.getAnimationState() == 0 && this.riddenAttackTimer <= 0) {
+                if (this.getAnimationState() == 0 && this.riddenAttackTimer <= 0 && this.riddenAttackCooldown <= 0) {
                     if (this.getRandom().nextFloat() <= 0.75F) {
                         this.setAnimationState(ATTACK_ANIMATION);
                     } else {
@@ -326,15 +326,13 @@ public class Tarantula extends TamableMonster implements KeybindUsingMount, Play
             this.riddenAttackTimer--;
         }
         if (this.riddenAttackTimer <= 0 && this.isInAttackPose()) {
+            this.riddenAttackCooldown = this.getAnimationState() == SLAM_ANIMATION ? 30 : 15;
             this.setAnimationState(0);
         }
-
         if (this.riddenAttackCooldown > 0) {
             this.riddenAttackCooldown--;
         }
-        if (this.riddenAttackCooldown <= 0) {
-            this.tickPlayerAttack();
-        }
+        this.tickPlayerAttack();
     }
 
     @Override
@@ -360,15 +358,14 @@ public class Tarantula extends TamableMonster implements KeybindUsingMount, Play
 
     @Override
     public void onSyncedDataUpdated(EntityDataAccessor<?> key) {
+        super.onSyncedDataUpdated(key);
         if (ANIMATION_STATE.equals(key)) {
             if (this.getAnimationState() == ATTACK_ANIMATION) {
                 this.attackAlt = this.getRandom().nextBoolean();
                 this.riddenAttackTimer = 20;
-                this.riddenAttackCooldown = 15;
             }
             else if (this.getAnimationState() == SLAM_ANIMATION) {
                 this.riddenAttackTimer = 40;
-                this.riddenAttackCooldown = 30;
             }
         }
     }

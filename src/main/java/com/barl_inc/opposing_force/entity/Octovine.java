@@ -401,6 +401,8 @@ public class Octovine extends AnimatedMonster {
         private ItemEntity meat;
         private int eatTimer;
         private int searchCooldown;
+        private int stuckTicks;
+        private ItemEntity ignoredMeat;
 
         public OctovineEatGoal(Octovine octovine) {
             this.octovine = octovine;
@@ -455,11 +457,12 @@ public class Octovine extends AnimatedMonster {
             if (this.meat == null || !this.meat.isAlive() || this.meat.getItem().isEmpty()) {
                 this.meat = this.findMeat();
                 this.eatTimer = 0;
+                this.stuckTicks = 0;
                 this.octovine.setAnimationState(0);
                 return;
             }
             this.octovine.getLookControl().setLookAt(this.meat, 30.0F, 30.0F);
-            boolean close = this.octovine.distanceToSqr(this.meat) < 4.0D;
+            boolean close = this.isClose();
             if (this.eatTimer > 0) {
                 this.octovine.getNavigation().stop();
                 this.eatTimer--;
@@ -471,15 +474,32 @@ public class Octovine extends AnimatedMonster {
                         this.octovine.setAnimationState(0);
                     }
                 }
-            }
-            else if (close) {
+            } else if (close) {
+                this.stuckTicks = 0;
                 this.octovine.getNavigation().stop();
                 this.octovine.setAnimationState(EAT_ANIMATION);
                 this.eatTimer = this.rollEatTime();
+            } else {
+                if (this.octovine.getNavigation().isDone()) {
+                    if (this.octovine.distanceToSqr(this.meat) < 16.0D) {
+                        this.octovine.getMoveControl().setWantedPosition(this.meat.getX(), this.meat.getY(), this.meat.getZ(), this.octovine.isInWater() ? 1.0D : 1.3D);
+                    } else {
+                        this.octovine.getNavigation().moveTo(this.meat, this.octovine.isInWater() ? 1.0D : 1.3D);
+                    }
+                }
+                if (++this.stuckTicks > 80) {
+                    this.ignoredMeat = this.meat;
+                    this.meat = this.findMeat();
+                    this.stuckTicks = 0;
+                }
             }
-            else {
-                this.octovine.getNavigation().moveTo(this.meat, this.octovine.isInWater() ? 1.0D : 1.3D);
-            }
+        }
+
+        private boolean isClose() {
+            double dx = this.meat.getX() - this.octovine.getX();
+            double dz = this.meat.getZ() - this.octovine.getZ();
+            double reach = this.octovine.getBbWidth() / 2.0D + 1.5D;
+            return dx * dx + dz * dz < reach * reach && Math.abs(this.meat.getY() - this.octovine.getY()) < 2.0D;
         }
 
         private int rollEatTime() {

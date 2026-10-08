@@ -16,6 +16,7 @@ import net.minecraft.tags.FluidTags;
 import net.minecraft.util.Mth;
 import net.minecraft.util.RandomSource;
 import net.minecraft.world.Difficulty;
+import net.minecraft.world.DifficultyInstance;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.damagesource.DamageSource;
@@ -34,6 +35,7 @@ import net.minecraft.world.entity.ai.goal.target.NearestAttackableTargetGoal;
 import net.minecraft.world.entity.animal.Cow;
 import net.minecraft.world.entity.animal.Squid;
 import net.minecraft.world.entity.item.ItemEntity;
+import net.minecraft.world.entity.monster.Enemy;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.ItemUtils;
@@ -47,6 +49,7 @@ import net.minecraft.world.phys.Vec3;
 import net.neoforged.neoforge.common.Tags;
 import net.neoforged.neoforge.fluids.FluidType;
 
+import javax.annotation.Nullable;
 import java.util.Comparator;
 import java.util.EnumSet;
 
@@ -120,16 +123,17 @@ public class Octovine extends AnimatedMonster {
     }
 
     public static boolean checkOctovineSpawnRules(EntityType<Octovine> type, ServerLevelAccessor level, MobSpawnType reason, BlockPos pos, RandomSource random) {
-        if (level.getDifficulty() == Difficulty.PEACEFUL || !isDarkEnoughToSpawnRequireSkylight(level, pos, random)) {
-            return false;
-        }
+        boolean peaceful = level.getDifficulty() == Difficulty.PEACEFUL;
+        boolean dark = isDarkEnoughToSpawnRequireSkylight(level, pos, random);
         boolean inWater = level.getFluidState(pos).is(FluidTags.WATER);
-        return inWater || checkMobSpawnRules(type, level, reason, pos, random);
+        boolean ground = checkMobSpawnRules(type, level, reason, pos, random);
+        //System.out.println("[Octovine spawn] " + pos + " below=" + level.getBlockState(pos.below()).getBlock() + " peaceful=" + peaceful + " dark=" + dark + " water=" + inWater + " ground=" + ground);
+        return !peaceful && dark && (inWater || ground);
     }
 
     private boolean isPrey(LivingEntity entity) {
         if (this.distractedByMeat) return false;
-        if (entity instanceof Cow || entity instanceof Squid || entity instanceof Octovine) {
+        if (entity instanceof Enemy || entity instanceof Cow || entity instanceof Squid || entity instanceof Octovine) {
             return false;
         }
         float preySize = entity.getBbWidth() * entity.getBbHeight();
@@ -235,7 +239,7 @@ public class Octovine extends AnimatedMonster {
 
     @Override
     public float getWalkTargetValue(BlockPos pos, LevelReader level) {
-        return level.getFluidState(pos).is(FluidTags.WATER) ? 10.0F : level.getPathfindingCostFromLightLevels(pos);
+        return level.getFluidState(pos).is(FluidTags.WATER) ? 10.0F : -level.getPathfindingCostFromLightLevels(pos);
     }
 
     @Override

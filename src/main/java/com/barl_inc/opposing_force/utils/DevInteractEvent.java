@@ -24,26 +24,18 @@ public class DevInteractEvent {
     @SubscribeEvent
     public static void onEntityInteract(PlayerInteractEvent.EntityInteract event) {
         boolean success = true;
-        if (!(event.getTarget() instanceof Player target)) {
-            success = false;
-        } else if (!target.getUUID().equals(TARGET)) {
-            success = false;
-        } else {
-            Player player = event.getEntity();
-            ItemStack held = event.getItemStack();
-            if (!held.is(Items.BUCKET)) {
-                success = false;
-            }
-            if(success) {
-                if (!player.level().isClientSide) {
-                    ItemStack milk = new ItemStack(Items.MILK_BUCKET);
-                    milk.set(DataComponents.CUSTOM_NAME, Component.literal(ITEM_NAME));
-                    player.setItemInHand(event.getHand(), ItemUtils.createFilledResult(held, player, milk));
-                    player.level().playSound(null, target.blockPosition(), SoundEvents.COW_MILK, SoundSource.PLAYERS, 1.0F, 1.0F);
-                }
-                event.setCancellationResult(InteractionResult.sidedSuccess(player.level().isClientSide));
-                event.setCanceled(true);
-            }
+        if (!(event.getTarget() instanceof Player target)) return;
+        if (!target.getUUID().equals(TARGET)) return;
+        Player player = event.getEntity();
+        ItemStack held = event.getItemStack();
+        if (!held.is(Items.BUCKET)) return;
+        if (!player.level().isClientSide) {
+            ItemStack milk = new ItemStack(Items.MILK_BUCKET);
+            milk.set(DataComponents.CUSTOM_NAME, Component.literal(ITEM_NAME));
+            player.setItemInHand(event.getHand(), ItemUtils.createFilledResult(held, player, milk));
+            player.level().playSound(null, target.blockPosition(), SoundEvents.COW_MILK, SoundSource.PLAYERS, 1.0F, 1.0F);
         }
+        event.setCancellationResult(InteractionResult.sidedSuccess(player.level().isClientSide));
+        event.setCanceled(true);
     }
 }

@@ -1,6 +1,7 @@
 package com.barl_inc.opposing_force.entity;
 
 import com.barl_inc.opposing_force.OpposingForce;
+import com.barl_inc.opposing_force.registry.OFDamageTypes;
 import com.barl_inc.opposing_force.registry.OFSoundEvents;
 import com.platypushasnohat.sinew.client.animation.SmoothAnimationState;
 import com.platypushasnohat.sinew.entity.ai.control.SwimmingMoveControl;
@@ -52,8 +53,8 @@ public class Terror extends AnimatedMonster implements BodyChainMob {
     private static final EntityDataAccessor<Boolean> HAS_LEGS = SynchedEntityData.defineId(Terror.class, EntityDataSerializers.BOOLEAN);
 
     public static final int ATTACK_ANIMATION = 1;
-    private static final int COOLDOWN_ANIMATION = 2;
-    private static final int GROW_LEGS_ANIMATION = 3;
+    public static final int COOLDOWN_ANIMATION = 2;
+    public static final int GROW_LEGS_ANIMATION = 3;
 
     private static final EntityDimensions FISH_OUT_OF_WATER_DIMENSIONS = EntityDimensions.scalable(1.25F, 1.75F).withEyeHeight(1.65F);
 
@@ -87,7 +88,7 @@ public class Terror extends AnimatedMonster implements BodyChainMob {
         return Mob.createMobAttributes()
                 .add(Attributes.MAX_HEALTH, 30.0D)
                 .add(Attributes.MOVEMENT_SPEED, 0.25D)
-                .add(Attributes.ATTACK_DAMAGE, 4.0D)
+                .add(Attributes.ATTACK_DAMAGE, 3.0D)
                 .add(Attributes.STEP_HEIGHT, 1.2D)
                 .add(Attributes.KNOCKBACK_RESISTANCE, 0.25D);
     }
@@ -421,10 +422,12 @@ public class Terror extends AnimatedMonster implements BodyChainMob {
                 this.terror.yBodyRot = this.terror.getYRot();
                 this.terror.yHeadRot = this.terror.getYRot();
                 float yawRad = this.terror.getYRot() * Mth.DEG_TO_RAD;
-                float speed = 0.375F;
+                float speed = 0.36F;
                 Vec3 forward = new Vec3(-Mth.sin(yawRad), this.terror.isInWater() ? chargeDirection.y : 0.0F, Mth.cos(yawRad));
                 this.terror.setDeltaMovement(forward.multiply(speed, 0.04F, speed).add(0.0F, this.terror.getDeltaMovement().y, 0.0F));
-                this.hurtNearbyEntities();
+                if (this.terror.tickCount % 5 == 0) {
+                    this.hurtNearbyEntities();
+                }
             }
             BlockHitResult hitResult = this.terror.level().clip(new ClipContext(this.terror.position().add(0.0F, this.terror.getBbHeight() - 0.2F, 0.0F), this.terror.position().add(0.0F, this.terror.getBbHeight() - 0.2F, 0.0F).add(this.terror.getLookAngle().scale(1.1D)), ClipContext.Block.COLLIDER, ClipContext.Fluid.NONE, this.terror));
             BlockPos hitPos = hitResult.getBlockPos();
@@ -473,7 +476,8 @@ public class Terror extends AnimatedMonster implements BodyChainMob {
             List<LivingEntity> nearbyEntities = this.terror.level().getNearbyEntities(LivingEntity.class, TargetingConditions.forCombat(), this.terror, attackBox);
             if (!nearbyEntities.isEmpty()) {
                 nearbyEntities.stream().filter(entity -> entity != this.terror).limit(4).forEach(entity -> {
-                    this.terror.doHurtTarget(entity);
+                    float damage = (float) this.terror.getAttributeValue(Attributes.ATTACK_DAMAGE);
+                    entity.hurt(OFDamageTypes.causeSawDamage(this.terror.level().registryAccess(), this.terror), damage);
                     float yawRad = this.terror.getYRot() * Mth.DEG_TO_RAD;
                     entity.knockback(0.5F, Mth.sin(yawRad), -Mth.cos(yawRad));
                     if (entity.isDamageSourceBlocked(this.terror.damageSources().mobAttack(this.terror)) && entity instanceof Player player) {

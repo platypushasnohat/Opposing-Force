@@ -25,7 +25,7 @@ import net.minecraft.world.phys.Vec3;
 
 public class Gnat extends BasicFlyingMonster {
 
-    private static final int ATTACK_ANIMATION = 1;
+    public static final int ATTACK_ANIMATION = 1;
 
     public final SmoothAnimationState attackAnimationState = new SmoothAnimationState(1.0F);
 

@@ -2,7 +2,7 @@
   "type": "neoforge:add_spawns",
   "biomes": "#opposing_force:has_monster/desert",
   "spawners": {
-    "type": "opposing_force:furball",
+    "type": "opposing_force:tarantula",
     "maxCount": 1,
     "minCount": 1,
     "weight": 10

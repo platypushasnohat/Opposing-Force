@@ -47,7 +47,9 @@ public class BlasterItem extends Item {
         for (int i = 0; i < player.getInventory().getContainerSize(); i++) {
             ItemStack stack = player.getInventory().getItem(i);
             if (stack.is(OFItems.POWER_CELL)) {
-                return stack;
+                if(isPowerCellFilled(stack)) {
+                    return stack;
+                }
             }
         }
         return ItemStack.EMPTY;

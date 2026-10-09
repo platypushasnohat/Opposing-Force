@@ -52,11 +52,11 @@ public class CommonEvents {
         event.register(OFEntities.FURBALL.get(), SpawnPlacementTypes.ON_GROUND, Heightmap.Types.MOTION_BLOCKING_NO_LEAVES, Furball::checkFurballSpawnRules, RegisterSpawnPlacementsEvent.Operation.AND);
         event.register(OFEntities.TERROR.get(), SpawnPlacementTypes.IN_WATER, Heightmap.Types.MOTION_BLOCKING_NO_LEAVES, AnimatedMonster::checkMonsterSpawnRules, RegisterSpawnPlacementsEvent.Operation.AND);
         event.register(OFEntities.TARANTULA.get(), SpawnPlacementTypes.ON_GROUND, Heightmap.Types.MOTION_BLOCKING_NO_LEAVES, AnimatedMonster::checkSurfaceMonsterSpawnRules, RegisterSpawnPlacementsEvent.Operation.AND);
+        event.register(OFEntities.MUSHY.get(), SpawnPlacementTypes.ON_GROUND, Heightmap.Types.MOTION_BLOCKING_NO_LEAVES, Mushy::checkMushySpawnRules, RegisterSpawnPlacementsEvent.Operation.AND);
         SpawnPlacementType groundOrWater = (level, pos, type) ->
                 SpawnPlacementTypes.ON_GROUND.isSpawnPositionOk(level, pos, type)
                         || SpawnPlacementTypes.IN_WATER.isSpawnPositionOk(level, pos, type);
-        event.register(OFEntities.OCTOVINE.get(), groundOrWater, Heightmap.Types.MOTION_BLOCKING_NO_LEAVES, Octovine::checkOctovineSpawnRules, RegisterSpawnPlacementsEvent.Operation.REPLACE);
-        event.register(OFEntities.MUSHY.get(), SpawnPlacementTypes.ON_GROUND, Heightmap.Types.MOTION_BLOCKING_NO_LEAVES, Mushy::checkMushySpawnRules, RegisterSpawnPlacementsEvent.Operation.AND);
+        event.register(OFEntities.OCTOVINE.get(), groundOrWater, Heightmap.Types.MOTION_BLOCKING_NO_LEAVES, Octovine::checkOctovineSpawnRules, RegisterSpawnPlacementsEvent.Operation.AND);
 
     }
 

@@ -52,6 +52,8 @@ public class OFItems {
 
     public static final DeferredItem<Item> MUSHY_SPAWN_EGG = registerSpawnEggItem("mushy", OFEntities.MUSHY, 0xe3552b, 0x110701);
 
+    public static final DeferredItem<Item> OCTOVINE_SPAWN_EGG = registerSpawnEggItem("octovine", OFEntities.OCTOVINE, 0x674d2f, 0xaa2110);
+
     public static final DeferredItem<Item> EMERALD_SWORD = registerItem("emerald_sword", () -> new SinewSwordItem(OFToolDefinitions.EMERALD, 3.0F, -2.4F, new Item.Properties().rarity(Rarity.UNCOMMON)));
     public static final DeferredItem<Item> EMERALD_PICKAXE = registerItem("emerald_pickaxe", () -> new SinewPickaxeItem(OFToolDefinitions.EMERALD, 1.0F, -2.8F, new Item.Properties().rarity(Rarity.UNCOMMON)));
     public static final DeferredItem<Item> EMERALD_AXE = registerItem("emerald_axe", () -> new SinewAxeItem(OFToolDefinitions.EMERALD, 5.0F, -3.0F, new Item.Properties().rarity(Rarity.UNCOMMON)));

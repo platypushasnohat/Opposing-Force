@@ -1,0 +1,10 @@
+{
+  "type": "neoforge:add_spawns",
+  "biomes": "#opposing_force:has_monster/mangrove",
+  "spawners": {
+    "type": "opposing_force:octovine",
+    "maxCount": 4,
+    "minCount": 2,
+    "weight": 40
+  }
+}

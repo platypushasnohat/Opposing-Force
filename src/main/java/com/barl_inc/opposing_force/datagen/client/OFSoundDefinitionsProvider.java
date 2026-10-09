@@ -25,8 +25,18 @@ public class OFSoundDefinitionsProvider extends SinewSoundDefinitionsProvider {
                 sound(OpposingForce.location("mob/dicer/idle1")),
                 sound(OpposingForce.location("mob/dicer/idle2"))
         );
+        this.registerSound(OFSoundEvents.DICER_STEP,
+                sound(OpposingForce.location("mob/dicer/step1")),
+                sound(OpposingForce.location("mob/dicer/step2"))
+        );
         this.registerSound(OFSoundEvents.DICER_ATTACK,
                 sound(OpposingForce.location("mob/dicer/attack"))
+        );
+        this.registerSound(OFSoundEvents.DICER_DASH_WARN,
+                sound(OpposingForce.location("mob/dicer/dash_warn"))
+        );
+        this.registerSound(OFSoundEvents.DICER_DASH,
+                sound(OpposingForce.location("mob/dicer/dash"))
         );
         this.registerSound(OFSoundEvents.DICER_LASER,
                 sound(OpposingForce.location("mob/dicer/laser"))

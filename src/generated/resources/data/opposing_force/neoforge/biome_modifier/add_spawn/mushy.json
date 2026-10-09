@@ -4,7 +4,7 @@
   "spawners": {
     "type": "opposing_force:mushy",
     "maxCount": 2,
-    "minCount": 1,
-    "weight": 25
+    "minCount": 2,
+    "weight": 100
   }
 }

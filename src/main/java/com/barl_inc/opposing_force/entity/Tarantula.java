@@ -14,6 +14,7 @@ import net.minecraft.network.syncher.EntityDataAccessor;
 import net.minecraft.sounds.SoundEvent;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.tags.DamageTypeTags;
+import net.minecraft.tags.EntityTypeTags;
 import net.minecraft.util.Mth;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
@@ -25,6 +26,8 @@ import net.minecraft.world.entity.ai.attributes.AttributeSupplier;
 import net.minecraft.world.entity.ai.attributes.Attributes;
 import net.minecraft.world.entity.ai.goal.*;
 import net.minecraft.world.entity.ai.goal.target.HurtByTargetGoal;
+import net.minecraft.world.entity.ai.goal.target.OwnerHurtByTargetGoal;
+import net.minecraft.world.entity.ai.goal.target.OwnerHurtTargetGoal;
 import net.minecraft.world.entity.ai.targeting.TargetingConditions;
 import net.minecraft.world.entity.animal.IronGolem;
 import net.minecraft.world.entity.animal.armadillo.Armadillo;
@@ -86,7 +89,18 @@ public class Tarantula extends TamableMonster implements KeybindUsingMount, Play
         this.goalSelector.addGoal(1, new TamedSitGoal(this));
         this.goalSelector.addGoal(3, new TarantulaAttackGoal(this));
         this.goalSelector.addGoal(4, new AvoidEntityGoal<>(this, Armadillo.class, 6.0F, 1.0D, 1.2D, (entity) -> !((Armadillo) entity).isScared()));
-        this.goalSelector.addGoal(5, new TemptGoal(this, 1.2D, (stack) -> stack.is(Items.SPIDER_EYE), false) {
+        this.goalSelector.addGoal(5, new FollowOwnerGoal(this, 1.2D, 8.0F, 3.0F) {
+            @Override
+            public boolean canUse() {
+                return super.canUse() && Tarantula.this.getCommand() == COMMAND_FOLLOW;
+            }
+
+            @Override
+            public boolean canContinueToUse() {
+                return super.canContinueToUse() && Tarantula.this.getCommand() == COMMAND_FOLLOW;
+            }
+        });
+        this.goalSelector.addGoal(6, new TemptGoal(this, 1.2D, (stack) -> stack.is(Items.SPIDER_EYE), false) {
             @Override
             public boolean canUse() {
                 return super.canUse() && Tarantula.this.hasNoTargets();
@@ -97,12 +111,34 @@ public class Tarantula extends TamableMonster implements KeybindUsingMount, Play
                 return super.canContinueToUse() && Tarantula.this.hasNoTargets();
             }
         });
-        this.goalSelector.addGoal(6, new WaterAvoidingRandomStrollGoal(this, 1.0D));
-        this.goalSelector.addGoal(7, new LookAtPlayerGoal(this, Player.class, 6.0F));
-        this.goalSelector.addGoal(8, new RandomLookAroundGoal(this));
-        this.targetSelector.addGoal(0, new HurtByTargetGoal(this));
-        this.targetSelector.addGoal(1, new LightDependentTargetGoal<>(this, Player.class, true, false));
-        this.targetSelector.addGoal(2, new LightDependentTargetGoal<>(this, IronGolem.class, true, true));
+        this.goalSelector.addGoal(7, new WaterAvoidingRandomStrollGoal(this, 1.0D));
+        this.goalSelector.addGoal(8, new LookAtPlayerGoal(this, Player.class, 6.0F));
+        this.goalSelector.addGoal(9, new RandomLookAroundGoal(this));
+        this.targetSelector.addGoal(1, new OwnerHurtByTargetGoal(this));
+        this.targetSelector.addGoal(2, new OwnerHurtTargetGoal(this));
+        this.targetSelector.addGoal(3, new HurtByTargetGoal(this));
+        this.targetSelector.addGoal(4, new LightDependentTargetGoal<>(this, Player.class, true, false) {
+            @Override
+            public boolean canUse() {
+                return super.canUse() && !Tarantula.this.isTame();
+            }
+
+            @Override
+            public boolean canContinueToUse() {
+                return super.canContinueToUse() && !Tarantula.this.isTame();
+            }
+        });
+        this.targetSelector.addGoal(5, new LightDependentTargetGoal<>(this, IronGolem.class, true, true) {
+            @Override
+            public boolean canUse() {
+                return super.canUse() && !Tarantula.this.isTame();
+            }
+
+            @Override
+            public boolean canContinueToUse() {
+                return super.canContinueToUse() && !Tarantula.this.isTame();
+            }
+        });
     }
 
     public AABB getSwipeAttackBox() {
@@ -177,7 +213,7 @@ public class Tarantula extends TamableMonster implements KeybindUsingMount, Play
         }
         else {
             if (!this.level().isClientSide && itemStack.is(Items.SPIDER_EYE) && this.hasNoTargets()) {
-                this.tryToTame(player, itemStack, 12, 1);
+                this.tryToTame(player, itemStack, 20, 1);
                 return InteractionResult.SUCCESS;
             }
         }
@@ -320,6 +356,38 @@ public class Tarantula extends TamableMonster implements KeybindUsingMount, Play
         return super.calculateFallDamage(fallDistance, damageMultiplier) - 6;
     }
 
+    // Override these so the rider doesn't take fall damage
+    @Override
+    public boolean causeFallDamage(float fallDistance, float damageMultiplier, DamageSource damageSource) {
+        float[] onLivingFall = CommonHooks.onLivingFall(this, fallDistance, damageMultiplier);
+        fallDistance = onLivingFall[0];
+        damageMultiplier = onLivingFall[1];
+        boolean flag = causeInternalFallDamage(fallDistance, damageMultiplier, damageSource);
+        int i = this.calculateFallDamage(fallDistance, damageMultiplier);
+        if (i > 0) {
+            this.playSound(i > 4 ? this.getFallSounds().big() : this.getFallSounds().small(), 1.0F, 1.0F);
+            this.playBlockFallSound();
+            this.hurt(damageSource, (float)i);
+            return true;
+        } else {
+            return flag;
+        }
+    }
+
+    private boolean causeInternalFallDamage(float fallDistance, float damageMultiplier, DamageSource damageSource) {
+        float[] onLivingFall = CommonHooks.onLivingFall(this, fallDistance, damageMultiplier);
+        fallDistance = onLivingFall[0];
+        damageMultiplier = onLivingFall[1];
+        int i = this.calculateFallDamage(fallDistance, damageMultiplier);
+        if (i > 0) {
+            this.playBlockFallSound();
+            this.hurt(damageSource, (float)i);
+            return true;
+        } else {
+            return this.getType().is(EntityTypeTags.FALL_DAMAGE_IMMUNE);
+        }
+    }
+
     @Override
     public void tick() {
         super.tick();
@@ -347,6 +415,10 @@ public class Tarantula extends TamableMonster implements KeybindUsingMount, Play
 
         if (!this.isTame() && !this.hasNoTargets() && this.getTameAttempts() > 0) {
             this.setTameAttempts(0);
+        }
+
+        if (!this.level().isClientSide && this.getHealth() < this.getMaxHealth() && this.isTame() && this.tickCount % 100 == 0) {
+            this.heal(2.0F);
         }
     }
 

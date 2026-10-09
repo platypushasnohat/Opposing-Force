@@ -39,10 +39,10 @@ public class Dicer extends AnimatedMonster {
 
     private static final EntityDataAccessor<Boolean> HAS_AFTERIMAGE = SynchedEntityData.defineId(Dicer.class, EntityDataSerializers.BOOLEAN);
 
-    private static final int SLASH1_ANIMATION = 1;
-    private static final int SLASH2_ANIMATION = 2;
-    private static final int CROSS_SLASH_ANIMATION = 3;
-    private static final int LASER_ANIMATION = 4;
+    public static final int SLASH1_ANIMATION = 1;
+    public static final int SLASH2_ANIMATION = 2;
+    public static final int CROSS_SLASH_ANIMATION = 3;
+    public static final int LASER_ANIMATION = 4;
 
     public float prevLaserProgress;
     public float laserProgress;

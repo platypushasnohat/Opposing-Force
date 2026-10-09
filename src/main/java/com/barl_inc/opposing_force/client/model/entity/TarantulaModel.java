@@ -32,7 +32,6 @@ public class TarantulaModel extends SinewEntityModel<Tarantula> {
     @Override
     protected void setupAnimations(Tarantula entity, float limbSwing, float limbSwingAmount, float ageInTicks, float partialTicks, float netHeadYaw, float headPitch) {
         this.animateWalkSmooth(entity.walkAnimationState, TarantulaAnimations.WALK, limbSwing, limbSwingAmount, 2.0F, 4.0F, partialTicks);
-        this.animateWalkSmooth(entity.sprintAnimationState, TarantulaAnimations.RUN, limbSwing, limbSwingAmount, partialTicks);
         this.animateIdleSmooth(entity.idleAnimationState, TarantulaAnimations.IDLE, ageInTicks, partialTicks, limbSwingAmount);
         this.animateSmooth(entity.sitAnimationState, TarantulaAnimations.SIT, ageInTicks, partialTicks);
         this.animateSmooth(entity.jumpAnimationState, TarantulaAnimations.JUMP, ageInTicks, partialTicks);

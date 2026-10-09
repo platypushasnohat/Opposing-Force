@@ -36,8 +36,8 @@ import net.minecraft.world.phys.Vec3;
 
 public class Gusher extends AnimatedMonster {
 
-    private static final int ATTACK_ANIMATION = 1;
-    private static final int GUSH_ANIMATION = 2;
+    public static final int ATTACK_ANIMATION = 1;
+    public static final int GUSH_ANIMATION = 2;
 
     public final SmoothAnimationState attackAnimationState = new SmoothAnimationState(1.0F);
     public final SmoothAnimationState gushAnimationState = new SmoothAnimationState();

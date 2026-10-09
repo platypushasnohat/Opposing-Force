@@ -38,8 +38,8 @@ public class Scorcher extends AnimatedMonster {
 
     private static final EntityDataAccessor<Boolean> PREPARING_FIRE = SynchedEntityData.defineId(Scorcher.class, EntityDataSerializers.BOOLEAN);
 
-    private static final int ATTACK_ANIMATION = 1;
-    private static final int FIRE_ANIMATION = 2;
+    public static final int ATTACK_ANIMATION = 1;
+    public static final int FIRE_ANIMATION = 2;
 
     public final SmoothAnimationState attackAnimationState = new SmoothAnimationState(1.0F);
     public final SmoothAnimationState fireAnimationState = new SmoothAnimationState();

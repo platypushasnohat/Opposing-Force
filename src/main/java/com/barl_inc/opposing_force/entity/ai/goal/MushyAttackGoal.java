@@ -11,36 +11,34 @@ import net.minecraft.util.RandomSource;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.ai.attributes.Attributes;
 import net.minecraft.world.phys.Vec3;
-import com.barl_inc.opposing_force.entity.Mushy;
 
 import java.util.List;
 
 public class MushyAttackGoal extends AttackGoal {
+
     private final Mushy mushy;
     private int attackCooldown;
-    private boolean swinging;
-    //attack state value:
-    //0 deciding
-    //1 melee
-    //2 launch windup
-    //3 ascending
-    //4 launch hang
-    //5 descending
-    //6 recovery
+    private int launchCooldown;
+
+    // attack state values:
+    // 0 deciding
+    // 1 melee
+    // 2 launch windup
+    // 3 ascending
+    // 4 launch hang
+    // 5 descending
+    // 6 recovery
 
     public MushyAttackGoal(Mushy mushy) {
         super(mushy);
         this.mushy = mushy;
     }
 
-    private boolean isLaunching() {
-        return this.attackState >= 2;
-    }
-
     @Override
     public void start() {
         super.start();
         this.attackCooldown = 0;
+        this.launchCooldown = 20 + this.mushy.getRandom().nextInt(20);
     }
 
     @Override
@@ -50,89 +48,75 @@ public class MushyAttackGoal extends AttackGoal {
     }
 
     @Override
-    public boolean isInterruptable() {
-        return !this.isLaunching();
-    }
-
-    @Override
-    public boolean canContinueToUse() {
-        return this.isLaunching() || super.canContinueToUse();
-    }
-
-    @Override
     public void tick() {
         LivingEntity target = this.mushy.getTarget();
-        switch (this.attackState) {
-            case 1 -> this.tickMelee(target);
-            case 2 -> this.tickWindup(target);
-            case 3 -> this.tickAscend(target);
-            case 4 -> this.tickHang(target);
-            case 5 -> this.tickDive();
-            case 6 -> this.tickRecover();
-            default -> this.tickDecide(target);
+        if (target != null) {
+            switch (this.attackState) {
+                case 1 -> this.tickMelee(target);
+                case 2 -> this.tickWindup(target);
+                case 3 -> this.tickAscend(target);
+                case 4 -> this.tickHang(target);
+                case 5 -> this.tickDive();
+                case 6 -> this.tickRecover();
+                default -> this.tickDecide(target);
+            }
         }
     }
 
     private void tickDecide(LivingEntity target) {
         if (target != null) {
-            this.lookAtTarget(target, 30.0F, 20.0F);
+            double distance = this.mushy.distanceToSqr(target);
             if (this.attackCooldown > 0) {
                 this.attackCooldown--;
-                return;
             }
-            if (this.mushy.getRandom().nextFloat() < 0.33F && this.canLaunchAt(target)) {
+            if (this.launchCooldown > 0) {
+                this.launchCooldown--;
+            }
+            if (this.canLaunchAt(target, distance) && this.launchCooldown <= 0) {
                 this.setState(2);
             }
-            else {
-                this.swinging = false;
+            else if (distance <= this.getAttackReachSqr(target, 2.0D) && this.attackCooldown <= 0) {
                 this.setState(1);
+            }
+            else {
+                this.lookAtTarget(target, 25.0F, 25.0F);
+                this.mushy.getNavigation().moveTo(target, 1.1D);
             }
         }
     }
 
-    private boolean canLaunchAt(LivingEntity target) {
+    private boolean canLaunchAt(LivingEntity target, double distance) {
         return this.mushy.onGround()
                 && !this.mushy.isInWaterOrBubble()
-                && this.mushy.distanceToSqr(target) <= 11.0D * 11.0D
+                && distance <= 11.0D * 11.0D
                 && this.isWithinYRange(target, 4)
                 && this.mushy.hasLineOfSight(target)
                 && this.mushy.level().noCollision(this.mushy, this.mushy.getBoundingBox().expandTowards(0.0D, 5.0D, 0.0D));
     }
 
     private void tickMelee(LivingEntity target) {
-        if (target != null) {
-            this.lookAtTarget(target, 30.0F, 20.0F);
-            this.mushy.getNavigation().moveTo(target, 1.1D);
-            if (!this.swinging) {
-                if (this.mushy.distanceToSqr(target) <= this.getAttackReachSqr(target, 1.55D)) {
-                    this.swinging = true;
-                    this.timer = 0;
-                }
-                return;
-            }
-            this.timer++;
-            if (this.timer == 1) {
-                this.mushy.setAnimationState(Mushy.ATTACK_ANIMATION);
-                this.mushy.playSound(OFSoundEvents.FURBALL_ATTACK.get(), 1.0F, SinewSoundUtils.randomizePitch(this.mushy));
-            }
-            if (this.timer == 11 && this.isInAttackRange(target, 0.65D)) {
-                this.mushy.doHurtTarget(target);
-            }
-            if (this.timer > 15) {
-                this.mushy.setAnimationState(0);
-                this.swinging = false;
-                this.attackCooldown = 5 + this.mushy.getRandom().nextInt(3);
-                this.setState(0);
-            }
+        this.lookAtTarget(target, 30.0F, 30.0F);
+        this.mushy.getNavigation().stop();
+        this.timer++;
+        if (this.timer == 1) {
+            this.mushy.setAnimationState(Mushy.ATTACK_ANIMATION);
+            this.mushy.playSound(OFSoundEvents.FURBALL_ATTACK.get(), 1.0F, SinewSoundUtils.randomizePitch(this.mushy));
+        }
+        if (this.timer == 11 && this.isInAttackRange(target, 0.9D)) {
+            this.mushy.doHurtTarget(target);
+        }
+        if (this.timer > 15) {
+            this.mushy.setAnimationState(0);
+            this.attackCooldown = 5 + this.mushy.getRandom().nextInt(3);
+            this.setState(0);
         }
     }
 
     private void tickWindup(LivingEntity target) {
         this.timer++;
         this.mushy.getNavigation().stop();
-        if (target != null) {
-            this.lookAtTarget(target, 30.0F, 20.0F);
-        }
+        this.lookAtTarget(target, 30.0F, 30.0F);
+
         if (this.timer == 1) {
             this.mushy.setAnimationState(Mushy.JUMP_ANIMATION);
         }
@@ -179,14 +163,12 @@ public class MushyAttackGoal extends AttackGoal {
 
     //aim over player for fall
     private void steerOver(LivingEntity target) {
-        if (target != null) {
-            this.lookAtTarget(target, 30.0F, 30.0F);
-            Vec3 motion = this.mushy.getDeltaMovement();
-            Vec3 offset = new Vec3(target.getX() - this.mushy.getX(), 0.0D, target.getZ() - this.mushy.getZ());
-            double distance = offset.length();
-            Vec3 wanted = distance > 1.0E-4D ? offset.scale(Math.min(distance * 0.25D, 0.45D) / distance) : Vec3.ZERO; //skip tiny angle to avoid snapping
-            this.mushy.setDeltaMovement(Mth.lerp(0.3D, motion.x, wanted.x), motion.y, Mth.lerp(0.3D, motion.z, wanted.z));
-        }
+        this.lookAtTarget(target, 30.0F, 30.0F);
+        Vec3 motion = this.mushy.getDeltaMovement();
+        Vec3 offset = new Vec3(target.getX() - this.mushy.getX(), 0.0D, target.getZ() - this.mushy.getZ());
+        double distance = offset.length();
+        Vec3 wanted = distance > 1.0E-4D ? offset.scale(Math.min(distance * 0.25D, 0.45D) / distance) : Vec3.ZERO; //skip tiny angle to avoid snapping
+        this.mushy.setDeltaMovement(Mth.lerp(0.3D, motion.x, wanted.x), motion.y, Mth.lerp(0.3D, motion.z, wanted.z));
     }
 
     private void tickDive() {
@@ -217,14 +199,14 @@ public class MushyAttackGoal extends AttackGoal {
     }
 
     private boolean canImpactHit(LivingEntity entity) {
-        return entity != this.mushy && entity.isAlive() && this.mushy.canAttack(entity);
+        return entity != this.mushy && entity.isAlive() && !(entity instanceof Mushy) && !this.mushy.isAlliedTo(entity) && this.mushy.canAttack(entity);
     }
 
     private void impact(List<LivingEntity> hit) {
         float damage = (float) this.mushy.getAttributeValue(Attributes.ATTACK_DAMAGE) * 2.0F;
         for (LivingEntity entity : hit) {
             if (entity.hurt(this.mushy.damageSources().mobAttack(this.mushy), damage)) {
-                entity.knockback(2.0D, this.mushy.getX() - entity.getX(), this.mushy.getZ() - entity.getZ());
+                entity.knockback(1.7D, this.mushy.getX() - entity.getX(), this.mushy.getZ() - entity.getZ());
             }
         }
         this.mushy.setDeltaMovement(0.0D, 0.0D, 0.0D);
@@ -234,7 +216,7 @@ public class MushyAttackGoal extends AttackGoal {
     }
 
     private void spawnSporeBurst() {
-        if ((this.mushy.level() instanceof ServerLevel level)) {
+        if (this.mushy.level() instanceof ServerLevel level) {
             RandomSource random = this.mushy.getRandom();
             int clumps = 8;
             for (int i = 0; i < clumps; i++) {
@@ -249,7 +231,7 @@ public class MushyAttackGoal extends AttackGoal {
                     double y = clumpY + (random.nextDouble() - 0.5D) * 0.6D;
                     double z = clumpZ + (random.nextDouble() - 0.5D) * 0.5D;
                     double speed = 0.06D + random.nextDouble() * 0.06D;
-                    level.sendParticles(OFParticleTypes.SPORE_CLOUD.get(), x, y, z, 0, dirX * speed, 0.02D, dirZ * speed, 1.0D);
+                    level.sendParticles(OFParticleTypes.SPORE_CLOUD.get(), x, y, z, 0, dirX * speed, 0.02D, dirZ * speed, 0.2D);
                 }
             }
         }
@@ -281,10 +263,11 @@ public class MushyAttackGoal extends AttackGoal {
             this.mushy.setAnimationState(0);
         }
         this.attackCooldown = 10;
+        this.launchCooldown = 50 + this.mushy.getRandom().nextInt(50);
         this.setState(0);
     }
 
-    //launch timeout
+    // launch timeout
     private void checkAirTime() {
         if (this.timer > 300) {
             this.endLaunch();

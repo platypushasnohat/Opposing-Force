@@ -50,6 +50,8 @@ public class OFItems {
 
     public static final DeferredItem<Item> TARANTULA_SPAWN_EGG = registerSpawnEggItem("tarantula", OFEntities.TARANTULA, 0x4f4235, 0xedb24c);
 
+    public static final DeferredItem<Item> MUSHY_SPAWN_EGG = registerSpawnEggItem("mushy", OFEntities.MUSHY, 0xe3552b, 0x110701);
+
     public static final DeferredItem<Item> OCTOVINE_SPAWN_EGG = registerSpawnEggItem("octovine", OFEntities.OCTOVINE, 0x674d2f, 0xaa2110);
 
     public static final DeferredItem<Item> EMERALD_SWORD = registerItem("emerald_sword", () -> new SinewSwordItem(OFToolDefinitions.EMERALD, 3.0F, -2.4F, new Item.Properties().rarity(Rarity.UNCOMMON)));

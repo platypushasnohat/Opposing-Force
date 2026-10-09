@@ -38,9 +38,9 @@ import java.util.List;
 
 public class Bewilder extends AnimatedMonster {
 
-    private static final int WARN_ANIMATION = 1;
-    private static final int STOP_ANIMATION = 2;
-    private static final int STUN_ANIMATION = 3;
+    public static final int WARN_ANIMATION = 1;
+    public static final int STOP_ANIMATION = 2;
+    public static final int STUN_ANIMATION = 3;
 
     public final SmoothAnimationState warnAnimationState = new SmoothAnimationState();
     public final SmoothAnimationState chargeAnimationState = new SmoothAnimationState();

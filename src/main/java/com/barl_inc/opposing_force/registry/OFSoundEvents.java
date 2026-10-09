@@ -13,7 +13,10 @@ public class OFSoundEvents {
     public static final DeferredHolder<SoundEvent, SoundEvent> DICER_HURT = registerSoundEvent("dicer_hurt");
     public static final DeferredHolder<SoundEvent, SoundEvent> DICER_DEATH = registerSoundEvent("dicer_death");
     public static final DeferredHolder<SoundEvent, SoundEvent> DICER_IDLE = registerSoundEvent("dicer_idle");
+    public static final DeferredHolder<SoundEvent, SoundEvent> DICER_STEP = registerSoundEvent("dicer_step");
     public static final DeferredHolder<SoundEvent, SoundEvent> DICER_ATTACK = registerSoundEvent("dicer_attack");
+    public static final DeferredHolder<SoundEvent, SoundEvent> DICER_DASH_WARN = registerSoundEvent("dicer_dash_warn");
+    public static final DeferredHolder<SoundEvent, SoundEvent> DICER_DASH = registerSoundEvent("dicer_dash");
     public static final DeferredHolder<SoundEvent, SoundEvent> DICER_LASER = registerSoundEvent("dicer_laser");
     public static final DeferredHolder<SoundEvent, SoundEvent> DICER_LASER_START = registerSoundEvent("dicer_laser_start");
     public static final DeferredHolder<SoundEvent, SoundEvent> DICER_LASER_END = registerSoundEvent("dicer_laser_end");

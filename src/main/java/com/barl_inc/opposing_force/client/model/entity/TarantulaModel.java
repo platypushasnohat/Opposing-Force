@@ -2,6 +2,7 @@ package com.barl_inc.opposing_force.client.model.entity;
 
 import com.barl_inc.opposing_force.client.model.entity.animation.TarantulaAnimations;
 import com.barl_inc.opposing_force.entity.Tarantula;
+import com.mojang.blaze3d.vertex.PoseStack;
 import com.platypushasnohat.sinew.client.model.entity.SinewEntityModel;
 import net.minecraft.client.model.geom.ModelPart;
 import net.minecraft.client.model.geom.PartPose;
@@ -11,10 +12,16 @@ import net.minecraft.client.renderer.RenderType;
 public class TarantulaModel extends SinewEntityModel<Tarantula> {
 
     private final ModelPart root;
+    private final ModelPart body_main;
+    private final ModelPart body;
+    private final ModelPart head;
 
     public TarantulaModel(ModelPart root) {
         super(RenderType::entityCutoutNoCull);
         this.root = root.getChild("root");
+        this.body_main = this.root.getChild("body_main");
+        this.body = this.body_main.getChild("body");
+        this.head = this.body.getChild("head");
     }
 
     @Override
@@ -25,13 +32,19 @@ public class TarantulaModel extends SinewEntityModel<Tarantula> {
     @Override
     protected void setupAnimations(Tarantula entity, float limbSwing, float limbSwingAmount, float ageInTicks, float partialTicks, float netHeadYaw, float headPitch) {
         this.animateWalkSmooth(entity.walkAnimationState, TarantulaAnimations.WALK, limbSwing, limbSwingAmount, 2.0F, 4.0F, partialTicks);
-        this.animateWalkSmooth(entity.sprintAnimationState, TarantulaAnimations.RUN, limbSwing, limbSwingAmount, partialTicks);
         this.animateIdleSmooth(entity.idleAnimationState, TarantulaAnimations.IDLE, ageInTicks, partialTicks, limbSwingAmount);
         this.animateSmooth(entity.sitAnimationState, TarantulaAnimations.SIT, ageInTicks, partialTicks);
         this.animateSmooth(entity.jumpAnimationState, TarantulaAnimations.JUMP, ageInTicks, partialTicks);
         this.animateSmooth(entity.attack1AnimationState, TarantulaAnimations.SWIPE1, ageInTicks, partialTicks);
         this.animateSmooth(entity.attack2AnimationState, TarantulaAnimations.SWIPE2, ageInTicks, partialTicks);
         this.animateSmooth(entity.slamAnimationState, TarantulaAnimations.SLAM, ageInTicks, partialTicks);
+    }
+
+    public void translateRiderToBody(PoseStack poseStack) {
+        this.root.translateAndRotate(poseStack);
+        this.body_main.translateAndRotate(poseStack);
+        this.body.translateAndRotate(poseStack);
+        this.head.translateAndRotate(poseStack);
     }
 
     public static LayerDefinition createBodyLayer() {

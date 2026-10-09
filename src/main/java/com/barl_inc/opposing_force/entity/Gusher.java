@@ -36,8 +36,8 @@ import net.minecraft.world.phys.Vec3;
 
 public class Gusher extends AnimatedMonster {
 
-    private static final int ATTACK_ANIMATION = 1;
-    private static final int GUSH_ANIMATION = 2;
+    public static final int ATTACK_ANIMATION = 1;
+    public static final int GUSH_ANIMATION = 2;
 
     public final SmoothAnimationState attackAnimationState = new SmoothAnimationState(1.0F);
     public final SmoothAnimationState gushAnimationState = new SmoothAnimationState();
@@ -173,7 +173,7 @@ public class Gusher extends AnimatedMonster {
                     if (distance <= this.getAttackReachSqr(target, 2.5D) && this.biteCooldown <= 0) {
                         this.attackState = 1;
                     }
-                    if (distance <= 64 && distance > this.getAttackReachSqr(target, 1.0D) && this.getAirAbove() >= 7 && this.gushCooldown <= 0) {
+                    if (distance <= 64 && distance > this.getAttackReachSqr(target, 1.0D) && this.gusher.level().noCollision(this.gusher, this.gusher.getBoundingBox().expandTowards(0.0D, 9.0D, 0.0D)) && this.gushCooldown <= 0) {
                         this.attackState = 2;
                     }
                 }
@@ -219,19 +219,6 @@ public class Gusher extends AnimatedMonster {
             acidCharge.shootFromRotation(this.gusher, shootAngle, this.gusher.getYRot(), 0.0F, 0.55F, 20.0F);
             this.gusher.playSound(SoundEvents.SNOW_GOLEM_SHOOT, 1.0F, 0.4F * SinewSoundUtils.randomizePitch(this.gusher));
             this.gusher.level().addFreshEntity(acidCharge);
-        }
-
-        private int getAirAbove() {
-            int air = 0;
-            BlockPos.MutableBlockPos checkPos = this.gusher.blockPosition().above(2).mutable();
-            while (this.gusher.level().getBlockState(checkPos).isEmpty()) {
-                air++;
-                checkPos.move(0, 1, 0);
-                if (air > 8) {
-                    break;
-                }
-            }
-            return air;
         }
     }
 }

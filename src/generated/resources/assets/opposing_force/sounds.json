@@ -24,6 +24,18 @@
     ],
     "subtitle": "subtitles.opposing_force.dicer_attack"
   },
+  "dicer_dash": {
+    "sounds": [
+      "opposing_force:mob/dicer/dash"
+    ],
+    "subtitle": "subtitles.opposing_force.dicer_dash"
+  },
+  "dicer_dash_warn": {
+    "sounds": [
+      "opposing_force:mob/dicer/dash_warn"
+    ],
+    "subtitle": "subtitles.opposing_force.dicer_dash_warn"
+  },
   "dicer_death": {
     "sounds": [
       "opposing_force:mob/dicer/death"
@@ -61,6 +73,13 @@
       "opposing_force:mob/dicer/laser_start"
     ],
     "subtitle": "subtitles.opposing_force.dicer_laser_start"
+  },
+  "dicer_step": {
+    "sounds": [
+      "opposing_force:mob/dicer/step1",
+      "opposing_force:mob/dicer/step2"
+    ],
+    "subtitle": "subtitles.opposing_force.dicer_step"
   },
   "furball_attack": {
     "sounds": [

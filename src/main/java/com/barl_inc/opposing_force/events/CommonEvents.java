@@ -38,6 +38,7 @@ public class CommonEvents {
         event.put(OFEntities.FURBALL.get(), Furball.registerAttributes().build());
         event.put(OFEntities.TERROR.get(), Terror.registerAttributes().build());
         event.put(OFEntities.TARANTULA.get(), Tarantula.registerAttributes().build());
+        event.put(OFEntities.MUSHY.get(), Mushy.registerAttributes().build());
         event.put(OFEntities.OCTOVINE.get(), Octovine.registerAttributes().build());
     }
 
@@ -55,6 +56,8 @@ public class CommonEvents {
                 SpawnPlacementTypes.ON_GROUND.isSpawnPositionOk(level, pos, type)
                         || SpawnPlacementTypes.IN_WATER.isSpawnPositionOk(level, pos, type);
         event.register(OFEntities.OCTOVINE.get(), groundOrWater, Heightmap.Types.MOTION_BLOCKING_NO_LEAVES, Octovine::checkOctovineSpawnRules, RegisterSpawnPlacementsEvent.Operation.REPLACE);
+        event.register(OFEntities.MUSHY.get(), SpawnPlacementTypes.ON_GROUND, Heightmap.Types.MOTION_BLOCKING_NO_LEAVES, Mushy::checkMushySpawnRules, RegisterSpawnPlacementsEvent.Operation.AND);
+
     }
 
     @SubscribeEvent

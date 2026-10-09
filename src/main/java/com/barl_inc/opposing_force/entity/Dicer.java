@@ -8,13 +8,13 @@ import com.platypushasnohat.sinew.entity.ai.goal.AttackGoal;
 import com.platypushasnohat.sinew.entity.base.AnimatedMonster;
 import com.platypushasnohat.sinew.utils.SinewParticleUtils;
 import com.platypushasnohat.sinew.utils.SinewSoundUtils;
+import net.minecraft.core.BlockPos;
 import net.minecraft.network.syncher.EntityDataAccessor;
 import net.minecraft.network.syncher.EntityDataSerializers;
 import net.minecraft.network.syncher.SynchedEntityData;
 import net.minecraft.sounds.SoundEvent;
 import net.minecraft.util.Mth;
 import net.minecraft.world.damagesource.DamageSource;
-import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.Mob;
@@ -30,6 +30,7 @@ import net.minecraft.world.entity.ai.targeting.TargetingConditions;
 import net.minecraft.world.entity.animal.IronGolem;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.Level;
+import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.AABB;
 import net.minecraft.world.phys.Vec3;
 
@@ -39,10 +40,10 @@ public class Dicer extends AnimatedMonster {
 
     private static final EntityDataAccessor<Boolean> HAS_AFTERIMAGE = SynchedEntityData.defineId(Dicer.class, EntityDataSerializers.BOOLEAN);
 
-    private static final int SLASH1_ANIMATION = 1;
-    private static final int SLASH2_ANIMATION = 2;
-    private static final int CROSS_SLASH_ANIMATION = 3;
-    private static final int LASER_ANIMATION = 4;
+    public static final int SLASH1_ANIMATION = 1;
+    public static final int SLASH2_ANIMATION = 2;
+    public static final int CROSS_SLASH_ANIMATION = 3;
+    public static final int LASER_ANIMATION = 4;
 
     public float prevLaserProgress;
     public float laserProgress;
@@ -132,16 +133,6 @@ public class Dicer extends AnimatedMonster {
     }
 
     @Override
-    public boolean doHurtTarget(Entity entity) {
-        if (super.doHurtTarget(entity)) {
-            this.playSound(OFSoundEvents.DICER_ATTACK.get(), 1.0F, SinewSoundUtils.randomizePitch(this));
-            return true;
-        } else {
-            return false;
-        }
-    }
-
-    @Override
     protected SoundEvent getAmbientSound() {
         return OFSoundEvents.DICER_IDLE.get();
     }
@@ -154,6 +145,11 @@ public class Dicer extends AnimatedMonster {
     @Override
     protected SoundEvent getDeathSound() {
         return OFSoundEvents.DICER_DEATH.get();
+    }
+
+    @Override
+    protected void playStepSound(BlockPos pos, BlockState state) {
+        this.playSound(OFSoundEvents.DICER_STEP.get(), 0.15F, SinewSoundUtils.randomizePitch(this));
     }
 
     private static class DicerAttackGoal extends AttackGoal {
@@ -239,7 +235,10 @@ public class Dicer extends AnimatedMonster {
             if (this.timer == 1) {
                 this.dicer.setAnimationState(this.dicer.getRandom().nextBoolean() ? SLASH2_ANIMATION : SLASH1_ANIMATION);
             }
-            if (this.timer == 9 && this.isInAttackRange(target, 1.5D)) {
+            if (this.timer == 8) {
+                this.dicer.playSound(OFSoundEvents.DICER_ATTACK.get(), 1.0F, SinewSoundUtils.randomizePitch(this.dicer));
+            }
+            if (this.timer == 9 && this.isInAttackRange(target, 1.0D)) {
                 this.dicer.doHurtTarget(target);
             }
             if (this.timer > 20) {
@@ -252,12 +251,14 @@ public class Dicer extends AnimatedMonster {
         private void tickCrossSlash(LivingEntity target) {
             this.timer++;
             if (this.timer == 1) {
+                this.dicer.playSound(OFSoundEvents.DICER_DASH_WARN.get(), 1.0F, SinewSoundUtils.randomizePitch(this.dicer));
                 this.dicer.setAnimationState(CROSS_SLASH_ANIMATION);
             }
             if (this.timer < 19) {
                 this.lookAtTarget(target, 60.0F, 30.0F);
             }
-            if (timer == 28) {
+            if (this.timer == 28) {
+                this.dicer.playSound(OFSoundEvents.DICER_DASH.get(), 1.3F, SinewSoundUtils.randomizePitch(this.dicer));
                 this.dicer.setHasAfterimage(true);
                 this.dicer.addDeltaMovement(this.dicer.getLookAngle().scale(5.0D).multiply(1.0D, 0.0D, 1.0D));
             }
@@ -273,7 +274,7 @@ public class Dicer extends AnimatedMonster {
             if (this.timer > 50) {
                 this.timer = 0;
                 this.attackState = 0;
-                this.crossSlashCooldown = 100 + this.dicer.getRandom().nextInt(50);
+                this.crossSlashCooldown = 120 + this.dicer.getRandom().nextInt(80);
                 this.dicer.setAnimationState(0);
             }
         }
@@ -281,7 +282,7 @@ public class Dicer extends AnimatedMonster {
         private void tickLaser(LivingEntity target) {
             this.timer++;
             if (this.timer == 6) {
-                this.dicer.playSound(OFSoundEvents.DICER_LASER_START.get(), 2.0F, 1.0F);
+                this.dicer.playSound(OFSoundEvents.DICER_LASER_START.get(), 1.5F, 1.0F);
             }
             if (this.timer == 10) {
                 this.dicer.setAnimationState(LASER_ANIMATION);
@@ -301,12 +302,12 @@ public class Dicer extends AnimatedMonster {
                 this.dicer.getLookControl().setLookAt(target.getX(), target.getEyeY(), target.getZ(), 0.95F, 90.0F);
             }
             if (this.timer == 78) {
-                this.dicer.playSound(OFSoundEvents.DICER_LASER_END.get(), 2.0F, 1.0F);
+                this.dicer.playSound(OFSoundEvents.DICER_LASER_END.get(), 1.5F, 1.0F);
             }
             if (this.timer > 130) {
                 this.timer = 0;
                 this.attackState = 0;
-                this.laserCooldown = 150 + this.dicer.getRandom().nextInt(100);
+                this.laserCooldown = 170 + this.dicer.getRandom().nextInt(100);
                 this.dicer.setAnimationState(0);
             }
         }
@@ -316,8 +317,9 @@ public class Dicer extends AnimatedMonster {
             List<LivingEntity> nearbyEntities = this.dicer.level().getNearbyEntities(LivingEntity.class, TargetingConditions.forCombat(), this.dicer, attackBox);
             if (!nearbyEntities.isEmpty()) {
                 nearbyEntities.stream().filter(entity -> entity != this.dicer).limit(8).forEach(entity -> {
-                    this.dicer.doHurtTarget(entity);
-                    if (entity.isDamageSourceBlocked(this.dicer.damageSources().mobAttack(this.dicer)) && entity instanceof Player player) {
+                    DamageSource damageSource = this.dicer.damageSources().mobAttack(this.dicer);
+                    entity.hurt(damageSource, (float) this.dicer.getAttributeValue(Attributes.ATTACK_DAMAGE) * 1.5F);
+                    if (entity.isDamageSourceBlocked(damageSource) && entity instanceof Player player) {
                         player.disableShield();
                     }
                 });

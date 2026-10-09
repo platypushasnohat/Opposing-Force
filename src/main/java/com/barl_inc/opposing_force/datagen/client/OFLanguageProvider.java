@@ -23,7 +23,10 @@ public class OFLanguageProvider extends SinewLanguageProvider {
         this.addSound(OFSoundEvents.DICER_HURT, "Dicer hurts");
         this.addSound(OFSoundEvents.DICER_DEATH, "Dicer dies");
         this.addSound(OFSoundEvents.DICER_IDLE, "Dicer gurgles");
+        this.addSound(OFSoundEvents.DICER_STEP, "Dicer steps");
         this.addSound(OFSoundEvents.DICER_ATTACK, "Dicer slices");
+        this.addSound(OFSoundEvents.DICER_DASH_WARN, "Dicer prepares dash");
+        this.addSound(OFSoundEvents.DICER_DASH, "Dicer dashes");
         this.addSound(OFSoundEvents.DICER_LASER, "Dicer lasers");
         this.addSound(OFSoundEvents.DICER_LASER_START, "Dicer powers up laser");
         this.addSound(OFSoundEvents.DICER_LASER_END, "Dicer powers down laser");

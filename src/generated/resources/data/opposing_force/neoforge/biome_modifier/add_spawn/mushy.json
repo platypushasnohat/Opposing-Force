@@ -1,0 +1,10 @@
+{
+  "type": "neoforge:add_spawns",
+  "biomes": "#opposing_force:has_monster/forest",
+  "spawners": {
+    "type": "opposing_force:mushy",
+    "maxCount": 2,
+    "minCount": 2,
+    "weight": 100
+  }
+}

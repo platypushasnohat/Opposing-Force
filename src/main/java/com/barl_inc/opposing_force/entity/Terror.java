@@ -53,8 +53,8 @@ public class Terror extends AnimatedMonster implements BodyChainMob {
     private static final EntityDataAccessor<Boolean> HAS_LEGS = SynchedEntityData.defineId(Terror.class, EntityDataSerializers.BOOLEAN);
 
     public static final int ATTACK_ANIMATION = 1;
-    private static final int COOLDOWN_ANIMATION = 2;
-    private static final int GROW_LEGS_ANIMATION = 3;
+    public static final int COOLDOWN_ANIMATION = 2;
+    public static final int GROW_LEGS_ANIMATION = 3;
 
     private static final EntityDimensions FISH_OUT_OF_WATER_DIMENSIONS = EntityDimensions.scalable(1.25F, 1.75F).withEyeHeight(1.65F);
 

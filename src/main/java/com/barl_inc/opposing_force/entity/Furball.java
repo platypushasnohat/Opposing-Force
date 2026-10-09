@@ -35,7 +35,7 @@ import net.minecraft.world.phys.Vec3;
 
 public class Furball extends AnimatedMonster {
 
-    private static final int ATTACK_ANIMATION = 1;
+    public static final int ATTACK_ANIMATION = 1;
     public static final int JUMP_ANIMATION = 2;
 
     public final SmoothAnimationState swimAnimationState = new SmoothAnimationState();

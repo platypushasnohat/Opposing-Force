@@ -3,6 +3,7 @@ package com.barl_inc.opposing_force.client.render.entity;
 import com.barl_inc.opposing_force.OpposingForce;
 import com.barl_inc.opposing_force.client.model.entity.TarantulaModel;
 import com.barl_inc.opposing_force.client.render.entity.layer.TarantulaEyesLayer;
+import com.barl_inc.opposing_force.client.render.entity.layer.TarantulaRiderLayer;
 import com.barl_inc.opposing_force.entity.Tarantula;
 import com.barl_inc.opposing_force.registry.OFModelLayers;
 import net.minecraft.client.renderer.entity.EntityRendererProvider;
@@ -16,6 +17,7 @@ public class TarantulaRenderer extends MobRenderer<Tarantula, TarantulaModel> {
     public TarantulaRenderer(EntityRendererProvider.Context context) {
         super(context, new TarantulaModel(context.bakeLayer(OFModelLayers.TARANTULA)), 1.5F);
         this.addLayer(new TarantulaEyesLayer(this));
+        this.addLayer(new TarantulaRiderLayer(this));
     }
 
     @Override

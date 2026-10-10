@@ -24,6 +24,7 @@ public class OFEntities {
 
     public static List<DeferredHolder<EntityType<?>, ? extends EntityType<?>>> ENTITY_TRANSLATIONS = new ArrayList<>();
 
+    //mobs
     public static final DeferredHolder<EntityType<?>, EntityType<Dicer>> DICER = registerEntity("dicer", Dicer::new, MobCategory.MONSTER, builder -> builder.sized(0.9F, 2.8F).eyeHeight(2.4F).clientTrackingRange(8));
     public static final DeferredHolder<EntityType<?>, EntityType<Bewilder>> BEWILDER = registerEntity("bewilder", Bewilder::new, MobCategory.MONSTER, builder -> builder.sized(1.5F, 1.9F).eyeHeight(1.25F).clientTrackingRange(8));
     public static final DeferredHolder<EntityType<?>, EntityType<Gusher>> GUSHER = registerEntity("gusher", Gusher::new, MobCategory.MONSTER, builder -> builder.sized(1.8F, 2.55F).eyeHeight(2.15F).clientTrackingRange(8));
@@ -33,7 +34,9 @@ public class OFEntities {
     public static final DeferredHolder<EntityType<?>, EntityType<Terror>> TERROR = registerEntity("terror", Terror::new, OFMobCategories.AQUIFER_MONSTER, builder -> builder.sized(1.25F, 1.25F).eyeHeight(0.75F).clientTrackingRange(8));
     public static final DeferredHolder<EntityType<?>, EntityType<Tarantula>> TARANTULA = registerEntity("tarantula", Tarantula::new, MobCategory.MONSTER, builder -> builder.sized(3.4F, 1.9F).eyeHeight(1.5F).clientTrackingRange(8));
     public static final DeferredHolder<EntityType<?>, EntityType<Mushy>> MUSHY = registerEntity("mushy", Mushy::new, MobCategory.MONSTER, builder -> builder.sized(0.69F, 1.05F).eyeHeight(0.31F).clientTrackingRange(8).setUpdateInterval(1));
+    public static final DeferredHolder<EntityType<?>, EntityType<Motif>> MOTIF = registerEntity("motif", Motif::new, MobCategory.MONSTER, builder -> builder.sized(1.56F, 2.81F).eyeHeight(2.43F).clientTrackingRange(8));
 
+    //other
     public static final DeferredHolder<EntityType<?>, EntityType<DicerLaser>> DICER_LASER = registerEntity("dicer_laser", DicerLaser::new, MobCategory.MISC, builder -> builder.sized(0.1F, 0.1F).setUpdateInterval(1).clientTrackingRange(4).fireImmune());
     public static final DeferredHolder<EntityType<?>, EntityType<AcidCharge>> ACID_CHARGE = registerEntity("acid_charge", AcidCharge::new, MobCategory.MISC, builder -> builder.sized(0.4F, 0.4F).setUpdateInterval(10).clientTrackingRange(4));
     public static final DeferredHolder<EntityType<?>, EntityType<AcidCloud>> ACID_CLOUD = registerEntity("acid_cloud", AcidCloud::new, MobCategory.MISC, builder -> builder.sized(4.0F, 0.5F).fireImmune().clientTrackingRange(10).setUpdateInterval(Integer.MAX_VALUE));

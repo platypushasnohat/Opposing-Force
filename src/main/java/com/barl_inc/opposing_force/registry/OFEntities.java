@@ -30,7 +30,7 @@ public class OFEntities {
     public static final DeferredHolder<EntityType<?>, EntityType<Gnat>> GNAT = registerEntity("gnat", Gnat::new, MobCategory.MONSTER, builder -> builder.sized(0.65F, 0.65F).eyeHeight(0.45F).clientTrackingRange(8));
     public static final DeferredHolder<EntityType<?>, EntityType<Scorcher>> SCORCHER = registerEntity("scorcher", Scorcher::new, MobCategory.MONSTER, builder -> builder.sized(0.95F, 0.95F).eyeHeight(0.7F).fireImmune().clientTrackingRange(8));
     public static final DeferredHolder<EntityType<?>, EntityType<Furball>> FURBALL = registerEntity("furball", Furball::new, MobCategory.MONSTER, builder -> builder.sized(0.85F, 0.925F).eyeHeight(0.6F).clientTrackingRange(8));
-    public static final DeferredHolder<EntityType<?>, EntityType<Terror>> TERROR = registerEntity("terror", Terror::new, MobCategory.MONSTER, builder -> builder.sized(1.25F, 1.25F).eyeHeight(0.75F).clientTrackingRange(8));
+    public static final DeferredHolder<EntityType<?>, EntityType<Terror>> TERROR = registerEntity("terror", Terror::new, OFMobCategories.AQUIFER_MONSTER, builder -> builder.sized(1.25F, 1.25F).eyeHeight(0.75F).clientTrackingRange(8));
     public static final DeferredHolder<EntityType<?>, EntityType<Tarantula>> TARANTULA = registerEntity("tarantula", Tarantula::new, MobCategory.MONSTER, builder -> builder.sized(3.4F, 1.9F).eyeHeight(1.5F).clientTrackingRange(8));
     public static final DeferredHolder<EntityType<?>, EntityType<Mushy>> MUSHY = registerEntity("mushy", Mushy::new, MobCategory.MONSTER, builder -> builder.sized(0.69F, 1.05F).eyeHeight(0.31F).clientTrackingRange(8).setUpdateInterval(1));
 

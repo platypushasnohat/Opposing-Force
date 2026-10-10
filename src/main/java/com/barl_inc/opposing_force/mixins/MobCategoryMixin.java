@@ -46,7 +46,7 @@ public class MobCategoryMixin {
         List<MobCategory> categories = new ArrayList<>(Arrays.asList($VALUES));
         MobCategory last = categories.getLast();
         int nextOrdinal = last.ordinal() + 1;
-        MobCategory aquiferMonster = newCategory("OPPOSING_FORCE_AQUIFER_MONSTER", nextOrdinal, "opposing_force:aquifer_monster", 2, false, false, 128);
+        MobCategory aquiferMonster = newCategory("OPPOSING_FORCE_AQUIFER_MONSTER", nextOrdinal, "opposing_force:aquifer_monster", 5, false, false, 128);
         categories.add(aquiferMonster);
         $VALUES = categories.toArray(new MobCategory[0]);
     }

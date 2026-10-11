@@ -18,6 +18,7 @@ public class OFCreativeTabs {
                     .displayItems((parameters, output) -> {
                         output.accept(OFItems.BEWILDER_SPAWN_EGG);
                         output.accept(OFItems.DICER_SPAWN_EGG);
+                        output.accept(OFItems.FILLET_SPAWN_EGG);
                         output.accept(OFItems.FURBALL_SPAWN_EGG);
                         output.accept(OFItems.GNAT_SPAWN_EGG);
                         output.accept(OFItems.GUSHER_SPAWN_EGG);
@@ -37,6 +38,8 @@ public class OFCreativeTabs {
                         output.accept(OFItems.SCATTER_BLASTER);
                         output.accept(OFItems.LASER_BLADE);
                         output.accept(OFItems.MUSIC_DISC_SLAYSER);
+
+                        output.accept(OFItems.FILLET_BUCKET);
 
                         output.accept(OFItems.ACID_CHARGE);
 

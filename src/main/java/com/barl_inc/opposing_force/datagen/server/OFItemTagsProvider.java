@@ -44,6 +44,10 @@ public class OFItemTagsProvider extends ItemTagsProvider {
 				OFItems.EMERALD_HOE.get()
 		);
 
+		this.tag(Tags.Items.BUCKETS_ENTITY_WATER).add(
+				OFItems.FILLET_BUCKET.get()
+		);
+
 		this.tag(Tags.Items.MUSIC_DISCS).add(
 				OFItems.MUSIC_DISC_SLAYSER.get()
 		);

@@ -115,6 +115,7 @@ public class Terror extends AnimatedMonster implements BodyChainMob {
         this.goalSelector.addGoal(6, new RandomLookAroundGoal(this));
         this.targetSelector.addGoal(0, new HurtByTargetGoal(this));
         this.targetSelector.addGoal(1, new NearestAttackableTargetGoal<>(this, Player.class, true));
+        this.targetSelector.addGoal(3, new NearestAttackableTargetGoal<>(this, Fillet.class, 50, true, true, this::canAttack));
     }
 
     @Override

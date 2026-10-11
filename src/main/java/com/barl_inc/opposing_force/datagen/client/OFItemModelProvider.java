@@ -33,7 +33,8 @@ public class OFItemModelProvider extends SinewItemModelProvider {
                 OFItems.POT_OF_GREEN,
                 OFItems.THORNY_BRACELET,
                 OFItems.RANGER_MANUAL,
-                OFItems.SHARPSHOOTER_COIN
+                OFItems.SHARPSHOOTER_COIN,
+                OFItems.FILLET_BUCKET
         );
 
         this.handheldItem(

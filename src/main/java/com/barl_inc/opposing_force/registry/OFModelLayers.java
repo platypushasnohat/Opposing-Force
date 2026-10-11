@@ -15,6 +15,7 @@ public class OFModelLayers {
     public static final ModelLayerLocation TARANTULA = register("tarantula");
     public static final ModelLayerLocation MUSHY = register("mushy");
     public static final ModelLayerLocation MOTIF = register("motif");
+    public static final ModelLayerLocation FILLET = register("fillet");
 
     public static final ModelLayerLocation LASER_BOLT = register("laser_bolt");
 

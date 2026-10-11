@@ -46,6 +46,7 @@ public class CommonEvents {
         event.put(OFEntities.TARANTULA.get(), Tarantula.registerAttributes().build());
         event.put(OFEntities.MUSHY.get(), Mushy.registerAttributes().build());
         event.put(OFEntities.MOTIF.get(), Motif.registerAttributes().build());
+        event.put(OFEntities.FILLET.get(), Fillet.registerAttributes().build());
     }
 
     @SubscribeEvent
@@ -60,6 +61,7 @@ public class CommonEvents {
         event.register(OFEntities.TARANTULA.get(), SpawnPlacementTypes.ON_GROUND, Heightmap.Types.MOTION_BLOCKING_NO_LEAVES, AnimatedMonster::checkSurfaceMonsterSpawnRules, RegisterSpawnPlacementsEvent.Operation.AND);
         event.register(OFEntities.MUSHY.get(), SpawnPlacementTypes.ON_GROUND, Heightmap.Types.MOTION_BLOCKING_NO_LEAVES, Mushy::checkMushySpawnRules, RegisterSpawnPlacementsEvent.Operation.AND);
         event.register(OFEntities.MOTIF.get(), SpawnPlacementTypes.ON_GROUND, Heightmap.Types.MOTION_BLOCKING_NO_LEAVES, Motif::checkSurfaceMonsterSpawnRules, RegisterSpawnPlacementsEvent.Operation.AND);
+        event.register(OFEntities.FILLET.get(), SpawnPlacementTypes.IN_WATER, Heightmap.Types.MOTION_BLOCKING_NO_LEAVES, Fillet::checkFilletSpawnRules, RegisterSpawnPlacementsEvent.Operation.AND);
     }
 
     @SubscribeEvent

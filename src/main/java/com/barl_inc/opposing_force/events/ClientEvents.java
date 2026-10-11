@@ -54,6 +54,7 @@ public class ClientEvents {
         event.registerEntityRenderer(OFEntities.TARANTULA.get(), TarantulaRenderer::new);
         event.registerEntityRenderer(OFEntities.MUSHY.get(), MushyRenderer::new);
         event.registerEntityRenderer(OFEntities.MOTIF.get(), MotifRenderer::new);
+        event.registerEntityRenderer(OFEntities.FILLET.get(), FilletRenderer::new);
 
         event.registerEntityRenderer(OFEntities.DICER_LASER.get(), DicerLaserRenderer::new);
         event.registerEntityRenderer(OFEntities.LASER_BOLT.get(), LaserBoltRenderer::new);
@@ -76,6 +77,7 @@ public class ClientEvents {
         event.registerLayerDefinition(OFModelLayers.TARANTULA, TarantulaModel::createBodyLayer);
         event.registerLayerDefinition(OFModelLayers.MUSHY, MushyModel::createBodyLayer);
         event.registerLayerDefinition(OFModelLayers.MOTIF, MotifModel::createBodyLayer);
+        event.registerLayerDefinition(OFModelLayers.FILLET, FilletModel::createBodyLayer);
 
         event.registerLayerDefinition(OFModelLayers.LASER_BOLT, LaserBoltModel::createBodyLayer);
         event.registerLayerDefinition(OFModelLayers.ACID_CHARGE, AcidChargeModel::createBodyLayer);

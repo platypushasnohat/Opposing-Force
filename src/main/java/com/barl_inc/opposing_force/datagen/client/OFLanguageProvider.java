@@ -1,10 +1,7 @@
 package com.barl_inc.opposing_force.datagen.client;
 
 import com.barl_inc.opposing_force.OpposingForce;
-import com.barl_inc.opposing_force.registry.OFCreativeTabs;
-import com.barl_inc.opposing_force.registry.OFEntities;
-import com.barl_inc.opposing_force.registry.OFItems;
-import com.barl_inc.opposing_force.registry.OFSoundEvents;
+import com.barl_inc.opposing_force.registry.*;
 import com.platypushasnohat.sinew.datagen.client.SinewLanguageProvider;
 import net.minecraft.data.PackOutput;
 
@@ -17,6 +14,7 @@ public class OFLanguageProvider extends SinewLanguageProvider {
     @Override
     protected void addTranslations() {
         this.addCreativeTab(OFCreativeTabs.OPPOSING_FORCE_TAB.get(), "Opposing Force");
+        OFBlocks.BLOCK_TRANSLATIONS.forEach(this::forBlock);
         OFItems.ITEM_TRANSLATIONS.forEach(this::forItem);
         OFEntities.ENTITY_TRANSLATIONS.forEach(this::forEntity);
 

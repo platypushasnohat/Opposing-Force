@@ -21,6 +21,7 @@ public class OFCreativeTabs {
                         output.accept(OFItems.FURBALL_SPAWN_EGG);
                         output.accept(OFItems.GNAT_SPAWN_EGG);
                         output.accept(OFItems.GUSHER_SPAWN_EGG);
+                        output.accept(OFItems.MOTIF_SPAWN_EGG);
                         output.accept(OFItems.MUSHY_SPAWN_EGG);
                         output.accept(OFItems.SCORCHER_SPAWN_EGG);
                         output.accept(OFItems.TARANTULA_SPAWN_EGG);
@@ -38,6 +39,9 @@ public class OFCreativeTabs {
                         output.accept(OFItems.MUSIC_DISC_SLAYSER);
 
                         output.accept(OFItems.ACID_CHARGE);
+
+                        output.accept(OFItems.MYSTIC_POT);
+                        output.accept(OFItems.LEITMOTIF);
 
                         output.accept(OFItems.EMERALD_SWORD);
                         output.accept(OFItems.EMERALD_SHOVEL);

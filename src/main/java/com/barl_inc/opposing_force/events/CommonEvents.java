@@ -3,6 +3,7 @@ package com.barl_inc.opposing_force.events;
 import com.barl_inc.opposing_force.OpposingForce;
 import com.barl_inc.opposing_force.entity.*;
 import com.barl_inc.opposing_force.entity.ai.goal.LightDependentTargetGoal;
+import com.barl_inc.opposing_force.entity.misc.MudSplatter;
 import com.barl_inc.opposing_force.registry.OFEntities;
 import com.barl_inc.opposing_force.registry.OFItems;
 import com.platypushasnohat.sinew.entity.base.AnimatedMonster;
@@ -13,6 +14,7 @@ import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.Mob;
 import net.minecraft.world.entity.SpawnPlacementTypes;
 import net.minecraft.world.entity.ai.goal.AvoidEntityGoal;
+import net.minecraft.world.entity.monster.EnderMan;
 import net.minecraft.world.entity.monster.Spider;
 import net.minecraft.world.entity.npc.VillagerTrades;
 import net.minecraft.world.item.Items;
@@ -22,6 +24,7 @@ import net.neoforged.bus.api.SubscribeEvent;
 import net.neoforged.fml.common.EventBusSubscriber;
 import net.neoforged.neoforge.event.entity.EntityAttributeCreationEvent;
 import net.neoforged.neoforge.event.entity.EntityJoinLevelEvent;
+import net.neoforged.neoforge.event.entity.EntityTeleportEvent;
 import net.neoforged.neoforge.event.entity.RegisterSpawnPlacementsEvent;
 import net.neoforged.neoforge.event.entity.living.LivingDamageEvent;
 import net.neoforged.neoforge.event.village.WandererTradesEvent;
@@ -42,6 +45,7 @@ public class CommonEvents {
         event.put(OFEntities.TERROR.get(), Terror.registerAttributes().build());
         event.put(OFEntities.TARANTULA.get(), Tarantula.registerAttributes().build());
         event.put(OFEntities.MUSHY.get(), Mushy.registerAttributes().build());
+        event.put(OFEntities.MOTIF.get(), Motif.registerAttributes().build());
     }
 
     @SubscribeEvent
@@ -55,6 +59,7 @@ public class CommonEvents {
         event.register(OFEntities.TERROR.get(), SpawnPlacementTypes.IN_WATER, Heightmap.Types.MOTION_BLOCKING_NO_LEAVES, Terror::checkTerrorSpawnRules, RegisterSpawnPlacementsEvent.Operation.AND);
         event.register(OFEntities.TARANTULA.get(), SpawnPlacementTypes.ON_GROUND, Heightmap.Types.MOTION_BLOCKING_NO_LEAVES, AnimatedMonster::checkSurfaceMonsterSpawnRules, RegisterSpawnPlacementsEvent.Operation.AND);
         event.register(OFEntities.MUSHY.get(), SpawnPlacementTypes.ON_GROUND, Heightmap.Types.MOTION_BLOCKING_NO_LEAVES, Mushy::checkMushySpawnRules, RegisterSpawnPlacementsEvent.Operation.AND);
+        event.register(OFEntities.MOTIF.get(), SpawnPlacementTypes.ON_GROUND, Heightmap.Types.MOTION_BLOCKING_NO_LEAVES, Motif::checkSurfaceMonsterSpawnRules, RegisterSpawnPlacementsEvent.Operation.AND);
     }
 
     @SubscribeEvent
@@ -88,6 +93,13 @@ public class CommonEvents {
         DamageSource damageSource = event.getSource();
         if (entity instanceof Gnat && damageSource.getEntity() instanceof Spider) {
             event.setNewDamage(event.getOriginalDamage() * 4);
+        }
+    }
+
+    @SubscribeEvent
+    public static void onEnderTeleport(EntityTeleportEvent.EnderEntity event) {
+        if (event.getEntityLiving() instanceof EnderMan enderman && !enderman.level().getEntitiesOfClass(MudSplatter.class, enderman.getBoundingBox()).isEmpty()) {
+            event.setCanceled(true);
         }
     }
 }

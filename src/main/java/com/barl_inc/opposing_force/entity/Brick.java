@@ -65,8 +65,8 @@ public class Brick extends AnimatedMonster {
 
     public static AttributeSupplier.Builder registerAttributes() {
         return Mob.createMobAttributes()
-                .add(Attributes.MAX_HEALTH, 60.0D)
-                .add(Attributes.ARMOR, 8.0D)
+                .add(Attributes.MAX_HEALTH, 100.0D)
+                .add(Attributes.ARMOR, 12.0D)
                 .add(Attributes.MOVEMENT_SPEED, 0.25D)
                 .add(Attributes.ATTACK_DAMAGE, 6.0D)
                 .add(Attributes.ATTACK_KNOCKBACK, 1.0D);
@@ -81,8 +81,8 @@ public class Brick extends AnimatedMonster {
         this.goalSelector.addGoal(4, new LookAtPlayerGoal(this, Player.class, 8.0F));
         this.goalSelector.addGoal(4, new LookAtPlayerGoal(this, Mob.class, 8.0F));
         this.goalSelector.addGoal(5, new RandomLookAroundGoal(this));
-        this.targetSelector.addGoal(0, new HurtByTargetGoal(this));
-        this.targetSelector.addGoal(1, new NearestAttackableTargetGoal<>(this, Player.class, true));
+        this.targetSelector.addGoal(0, new NearestAttackableTargetGoal<>(this, Player.class, true));
+        this.targetSelector.addGoal(1, new HurtByTargetGoal(this));
     }
 
     public static boolean checkBrickSpawnRules(EntityType<Brick> entityType, ServerLevelAccessor level, MobSpawnType spawnType, BlockPos pos, RandomSource random) {
@@ -104,6 +104,11 @@ public class Brick extends AnimatedMonster {
     @Override
     public boolean canAttack(LivingEntity target) {
         return !this.isDancing() && super.canAttack(target);
+    }
+
+    @Override
+    public boolean canFreeze() {
+        return false;
     }
 
     @Override
@@ -173,7 +178,7 @@ public class Brick extends AnimatedMonster {
         if (this.level() instanceof ServerLevel level) {
             AABB area = this.getBoundingBox().inflate(3.0D, 1.0D, 3.0D);
             for (LivingEntity entity : level.getEntitiesOfClass(LivingEntity.class, area, living -> living.isAlive() && !(living instanceof Enemy))) {
-                entity.addEffect(new MobEffectInstance(MobEffects.MOVEMENT_SLOWDOWN, 100, 0), this);
+                entity.addEffect(new MobEffectInstance(MobEffects.MOVEMENT_SLOWDOWN, 100, 2), this);
             }
             RandomSource random = this.getRandom();
             int clumps = 12;

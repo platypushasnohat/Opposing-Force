@@ -13,6 +13,7 @@ import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.MobCategory;
+import net.minecraft.world.level.block.Blocks;
 import net.neoforged.neoforge.registries.DeferredHolder;
 import net.neoforged.neoforge.registries.DeferredRegister;
 
@@ -37,7 +38,7 @@ public class OFEntities {
     public static final DeferredHolder<EntityType<?>, EntityType<Tarantula>> TARANTULA = registerEntity("tarantula", Tarantula::new, MobCategory.MONSTER, builder -> builder.sized(3.4F, 1.9F).eyeHeight(1.5F).clientTrackingRange(8));
     public static final DeferredHolder<EntityType<?>, EntityType<Mushy>> MUSHY = registerEntity("mushy", Mushy::new, MobCategory.MONSTER, builder -> builder.sized(0.69F, 1.05F).eyeHeight(0.31F).clientTrackingRange(8).setUpdateInterval(1));
     public static final DeferredHolder<EntityType<?>, EntityType<Motif>> MOTIF = registerEntity("motif", Motif::new, MobCategory.MONSTER, builder -> builder.sized(1.5F, 2.8F).eyeHeight(2.5F).clientTrackingRange(8));
-    public static final DeferredHolder<EntityType<?>, EntityType<Brick>> BRICK = registerEntity("brick", Brick::new, MobCategory.MONSTER, builder -> builder.sized(2.2F, 2.37F).eyeHeight(0.63F).clientTrackingRange(8));
+    public static final DeferredHolder<EntityType<?>, EntityType<Brick>> BRICK = registerEntity("brick", Brick::new, MobCategory.MONSTER, builder -> builder.sized(2.2F, 2.37F).eyeHeight(0.63F).clientTrackingRange(8).fireImmune());
 
 
     //other

@@ -52,28 +52,37 @@ public class BrickAttackGoal extends AttackGoal {
         }
         this.lookAtTarget(target, 25.0F, 25.0F);
         if (this.defendCooldown <= 0 && distance <= 10.0D * 10.0D && this.brick.onGround() && this.getNearbyMonsters().size() > 1) {
-            this.setState(1);
+            this.attackState = 1;
+            this.timer = 0;
         }
-        else if (this.pathCooldown <= 0) {
-            Vec3 guardPos = this.getGuardPos(target);
-            if (this.brick.distanceToSqr(guardPos) > 1.0D) {
-                this.brick.getNavigation().moveTo(guardPos.x, guardPos.y, guardPos.z, 1.4D);
+        else {
+            Vec3 guardPos = this.guardPosition(target);
+            double guardDistance = this.brick.distanceToSqr(guardPos);
+            if (guardDistance > 3.0D * 3.0D) {
+                if (this.pathCooldown <= 0) {
+                    this.brick.getNavigation().moveTo(guardPos.x, guardPos.y, guardPos.z, 1.4D);
+                    this.pathCooldown = 5;
+                }
+            }
+            else if (guardDistance > 0.2D * 0.2D) {
+                this.brick.getNavigation().stop();
+                this.brick.getMoveControl().setWantedPosition(guardPos.x, guardPos.y, guardPos.z, 1.4D);
             }
             else {
                 this.brick.getNavigation().stop();
             }
-            this.pathCooldown = 5;
         }
     }
 
-    //moves between player and mob
-    private Vec3 getGuardPos(LivingEntity target) {
+    //stand between the target and the monster
+    private Vec3 guardPosition(LivingEntity target) {
         Mob ally = this.getProtectedAlly(target);
         Vec3 from = ally != null ? ally.position() : this.brick.position();
         Vec3 offset = new Vec3(from.x - target.getX(), 0.0D, from.z - target.getZ());
         double length = offset.length();
         Vec3 direction = length > 1.0E-4D ? offset.scale(1.0D / length) : Vec3.ZERO;
-        return target.position().add(direction.scale(2.5D));
+        double guardDistance = this.brick.getBbWidth() * 0.5D + target.getBbWidth() * 0.5D + 0.2D;
+        return target.position().add(direction.scale(guardDistance));
     }
 
     @Nullable
@@ -108,7 +117,8 @@ public class BrickAttackGoal extends AttackGoal {
         }
         if (this.timer > 15) {
             this.brick.setAnimationState(Brick.DEFEND_ANIMATION);
-            this.setState(2);
+            this.attackState = 2;
+            this.timer = 0;
         }
     }
 
@@ -118,18 +128,14 @@ public class BrickAttackGoal extends AttackGoal {
         this.lookAtTarget(target, 30.0F, 30.0F);
         if (this.timer % 10 == 1) {
             for (LivingEntity entity : this.getNearbyMonsters()) {
-                entity.addEffect(new MobEffectInstance(MobEffects.DAMAGE_RESISTANCE, 20, 0), this.brick);
+                entity.addEffect(new MobEffectInstance(MobEffects.DAMAGE_RESISTANCE, 100, 2), this.brick);
             }
         }
         if (this.timer > 100) {
             this.brick.setAnimationState(0);
             this.defendCooldown = 200 + this.brick.getRandom().nextInt(100);
-            this.setState(0);
+            this.attackState = 0;
+            this.timer = 0;
         }
-    }
-
-    private void setState(int state) {
-        this.attackState = state;
-        this.timer = 0;
     }
 }

@@ -54,6 +54,7 @@ public class ClientEvents {
         event.registerEntityRenderer(OFEntities.ACID_CHARGE.get(), AcidChargeRenderer::new);
         event.registerEntityRenderer(OFEntities.ACID_CLOUD.get(), NoopRenderer::new);
         event.registerEntityRenderer(OFEntities.MUDBALL.get(), MudballRenderer::new);
+        event.registerEntityRenderer(OFEntities.MUD_SPLATTER.get(), MudSplatterRenderer::new);
     }
 
     @SubscribeEvent

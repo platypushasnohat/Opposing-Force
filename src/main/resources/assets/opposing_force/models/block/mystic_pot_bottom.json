@@ -1,0 +1,33 @@
+{
+	"format_version": "26.3",
+	"credit": "xViz0",
+	"texture_size": [64, 64],
+	"textures": {
+		"0": "opposing_force:block/mystic_pot_bottom",
+		"particle": "opposing_force:block/mystic_pot_bottom"
+	},
+	"elements": [
+		{
+			"from": [0.5, 17, 1.5],
+			"to": [15.5, 32, 17.5],
+			"rotation": {"x": 90, "y": 0, "z": 0, "origin": [1.5, 17, 0.5]},
+			"faces": {
+				"north": {"uv": [4, 4, 7.75, 7.75], "texture": "#0"},
+				"east": {"uv": [0, 4, 4, 7.75], "texture": "#0"},
+				"south": {"uv": [11.75, 4, 15.5, 7.75], "texture": "#0"},
+				"west": {"uv": [7.75, 4, 11.75, 7.75], "texture": "#0"},
+				"up": {"uv": [7.75, 4, 4, 0], "texture": "#0"},
+				"down": {"uv": [11.5, 0, 7.75, 4], "texture": "#0"}
+			}
+		}
+	],
+	"groups": [
+		{
+			"name": "bone",
+			"origin": [0, 5, -7],
+			"scope": 0,
+			"color": 0,
+			"children": [0]
+		}
+	]
+}

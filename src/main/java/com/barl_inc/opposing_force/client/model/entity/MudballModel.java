@@ -1,11 +1,6 @@
-package com.barl_inc.opposing_force.client.model.entity;// Made with Blockbench 5.2.2
-// Exported for Minecraft version 1.17 or later with Mojang mappings
-// Paste this class into your mod and generate all required imports
+package com.barl_inc.opposing_force.client.model.entity;
 
-
-import com.barl_inc.opposing_force.client.model.entity.animation.AcidChargeAnimations;
 import com.barl_inc.opposing_force.client.model.entity.animation.MudballAnimations;
-import com.barl_inc.opposing_force.entity.projectile.AcidCharge;
 import com.barl_inc.opposing_force.entity.projectile.Mudball;
 import net.minecraft.client.model.HierarchicalModel;
 import net.minecraft.client.model.geom.ModelPart;

@@ -2,7 +2,6 @@ package com.barl_inc.opposing_force.client.render.entity;
 
 import com.barl_inc.opposing_force.OpposingForce;
 import com.barl_inc.opposing_force.client.model.entity.MudballModel;
-import com.barl_inc.opposing_force.entity.projectile.AcidCharge;
 import com.barl_inc.opposing_force.entity.projectile.Mudball;
 import com.barl_inc.opposing_force.registry.OFModelLayers;
 import com.mojang.blaze3d.vertex.PoseStack;

@@ -4,6 +4,7 @@ import com.barl_inc.opposing_force.OpposingForce;
 import com.barl_inc.opposing_force.entity.*;
 import com.barl_inc.opposing_force.entity.misc.AcidCloud;
 import com.barl_inc.opposing_force.entity.misc.DicerLaser;
+import com.barl_inc.opposing_force.entity.misc.MudSplatter;
 import com.barl_inc.opposing_force.entity.projectile.AcidCharge;
 import com.barl_inc.opposing_force.entity.projectile.LaserBlade;
 import com.barl_inc.opposing_force.entity.projectile.LaserBolt;
@@ -44,7 +45,7 @@ public class OFEntities {
     public static final DeferredHolder<EntityType<?>, EntityType<LaserBolt>> LASER_BOLT = registerEntity("laser_bolt", LaserBolt::new, MobCategory.MISC, builder -> builder.sized(0.3F, 0.3F).setShouldReceiveVelocityUpdates(true).fireImmune().clientTrackingRange(4));
     public static final DeferredHolder<EntityType<?>, EntityType<LaserBlade>> LASER_BLADE = registerEntity("laser_blade", LaserBlade::new, MobCategory.MISC, builder -> builder.sized(2.25F, 0.95F).fireImmune().clientTrackingRange(4));
     public static final DeferredHolder<EntityType<?>, EntityType<Mudball>> MUDBALL = registerEntity("mudball", Mudball::new, MobCategory.MISC, builder -> builder.sized(0.3F, 0.3F).setUpdateInterval(1).clientTrackingRange(4).fireImmune());
-
+    public static final DeferredHolder<EntityType<?>, EntityType<MudSplatter>> MUD_SPLATTER = registerEntity("mud_splatter", MudSplatter::new, MobCategory.MISC, builder -> builder.sized(1.3F, 0.15F).fireImmune().clientTrackingRange(10).setUpdateInterval(Integer.MAX_VALUE));
 
     public static <E extends Entity> DeferredHolder<EntityType<?>, EntityType<E>> registerEntity(String name, EntityType.EntityFactory<E> factory, MobCategory entityClassification, Consumer<EntityType.Builder<E>> builderConsumer) {
         DeferredHolder<EntityType<?>, EntityType<E>> entity = registerEntityNoLang(name, factory, entityClassification, builderConsumer);

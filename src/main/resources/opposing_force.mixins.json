@@ -6,7 +6,8 @@
   "mixins": [
     "MobCategoryMixin",
     "PlayerMixin",
-    "ZombieMixin"
+    "ZombieMixin",
+    "ItemParserMixin"
   ],
   "client": [
     "client.ItemInHandLayerMixin",

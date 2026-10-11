@@ -6,10 +6,8 @@ import com.barl_inc.opposing_force.item.curios.*;
 import com.platypushasnohat.sinew.item.*;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.Mob;
+import net.minecraft.world.item.*;
 import net.minecraft.world.item.ArmorItem.Type;
-import net.minecraft.world.item.Item;
-import net.minecraft.world.item.Rarity;
-import net.minecraft.world.item.SwordItem;
 import net.neoforged.neoforge.common.DeferredSpawnEggItem;
 import net.neoforged.neoforge.registries.DeferredItem;
 import net.neoforged.neoforge.registries.DeferredRegister;
@@ -79,6 +77,8 @@ public class OFItems {
     public static final DeferredItem<Item> THORNY_BRACELET = registerItem("thorny_bracelet", () -> new ThornyBraceletItem(new Item.Properties().stacksTo(1)));
     public static final DeferredItem<Item> RANGER_MANUAL = registerItem("ranger_manual", () -> new RangerManualItem(new Item.Properties().stacksTo(1)));
     public static final DeferredItem<Item> SHARPSHOOTER_COIN = registerItem("sharpshooter_coin", () -> new SharpshooterCoinItem(new Item.Properties().stacksTo(1).rarity(Rarity.UNCOMMON)));
+
+    public static final DeferredItem<Item> GREEN_MILK = registerItemNoLang("green_milk", () -> new MilkBucketItem(new Item.Properties().craftRemainder(Items.BUCKET).stacksTo(1)));
 
     private static <I extends Item> DeferredItem<I> registerItem(String name, Supplier<? extends I> supplier) {
         DeferredItem<I> item = ITEM.register(name, supplier);

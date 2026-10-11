@@ -32,7 +32,7 @@ public class OFBiomeModifiers {
         addSpawn(context, "tarantula", OFBiomeTags.HAS_DESERT_MONSTERS, new MobSpawnSettings.SpawnerData(OFEntities.TARANTULA.get(), 10, 1, 1));
         addSpawn(context, "mushy", OFBiomeTags.HAS_FOREST_MONSTERS, new MobSpawnSettings.SpawnerData(OFEntities.MUSHY.get(), 100, 2, 2));
         addSpawn(context, "terror", OFBiomeTags.HAS_OVERWORLD_MONSTERS, new MobSpawnSettings.SpawnerData(OFEntities.TERROR.get(), 20, 2, 2));
-        addSpawn(context, "motif", OFBiomeTags.HAS_DESERT_MONSTERS, new MobSpawnSettings.SpawnerData(OFEntities.MOTIF.get(), 8, 1, 2));
+        addSpawn(context, "motif", OFBiomeTags.HAS_DESERT_MONSTERS, new MobSpawnSettings.SpawnerData(OFEntities.MOTIF.get(), 4, 1, 2));
     }
 
     @SafeVarargs

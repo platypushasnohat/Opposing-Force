@@ -14,6 +14,8 @@ public class OFBiomeTags {
     public static final TagKey<Biome> HAS_FOREST_MONSTERS = modBiomeTag("has_monster/forest");
     public static final TagKey<Biome> HAS_DESERT_MONSTERS = modBiomeTag("has_monster/desert");
 
+    public static final TagKey<Biome> HAS_MOTIF_RUIN = modBiomeTag("has_structure/motif_ruin");
+
     private static TagKey<Biome> modBiomeTag(String name) {
         return biomeTag(OpposingForce.MOD_ID, name);
     }

@@ -5,6 +5,6 @@
     "type": "opposing_force:motif",
     "maxCount": 2,
     "minCount": 1,
-    "weight": 8
+    "weight": 4
   }
 }

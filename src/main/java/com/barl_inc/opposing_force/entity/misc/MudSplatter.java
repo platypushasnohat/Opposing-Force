@@ -25,6 +25,9 @@ public class MudSplatter extends Entity {
     private static final EntityDataAccessor<Integer> LAYER = SynchedEntityData.defineId(MudSplatter.class, EntityDataSerializers.INT);
     private static final EntityDataAccessor<Optional<UUID>> OWNER = SynchedEntityData.defineId(MudSplatter.class, EntityDataSerializers.OPTIONAL_UUID);
 
+    private static final double MOVEMENT_MULTIPLIER = 0.5D;
+    private static final double JUMP_MULTIPLIER = 0.25D;
+
     public MudSplatter(EntityType<? extends MudSplatter> entityType, Level level) {
         super(entityType, level);
         this.noPhysics = true;
@@ -137,8 +140,8 @@ public class MudSplatter extends Entity {
             this.discard();
         }
         else {
-            for (LivingEntity entity : this.level().getEntitiesOfClass(LivingEntity.class, this.getBoundingBox(), living -> !(living instanceof Motif) && !this.isOwner(living))) {
-                entity.makeStuckInBlock(Blocks.MUD.defaultBlockState(), new Vec3(0.36D, 0.10F, 0.36D));
+            for (LivingEntity entity : this.level().getEntitiesOfClass(LivingEntity.class, this.getBoundingBox(), living -> !(living instanceof Motif))) {
+                entity.makeStuckInBlock(Blocks.MUD.defaultBlockState(), new Vec3(MOVEMENT_MULTIPLIER, JUMP_MULTIPLIER, MOVEMENT_MULTIPLIER));
             }
         }
     }

@@ -9,7 +9,6 @@ import com.platypushasnohat.sinew.entity.base.AnimatedMonster;
 import com.platypushasnohat.sinew.utils.SinewSoundUtils;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
-import net.minecraft.network.syncher.SynchedEntityData;
 import net.minecraft.sounds.SoundEvent;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.util.Mth;
@@ -40,17 +39,18 @@ public class Motif extends AnimatedMonster {
 
     public Motif(EntityType<? extends Motif> entityType, Level level) {
         super(entityType, level);
-        this.xpReward = 7;
+        this.xpReward = 10;
     }
 
     public static AttributeSupplier.Builder registerAttributes() {
         return Mob.createMobAttributes()
-                .add(Attributes.MAX_HEALTH, 25.0D)
-                .add(Attributes.MOVEMENT_SPEED, 0.24D)
+                .add(Attributes.MAX_HEALTH, 24.0D)
+                .add(Attributes.MOVEMENT_SPEED, 0.25D)
                 .add(Attributes.ATTACK_DAMAGE, 4.0D)
                 .add(Attributes.FOLLOW_RANGE, 20.0D)
                 .add(Attributes.STEP_HEIGHT, 1.2D)
-                .add(Attributes.ARMOR, 2.0D);
+                .add(Attributes.ARMOR, 4.0D)
+                .add(Attributes.KNOCKBACK_RESISTANCE, 0.25D);
     }
 
     @Override
@@ -74,11 +74,6 @@ public class Motif extends AnimatedMonster {
     }
 
     @Override
-    protected void defineSynchedData(SynchedEntityData.Builder builder) {
-        super.defineSynchedData(builder);
-    }
-
-    @Override
     public void setupAnimationStates() {
         this.idleAnimationState.animateWhen(this.getAnimationState() != SHOOT_ANIMATION, this.tickCount);
         this.walkAnimationState.animateWhen(this.getAnimationState() != SHOOT_ANIMATION, this.tickCount);
@@ -88,17 +83,6 @@ public class Motif extends AnimatedMonster {
     @Override
     public int getMaxHeadYRot() {
         return 180;
-    }
-
-    @Override
-    public void aiStep() {
-        super.aiStep();
-        this.setSprinting(this.isAggressive() && this.getDeltaMovement().horizontalDistance() > 0.05D);
-    }
-
-    @Override
-    public void tick() {
-        super.tick();
     }
 
     @Override
@@ -139,7 +123,7 @@ public class Motif extends AnimatedMonster {
         private static final int[] SHOT_TICKS = {14, 18, 23, 28, 33, 38};
         private final Motif motif;
         private int barrageCooldown;
-        private static final float BARRAGE_TURN_SPEED = 8.0F; //increase speed to make the mob harder idrk how to balance this guy
+        private static final float BARRAGE_TURN_SPEED = 8.0F;
 
         public MotifAttackGoal(Motif motif) {
             super(motif);
@@ -206,7 +190,7 @@ public class Motif extends AnimatedMonster {
             if (this.timer > 50) {
                 this.motif.setAnimationState(0);
                 this.timer = 0;
-                this.barrageCooldown = 40 + this.motif.getRandom().nextInt(40);
+                this.barrageCooldown = 25 + this.motif.getRandom().nextInt(25);
                 this.attackState = 0;
             }
         }

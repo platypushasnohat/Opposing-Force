@@ -15,6 +15,7 @@ import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Block;
 
 public class MysticPotItem extends DoubleHighBlockItem implements Equipable {
+
     public MysticPotItem(Block block, Properties properties) {
         super(block, properties);
     }

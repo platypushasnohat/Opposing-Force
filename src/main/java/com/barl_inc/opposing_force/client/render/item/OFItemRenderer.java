@@ -51,12 +51,15 @@ public class OFItemRenderer extends BlockEntityWithoutLevelRenderer {
         float partialTicks = Minecraft.getInstance().getTimer().getGameTimeDeltaPartialTick(true);
         LocalPlayer player = Minecraft.getInstance().player;
         float ageInTicks = player == null ? 0.0F : player.tickCount + partialTicks;
+
+        // Translate so item model transformations are correct
+        poseStack.translate(0.5F, 1.5F, 0.5F);
+        poseStack.mulPose(Axis.XP.rotationDegrees(-180.0F));
+        poseStack.mulPose(Axis.YP.rotationDegrees(180.0F));
+        poseStack.scale(1.0F, 1.0F, 1.0F);
+
         if (stack.is(OFItems.BLASTER.get())) {
             poseStack.pushPose();
-            poseStack.translate(0.5F, 1.5F, 0.5F);
-            poseStack.mulPose(Axis.XP.rotationDegrees(-180.0F));
-            poseStack.mulPose(Axis.YP.rotationDegrees(180.0F));
-            poseStack.scale(1.0F, 1.0F, 1.0F);
             BLASTER_MODEL.setupAnim(player, (BlasterItem) stack.getItem(), stack, displayContext, ageInTicks);
             BLASTER_MODEL.renderToBuffer(poseStack, buffer.getBuffer(RenderType.entityCutout(BLASTER_TEXTURE)), packedLight, packedOverlay, 0xFFFFFF);
             BLASTER_MODEL.renderToBuffer(poseStack, buffer.getBuffer(RenderType.eyes(BLASTER_GLOW_TEXTURE)), LightTexture.FULL_BRIGHT, packedOverlay, 0xFFFFFF);
@@ -67,10 +70,6 @@ public class OFItemRenderer extends BlockEntityWithoutLevelRenderer {
         }
         if (stack.is(OFItems.TRI_BLASTER.get())) {
             poseStack.pushPose();
-            poseStack.translate(0.5F, 1.5F, 0.5F);
-            poseStack.mulPose(Axis.XP.rotationDegrees(-180.0F));
-            poseStack.mulPose(Axis.YP.rotationDegrees(180.0F));
-            poseStack.scale(1.0F, 1.0F, 1.0F);
             TRI_BLASTER_MODEL.setupAnim(player, (TriBlasterItem) stack.getItem(), stack, displayContext, ageInTicks);
             TRI_BLASTER_MODEL.renderToBuffer(poseStack, buffer.getBuffer(RenderType.entityCutout(TRI_BLASTER_TEXTURE)), packedLight, packedOverlay, 0xFFFFFF);
             TRI_BLASTER_MODEL.renderToBuffer(poseStack, buffer.getBuffer(RenderType.eyes(TRI_BLASTER_GLOW_TEXTURE)), LightTexture.FULL_BRIGHT, packedOverlay, 0xFFFFFF);
@@ -81,10 +80,6 @@ public class OFItemRenderer extends BlockEntityWithoutLevelRenderer {
         }
         if (stack.is(OFItems.SCATTER_BLASTER.get())) {
             poseStack.pushPose();
-            poseStack.translate(0.5F, 1.5F, 0.5F);
-            poseStack.mulPose(Axis.XP.rotationDegrees(-180.0F));
-            poseStack.mulPose(Axis.YP.rotationDegrees(180.0F));
-            poseStack.scale(1.0F, 1.0F, 1.0F);
             SCATTER_BLASTER_MODEL.setupAnim(player, (ScatterBlasterItem) stack.getItem(), stack, displayContext, ageInTicks);
             SCATTER_BLASTER_MODEL.renderToBuffer(poseStack, buffer.getBuffer(RenderType.entityCutout(SCATTER_BLASTER_TEXTURE)), packedLight, packedOverlay, 0xFFFFFF);
             SCATTER_BLASTER_MODEL.renderToBuffer(poseStack, buffer.getBuffer(RenderType.eyes(SCATTER_BLASTER_GLOW_TEXTURE)), LightTexture.FULL_BRIGHT, packedOverlay, 0xFFFFFF);
@@ -95,9 +90,6 @@ public class OFItemRenderer extends BlockEntityWithoutLevelRenderer {
         }
         if (stack.is(OFItems.LEITMOTIF.get())) {
             poseStack.pushPose();
-            poseStack.translate(0.5F, 1.5F, 0.5F);
-            poseStack.mulPose(Axis.XP.rotationDegrees(-180.0F));
-            poseStack.mulPose(Axis.YP.rotationDegrees(180.0F));
             LEITMOTIF_MODEL.setupAnim(player, (LeitmotifItem) stack.getItem(), stack, displayContext, ageInTicks);
             LEITMOTIF_MODEL.renderToBuffer(poseStack, buffer.getBuffer(RenderType.entityCutout(LEITMOTIF_TEXTURE)), packedLight, packedOverlay, 0xFFFFFF);
             if (stack.hasFoil()) {

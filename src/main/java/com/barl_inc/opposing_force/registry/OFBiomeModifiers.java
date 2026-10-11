@@ -33,6 +33,7 @@ public class OFBiomeModifiers {
         addSpawn(context, "mushy", OFBiomeTags.HAS_FOREST_MONSTERS, new MobSpawnSettings.SpawnerData(OFEntities.MUSHY.get(), 100, 2, 2));
         addSpawn(context, "terror", OFBiomeTags.HAS_OVERWORLD_MONSTERS, new MobSpawnSettings.SpawnerData(OFEntities.TERROR.get(), 20, 2, 2));
         addSpawn(context, "motif", OFBiomeTags.HAS_DESERT_MONSTERS, new MobSpawnSettings.SpawnerData(OFEntities.MOTIF.get(), 4, 1, 2));
+        addSpawn(context, "brick", OFBiomeTags.HAS_OVERWORLD_MONSTERS, new MobSpawnSettings.SpawnerData(OFEntities.BRICK.get(), 25, 1, 2));
     }
 
     @SafeVarargs

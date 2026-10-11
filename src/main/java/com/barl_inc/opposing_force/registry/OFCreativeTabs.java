@@ -17,6 +17,7 @@ public class OFCreativeTabs {
                     .title(Component.translatable("creative_tab.opposing_force"))
                     .displayItems((parameters, output) -> {
                         output.accept(OFItems.BEWILDER_SPAWN_EGG);
+                        output.accept(OFItems.BRICK_SPAWN_EGG);
                         output.accept(OFItems.DICER_SPAWN_EGG);
                         output.accept(OFItems.FURBALL_SPAWN_EGG);
                         output.accept(OFItems.GNAT_SPAWN_EGG);

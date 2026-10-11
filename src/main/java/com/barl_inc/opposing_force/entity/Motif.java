@@ -1,6 +1,7 @@
 package com.barl_inc.opposing_force.entity;
 
 import com.barl_inc.opposing_force.entity.projectile.Mudball;
+import com.barl_inc.opposing_force.registry.OFItems;
 import com.platypushasnohat.sinew.client.animation.SmoothAnimationState;
 import com.platypushasnohat.sinew.entity.ai.control.UnrestrictedBodyRotationControl;
 import com.platypushasnohat.sinew.entity.ai.goal.AttackGoal;
@@ -13,6 +14,7 @@ import net.minecraft.sounds.SoundEvents;
 import net.minecraft.util.Mth;
 import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.entity.EntityType;
+import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.Mob;
 import net.minecraft.world.entity.ai.attributes.AttributeSupplier;
@@ -57,12 +59,16 @@ public class Motif extends AnimatedMonster {
         this.goalSelector.addGoal(3, new LookAtPlayerGoal(this, Player.class, 12.0F));
         this.goalSelector.addGoal(3, new RandomLookAroundGoal(this));
         this.targetSelector.addGoal(0, new HurtByTargetGoal(this));
-        this.targetSelector.addGoal(1, new NearestAttackableTargetGoal<>(this, Player.class, false, false));
+        this.targetSelector.addGoal(1, new NearestAttackableTargetGoal<>(this, Player.class, 10, false, false, target -> !isWearingPot(target)));
     }
 
     @Override
     protected BodyRotationControl createBodyControl() {
         return new UnrestrictedBodyRotationControl(this);
+    }
+
+    public static boolean isWearingPot(LivingEntity entity) {
+        return entity.getItemBySlot(EquipmentSlot.HEAD).is(OFItems.MYSTIC_POT.get());
     }
 
     @Override
@@ -78,6 +84,11 @@ public class Motif extends AnimatedMonster {
     }
 
     @Override
+    public int getMaxHeadYRot() {
+        return 180;
+    }
+
+    @Override
     public void aiStep() {
         super.aiStep();
         this.setSprinting(this.isAggressive() && this.getDeltaMovement().horizontalDistance() > 0.05D);
@@ -86,6 +97,19 @@ public class Motif extends AnimatedMonster {
     @Override
     public void tick() {
         super.tick();
+    }
+
+    @Override
+    protected void customServerAiStep() {
+        super.customServerAiStep();
+        LivingEntity target = this.getTarget();
+        if (target instanceof Player && isWearingPot(target) && target != this.getLastHurtByMob()) {
+            this.setTarget(null);
+        }
+        Player player = this.level().getNearestPlayer(this, 16.0D);
+        if (player != null) {
+            this.getLookControl().setLookAt(player, 30.0F, 30.0F);
+        }
     }
 
     @Override
@@ -202,7 +226,7 @@ public class Motif extends AnimatedMonster {
             Mudball mudball = new Mudball(this.motif.level(), this.motif, x, y, z);
             double range = Math.sqrt(this.motif.distanceToSqr(target.getX(), this.motif.getY(), target.getZ()));
             double dx = this.motif.getX() - Mth.sin(yaw) * range - x;
-            double dy = target.getY(0.5D) - y;
+            double dy = target.getY(0.25D) - y;
             double dz = this.motif.getZ() + Mth.cos(yaw) * range - z;
             double time = Math.sqrt(dx * dx + dz * dz) / 1.1F;
             mudball.shoot(dx, dy + 0.5D * 0.03D * time * time, dz, 1.1F, 1.5F);

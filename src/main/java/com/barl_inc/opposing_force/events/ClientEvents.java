@@ -15,9 +15,12 @@ import com.barl_inc.opposing_force.registry.OFEntities;
 import com.barl_inc.opposing_force.registry.OFItems;
 import com.barl_inc.opposing_force.registry.OFModelLayers;
 import com.barl_inc.opposing_force.registry.OFParticleTypes;
+import com.mojang.blaze3d.systems.RenderSystem;
 import com.platypushasnohat.sinew.events.custom.PoseHandEvent;
+import net.minecraft.client.Minecraft;
 import net.minecraft.client.model.HumanoidModel;
 import net.minecraft.client.renderer.entity.NoopRenderer;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.entity.HumanoidArm;
@@ -27,9 +30,11 @@ import net.neoforged.api.distmarker.Dist;
 import net.neoforged.bus.api.SubscribeEvent;
 import net.neoforged.fml.common.EventBusSubscriber;
 import net.neoforged.neoforge.client.event.EntityRenderersEvent;
+import net.neoforged.neoforge.client.event.RegisterGuiLayersEvent;
 import net.neoforged.neoforge.client.event.RegisterParticleProvidersEvent;
 import net.neoforged.neoforge.client.extensions.common.IClientItemExtensions;
 import net.neoforged.neoforge.client.extensions.common.RegisterClientExtensionsEvent;
+import net.neoforged.neoforge.client.gui.VanillaGuiLayers;
 import net.neoforged.neoforge.common.util.TriState;
 
 @EventBusSubscriber(modid = OpposingForce.MOD_ID, value = Dist.CLIENT)
@@ -137,5 +142,23 @@ public class ClientEvents {
             }
             event.setResult(TriState.TRUE);
         }
+    }
+
+    private static final ResourceLocation MYSTIC_POT_OVERLAY = OpposingForce.location("textures/misc/mystic_pot_overlay.png");
+
+    @SubscribeEvent
+    public static void registerGuiLayers(RegisterGuiLayersEvent event) {
+        event.registerAbove(VanillaGuiLayers.CAMERA_OVERLAYS, OpposingForce.location("mystic_pot_overlay"), (guiGraphics, deltaTracker) -> {
+            Minecraft minecraft = Minecraft.getInstance();
+            if (minecraft.player == null || !minecraft.options.getCameraType().isFirstPerson()) return;
+            if (!minecraft.player.getItemBySlot(EquipmentSlot.HEAD).is(OFItems.MYSTIC_POT.get())) return;
+            RenderSystem.disableDepthTest();
+            RenderSystem.depthMask(false);
+            RenderSystem.enableBlend();
+            guiGraphics.blit(MYSTIC_POT_OVERLAY, 0, 0, -90, 0.0F, 0.0F, guiGraphics.guiWidth(), guiGraphics.guiHeight(), guiGraphics.guiWidth(), guiGraphics.guiHeight());
+            RenderSystem.disableBlend();
+            RenderSystem.depthMask(true);
+            RenderSystem.enableDepthTest();
+        });
     }
 }

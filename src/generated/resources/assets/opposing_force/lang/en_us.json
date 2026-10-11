@@ -1,4 +1,5 @@
 {
+  "block.opposing_force.mystic_pot": "Mystic Pot",
   "creative_tab.opposing_force": "Opposing Force",
   "death.attack.acid_0": "%s was melted by acid",
   "death.attack.acid_0.entity": "%s was dunked in acid by %s",
@@ -35,6 +36,7 @@
   "entity.opposing_force.laser_blade": "Laser Blade",
   "entity.opposing_force.laser_bolt": "Laser Bolt",
   "entity.opposing_force.motif": "Motif",
+  "entity.opposing_force.mud_splatter": "Mud Splatter",
   "entity.opposing_force.mudball": "Mudball",
   "entity.opposing_force.mushy": "Mushy",
   "entity.opposing_force.scorcher": "Scorcher",

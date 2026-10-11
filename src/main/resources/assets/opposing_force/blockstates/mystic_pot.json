@@ -1,0 +1,10 @@
+{
+  "variants": {
+    "half=lower": {
+      "model": "opposing_force:block/mystic_pot_bottom"
+    },
+    "half=upper": {
+      "model": "opposing_force:block/mystic_pot_top"
+    }
+  }
+}

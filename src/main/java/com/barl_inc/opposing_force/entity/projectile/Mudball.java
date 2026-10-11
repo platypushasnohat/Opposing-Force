@@ -34,6 +34,8 @@ public class Mudball extends Projectile {
 
     public AnimationState projectileAnimationState = new AnimationState();
 
+    private float damage = 2.0F;
+
     public Mudball(EntityType<? extends Mudball> entityType, Level level) {
         super(entityType, level);
     }
@@ -42,6 +44,10 @@ public class Mudball extends Projectile {
         this(OFEntities.MUDBALL.get(), level);
         this.setPos(x, y, z);
         this.setOwner(owner);
+    }
+
+    public void setDamage(float damage) {
+        this.damage = damage;
     }
 
     @Override
@@ -94,7 +100,7 @@ public class Mudball extends Projectile {
         if (!this.level().isClientSide) {
             Entity entity = result.getEntity();
             Entity owner = this.getOwner();
-            float damage = owner instanceof Motif motif ? (float) motif.getAttributeValue(Attributes.ATTACK_DAMAGE) * 0.5F : 2.0F;
+            float damage = owner instanceof Motif motif ? (float) motif.getAttributeValue(Attributes.ATTACK_DAMAGE) * 0.5F : this.damage;
             DamageSource damageSource = this.damageSources().mobProjectile(this, owner instanceof LivingEntity shooter ? shooter : null);
             boolean blocked = entity instanceof LivingEntity hitEntity && hitEntity.isDamageSourceBlocked(damageSource);
             entity.hurt(damageSource, damage);

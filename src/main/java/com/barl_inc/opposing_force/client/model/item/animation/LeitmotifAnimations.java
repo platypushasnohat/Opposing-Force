@@ -7,7 +7,7 @@ import net.minecraft.client.animation.KeyframeAnimations;
 
 public class LeitmotifAnimations {
 	public static final AnimationDefinition SHOOT = AnimationDefinition.Builder.withLength(1.7083F)
-		.addAnimation("bone", new AnimationChannel(AnimationChannel.Targets.ROTATION,
+		.addAnimation("root", new AnimationChannel(AnimationChannel.Targets.ROTATION,
 			new Keyframe(0.0F, KeyframeAnimations.degreeVec(0.0F, 0.0F, 0.0F), AnimationChannel.Interpolations.CATMULLROM),
 			new Keyframe(0.125F, KeyframeAnimations.degreeVec(-5.0F, 0.0F, 0.0F), AnimationChannel.Interpolations.CATMULLROM),
 			new Keyframe(0.2083F, KeyframeAnimations.degreeVec(-10.0F, 0.0F, 0.0F), AnimationChannel.Interpolations.CATMULLROM),
@@ -25,7 +25,7 @@ public class LeitmotifAnimations {
 			new Keyframe(1.5833F, KeyframeAnimations.degreeVec(-10.0F, 0.0F, 0.0F), AnimationChannel.Interpolations.CATMULLROM),
 			new Keyframe(1.7083F, KeyframeAnimations.degreeVec(0.0F, 0.0F, 0.0F), AnimationChannel.Interpolations.CATMULLROM)
 		))
-		.addAnimation("bone", new AnimationChannel(AnimationChannel.Targets.POSITION, 
+		.addAnimation("root", new AnimationChannel(AnimationChannel.Targets.POSITION,
 			new Keyframe(0.0833F, KeyframeAnimations.posVec(0.0F, 0.0F, 0.0F), AnimationChannel.Interpolations.LINEAR),
 			new Keyframe(0.1667F, KeyframeAnimations.posVec(0.0F, 0.0F, 6.0F), AnimationChannel.Interpolations.LINEAR),
 			new Keyframe(0.25F, KeyframeAnimations.posVec(0.0F, 0.0F, 0.0F), AnimationChannel.Interpolations.LINEAR),
@@ -39,7 +39,7 @@ public class LeitmotifAnimations {
 			new Keyframe(1.5417F, KeyframeAnimations.posVec(0.0F, 0.0F, 6.0F), AnimationChannel.Interpolations.LINEAR),
 			new Keyframe(1.625F, KeyframeAnimations.posVec(0.0F, 0.0F, 0.0F), AnimationChannel.Interpolations.LINEAR)
 		))
-		.addAnimation("bone", new AnimationChannel(AnimationChannel.Targets.SCALE, 
+		.addAnimation("root", new AnimationChannel(AnimationChannel.Targets.SCALE,
 			new Keyframe(0.0F, KeyframeAnimations.scaleVec(1.0F, 1.0F, 1.0F), AnimationChannel.Interpolations.LINEAR),
 			new Keyframe(0.0833F, KeyframeAnimations.scaleVec(1.0F, 1.0F, 1.0F), AnimationChannel.Interpolations.LINEAR),
 			new Keyframe(0.125F, KeyframeAnimations.scaleVec(1.2F, 1.2F, 1.0F), AnimationChannel.Interpolations.LINEAR),

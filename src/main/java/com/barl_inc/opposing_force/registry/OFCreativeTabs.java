@@ -41,6 +41,7 @@ public class OFCreativeTabs {
                         output.accept(OFItems.ACID_CHARGE);
 
                         output.accept(OFItems.MYSTIC_POT);
+                        output.accept(OFItems.LEITMOTIF);
 
                         output.accept(OFItems.EMERALD_SWORD);
                         output.accept(OFItems.EMERALD_SHOVEL);

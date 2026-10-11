@@ -5,6 +5,7 @@ import com.barl_inc.opposing_force.client.model.armor.EmeraldArmorModel;
 import com.barl_inc.opposing_force.client.model.armor.MoonShoesModel;
 import com.barl_inc.opposing_force.client.model.entity.*;
 import com.barl_inc.opposing_force.client.model.item.BlasterModel;
+import com.barl_inc.opposing_force.client.model.item.LeitmotifModel;
 import com.barl_inc.opposing_force.client.model.item.ScatterBlasterModel;
 import com.barl_inc.opposing_force.client.model.item.TriBlasterModel;
 import com.barl_inc.opposing_force.client.particle.*;
@@ -82,6 +83,7 @@ public class ClientEvents {
         event.registerLayerDefinition(OFModelLayers.BLASTER, BlasterModel::createBodyLayer);
         event.registerLayerDefinition(OFModelLayers.TRI_BLASTER, TriBlasterModel::createBodyLayer);
         event.registerLayerDefinition(OFModelLayers.SCATTER_BLASTER, ScatterBlasterModel::createBodyLayer);
+        event.registerLayerDefinition(OFModelLayers.LEITMOTIF, LeitmotifModel::createBodyLayer);
     }
 
     @SubscribeEvent
@@ -99,6 +101,7 @@ public class ClientEvents {
         event.registerItem(OFItemExtensions.itemExtensions, OFItems.BLASTER.get());
         event.registerItem(OFItemExtensions.itemExtensions, OFItems.TRI_BLASTER.get());
         event.registerItem(OFItemExtensions.itemExtensions, OFItems.SCATTER_BLASTER.get());
+        event.registerItem(OFItemExtensions.itemExtensions, OFItems.LEITMOTIF.get());
 
         event.registerItem(new IClientItemExtensions() {
             @Override

@@ -1,11 +1,7 @@
-package com.barl_inc.opposing_force.client.model.item;// Made with Blockbench 5.2.2
-// Exported for Minecraft version 1.17 or later with Mojang mappings
-// Paste this class into your mod and generate all required imports
+package com.barl_inc.opposing_force.client.model.item;
 
-
-import com.barl_inc.opposing_force.client.model.item.animation.BlasterAnimations;
 import com.barl_inc.opposing_force.client.model.item.animation.LeitmotifAnimations;
-import com.barl_inc.opposing_force.item.BlasterItem;
+import com.barl_inc.opposing_force.item.LeitmotifItem;
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.VertexConsumer;
 import com.platypushasnohat.sinew.client.model.item.AnimatedItemModel;
@@ -16,13 +12,11 @@ import net.minecraft.world.entity.Entity;
 import net.minecraft.world.item.ItemDisplayContext;
 import net.minecraft.world.item.ItemStack;
 
-public class LeitmotifModel<I extends BlasterItem> extends AnimatedItemModel<I> {
+public class LeitmotifModel<I extends LeitmotifItem> extends AnimatedItemModel<I> {
 	private final ModelPart root;
-	private final ModelPart body;
 
 	public LeitmotifModel(ModelPart root) {
 		this.root = root.getChild("root");
-		this.body = this.root.getChild("body");
 	}
 
 	public static LayerDefinition createBodyLayer() {

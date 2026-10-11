@@ -5,11 +5,6 @@ import net.minecraft.client.animation.AnimationDefinition;
 import net.minecraft.client.animation.Keyframe;
 import net.minecraft.client.animation.KeyframeAnimations;
 
-/**
- * Made with Blockbench 5.2.2
- * Exported for Minecraft version 1.19 or later with Mojang mappings
- * @author Author
- */
 public class MotifAnimations {
 	public static final AnimationDefinition IDLE = AnimationDefinition.Builder.withLength(4.0F).looping()
 		.addAnimation("upper_body", new AnimationChannel(AnimationChannel.Targets.ROTATION,

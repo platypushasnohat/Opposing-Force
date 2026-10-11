@@ -97,6 +97,7 @@ public class ClientEvents {
         event.registerSpriteSet(OFParticleTypes.ACID.get(), AcidParticle.Factory::new);
         event.registerSpriteSet(OFParticleTypes.FIRE_BREATH.get(), FireBreathParticle.Factory::new);
         event.registerSpriteSet(OFParticleTypes.SPORE_CLOUD.get(), SporeCloudParticle.Factory::new);
+        event.registerSpriteSet(OFParticleTypes.BRICK_SPORE_CLOUD.get(), SporeCloudParticle.BrickFactory::new);
     }
 
     @SubscribeEvent

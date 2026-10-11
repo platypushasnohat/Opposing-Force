@@ -2,6 +2,7 @@ package com.barl_inc.opposing_force.datagen.server;
 
 import com.barl_inc.opposing_force.OpposingForce;
 import com.barl_inc.opposing_force.registry.OFEntities;
+import com.barl_inc.opposing_force.tags.OFEntityTypeTags;
 import net.minecraft.core.HolderLookup.Provider;
 import net.minecraft.data.PackOutput;
 import net.minecraft.data.tags.EntityTypeTagsProvider;
@@ -27,5 +28,9 @@ public class OFEntityTypeTagsProvider extends EntityTypeTagsProvider {
 				OFEntities.SCORCHER.get(),
 				OFEntities.TARANTULA.get()
 		);
+
+        this.tag(OFEntityTypeTags.PROJECTILE_BYPASSES_BRICK).add(
+                OFEntities.ACID_CHARGE.get()
+        );
 	}
 }

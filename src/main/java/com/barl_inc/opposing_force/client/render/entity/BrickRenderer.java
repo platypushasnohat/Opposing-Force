@@ -33,4 +33,9 @@ public class BrickRenderer extends MobRenderer<Brick, BrickModel> {
     protected void setupRotations(Brick brick, PoseStack poseStack, float bob, float yBodyRot, float partialTicks, float scale) {
         super.setupRotations(brick, poseStack, bob, yBodyRot, partialTicks, scale);
     }
+
+    @Override
+    protected float getFlipDegrees(Brick brick) {
+        return brick.isMelting() ? 0.0F : super.getFlipDegrees(brick);
+    }
 }

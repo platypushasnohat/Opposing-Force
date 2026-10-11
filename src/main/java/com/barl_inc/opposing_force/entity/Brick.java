@@ -1,19 +1,21 @@
 package com.barl_inc.opposing_force.entity;
 
+import com.barl_inc.opposing_force.entity.ai.goal.BrickAttackGoal;
 import com.barl_inc.opposing_force.entity.ai.goal.JukeboxDanceGoal;
-import com.barl_inc.opposing_force.entity.ai.goal.MushyAttackGoal;
+import com.barl_inc.opposing_force.registry.OFDamageTypes;
+import com.barl_inc.opposing_force.registry.OFParticleTypes;
 import com.barl_inc.opposing_force.registry.OFSoundEvents;
+import com.barl_inc.opposing_force.tags.OFEntityTypeTags;
 import com.platypushasnohat.sinew.client.animation.SmoothAnimationState;
 import com.platypushasnohat.sinew.entity.base.AnimatedMonster;
 import net.minecraft.core.BlockPos;
-import net.minecraft.network.syncher.EntityDataAccessor;
-import net.minecraft.network.syncher.EntityDataSerializers;
-import net.minecraft.network.syncher.SynchedEntityData;
+import net.minecraft.server.level.ServerLevel;
 import net.minecraft.sounds.SoundEvent;
-import net.minecraft.tags.BlockTags;
 import net.minecraft.util.Mth;
 import net.minecraft.util.RandomSource;
 import net.minecraft.world.damagesource.DamageSource;
+import net.minecraft.world.effect.MobEffectInstance;
+import net.minecraft.world.effect.MobEffects;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.Mob;
@@ -26,33 +28,35 @@ import net.minecraft.world.entity.ai.goal.RandomLookAroundGoal;
 import net.minecraft.world.entity.ai.goal.WaterAvoidingRandomStrollGoal;
 import net.minecraft.world.entity.ai.goal.target.HurtByTargetGoal;
 import net.minecraft.world.entity.ai.goal.target.NearestAttackableTargetGoal;
+import net.minecraft.world.entity.monster.Enemy;
 import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.entity.projectile.Projectile;
+import net.minecraft.world.entity.projectile.ProjectileDeflection;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.ServerLevelAccessor;
+import net.minecraft.world.phys.AABB;
 
 public class Brick extends AnimatedMonster {
 
-    private static final EntityDataAccessor<Float> LAUNCH_TILT = SynchedEntityData.defineId(Brick.class, EntityDataSerializers.FLOAT);
-    private static final EntityDataAccessor<Float> LAUNCH_TILT_YAW = SynchedEntityData.defineId(Brick.class, EntityDataSerializers.FLOAT);
+    public static final int DEFEND_START_ANIMATION = 1;
+    public static final int DEFEND_ANIMATION = 2;
+    public static final int DANCE_ANIMATION = 3;
+    public static final int MELT_ANIMATION = 4;
 
-    public static final int ATTACK_ANIMATION = 1;
-    public static final int JUMP_ANIMATION = 2;
-    public static final int SPIN_ANIMATION = 3;
-    public static final int DANCE_ANIMATION = 4;
+    private static final byte SQUISH = 80;
 
-    private float tilt;
-    private float prevTilt;
-    private float angle;
-    private float prevAngle;
+    private int squishTicks;
+    private int sporeTimer;
+    private boolean critHit;
 
     private JukeboxDanceGoal<Brick> danceGoal;
 
-    public final SmoothAnimationState danceAnimationState = new SmoothAnimationState();
-    public final SmoothAnimationState defendStartAnimationState = new SmoothAnimationState();
-    public final SmoothAnimationState defendAnimationState = new SmoothAnimationState();
     public final SmoothAnimationState sprintAnimationState = new SmoothAnimationState();
-    public final SmoothAnimationState meltAnimationState = new SmoothAnimationState();
-    public final SmoothAnimationState squishAnimationState = new SmoothAnimationState();
+    public final SmoothAnimationState danceAnimationState = new SmoothAnimationState();
+    public final SmoothAnimationState defendStartAnimationState = new SmoothAnimationState(1.0F);
+    public final SmoothAnimationState defendAnimationState = new SmoothAnimationState();
+    public final SmoothAnimationState meltAnimationState = new SmoothAnimationState(1.0F);
+    public final SmoothAnimationState squishAnimationState = new SmoothAnimationState(1.0F);
 
     public Brick(EntityType<? extends Brick> entityType, Level level) {
         super(entityType, level);
@@ -61,7 +65,8 @@ public class Brick extends AnimatedMonster {
 
     public static AttributeSupplier.Builder registerAttributes() {
         return Mob.createMobAttributes()
-                .add(Attributes.MAX_HEALTH, 24.0D)
+                .add(Attributes.MAX_HEALTH, 60.0D)
+                .add(Attributes.ARMOR, 8.0D)
                 .add(Attributes.MOVEMENT_SPEED, 0.25D)
                 .add(Attributes.ATTACK_DAMAGE, 6.0D)
                 .add(Attributes.ATTACK_KNOCKBACK, 1.0D);
@@ -71,7 +76,7 @@ public class Brick extends AnimatedMonster {
     protected void registerGoals() {
         this.goalSelector.addGoal(0, new FloatGoal(this));
         this.goalSelector.addGoal(1, this.danceGoal = new JukeboxDanceGoal<>(this, DANCE_ANIMATION));
-        //this.goalSelector.addGoal(2, new MushyAttackGoal(this));
+        this.goalSelector.addGoal(2, new BrickAttackGoal(this));
         this.goalSelector.addGoal(3, new WaterAvoidingRandomStrollGoal(this, 1.0D));
         this.goalSelector.addGoal(4, new LookAtPlayerGoal(this, Player.class, 8.0F));
         this.goalSelector.addGoal(4, new LookAtPlayerGoal(this, Mob.class, 8.0F));
@@ -84,11 +89,16 @@ public class Brick extends AnimatedMonster {
         return pos.getY() <= 40 && checkUndergroundMonsterSpawnRules(entityType, level, spawnType, pos, random);
     }
 
-    @Override
-    protected void defineSynchedData(SynchedEntityData.Builder builder) {
-        super.defineSynchedData(builder);
-        builder.define(LAUNCH_TILT, 0.0F);
-        builder.define(LAUNCH_TILT_YAW, 0.0F);
+    public boolean isDancing() {
+        return this.danceGoal != null && this.danceGoal.isDancing();
+    }
+
+    public boolean isMelting() {
+        return this.getAnimationState() == MELT_ANIMATION;
+    }
+
+    public void setCritHit(boolean critHit) {
+        this.critHit = critHit;
     }
 
     @Override
@@ -102,73 +112,115 @@ public class Brick extends AnimatedMonster {
     }
 
     @Override
+    public boolean hurt(DamageSource source, float amount) {
+        boolean hurt;
+        if (source.is(OFDamageTypes.ACID) && !this.isDeadOrDying()) {
+            this.setAnimationState(MELT_ANIMATION);
+            hurt = super.hurt(source, Float.MAX_VALUE);
+            if (!hurt) {
+                this.setAnimationState(0);
+            }
+        }
+        else {
+            hurt = super.hurt(source, amount);
+            if (hurt && this.isAlive()) {
+                this.level().broadcastEntityEvent(this, SQUISH);
+                if (this.critHit) {
+                    this.sporeTimer = 6;
+                }
+            }
+        }
+        this.critHit = false;
+        return hurt;
+    }
+
+    public boolean canBounce(Projectile projectile) {
+        return this.isAlive() && !projectile.getType().is(OFEntityTypeTags.PROJECTILE_BYPASSES_BRICK);
+    }
+
+    public void bounce(Projectile projectile) {
+        projectile.deflect(ProjectileDeflection.REVERSE, this, null, false);
+    }
+
+    @Override
+    public void handleEntityEvent(byte id) {
+        if (id == SQUISH) {
+            this.squishAnimationState.start(this.tickCount);
+            this.squishTicks = 10;
+        }
+        else {
+            super.handleEntityEvent(id);
+        }
+    }
+
+    @Override
     public void tick() {
         super.tick();
         if (this.level().isClientSide) {
-            this.prevTilt = this.tilt;
-            this.tilt = this.getLaunchTilt();
-            this.tickSpin();
+            if (this.squishTicks > 0) {
+                this.squishTicks--;
+            }
+        }
+        else if (this.sporeTimer > 0) {
+            this.sporeTimer--;
+            if (this.sporeTimer == 0 && this.isAlive()) {
+                this.releaseSpores();
+            }
         }
     }
 
-    private void tickSpin() {
-        this.prevAngle = this.angle;
-        if (this.getAnimationState() == SPIN_ANIMATION) {
-            this.angle -= 36.0F;
-            return;
+    private void releaseSpores() {
+        if (this.level() instanceof ServerLevel level) {
+            AABB area = this.getBoundingBox().inflate(3.0D, 1.0D, 3.0D);
+            for (LivingEntity entity : level.getEntitiesOfClass(LivingEntity.class, area, living -> living.isAlive() && !(living instanceof Enemy))) {
+                entity.addEffect(new MobEffectInstance(MobEffects.MOVEMENT_SLOWDOWN, 100, 0), this);
+            }
+            RandomSource random = this.getRandom();
+            int clumps = 12;
+            for (int i = 0; i < clumps; i++) {
+                double angle = (Math.PI * 2.0D) * (i + random.nextDouble() * 0.5D) / clumps;
+                double dirX = Math.cos(angle);
+                double dirZ = Math.sin(angle);
+                double clumpX = this.getX() + dirX * 1.2D;
+                double clumpY = this.getY() + 0.2D + random.nextDouble() * 0.8D;
+                double clumpZ = this.getZ() + dirZ * 1.2D;
+                for (int j = 0; j < 12; j++) {
+                    double x = clumpX + (random.nextDouble() - 0.5D) * 0.8D;
+                    double y = clumpY + (random.nextDouble() - 0.5D) * 0.6D;
+                    double z = clumpZ + (random.nextDouble() - 0.5D) * 0.8D;
+                    double speed = 0.08D + random.nextDouble() * 0.08D;
+                    level.sendParticles(OFParticleTypes.BRICK_SPORE_CLOUD.get(), x, y, z, 0, dirX * speed, 0.02D, dirZ * speed, 0.2D);
+                }
+            }
         }
-        // Coast to a stop on the next full turn in the spin direction
-        float stop = Mth.floor(this.angle / 360.0F) * 360.0F;
-        float remaining = this.angle - stop;
-        if (remaining > 0.01F) {
-            this.angle = Math.max(this.angle - Math.clamp(remaining * 0.15F, 0.5F, 36.0F), stop);
+    }
+
+    @Override
+    protected void tickDeath() {
+        if (this.isMelting()) {
+            this.deathTime++;
+            if (this.deathTime >= 40 && !this.level().isClientSide() && !this.isRemoved()) {
+                this.level().broadcastEntityEvent(this, (byte) 60);
+                this.remove(RemovalReason.KILLED);
+            }
         }
         else {
-            this.angle = 0.0F;
-            this.prevAngle = 0.0F;
+            super.tickDeath();
         }
-    }
-
-    public float getSpinAngle(float partialTicks) {
-        return Mth.lerp(partialTicks, this.prevAngle, this.angle);
-    }
-
-    public float getLaunchTilt() {
-        return this.entityData.get(LAUNCH_TILT);
-    }
-
-    // 0-180 degrees
-    public void setLaunchTilt(float tilt) {
-        this.entityData.set(LAUNCH_TILT, Mth.clamp(tilt, 0.0F, 180.0F));
-    }
-
-    public float getLaunchTiltYaw() {
-        return this.entityData.get(LAUNCH_TILT_YAW);
-    }
-
-    public void setLaunchTiltYaw(float yaw) {
-        this.entityData.set(LAUNCH_TILT_YAW, yaw);
-    }
-
-    public float getTilt(float partialTicks) {
-        return Mth.lerp(partialTicks, this.prevTilt, this.tilt);
-    }
-
-    public boolean isDancing() {
-        return this.danceGoal != null && this.danceGoal.isDancing();
     }
 
     @Override
     public void setupAnimationStates() {
-        this.idleAnimationState.animateWhen(!this.isInWaterOrBubble()
-                && this.getAnimationState() != JUMP_ANIMATION
-                && this.getAnimationState() != SPIN_ANIMATION
-                && this.getAnimationState() != DANCE_ANIMATION, this.tickCount);
-        this.walkAnimationState.animateWhen(!this.isInWaterOrBubble()
-                && this.getAnimationState() != JUMP_ANIMATION
-                && this.getAnimationState() != DANCE_ANIMATION
-                && this.getAnimationState() != SPIN_ANIMATION, this.tickCount);
-        this.danceAnimationState.animateWhen(!this.isInWaterOrBubble() && this.onGround() && this.getAnimationState() == DANCE_ANIMATION, this.tickCount);
+        int state = this.getAnimationState();
+        boolean grounded = !this.isInWaterOrBubble();
+        this.idleAnimationState.animateWhen(grounded && state == 0, this.tickCount);
+        this.walkAnimationState.animateWhen(grounded && state == 0 && !this.isAggressive(), this.tickCount);
+        this.sprintAnimationState.animateWhen(grounded && state == 0 && this.isAggressive(), this.tickCount);
+        this.danceAnimationState.animateWhen(grounded && this.onGround() && state == DANCE_ANIMATION, this.tickCount);
+        this.defendStartAnimationState.animateWhen(state == DEFEND_START_ANIMATION, this.tickCount);
+        this.defendAnimationState.animateWhen(state == DEFEND_ANIMATION, this.tickCount);
+        this.meltAnimationState.animateWhen(state == MELT_ANIMATION, this.tickCount);
+        this.squishAnimationState.animateWhen(this.squishTicks > 0, this.tickCount);
     }
 
     @Override
@@ -196,9 +248,5 @@ public class Brick extends AnimatedMonster {
     @Override
     protected float getSoundVolume() {
         return 0.6F;
-    }
-
-    public static boolean checkMushySpawnRules(EntityType<Brick> entityType, ServerLevelAccessor level, MobSpawnType spawnType, BlockPos pos, RandomSource random) {
-        return level.getBlockState(pos.below()).is(BlockTags.ANIMALS_SPAWNABLE_ON) && checkMonsterSpawnRules(entityType, level, spawnType, pos, random);
     }
 }

@@ -45,6 +45,10 @@ public class OFLanguageProvider extends SinewLanguageProvider {
         this.addSound(OFSoundEvents.TERROR_SAW_LOOP, "Terror saws");
         this.addSound(OFSoundEvents.TERROR_SAW_END, "Terror stops sawing");
 
+        this.addSound(OFSoundEvents.MUSHY_HURT, "Mushy hurts");
+        this.addSound(OFSoundEvents.MUSHY_DEATH, "Mushy dies");
+        this.addSound(OFSoundEvents.MUSHY_IDLE, "Mushy squelches");
+
         this.addSound(OFSoundEvents.LASER_BOLT_IMPACT, "Laser bolt disintegrates");
         this.addSound(OFSoundEvents.BLASTER_SHOOT, "Blaster shoots");
 
@@ -66,6 +70,9 @@ public class OFLanguageProvider extends SinewLanguageProvider {
         this.add(OFItems.DISABLED_LASER_BLADE.get(), "Laser Blade");
 
         this.add("item.opposing_force.powered_item.power", "Power: %s / %s");
+
+        this.add("item.opposing_force.relic_feather.description", "+Slow Falling");
+        this.add("item.opposing_force.pot_of_green.description", "+1 Fortune");
 
         this.add("jukebox_song.opposing_force.slayser", "ChipsTheCat - Slayser");
 

@@ -2,9 +2,7 @@ package com.barl_inc.opposing_force.entity.ai.goal;
 
 import com.barl_inc.opposing_force.entity.Mushy;
 import com.barl_inc.opposing_force.registry.OFParticleTypes;
-import com.barl_inc.opposing_force.registry.OFSoundEvents;
 import com.platypushasnohat.sinew.entity.ai.goal.AttackGoal;
-import com.platypushasnohat.sinew.utils.SinewSoundUtils;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.util.Mth;
 import net.minecraft.util.RandomSource;
@@ -100,7 +98,6 @@ public class MushyAttackGoal extends AttackGoal {
         this.timer++;
         if (this.timer == 1) {
             this.mushy.setAnimationState(Mushy.ATTACK_ANIMATION);
-            this.mushy.playSound(OFSoundEvents.FURBALL_ATTACK.get(), 1.0F, SinewSoundUtils.randomizePitch(this.mushy));
         }
         if (this.timer == 11 && this.isInAttackRange(target, 0.9D)) {
             this.mushy.doHurtTarget(target);

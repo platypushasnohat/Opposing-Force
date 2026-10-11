@@ -10,7 +10,6 @@ import net.minecraft.network.syncher.EntityDataAccessor;
 import net.minecraft.network.syncher.EntityDataSerializers;
 import net.minecraft.network.syncher.SynchedEntityData;
 import net.minecraft.sounds.SoundEvent;
-import net.minecraft.sounds.SoundEvents;
 import net.minecraft.tags.BlockTags;
 import net.minecraft.util.Mth;
 import net.minecraft.util.RandomSource;
@@ -30,7 +29,6 @@ import net.minecraft.world.entity.ai.goal.target.NearestAttackableTargetGoal;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.ServerLevelAccessor;
-import net.minecraft.world.level.block.state.BlockState;
 
 public class Mushy extends AnimatedMonster {
 
@@ -74,6 +72,7 @@ public class Mushy extends AnimatedMonster {
         this.goalSelector.addGoal(2, new MushyAttackGoal(this));
         this.goalSelector.addGoal(3, new WaterAvoidingRandomStrollGoal(this, 1.0D));
         this.goalSelector.addGoal(4, new LookAtPlayerGoal(this, Player.class, 8.0F));
+        this.goalSelector.addGoal(4, new LookAtPlayerGoal(this, Mob.class, 8.0F));
         this.goalSelector.addGoal(5, new RandomLookAroundGoal(this));
         this.targetSelector.addGoal(0, new HurtByTargetGoal(this));
         this.targetSelector.addGoal(1, new NearestAttackableTargetGoal<>(this, Player.class, true));
@@ -178,27 +177,22 @@ public class Mushy extends AnimatedMonster {
 
     @Override
     protected SoundEvent getAmbientSound() {
-        return OFSoundEvents.FURBALL_IDLE.get();
+        return OFSoundEvents.MUSHY_IDLE.get();
     }
 
     @Override
     protected SoundEvent getHurtSound(DamageSource damageSource) {
-        return OFSoundEvents.FURBALL_HURT.get();
+        return OFSoundEvents.MUSHY_HURT.get();
     }
 
     @Override
     protected SoundEvent getDeathSound() {
-        return OFSoundEvents.FURBALL_DEATH.get();
+        return OFSoundEvents.MUSHY_DEATH.get();
     }
 
     @Override
     protected float getSoundVolume() {
         return 0.6F;
-    }
-
-    @Override
-    protected void playStepSound(BlockPos pos, BlockState state) {
-        this.playSound(SoundEvents.WOLF_STEP, 0.1F, 1.2F);
     }
 
     public static boolean checkMushySpawnRules(EntityType<Mushy> entityType, ServerLevelAccessor level, MobSpawnType spawnType, BlockPos pos, RandomSource random) {

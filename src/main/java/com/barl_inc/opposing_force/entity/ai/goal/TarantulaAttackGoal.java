@@ -5,6 +5,7 @@ import com.platypushasnohat.sinew.entity.ai.goal.AttackGoal;
 import net.minecraft.core.BlockPos;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.phys.Vec3;
+import net.neoforged.neoforge.common.CommonHooks;
 
 public class TarantulaAttackGoal extends AttackGoal {
 
@@ -120,6 +121,7 @@ public class TarantulaAttackGoal extends AttackGoal {
         if (this.timer == 15 && this.tarantula.onGround()) {
             this.tarantula.setAnimationState(Tarantula.JUMP_ANIMATION);
             this.tarantula.setDeltaMovement(jumpVec.x, 0.5F, jumpVec.z);
+            CommonHooks.onLivingJump(this.tarantula);
         }
         boolean stopJump = this.tarantula.onGround() || this.tarantula.onClimbable() || this.tarantula.isInWaterOrBubble();
         if (this.timer > 60 || (this.timer > 15 && stopJump)) {

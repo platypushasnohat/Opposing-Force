@@ -153,6 +153,28 @@
     ],
     "subtitle": "subtitles.opposing_force.laser_bolt_impact"
   },
+  "mushy_death": {
+    "sounds": [
+      {
+        "name": "opposing_force:mob/mushy/hurt",
+        "pitch": 0.8
+      }
+    ],
+    "subtitle": "subtitles.opposing_force.mushy_death"
+  },
+  "mushy_hurt": {
+    "sounds": [
+      "opposing_force:mob/mushy/hurt"
+    ],
+    "subtitle": "subtitles.opposing_force.mushy_hurt"
+  },
+  "mushy_idle": {
+    "sounds": [
+      "opposing_force:mob/mushy/idle1",
+      "opposing_force:mob/mushy/idle2"
+    ],
+    "subtitle": "subtitles.opposing_force.mushy_idle"
+  },
   "slayser_disc": {
     "sounds": [
       {

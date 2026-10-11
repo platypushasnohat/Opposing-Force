@@ -77,7 +77,7 @@ public class Tarantula extends TamableMonster implements KeybindUsingMount, Play
                 .add(Attributes.MAX_HEALTH, 140.0D)
                 .add(Attributes.MOVEMENT_SPEED, 0.2D)
                 .add(Attributes.ATTACK_DAMAGE, 12.0D)
-                .add(Attributes.ATTACK_KNOCKBACK, 1.0D)
+                .add(Attributes.ATTACK_KNOCKBACK, 0.5D)
                 .add(Attributes.STEP_HEIGHT, 1.2D)
                 .add(Attributes.KNOCKBACK_RESISTANCE, 1.0D)
                 .add(Attributes.ARMOR, 8.0D);
@@ -201,7 +201,7 @@ public class Tarantula extends TamableMonster implements KeybindUsingMount, Play
         if (this.isTame()) {
             if (player.isShiftKeyDown() && this.getOwner() == player) {
                 this.setCommand(this.getCommand() + 1);
-                if (this.getCommand() == 3) {
+                if (this.getCommand() == 4) {
                     this.setCommand(COMMAND_SIT);
                 }
                 player.displayClientMessage(Component.translatable("entity.sinew.all.command_" + this.getCommand(), this.getName()), true);

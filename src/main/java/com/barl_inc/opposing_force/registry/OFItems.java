@@ -2,6 +2,7 @@ package com.barl_inc.opposing_force.registry;
 
 import com.barl_inc.opposing_force.OpposingForce;
 import com.barl_inc.opposing_force.item.*;
+import com.barl_inc.opposing_force.item.curios.*;
 import com.platypushasnohat.sinew.item.*;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.Mob;
@@ -64,6 +65,14 @@ public class OFItems {
     public static final DeferredItem<Item> EMERALD_BOOTS = registerItem("emerald_boots", () -> new SkinLayerHidingArmorItem(Type.BOOTS, new Item.Properties().rarity(Rarity.UNCOMMON).durability(Type.BOOTS.getDurability(33)), OFArmorDefinitions.EMERALD_ARMOR));
 
     public static final DeferredItem<Item> MOON_SHOES = registerItem("moon_shoes", () -> new MoonShoesItem(new Item.Properties().rarity(Rarity.UNCOMMON).durability(Type.BOOTS.getDurability(25))));
+
+    public static final DeferredItem<Item> RELIC_FEATHER = registerItem("relic_feather", () -> new RelicFeatherItem(new Item.Properties().rarity(Rarity.UNCOMMON).stacksTo(1)));
+    public static final DeferredItem<Item> BEETLE_HUSK = registerItem("beetle_husk", () -> new BeetleHuskItem(new Item.Properties().stacksTo(1)));
+    public static final DeferredItem<Item> ENCHANTED_CHISEL = registerItem("enchanted_chisel", () -> new EnchantedChiselItem(new Item.Properties().rarity(Rarity.UNCOMMON).stacksTo(1)));
+    public static final DeferredItem<Item> POT_OF_GREEN = registerItem("pot_of_green", () -> new PotOfGreenItem(new Item.Properties().rarity(Rarity.RARE).stacksTo(1)));
+    public static final DeferredItem<Item> THORNY_BRACELET = registerItem("thorny_bracelet", () -> new ThornyBraceletItem(new Item.Properties().stacksTo(1)));
+    public static final DeferredItem<Item> RANGER_MANUAL = registerItem("ranger_manual", () -> new RangerManualItem(new Item.Properties().stacksTo(1)));
+    public static final DeferredItem<Item> SHARPSHOOTER_COIN = registerItem("sharpshooter_coin", () -> new SharpshooterCoinItem(new Item.Properties().stacksTo(1).rarity(Rarity.UNCOMMON)));
 
     private static <I extends Item> DeferredItem<I> registerItem(String name, Supplier<? extends I> supplier) {
         DeferredItem<I> item = ITEM.register(name, supplier);

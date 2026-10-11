@@ -1,0 +1,9 @@
+{
+  "size": 3,
+  "add_cosmetic": false,
+  "order": 2,
+  "icon": "curios:slot/empty_charm_slot",
+  "validators": [
+    "curios:tag"
+  ]
+}

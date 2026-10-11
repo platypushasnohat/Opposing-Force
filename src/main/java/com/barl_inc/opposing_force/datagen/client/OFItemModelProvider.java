@@ -27,7 +27,13 @@ public class OFItemModelProvider extends SinewItemModelProvider {
                 OFItems.MOON_SHOES,
                 OFItems.CHITIN,
                 OFItems.POWER_CELL,
-                OFItems.ACID_CHARGE
+                OFItems.ACID_CHARGE,
+                OFItems.RELIC_FEATHER,
+                OFItems.BEETLE_HUSK,
+                OFItems.POT_OF_GREEN,
+                OFItems.THORNY_BRACELET,
+                OFItems.RANGER_MANUAL,
+                OFItems.SHARPSHOOTER_COIN
         );
 
         this.handheldItem(
@@ -35,7 +41,8 @@ public class OFItemModelProvider extends SinewItemModelProvider {
                 OFItems.EMERALD_PICKAXE,
                 OFItems.EMERALD_AXE,
                 OFItems.EMERALD_SHOVEL,
-                OFItems.EMERALD_HOE
+                OFItems.EMERALD_HOE,
+                OFItems.ENCHANTED_CHISEL
         );
 
         for (Item item : BuiltInRegistries.ITEM) {

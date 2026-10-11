@@ -71,6 +71,9 @@ public class OFLanguageProvider extends SinewLanguageProvider {
 
         this.add("item.opposing_force.powered_item.power", "Power: %s / %s");
 
+        this.add("item.opposing_force.relic_feather.description", "+Slow Falling");
+        this.add("item.opposing_force.pot_of_green.description", "+1 Fortune");
+
         this.add("jukebox_song.opposing_force.slayser", "ChipsTheCat - Slayser");
 
         this.add("death.attack.laser_0", "%s was disintegrated");

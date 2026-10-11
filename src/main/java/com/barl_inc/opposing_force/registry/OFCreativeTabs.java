@@ -49,6 +49,19 @@ public class OFCreativeTabs {
                         output.accept(OFItems.EMERALD_LEGGINGS);
                         output.accept(OFItems.EMERALD_BOOTS);
                         output.accept(OFItems.MOON_SHOES);
+
+                        // common
+                        output.accept(OFItems.BEETLE_HUSK);
+                        output.accept(OFItems.RANGER_MANUAL);
+                        output.accept(OFItems.THORNY_BRACELET);
+
+                        // uncommon
+                        output.accept(OFItems.ENCHANTED_CHISEL);
+                        output.accept(OFItems.RELIC_FEATHER);
+                        output.accept(OFItems.SHARPSHOOTER_COIN);
+
+                        // rare
+                        output.accept(OFItems.POT_OF_GREEN);
                     })
                     .build());
 }

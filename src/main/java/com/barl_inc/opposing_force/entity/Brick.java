@@ -43,9 +43,6 @@ public class Brick extends AnimatedMonster {
     public static final int DANCE_ANIMATION = 3;
     public static final int MELT_ANIMATION = 4;
 
-    private static final byte SQUISH = 80;
-
-    private int squishTicks;
     private int sporeTimer;
     private boolean critHit;
 
@@ -129,7 +126,6 @@ public class Brick extends AnimatedMonster {
         else {
             hurt = super.hurt(source, amount);
             if (hurt && this.isAlive()) {
-                this.level().broadcastEntityEvent(this, SQUISH);
                 if (this.critHit) {
                     this.sporeTimer = 6;
                 }
@@ -148,25 +144,9 @@ public class Brick extends AnimatedMonster {
     }
 
     @Override
-    public void handleEntityEvent(byte id) {
-        if (id == SQUISH) {
-            this.squishAnimationState.start(this.tickCount);
-            this.squishTicks = 10;
-        }
-        else {
-            super.handleEntityEvent(id);
-        }
-    }
-
-    @Override
     public void tick() {
         super.tick();
-        if (this.level().isClientSide) {
-            if (this.squishTicks > 0) {
-                this.squishTicks--;
-            }
-        }
-        else if (this.sporeTimer > 0) {
+        if (this.sporeTimer > 0 && !this.level().isClientSide) {
             this.sporeTimer--;
             if (this.sporeTimer == 0 && this.isAlive()) {
                 this.releaseSpores();
@@ -225,7 +205,7 @@ public class Brick extends AnimatedMonster {
         this.defendStartAnimationState.animateWhen(state == DEFEND_START_ANIMATION, this.tickCount);
         this.defendAnimationState.animateWhen(state == DEFEND_ANIMATION, this.tickCount);
         this.meltAnimationState.animateWhen(state == MELT_ANIMATION, this.tickCount);
-        this.squishAnimationState.animateWhen(this.squishTicks > 0, this.tickCount);
+        this.squishAnimationState.animateWhen(this.hurtTime > 0 && state != MELT_ANIMATION, this.tickCount);
     }
 
     @Override

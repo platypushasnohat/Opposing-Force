@@ -109,6 +109,7 @@ public class LeitmotifItem extends Item {
         Mudball mudball = new Mudball(level, player, player.getX(), player.getEyeY() - 0.2D, player.getZ());
         Vec3 look = player.getLookAngle();
         mudball.setDamage(3.5F);
+        mudball.setSize(1.2F);
         mudball.shoot(look.x, look.y, look.z, 1.4F, 1.0F);
         level.addFreshEntity(mudball);
         level.playSound(null, player.getX(), player.getY(), player.getZ(), SoundEvents.SNOW_GOLEM_SHOOT, SoundSource.PLAYERS, 1.0F, 0.6F * SinewSoundUtils.randomizePitch(level));

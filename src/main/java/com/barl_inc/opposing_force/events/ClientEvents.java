@@ -12,6 +12,7 @@ import com.barl_inc.opposing_force.client.particle.*;
 import com.barl_inc.opposing_force.client.render.entity.*;
 import com.barl_inc.opposing_force.client.render.item.OFItemExtensions;
 import com.barl_inc.opposing_force.item.BlasterItem;
+import com.barl_inc.opposing_force.item.LeitmotifItem;
 import com.barl_inc.opposing_force.registry.OFEntities;
 import com.barl_inc.opposing_force.registry.OFItems;
 import com.barl_inc.opposing_force.registry.OFModelLayers;
@@ -121,7 +122,7 @@ public class ClientEvents {
     @SubscribeEvent
     public static void onPoseHand(PoseHandEvent event) {
         LivingEntity player = (LivingEntity) event.getEntity();
-        if (player.getItemInHand(InteractionHand.MAIN_HAND).getItem() instanceof BlasterItem) {
+        if (isAimedGun(player.getItemInHand(InteractionHand.MAIN_HAND))) {
             if (player.getMainArm() == HumanoidArm.RIGHT) {
                 event.getHumanoidModel().rightArm.xRot = (event.getHumanoidModel().head.xRot - (float) Math.toRadians(80F));
                 event.getHumanoidModel().rightArm.yRot = event.getHumanoidModel().head.yRot;
@@ -133,7 +134,7 @@ public class ClientEvents {
             }
             event.setResult(TriState.TRUE);
         }
-        if (player.getItemInHand(InteractionHand.OFF_HAND).getItem() instanceof BlasterItem) {
+        if (isAimedGun(player.getItemInHand(InteractionHand.OFF_HAND))) {
             if (player.getMainArm() == HumanoidArm.RIGHT) {
                 event.getHumanoidModel().leftArm.xRot = (event.getHumanoidModel().head.xRot - (float) Math.toRadians(80F));
                 event.getHumanoidModel().leftArm.yRot = event.getHumanoidModel().head.yRot;
@@ -145,6 +146,10 @@ public class ClientEvents {
             }
             event.setResult(TriState.TRUE);
         }
+    }
+
+    private static boolean isAimedGun(ItemStack stack) {
+        return stack.getItem() instanceof BlasterItem || stack.getItem() instanceof LeitmotifItem;
     }
 
     private static final ResourceLocation MYSTIC_POT_OVERLAY = OpposingForce.location("textures/misc/mystic_pot_overlay.png");

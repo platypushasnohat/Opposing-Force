@@ -16,10 +16,14 @@ import net.minecraft.world.phys.BlockHitResult;
 import net.minecraft.world.phys.HitResult;
 import net.minecraft.world.phys.Vec3;
 
+import java.util.Optional;
+import java.util.UUID;
+
 public class MudSplatter extends Entity {
 
     private static final EntityDataAccessor<Float> SIZE = SynchedEntityData.defineId(MudSplatter.class, EntityDataSerializers.FLOAT);
     private static final EntityDataAccessor<Integer> LAYER = SynchedEntityData.defineId(MudSplatter.class, EntityDataSerializers.INT);
+    private static final EntityDataAccessor<Optional<UUID>> OWNER = SynchedEntityData.defineId(MudSplatter.class, EntityDataSerializers.OPTIONAL_UUID);
 
     public MudSplatter(EntityType<? extends MudSplatter> entityType, Level level) {
         super(entityType, level);
@@ -54,6 +58,7 @@ public class MudSplatter extends Entity {
     protected void defineSynchedData(SynchedEntityData.Builder builder) {
         builder.define(SIZE, 1.0F);
         builder.define(LAYER, 0);
+        builder.define(OWNER, Optional.empty());
     }
 
     @Override
@@ -69,6 +74,9 @@ public class MudSplatter extends Entity {
         this.tickCount = compoundTag.getInt("Age");
         this.setSize(compoundTag.getFloat("Size"));
         this.setLayer(compoundTag.getInt("Layer"));
+        if (compoundTag.hasUUID("Owner")) {
+            this.setOwnerId(compoundTag.getUUID("Owner"));
+        }
     }
 
     @Override
@@ -76,6 +84,7 @@ public class MudSplatter extends Entity {
         compoundTag.putInt("Age", this.tickCount);
         compoundTag.putFloat("Size", this.getSize());
         compoundTag.putInt("Layer", this.getLayer());
+        this.entityData.get(OWNER).ifPresent(uuid -> compoundTag.putUUID("Owner", uuid));
     }
 
     public float getSize() {
@@ -86,6 +95,14 @@ public class MudSplatter extends Entity {
         this.entityData.set(SIZE, Mth.clamp(size, 1.0F, 1.5F));
     }
 
+    public void setOwnerId(UUID uuid) {
+        this.entityData.set(OWNER, Optional.of(uuid));
+    }
+
+    public boolean isOwner(Entity entity) {
+        return this.entityData.get(OWNER).map(uuid -> uuid.equals(entity.getUUID())).orElse(false);
+    }
+
     public int getLayer() {
         return this.entityData.get(LAYER);
     }
@@ -93,7 +110,6 @@ public class MudSplatter extends Entity {
     public void setLayer(int layer) {
         this.entityData.set(LAYER, Mth.clamp(layer, 0, 12));
     }
-
 
     @Override
     public EntityDimensions getDimensions(Pose pose) {
@@ -119,10 +135,11 @@ public class MudSplatter extends Entity {
         super.tick();
         if (!this.level().isClientSide && this.tickCount >= 100) {
             this.discard();
-            return;
         }
-        for (LivingEntity entity : this.level().getEntitiesOfClass(LivingEntity.class, this.getBoundingBox(), living -> !(living instanceof Motif))) {
-            entity.makeStuckInBlock(Blocks.MUD.defaultBlockState(), new Vec3(0.36D, 0.10F, 0.36D));
+        else {
+            for (LivingEntity entity : this.level().getEntitiesOfClass(LivingEntity.class, this.getBoundingBox(), living -> !(living instanceof Motif) && !this.isOwner(living))) {
+                entity.makeStuckInBlock(Blocks.MUD.defaultBlockState(), new Vec3(0.36D, 0.10F, 0.36D));
+            }
         }
     }
 

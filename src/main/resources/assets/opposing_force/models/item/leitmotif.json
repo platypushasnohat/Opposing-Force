@@ -20,9 +20,9 @@
       "scale": [0.5, 0.5, 0.5]
     },
     "gui": {
-      "rotation": [0, -90, 0],
-      "translation": [0.5, -2, 0],
-      "scale": [0.5, 0.5, 0.51]
+      "rotation": [30, -135, 0],
+      "translation": [0, -1.6, 0],
+      "scale": [0.5, 0.5, 0.5]
     },
     "head": {
       "translation": [-1.75, 0, 0]

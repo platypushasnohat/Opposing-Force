@@ -7,15 +7,15 @@ import com.platypushasnohat.sinew.utils.SinewSoundUtils;
 import net.minecraft.core.particles.BlockParticleOption;
 import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.network.protocol.game.ClientboundAddEntityPacket;
+import net.minecraft.network.syncher.EntityDataAccessor;
+import net.minecraft.network.syncher.EntityDataSerializers;
 import net.minecraft.network.syncher.SynchedEntityData;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.world.damagesource.DamageSource;
-import net.minecraft.world.entity.AnimationState;
-import net.minecraft.world.entity.Entity;
-import net.minecraft.world.entity.EntityType;
-import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.world.entity.*;
 import net.minecraft.world.entity.ai.attributes.Attributes;
+import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.entity.projectile.Projectile;
 import net.minecraft.world.entity.projectile.ProjectileUtil;
 import net.minecraft.world.level.ClipContext;
@@ -31,6 +31,8 @@ import net.neoforged.neoforge.event.EventHooks;
 public class Mudball extends Projectile {
 
     private static final byte HIT_EFFECTS = 3;
+
+    private static final EntityDataAccessor<Float> SIZE = SynchedEntityData.defineId(Mudball.class, EntityDataSerializers.FLOAT);
 
     public AnimationState projectileAnimationState = new AnimationState();
 
@@ -52,6 +54,15 @@ public class Mudball extends Projectile {
 
     @Override
     protected void defineSynchedData(SynchedEntityData.Builder builder) {
+        builder.define(SIZE, 1.0F);
+    }
+
+    public float getSize() {
+        return this.entityData.get(SIZE);
+    }
+
+    public void setSize(float size) {
+        this.entityData.set(SIZE, size);
     }
 
     @Override
@@ -59,6 +70,19 @@ public class Mudball extends Projectile {
         super.recreateFromPacket(packet);
         this.xRotO = this.getXRot();
         this.yRotO = this.getYRot();
+    }
+
+    @Override
+    public void onSyncedDataUpdated(EntityDataAccessor<?> key) {
+        if (SIZE.equals(key)) {
+            this.refreshDimensions();
+        }
+        super.onSyncedDataUpdated(key);
+    }
+
+    @Override
+    public EntityDimensions getDimensions(Pose pose) {
+        return super.getDimensions(pose).scale(this.getSize());
     }
 
     @Override
@@ -132,13 +156,12 @@ public class Mudball extends Projectile {
         BlockHitResult ground = this.level().clip(new ClipContext(start, end, ClipContext.Block.COLLIDER, ClipContext.Fluid.NONE, this));
         if (ground.getType() != HitResult.Type.MISS) {
             Vec3 location = ground.getLocation();
-            this.level().addFreshEntity(new MudSplatter(this.level(), location.x, location.y, location.z));
+            MudSplatter splatter = new MudSplatter(this.level(), location.x, location.y, location.z);
+            if (this.getOwner() instanceof Player player) {
+                splatter.setOwnerId(player.getUUID());
+            }
+            this.level().addFreshEntity(splatter);
         }
-    }
-
-    @Override
-    public boolean ignoreExplosion(Explosion explosion) {
-        return true;
     }
 
     @Override

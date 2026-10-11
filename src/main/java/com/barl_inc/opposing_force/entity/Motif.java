@@ -8,6 +8,7 @@ import com.platypushasnohat.sinew.entity.ai.goal.AttackGoal;
 import com.platypushasnohat.sinew.entity.base.AnimatedMonster;
 import com.platypushasnohat.sinew.utils.SinewSoundUtils;
 import net.minecraft.core.BlockPos;
+import net.minecraft.core.Direction;
 import net.minecraft.network.syncher.SynchedEntityData;
 import net.minecraft.sounds.SoundEvent;
 import net.minecraft.sounds.SoundEvents;
@@ -29,6 +30,7 @@ import net.minecraft.world.entity.ai.goal.target.NearestAttackableTargetGoal;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.phys.Vec3;
 
 public class Motif extends AnimatedMonster {
 
@@ -218,18 +220,14 @@ public class Motif extends AnimatedMonster {
         }
 
         private void shootMudball(LivingEntity target, boolean left) {
-            float yaw = this.motif.getYRot() * Mth.DEG_TO_RAD;
-            double side = left ? 0.72D : -0.72D;
-            double x = this.motif.getX() - Mth.sin(yaw) * 1.05D + Mth.cos(yaw) * side;
-            double y = this.motif.getY() + 2.45D;
-            double z = this.motif.getZ() + Mth.cos(yaw) * 1.05D + Mth.sin(yaw) * side;
-            Mudball mudball = new Mudball(this.motif.level(), this.motif, x, y, z);
-            double range = Math.sqrt(this.motif.distanceToSqr(target.getX(), this.motif.getY(), target.getZ()));
-            double dx = this.motif.getX() - Mth.sin(yaw) * range - x;
-            double dy = target.getY(0.25D) - y;
-            double dz = this.motif.getZ() + Mth.cos(yaw) * range - z;
-            double time = Math.sqrt(dx * dx + dz * dz) / 1.1F;
-            mudball.shoot(dx, dy + 0.5D * 0.03D * time * time, dz, 1.1F, 1.5F);
+            float yaw = -this.motif.getYRot() * Mth.DEG_TO_RAD;
+            Vec3 muzzle = this.motif.position().add(new Vec3(left ? 0.72D : -0.72D, 2.45D, 1.05D).yRot(yaw));
+            double range = this.motif.position().subtract(target.position()).horizontalDistance();
+            Vec3 aim = this.motif.position().add(new Vec3(0.0D, 0.0D, range).yRot(yaw)).with(Direction.Axis.Y, target.getY(0.25D));
+            Vec3 delta = aim.subtract(muzzle);
+            double flightTime = delta.horizontalDistance() / 1.1F;
+            Mudball mudball = new Mudball(this.motif.level(), this.motif, muzzle.x, muzzle.y, muzzle.z);
+            mudball.shoot(delta.x, delta.y + 0.5D * 0.03D * flightTime * flightTime, delta.z, 1.1F, 1.5F);
             this.motif.level().addFreshEntity(mudball);
             this.motif.playSound(SoundEvents.SNOW_GOLEM_SHOOT, 1.0F, 0.6F * SinewSoundUtils.randomizePitch(this.motif));
         }

@@ -31,8 +31,7 @@ public class MudballRenderer extends EntityRenderer<Mudball> {
     public void render(Mudball entity, float entityYaw, float partialTicks, PoseStack poseStack, MultiBufferSource bufferSource, int packedLight) {
         if (entity.tickCount >= 2 || !(this.entityRenderDispatcher.camera.getEntity().distanceToSqr(entity) < (double) MIN_CAMERA_DISTANCE_SQUARED)) {
             poseStack.pushPose();
-            float size = entity.getSize();
-            poseStack.scale(-size, -size, size);
+            poseStack.scale(-1.0F, -1.0F, 1.0F);
             poseStack.translate(0.0F, -1.501F, 0.0F);
             float ageInTicks = (float) entity.tickCount + partialTicks;
             VertexConsumer consumer = bufferSource.getBuffer(RenderType.entityCutout(TEXTURE_LOCATION));

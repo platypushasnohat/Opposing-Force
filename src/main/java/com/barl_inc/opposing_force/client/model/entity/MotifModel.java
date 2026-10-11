@@ -9,18 +9,16 @@ import net.minecraft.client.model.geom.builders.*;
 import net.minecraft.util.Mth;
 
 public class MotifModel extends SinewEntityModel<Motif> {
+
 	private final ModelPart root;
-	private final ModelPart body_main;
-	private final ModelPart body;
-	private final ModelPart upper_body;
 	private final ModelPart head;
 
 	public MotifModel(ModelPart root) {
 		this.root = root.getChild("root");
-		this.body_main = this.root.getChild("body_main");
-		this.body = this.body_main.getChild("body");
-		this.upper_body = this.body.getChild("upper_body");
-		this.head = this.upper_body.getChild("head");
+		ModelPart bodyMain = this.root.getChild("body_main");
+		ModelPart body = bodyMain.getChild("body");
+		ModelPart upperBody = body.getChild("upper_body");
+		this.head = upperBody.getChild("head");
 	}
 
     @Override

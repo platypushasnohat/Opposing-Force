@@ -12,7 +12,8 @@ import net.minecraft.world.entity.Entity;
 import net.minecraft.world.item.ItemDisplayContext;
 import net.minecraft.world.item.ItemStack;
 
-public class LeitmotifModel<I extends LeitmotifItem> extends AnimatedItemModel<I> {
+public class LeitmotifModel extends AnimatedItemModel<LeitmotifItem> {
+
 	private final ModelPart root;
 
 	public LeitmotifModel(ModelPart root) {
@@ -24,26 +25,26 @@ public class LeitmotifModel<I extends LeitmotifItem> extends AnimatedItemModel<I
 		PartDefinition partdefinition = meshdefinition.getRoot();
 
 		PartDefinition root = partdefinition.addOrReplaceChild("root", CubeListBuilder.create().texOffs(20, 64).addBox(-1.5F, 0.0F, 1.0F, 2.0F, 2.0F, 2.0F, new CubeDeformation(0.0F))
-		.texOffs(60, 48).addBox(-1.5F, 0.0F, 14.0F, 2.0F, 5.0F, 2.0F, new CubeDeformation(0.0F))
-		.texOffs(28, 57).addBox(-0.5F, 0.0F, 3.0F, 0.0F, 2.0F, 3.0F, new CubeDeformation(0.0F))
-		.texOffs(20, 57).addBox(-1.5F, 0.0F, -1.0F, 2.0F, 5.0F, 2.0F, new CubeDeformation(0.0F)), PartPose.offset(0.0F, 19.0F, -7.0F));
+				.texOffs(60, 48).addBox(-1.5F, 0.0F, 14.0F, 2.0F, 5.0F, 2.0F, new CubeDeformation(0.0F))
+				.texOffs(28, 57).addBox(-0.5F, 0.0F, 3.0F, 0.0F, 2.0F, 3.0F, new CubeDeformation(0.0F))
+				.texOffs(20, 57).addBox(-1.5F, 0.0F, -1.0F, 2.0F, 5.0F, 2.0F, new CubeDeformation(0.0F)), PartPose.offset(0.0F, 19.0F, -7.0F));
 
-		root.addOrReplaceChild("body", CubeListBuilder.create().texOffs(0, 0).addBox(-7.5F, -15.0F, -9.125F, 15.0F, 15.0F, 19.0F, new CubeDeformation(0.0F))
-		.texOffs(34, 48).addBox(-5.5F, -13.0F, -11.125F, 11.0F, 11.0F, 2.0F, new CubeDeformation(0.0F))
-		.texOffs(0, 34).addBox(-7.5F, -15.0F, -13.125F, 15.0F, 15.0F, 2.0F, new CubeDeformation(0.0F))
-		.texOffs(34, 34).addBox(-1.0F, -18.0F, -7.125F, 2.0F, 1.0F, 13.0F, new CubeDeformation(0.0F))
-		.texOffs(60, 55).addBox(-1.0F, -20.0F, -9.125F, 2.0F, 5.0F, 2.0F, new CubeDeformation(0.0F))
-		.texOffs(0, 61).addBox(-1.0F, -18.0F, 5.875F, 2.0F, 3.0F, 2.0F, new CubeDeformation(0.0F))
-		.texOffs(0, 51).addBox(-4.0F, -11.0F, 11.875F, 8.0F, 8.0F, 2.0F, new CubeDeformation(0.0F))
-		.texOffs(20, 51).addBox(-2.0F, -9.0F, 9.875F, 4.0F, 4.0F, 2.0F, new CubeDeformation(0.0F)), PartPose.offset(-0.5F, 0.0F, 8.125F));
+        root.addOrReplaceChild("body", CubeListBuilder.create().texOffs(0, 0).addBox(-7.5F, -15.0F, -9.125F, 15.0F, 15.0F, 19.0F, new CubeDeformation(0.0F))
+                .texOffs(34, 48).addBox(-5.5F, -13.0F, -11.125F, 11.0F, 11.0F, 2.0F, new CubeDeformation(0.0F))
+                .texOffs(0, 34).addBox(-7.5F, -15.0F, -13.125F, 15.0F, 15.0F, 2.0F, new CubeDeformation(0.0F))
+                .texOffs(34, 34).addBox(-1.0F, -18.0F, -7.125F, 2.0F, 1.0F, 13.0F, new CubeDeformation(0.0F))
+                .texOffs(60, 55).addBox(-1.0F, -20.0F, -9.125F, 2.0F, 5.0F, 2.0F, new CubeDeformation(0.0F))
+                .texOffs(0, 61).addBox(-1.0F, -18.0F, 5.875F, 2.0F, 3.0F, 2.0F, new CubeDeformation(0.0F))
+                .texOffs(0, 51).addBox(-4.0F, -11.0F, 11.875F, 8.0F, 8.0F, 2.0F, new CubeDeformation(0.0F))
+                .texOffs(20, 51).addBox(-2.0F, -9.0F, 9.875F, 4.0F, 4.0F, 2.0F, new CubeDeformation(0.0F)), PartPose.offset(-0.5F, 0.0F, 8.125F));
 
-		return LayerDefinition.create(meshdefinition, 128, 128);
+        return LayerDefinition.create(meshdefinition, 128, 128);
 	}
 
     @Override
-    public void setupAnim(Entity entity, I item, ItemStack stack, ItemDisplayContext displayContext, float ageInTicks) {
+    public void setupAnim(Entity entity, LeitmotifItem item, ItemStack stack, ItemDisplayContext displayContext, float ageInTicks) {
         this.root().getAllParts().forEach(ModelPart::resetPose);
-        this.animate(entity, item.blastAnimationState, LeitmotifAnimations.SHOOT, ageInTicks);
+        this.animate(entity, item.shootAnimationState, LeitmotifAnimations.SHOOT, ageInTicks);
     }
 
     @Override

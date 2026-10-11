@@ -5,19 +5,24 @@ import com.barl_inc.opposing_force.client.model.armor.EmeraldArmorModel;
 import com.barl_inc.opposing_force.client.model.armor.MoonShoesModel;
 import com.barl_inc.opposing_force.client.model.entity.*;
 import com.barl_inc.opposing_force.client.model.item.BlasterModel;
+import com.barl_inc.opposing_force.client.model.item.LeitmotifModel;
 import com.barl_inc.opposing_force.client.model.item.ScatterBlasterModel;
 import com.barl_inc.opposing_force.client.model.item.TriBlasterModel;
 import com.barl_inc.opposing_force.client.particle.*;
 import com.barl_inc.opposing_force.client.render.entity.*;
 import com.barl_inc.opposing_force.client.render.item.OFItemExtensions;
 import com.barl_inc.opposing_force.item.BlasterItem;
+import com.barl_inc.opposing_force.item.LeitmotifItem;
 import com.barl_inc.opposing_force.registry.OFEntities;
 import com.barl_inc.opposing_force.registry.OFItems;
 import com.barl_inc.opposing_force.registry.OFModelLayers;
 import com.barl_inc.opposing_force.registry.OFParticleTypes;
+import com.mojang.blaze3d.systems.RenderSystem;
 import com.platypushasnohat.sinew.events.custom.PoseHandEvent;
+import net.minecraft.client.Minecraft;
 import net.minecraft.client.model.HumanoidModel;
 import net.minecraft.client.renderer.entity.NoopRenderer;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.entity.HumanoidArm;
@@ -27,9 +32,11 @@ import net.neoforged.api.distmarker.Dist;
 import net.neoforged.bus.api.SubscribeEvent;
 import net.neoforged.fml.common.EventBusSubscriber;
 import net.neoforged.neoforge.client.event.EntityRenderersEvent;
+import net.neoforged.neoforge.client.event.RegisterGuiLayersEvent;
 import net.neoforged.neoforge.client.event.RegisterParticleProvidersEvent;
 import net.neoforged.neoforge.client.extensions.common.IClientItemExtensions;
 import net.neoforged.neoforge.client.extensions.common.RegisterClientExtensionsEvent;
+import net.neoforged.neoforge.client.gui.VanillaGuiLayers;
 import net.neoforged.neoforge.common.util.TriState;
 
 @EventBusSubscriber(modid = OpposingForce.MOD_ID, value = Dist.CLIENT)
@@ -46,6 +53,7 @@ public class ClientEvents {
         event.registerEntityRenderer(OFEntities.TERROR.get(), TerrorRenderer::new);
         event.registerEntityRenderer(OFEntities.TARANTULA.get(), TarantulaRenderer::new);
         event.registerEntityRenderer(OFEntities.MUSHY.get(), MushyRenderer::new);
+        event.registerEntityRenderer(OFEntities.MOTIF.get(), MotifRenderer::new);
         event.registerEntityRenderer(OFEntities.OCTOVINE.get(), OctovineRenderer::new);
 
         event.registerEntityRenderer(OFEntities.DICER_LASER.get(), DicerLaserRenderer::new);
@@ -53,6 +61,8 @@ public class ClientEvents {
         event.registerEntityRenderer(OFEntities.LASER_BLADE.get(), LaserBladeRenderer::new);
         event.registerEntityRenderer(OFEntities.ACID_CHARGE.get(), AcidChargeRenderer::new);
         event.registerEntityRenderer(OFEntities.ACID_CLOUD.get(), NoopRenderer::new);
+        event.registerEntityRenderer(OFEntities.MUDBALL.get(), MudballRenderer::new);
+        event.registerEntityRenderer(OFEntities.MUD_SPLATTER.get(), MudSplatterRenderer::new);
     }
 
     @SubscribeEvent
@@ -66,14 +76,17 @@ public class ClientEvents {
         event.registerLayerDefinition(OFModelLayers.TERROR, TerrorModel::createBodyLayer);
         event.registerLayerDefinition(OFModelLayers.TARANTULA, TarantulaModel::createBodyLayer);
         event.registerLayerDefinition(OFModelLayers.MUSHY, MushyModel::createBodyLayer);
+        event.registerLayerDefinition(OFModelLayers.MOTIF, MotifModel::createBodyLayer);
         event.registerLayerDefinition(OFModelLayers.OCTOVINE, OctovineModel::createBodyLayer);
 
         event.registerLayerDefinition(OFModelLayers.LASER_BOLT, LaserBoltModel::createBodyLayer);
         event.registerLayerDefinition(OFModelLayers.ACID_CHARGE, AcidChargeModel::createBodyLayer);
+        event.registerLayerDefinition(OFModelLayers.MUDBALL, MudballModel::createBodyLayer);
 
         event.registerLayerDefinition(OFModelLayers.BLASTER, BlasterModel::createBodyLayer);
         event.registerLayerDefinition(OFModelLayers.TRI_BLASTER, TriBlasterModel::createBodyLayer);
         event.registerLayerDefinition(OFModelLayers.SCATTER_BLASTER, ScatterBlasterModel::createBodyLayer);
+        event.registerLayerDefinition(OFModelLayers.LEITMOTIF, LeitmotifModel::createBodyLayer);
     }
 
     @SubscribeEvent
@@ -91,6 +104,7 @@ public class ClientEvents {
         event.registerItem(OFItemExtensions.itemExtensions, OFItems.BLASTER.get());
         event.registerItem(OFItemExtensions.itemExtensions, OFItems.TRI_BLASTER.get());
         event.registerItem(OFItemExtensions.itemExtensions, OFItems.SCATTER_BLASTER.get());
+        event.registerItem(OFItemExtensions.itemExtensions, OFItems.LEITMOTIF.get());
 
         event.registerItem(new IClientItemExtensions() {
             @Override
@@ -110,7 +124,7 @@ public class ClientEvents {
     @SubscribeEvent
     public static void onPoseHand(PoseHandEvent event) {
         LivingEntity player = (LivingEntity) event.getEntity();
-        if (player.getItemInHand(InteractionHand.MAIN_HAND).getItem() instanceof BlasterItem) {
+        if (isAimedGun(player.getItemInHand(InteractionHand.MAIN_HAND))) {
             if (player.getMainArm() == HumanoidArm.RIGHT) {
                 event.getHumanoidModel().rightArm.xRot = (event.getHumanoidModel().head.xRot - (float) Math.toRadians(80F));
                 event.getHumanoidModel().rightArm.yRot = event.getHumanoidModel().head.yRot;
@@ -122,7 +136,7 @@ public class ClientEvents {
             }
             event.setResult(TriState.TRUE);
         }
-        if (player.getItemInHand(InteractionHand.OFF_HAND).getItem() instanceof BlasterItem) {
+        if (isAimedGun(player.getItemInHand(InteractionHand.OFF_HAND))) {
             if (player.getMainArm() == HumanoidArm.RIGHT) {
                 event.getHumanoidModel().leftArm.xRot = (event.getHumanoidModel().head.xRot - (float) Math.toRadians(80F));
                 event.getHumanoidModel().leftArm.yRot = event.getHumanoidModel().head.yRot;
@@ -134,5 +148,27 @@ public class ClientEvents {
             }
             event.setResult(TriState.TRUE);
         }
+    }
+
+    private static boolean isAimedGun(ItemStack stack) {
+        return stack.getItem() instanceof BlasterItem || stack.getItem() instanceof LeitmotifItem;
+    }
+
+    private static final ResourceLocation MYSTIC_POT_OVERLAY = OpposingForce.location("textures/misc/mystic_pot_overlay.png");
+
+    @SubscribeEvent
+    public static void registerGuiLayers(RegisterGuiLayersEvent event) {
+        event.registerAbove(VanillaGuiLayers.CAMERA_OVERLAYS, OpposingForce.location("mystic_pot_overlay"), (guiGraphics, deltaTracker) -> {
+            Minecraft minecraft = Minecraft.getInstance();
+            if (minecraft.player == null || !minecraft.options.getCameraType().isFirstPerson()) return;
+            if (!minecraft.player.getItemBySlot(EquipmentSlot.HEAD).is(OFItems.MYSTIC_POT.get())) return;
+            RenderSystem.disableDepthTest();
+            RenderSystem.depthMask(false);
+            RenderSystem.enableBlend();
+            guiGraphics.blit(MYSTIC_POT_OVERLAY, 0, 0, -90, 0.0F, 0.0F, guiGraphics.guiWidth(), guiGraphics.guiHeight(), guiGraphics.guiWidth(), guiGraphics.guiHeight());
+            RenderSystem.disableBlend();
+            RenderSystem.depthMask(true);
+            RenderSystem.enableDepthTest();
+        });
     }
 }

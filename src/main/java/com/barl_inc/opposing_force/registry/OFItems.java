@@ -53,6 +53,10 @@ public class OFItems {
 
     public static final DeferredItem<Item> MUSHY_SPAWN_EGG = registerSpawnEggItem("mushy", OFEntities.MUSHY, 0xe3552b, 0x110701);
 
+    public static final DeferredItem<Item> MOTIF_SPAWN_EGG = registerSpawnEggItem("motif", OFEntities.MOTIF, 0xddd6b1, 0xc15e3e);
+    public static final DeferredItem<Item> MYSTIC_POT = registerItemNoLang("mystic_pot", () -> new MysticPotItem(OFBlocks.MYSTIC_POT.get(), new Item.Properties()));
+    public static final DeferredItem<Item> LEITMOTIF = registerItem("leitmotif", () -> new LeitmotifItem(new Item.Properties()));
+
     public static final DeferredItem<Item> OCTOVINE_SPAWN_EGG = registerSpawnEggItem("octovine", OFEntities.OCTOVINE, 0x674d2f, 0xaa2110);
 
     public static final DeferredItem<Item> EMERALD_SWORD = registerItem("emerald_sword", () -> new SinewSwordItem(OFToolDefinitions.EMERALD, 3.0F, -2.4F, new Item.Properties().rarity(Rarity.UNCOMMON)));

@@ -1,0 +1,22 @@
+{
+  "type": "minecraft:entity",
+  "pools": [
+    {
+      "bonus_rolls": 0.0,
+      "entries": [
+        {
+          "type": "minecraft:item",
+          "conditions": [
+            {
+              "chance": 0.1,
+              "condition": "minecraft:random_chance"
+            }
+          ],
+          "name": "opposing_force:mystic_pot"
+        }
+      ],
+      "rolls": 2.0
+    }
+  ],
+  "random_sequence": "opposing_force:entities/motif"
+}

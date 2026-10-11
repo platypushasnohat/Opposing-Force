@@ -1,0 +1,12 @@
+{
+  "replace": false,
+  "values": [
+    "opposing_force:relic_feather",
+    "opposing_force:beetle_husk",
+    "opposing_force:enchanted_chisel",
+    "opposing_force:pot_of_green",
+    "opposing_force:thorny_bracelet",
+    "opposing_force:ranger_manual",
+    "opposing_force:sharpshooter_coin"
+  ]
+}

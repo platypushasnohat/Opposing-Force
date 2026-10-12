@@ -27,7 +27,7 @@ public class RelicFeatherItem extends CurioItem {
         AttributeInstance gravity = entity.getAttribute(Attributes.GRAVITY);
         if (gravity != null) {
             if (entity.getDeltaMovement().y() <= -0.06D && !entity.onGround() && !entity.isFallFlying() && !entity.isInFluidType() && !entity.isShiftKeyDown() && gravity.getValue() > 0.0075D) {
-                entity.setDeltaMovement(entity.getDeltaMovement().multiply(1.0D, 0.6D, 1.0D));
+                entity.setDeltaMovement(entity.getDeltaMovement().multiply(1.0D, 0.75D, 1.0D));
                 entity.resetFallDistance();
             }
         }

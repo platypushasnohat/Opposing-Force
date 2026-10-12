@@ -20,6 +20,6 @@ public class SharpshooterCoinItem extends CurioItem {
 
     @Override
     public void addAttributeModifiers(Multimap<Holder<Attribute>, AttributeModifier> map, SlotContext slotContext, ItemStack stack) {
-        this.addAttributeModifier(map, SinewAttributes.PROJECTILE_DAMAGE, new AttributeModifier(ATTRIBUTE_MODIFIER, 3.0F, AttributeModifier.Operation.ADD_VALUE));
+        this.addAttributeModifier(map, SinewAttributes.PROJECTILE_DAMAGE, new AttributeModifier(ATTRIBUTE_MODIFIER, 2.0F, AttributeModifier.Operation.ADD_VALUE));
     }
 }

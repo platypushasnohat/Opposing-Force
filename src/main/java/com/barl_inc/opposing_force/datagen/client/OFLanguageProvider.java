@@ -67,6 +67,8 @@ public class OFLanguageProvider extends SinewLanguageProvider {
 
         this.add(OFItems.DISABLED_LASER_BLADE.get(), "Laser Blade");
 
+        this.add(OFItems.FILLET_BUCKET.get(), "Bucket of Fillet");
+
         this.add("item.opposing_force.powered_item.power", "Power: %s / %s");
 
         this.add("item.opposing_force.relic_feather.description", "+Slow Falling");

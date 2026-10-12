@@ -15,6 +15,7 @@ import java.util.List;
 import java.util.function.Supplier;
 
 public class OFBlocks {
+
     public static final DeferredRegister.Blocks BLOCK = DeferredRegister.createBlocks(OpposingForce.MOD_ID);
 
     public static List<DeferredBlock<? extends Block>> BLOCK_TRANSLATIONS = new ArrayList<>();

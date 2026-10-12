@@ -48,6 +48,8 @@ public class OFItems {
     public static final DeferredItem<Item> FURBALL_SPAWN_EGG = registerSpawnEggItem("furball", OFEntities.FURBALL, 0x5e564c, 0x1c1714);
 
     public static final DeferredItem<Item> TERROR_SPAWN_EGG = registerSpawnEggItem("terror", OFEntities.TERROR, 0x0d3625, 0xff0000);
+    public static final DeferredItem<Item> TERROR_LEG = registerItem("terror_leg", () -> new Item(new Item.Properties().food(OFFoodProperties.TERROR_LEG)));
+    public static final DeferredItem<Item> FRIED_TERROR_LEG = registerItem("fried_terror_leg", () -> new Item(new Item.Properties().food(OFFoodProperties.FRIED_TERROR_LEG)));
 
     public static final DeferredItem<Item> TARANTULA_SPAWN_EGG = registerSpawnEggItem("tarantula", OFEntities.TARANTULA, 0x4f4235, 0xedb24c);
 
@@ -71,6 +73,12 @@ public class OFItems {
     public static final DeferredItem<Item> EMERALD_LEGGINGS = registerItem("emerald_leggings", () -> new SkinLayerHidingArmorItem(Type.LEGGINGS, new Item.Properties().rarity(Rarity.UNCOMMON).durability(Type.LEGGINGS.getDurability(33)), OFArmorDefinitions.EMERALD_ARMOR));
     public static final DeferredItem<Item> EMERALD_BOOTS = registerItem("emerald_boots", () -> new SkinLayerHidingArmorItem(Type.BOOTS, new Item.Properties().rarity(Rarity.UNCOMMON).durability(Type.BOOTS.getDurability(33)), OFArmorDefinitions.EMERALD_ARMOR));
 
+    public static final DeferredItem<Item> LAPIS_LAZULI_SWORD = registerItem("lapis_lazuli_sword", () -> new SinewSwordItem(OFToolDefinitions.LAPIS_LAZULI, 3.0F, -2.4F, new Item.Properties()));
+    public static final DeferredItem<Item> LAPIS_LAZULI_PICKAXE = registerItem("lapis_lazuli_pickaxe", () -> new SinewPickaxeItem(OFToolDefinitions.LAPIS_LAZULI, 1.0F, -2.8F, new Item.Properties()));
+    public static final DeferredItem<Item> LAPIS_LAZULI_AXE = registerItem("lapis_lazuli_axe", () -> new SinewAxeItem(OFToolDefinitions.LAPIS_LAZULI, 6.0F, -3.1F, new Item.Properties()));
+    public static final DeferredItem<Item> LAPIS_LAZULI_SHOVEL = registerItem("lapis_lazuli_shovel", () -> new SinewShovelItem(OFToolDefinitions.LAPIS_LAZULI, 1.5F, -3.0F, new Item.Properties()));
+    public static final DeferredItem<Item> LAPIS_LAZULI_HOE = registerItem("lapis_lazuli_hoe", () -> new SinewHoeItem(OFToolDefinitions.LAPIS_LAZULI, 0.0F, -1.0F, new Item.Properties()));
+
     public static final DeferredItem<Item> MOON_SHOES = registerItem("moon_shoes", () -> new MoonShoesItem(new Item.Properties().rarity(Rarity.UNCOMMON).durability(Type.BOOTS.getDurability(25))));
 
     public static final DeferredItem<Item> RELIC_FEATHER = registerItem("relic_feather", () -> new RelicFeatherItem(new Item.Properties().rarity(Rarity.UNCOMMON).stacksTo(1)));
@@ -80,6 +88,7 @@ public class OFItems {
     public static final DeferredItem<Item> THORNY_BRACELET = registerItem("thorny_bracelet", () -> new ThornyBraceletItem(new Item.Properties().stacksTo(1)));
     public static final DeferredItem<Item> RANGER_MANUAL = registerItem("ranger_manual", () -> new RangerManualItem(new Item.Properties().stacksTo(1)));
     public static final DeferredItem<Item> SHARPSHOOTER_COIN = registerItem("sharpshooter_coin", () -> new SharpshooterCoinItem(new Item.Properties().stacksTo(1).rarity(Rarity.UNCOMMON)));
+    public static final DeferredItem<Item> TEAR_OF_AQUARIUS = registerItem("tear_of_aquarius", () -> new TearOfAquariusItem(new Item.Properties().stacksTo(1).rarity(Rarity.RARE)));
 
     private static <I extends Item> DeferredItem<I> registerItem(String name, Supplier<? extends I> supplier) {
         DeferredItem<I> item = ITEM.register(name, supplier);

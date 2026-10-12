@@ -13,7 +13,7 @@ public class OFCreativeTabs {
     public static final DeferredRegister<CreativeModeTab> CREATIVE_MODE_TAB = DeferredRegister.create(Registries.CREATIVE_MODE_TAB, OpposingForce.MOD_ID);
 
     public static final DeferredHolder<CreativeModeTab, CreativeModeTab> OPPOSING_FORCE_TAB = CREATIVE_MODE_TAB.register("opposing_force_creative_tab",
-            () -> CreativeModeTab.builder().icon(() -> new ItemStack(OFItems.EMERALD_MASK.get()))
+            () -> CreativeModeTab.builder().icon(() -> new ItemStack(OFItems.POT_OF_GREEN.get()))
                     .title(Component.translatable("creative_tab.opposing_force"))
                     .displayItems((parameters, output) -> {
                         output.accept(OFItems.BEWILDER_SPAWN_EGG);
@@ -46,6 +46,15 @@ public class OFCreativeTabs {
                         output.accept(OFItems.MYSTIC_POT);
                         output.accept(OFItems.LEITMOTIF);
 
+                        output.accept(OFItems.TERROR_LEG);
+                        output.accept(OFItems.FRIED_TERROR_LEG);
+
+                        output.accept(OFItems.LAPIS_LAZULI_SWORD);
+                        output.accept(OFItems.LAPIS_LAZULI_SHOVEL);
+                        output.accept(OFItems.LAPIS_LAZULI_PICKAXE);
+                        output.accept(OFItems.LAPIS_LAZULI_AXE);
+                        output.accept(OFItems.LAPIS_LAZULI_HOE);
+
                         output.accept(OFItems.EMERALD_SWORD);
                         output.accept(OFItems.EMERALD_SHOVEL);
                         output.accept(OFItems.EMERALD_PICKAXE);
@@ -69,6 +78,7 @@ public class OFCreativeTabs {
 
                         // rare
                         output.accept(OFItems.POT_OF_GREEN);
+                        output.accept(OFItems.TEAR_OF_AQUARIUS);
                     })
                     .build());
 }

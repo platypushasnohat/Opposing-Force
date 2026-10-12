@@ -25,23 +25,33 @@ public class OFItemTagsProvider extends ItemTagsProvider {
 		this.tag(ItemTags.SWORDS).add(
 				OFItems.LASER_BLADE.get(),
 				OFItems.EMERALD_SWORD.get(),
-				OFItems.CHITIN_LANCE.get()
+				OFItems.CHITIN_LANCE.get(),
+				OFItems.LAPIS_LAZULI_SWORD.get()
 		);
 
 		this.tag(ItemTags.PICKAXES).add(
-				OFItems.EMERALD_PICKAXE.get()
+				OFItems.EMERALD_PICKAXE.get(),
+				OFItems.LAPIS_LAZULI_PICKAXE.get()
 		);
 
 		this.tag(ItemTags.AXES).add(
-				OFItems.EMERALD_AXE.get()
+				OFItems.EMERALD_AXE.get(),
+				OFItems.LAPIS_LAZULI_AXE.get()
 		);
 
 		this.tag(ItemTags.SHOVELS).add(
-				OFItems.EMERALD_SHOVEL.get()
+				OFItems.EMERALD_SHOVEL.get(),
+				OFItems.LAPIS_LAZULI_SHOVEL.get()
 		);
 
 		this.tag(ItemTags.HOES).add(
-				OFItems.EMERALD_HOE.get()
+				OFItems.EMERALD_HOE.get(),
+				OFItems.LAPIS_LAZULI_HOE.get()
+		);
+
+		this.tag(ItemTags.MEAT).add(
+				OFItems.TERROR_LEG.get(),
+				OFItems.FRIED_TERROR_LEG.get()
 		);
 
 		this.tag(Tags.Items.BUCKETS_ENTITY_WATER).add(

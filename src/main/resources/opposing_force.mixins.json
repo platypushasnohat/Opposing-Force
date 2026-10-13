@@ -8,10 +8,7 @@
     "PlayerMixin",
     "ZombieMixin"
   ],
-  "client": [
-    "client.ItemInHandLayerMixin",
-    "client.ItemInHandRendererMixin"
-  ],
+  "client": [],
   "injectors": {
     "defaultRequire": 1
   },

@@ -1,8 +1,8 @@
 package com.barl_inc.opposing_force.entity.projectile;
 
 import com.barl_inc.opposing_force.OpposingForce;
-import com.barl_inc.opposing_force.item.DisabledItem;
 import com.barl_inc.opposing_force.registry.*;
+import com.platypushasnohat.sinew.item.DisabledItem;
 import com.platypushasnohat.sinew.utils.SinewSoundUtils;
 import net.minecraft.core.BlockPos;
 import net.minecraft.nbt.CompoundTag;

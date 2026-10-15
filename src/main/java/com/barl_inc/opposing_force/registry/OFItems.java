@@ -62,6 +62,8 @@ public class OFItems {
     public static final DeferredItem<Item> FILLET_SPAWN_EGG = registerSpawnEggItem("fillet", OFEntities.FILLET, 0x470e2f, 0xff6e1f);
     public static final DeferredItem<Item> FILLET_BUCKET = registerItemNoLang("fillet_bucket", () -> new FilletBucketItem(new Item.Properties()));
 
+    public static final DeferredItem<Item> FIRING_MECHANISM = registerItem("firing_mechanism", () -> new Item(new Item.Properties()));
+
     public static final DeferredItem<Item> EMERALD_SWORD = registerItem("emerald_sword", () -> new SinewSwordItem(OFToolDefinitions.EMERALD, 3.0F, -2.4F, new Item.Properties().rarity(Rarity.UNCOMMON)));
     public static final DeferredItem<Item> EMERALD_PICKAXE = registerItem("emerald_pickaxe", () -> new SinewPickaxeItem(OFToolDefinitions.EMERALD, 1.0F, -2.8F, new Item.Properties().rarity(Rarity.UNCOMMON)));
     public static final DeferredItem<Item> EMERALD_AXE = registerItem("emerald_axe", () -> new SinewAxeItem(OFToolDefinitions.EMERALD, 5.0F, -3.0F, new Item.Properties().rarity(Rarity.UNCOMMON)));

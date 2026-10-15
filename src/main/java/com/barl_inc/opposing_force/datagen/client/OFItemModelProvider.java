@@ -35,7 +35,8 @@ public class OFItemModelProvider extends SinewItemModelProvider {
                 OFItems.RANGER_MANUAL,
                 OFItems.SHARPSHOOTER_COIN,
                 OFItems.FILLET_BUCKET,
-                OFItems.TEAR_OF_AQUARIUS
+                OFItems.TEAR_OF_AQUARIUS,
+                OFItems.FIRING_MECHANISM
         );
 
         this.handheldItem(

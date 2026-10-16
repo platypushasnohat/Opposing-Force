@@ -51,15 +51,7 @@ public class OFCreativeTabs {
                         output.accept(OFItems.TERROR_LEG);
                         output.accept(OFItems.FRIED_TERROR_LEG);
 
-                        // misc stuff
-                        output.accept(OFItems.FIRING_MECHANISM);
-
-                        output.accept(OFItems.LAPIS_LAZULI_SWORD);
-                        output.accept(OFItems.LAPIS_LAZULI_SHOVEL);
-                        output.accept(OFItems.LAPIS_LAZULI_PICKAXE);
-                        output.accept(OFItems.LAPIS_LAZULI_AXE);
-                        output.accept(OFItems.LAPIS_LAZULI_HOE);
-
+                        // misc tools and armor
                         output.accept(OFItems.EMERALD_SWORD);
                         output.accept(OFItems.EMERALD_SHOVEL);
                         output.accept(OFItems.EMERALD_PICKAXE);
@@ -69,7 +61,17 @@ public class OFCreativeTabs {
                         output.accept(OFItems.EMERALD_CHESTPLATE);
                         output.accept(OFItems.EMERALD_LEGGINGS);
                         output.accept(OFItems.EMERALD_BOOTS);
+
+                        output.accept(OFItems.LAPIS_LAZULI_SWORD);
+                        output.accept(OFItems.LAPIS_LAZULI_SHOVEL);
+                        output.accept(OFItems.LAPIS_LAZULI_PICKAXE);
+                        output.accept(OFItems.LAPIS_LAZULI_AXE);
+                        output.accept(OFItems.LAPIS_LAZULI_HOE);
+
                         output.accept(OFItems.MOON_SHOES);
+
+                        // crafting materials
+                        output.accept(OFItems.FIRING_MECHANISM);
 
                         // trinkets
                         // common

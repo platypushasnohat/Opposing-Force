@@ -148,8 +148,8 @@ public class CommonEvents {
 
     @SubscribeEvent
     public static void addPackFinders(AddPackFindersEvent event) {
-        if (event.getPackType() == PackType.SERVER_DATA && OFConfig.PROTECTION_TWEAKS.get()) {
-            event.addPackFinders(OpposingForce.location("datapacks/protection_tweaks"), PackType.SERVER_DATA, Component.translatable("pack.opposing_force.protection_tweaks"), PackSource.BUILT_IN, true, Pack.Position.TOP);
+        if (event.getPackType() == PackType.SERVER_DATA) {
+            event.addPackFinders(OpposingForce.location("datapacks/protection_tweaks"), PackType.SERVER_DATA, Component.translatable("pack.opposing_force.protection_tweaks"), PackSource.BUILT_IN, OFConfig.PROTECTION_TWEAKS.get(), Pack.Position.TOP);
         }
     }
 }

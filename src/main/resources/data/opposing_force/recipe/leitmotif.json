@@ -1,0 +1,26 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "equipment",
+  "key": {
+    "C": {
+      "item": "minecraft:copper_ingot"
+    },
+    "P": {
+      "item": "opposing_force:mystic_pot"
+    },
+    "G": {
+      "item": "minecraft:gunpowder"
+    },
+    "F": {
+      "item": "opposing_force:firing_mechanism"
+    }
+  },
+  "pattern": [
+    "CGP",
+    "C F"
+  ],
+  "result": {
+    "count": 1,
+    "id": "opposing_force:leitmotif"
+  }
+}

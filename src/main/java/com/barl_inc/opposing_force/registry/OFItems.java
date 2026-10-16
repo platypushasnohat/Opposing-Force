@@ -91,6 +91,10 @@ public class OFItems {
     public static final DeferredItem<Item> RANGER_MANUAL = registerItem("ranger_manual", () -> new RangerManualItem(new Item.Properties().stacksTo(1)));
     public static final DeferredItem<Item> SHARPSHOOTER_COIN = registerItem("sharpshooter_coin", () -> new SharpshooterCoinItem(new Item.Properties().stacksTo(1).rarity(Rarity.UNCOMMON)));
     public static final DeferredItem<Item> TEAR_OF_AQUARIUS = registerItem("tear_of_aquarius", () -> new TearOfAquariusItem(new Item.Properties().stacksTo(1).rarity(Rarity.RARE)));
+    public static final DeferredItem<Item> BLACK_BELT = registerItem("black_belt", () -> new BlackBeltItem(new Item.Properties().stacksTo(1).rarity(Rarity.UNCOMMON)));
+    public static final DeferredItem<Item> BLOOD_AMULET = registerItem("blood_amulet", () -> new BloodAmuletItem(new Item.Properties().stacksTo(1).rarity(Rarity.RARE)));
+    public static final DeferredItem<Item> FIERY_CARAPACE = registerItem("fiery_carapace", () -> new FieryCarapaceItem(new Item.Properties().stacksTo(1)));
+
 
     private static <I extends Item> DeferredItem<I> registerItem(String name, Supplier<? extends I> supplier) {
         DeferredItem<I> item = ITEM.register(name, supplier);

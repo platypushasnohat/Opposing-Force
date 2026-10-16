@@ -36,6 +36,9 @@ public class OFItemModelProvider extends SinewItemModelProvider {
                 OFItems.SHARPSHOOTER_COIN,
                 OFItems.FILLET_BUCKET,
                 OFItems.TEAR_OF_AQUARIUS,
+                OFItems.BLACK_BELT,
+                OFItems.BLOOD_AMULET,
+                OFItems.FIERY_CARAPACE,
                 OFItems.FIRING_MECHANISM
         );
 

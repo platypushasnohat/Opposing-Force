@@ -72,15 +72,18 @@ public class OFCreativeTabs {
                         output.accept(OFItems.BEETLE_HUSK);
                         output.accept(OFItems.RANGER_MANUAL);
                         output.accept(OFItems.THORNY_BRACELET);
+                        output.accept(OFItems.FIERY_CARAPACE);
 
                         // uncommon
                         output.accept(OFItems.ENCHANTED_CHISEL);
                         output.accept(OFItems.RELIC_FEATHER);
                         output.accept(OFItems.SHARPSHOOTER_COIN);
+                        output.accept(OFItems.BLACK_BELT);
 
                         // rare
                         output.accept(OFItems.POT_OF_GREEN);
                         output.accept(OFItems.TEAR_OF_AQUARIUS);
+                        output.accept(OFItems.BLOOD_AMULET);
                     })
                     .build());
 }

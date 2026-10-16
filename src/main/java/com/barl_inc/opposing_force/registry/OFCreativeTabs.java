@@ -16,6 +16,7 @@ public class OFCreativeTabs {
             () -> CreativeModeTab.builder().icon(() -> new ItemStack(OFItems.POT_OF_GREEN.get()))
                     .title(Component.translatable("creative_tab.opposing_force"))
                     .displayItems((parameters, output) -> {
+                        // spawn eggs
                         output.accept(OFItems.BEWILDER_SPAWN_EGG);
                         output.accept(OFItems.DICER_SPAWN_EGG);
                         output.accept(OFItems.FILLET_SPAWN_EGG);
@@ -28,6 +29,7 @@ public class OFCreativeTabs {
                         output.accept(OFItems.TARANTULA_SPAWN_EGG);
                         output.accept(OFItems.TERROR_SPAWN_EGG);
 
+                        // mob items
                         output.accept(OFItems.CHITIN);
                         output.accept(OFItems.CHITIN_LANCE);
 
@@ -49,6 +51,7 @@ public class OFCreativeTabs {
                         output.accept(OFItems.TERROR_LEG);
                         output.accept(OFItems.FRIED_TERROR_LEG);
 
+                        // misc stuff
                         output.accept(OFItems.FIRING_MECHANISM);
 
                         output.accept(OFItems.LAPIS_LAZULI_SWORD);
@@ -68,19 +71,30 @@ public class OFCreativeTabs {
                         output.accept(OFItems.EMERALD_BOOTS);
                         output.accept(OFItems.MOON_SHOES);
 
+                        // trinkets
                         // common
                         output.accept(OFItems.BEETLE_HUSK);
+                        output.accept(OFItems.FIERY_CARAPACE);
+                        output.accept(OFItems.LUCKY_TACKLEBOX);
                         output.accept(OFItems.RANGER_MANUAL);
                         output.accept(OFItems.THORNY_BRACELET);
 
                         // uncommon
+                        output.accept(OFItems.BLACK_BELT);
                         output.accept(OFItems.ENCHANTED_CHISEL);
+                        output.accept(OFItems.MAGNETISED_ENHANCEMENTS);
                         output.accept(OFItems.RELIC_FEATHER);
                         output.accept(OFItems.SHARPSHOOTER_COIN);
+                        output.accept(OFItems.SLIMY_SHIELD);
+                        output.accept(OFItems.URANIUM_KNUCKLES);
 
                         // rare
+                        output.accept(OFItems.BLOOD_AMULET);
                         output.accept(OFItems.POT_OF_GREEN);
                         output.accept(OFItems.TEAR_OF_AQUARIUS);
+
+                        // permanent upgrades
+                        output.accept(OFItems.CRYSTALIZED_HEART);
                     })
                     .build());
 }

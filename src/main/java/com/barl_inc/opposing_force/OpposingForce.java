@@ -46,6 +46,7 @@ public class OpposingForce {
         OFParticleTypes.PARTICLE_TYPE.register(modEventBus);
         OFSoundEvents.SOUND_EVENT.register(modEventBus);
         OFDataComponents.DATA_COMPONENTS.register(modEventBus);
+        OFLootModifiers.LOOT_MODIFIERS.register(modEventBus);
         OFCreativeTabs.CREATIVE_MODE_TAB.register(modEventBus);
         modEventBus.addListener(this::commonSetup);
         modEventBus.addListener(this::clientSetup);

@@ -1,0 +1,16 @@
+{
+  "type": "minecraft:fishing",
+  "pools": [
+    {
+      "bonus_rolls": 0.0,
+      "entries": [
+        {
+          "type": "minecraft:item",
+          "name": "opposing_force:tear_of_aquarius"
+        }
+      ],
+      "rolls": 1.0
+    }
+  ],
+  "random_sequence": "opposing_force:gameplay/tear_of_aquarius"
+}

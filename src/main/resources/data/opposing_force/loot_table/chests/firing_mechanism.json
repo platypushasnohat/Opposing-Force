@@ -12,7 +12,7 @@
           "type": "minecraft:item",
           "functions": [
             {
-              "add": false,
+              "add": true,
               "count": {
                 "type": "minecraft:uniform",
                 "max": 2.0,
@@ -25,7 +25,7 @@
           "weight": 1
         }
       ],
-      "rolls": 1.0
+      "rolls": 2.0
     }
   ],
   "random_sequence": "opposing_force:chests/firing_mechanism"

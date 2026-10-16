@@ -1,0 +1,14 @@
+{
+  "type": "neoforge:add_table",
+  "conditions": [
+    {
+      "condition": "neoforge:loot_table_id",
+      "loot_table_id": "minecraft:chests/trial_chambers/reward_ominous"
+    },
+    {
+      "condition": "minecraft:random_chance",
+      "chance": 0.07
+    }
+  ],
+  "table": "opposing_force:chests/relic_feather"
+}

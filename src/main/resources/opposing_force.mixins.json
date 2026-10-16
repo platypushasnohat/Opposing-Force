@@ -4,6 +4,8 @@
   "compatibilityLevel": "JAVA_21",
   "refmap": "opposing_force.refmap.json",
   "mixins": [
+    "EnchantmentHelperMixin",
+    "LivingEntityMixin",
     "MobCategoryMixin",
     "PlayerMixin",
     "ZombieMixin"

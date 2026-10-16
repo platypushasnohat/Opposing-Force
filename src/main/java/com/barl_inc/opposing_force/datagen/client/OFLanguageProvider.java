@@ -76,6 +76,8 @@ public class OFLanguageProvider extends SinewLanguageProvider {
         this.add("item.opposing_force.fiery_carapace.description", "+Fire Protection I");
         this.add("item.opposing_force.magnetised_enhancements.description", "+Mining Momentum");
 
+        this.add("item.opposing_force.crystalized_heart.description", "Grants +1 Trinket Slots");
+
         this.add("jukebox_song.opposing_force.slayser", "ChipsTheCat - Slayser");
 
         this.add("death.attack.laser_0", "%s was disintegrated");

@@ -122,7 +122,14 @@ public class CommonEvents {
 
     @SubscribeEvent
     public static void onLivingIncomingDamage(LivingIncomingDamageEvent event) {
-        if (event.getEntity() instanceof Player player && !event.getSource().is(DamageTypeTags.BYPASSES_INVULNERABILITY) && CuriosApi.getCuriosInventory(player).map(inventory -> inventory.isEquipped(OFItems.SLIMY_SHIELD.get())).orElse(false)) {
+        if (event.getSource().getEntity() instanceof LivingEntity attacker
+                && event.getEntity().getHealth() >= event.getEntity().getMaxHealth()
+                && CuriosApi.getCuriosInventory(attacker).map(inventory -> inventory.isEquipped(OFItems.STALKERS_GLOVES.get())).orElse(false)) {
+            event.setAmount(event.getAmount() * 1.4F);
+        }
+        if (event.getEntity() instanceof Player player
+                && !event.getSource().is(DamageTypeTags.BYPASSES_INVULNERABILITY)
+                && CuriosApi.getCuriosInventory(player).map(inventory -> inventory.isEquipped(OFItems.SLIMY_SHIELD.get())).orElse(false)) {
             if (!player.getCooldowns().isOnCooldown(OFItems.SLIMY_SHIELD.get()) && player.invulnerableTime <= 10 && player.level() instanceof ServerLevel serverLevel) {
                 event.setCanceled(true);
                 player.getCooldowns().addCooldown(OFItems.SLIMY_SHIELD.get(), 240);
@@ -154,8 +161,8 @@ public class CommonEvents {
 
     @SubscribeEvent
     public static void addPackFinders(AddPackFindersEvent event) {
-        if (event.getPackType() == PackType.SERVER_DATA && OFConfig.PROTECTION_TWEAKS.get()) {
-            event.addPackFinders(OpposingForce.location("datapacks/protection_tweaks"), PackType.SERVER_DATA, Component.translatable("pack.opposing_force.protection_tweaks"), PackSource.BUILT_IN, true, Pack.Position.TOP);
+        if (event.getPackType() == PackType.SERVER_DATA) {
+            event.addPackFinders(OpposingForce.location("datapacks/protection_tweaks"), PackType.SERVER_DATA, Component.translatable("pack.opposing_force.protection_tweaks"), PackSource.BUILT_IN, OFConfig.PROTECTION_TWEAKS.get(), Pack.Position.TOP);
         }
     }
 

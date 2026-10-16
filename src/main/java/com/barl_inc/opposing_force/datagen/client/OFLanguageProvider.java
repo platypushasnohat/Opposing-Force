@@ -69,17 +69,17 @@ public class OFLanguageProvider extends SinewLanguageProvider {
 
         this.add(OFItems.FILLET_BUCKET.get(), "Bucket of Fillet");
 
+        this.add(OFItems.STALKERS_GLOVES.get(), "Stalker's Gloves");
+
         this.add("item.opposing_force.powered_item.power", "Power: %s / %s");
 
         this.add("item.opposing_force.relic_feather.description", "+Slow Falling");
-        this.add("item.opposing_force.pot_of_green.description", "+1 Fortune");
         this.add("item.opposing_force.fiery_carapace.description", "+Fire Protection I");
         this.add("item.opposing_force.magnetised_enhancements.description", "+Mining Momentum");
-        this.add("item.opposing_force.lucky_tacklebox.description.lure", "+Lure I");
-        this.add("item.opposing_force.lucky_tacklebox.description.luck", "+Luck of the Sea I");
         this.add("item.opposing_force.slimy_shield.description.shielding", "+Slimy Shielding");
+        this.add("item.opposing_force.stalkers_gloves.description", "+First Hit Bonus");
 
-        this.add("item.opposing_force.crystalized_heart.description", "Grants +1 Trinket Slots");
+        this.add("item.opposing_force.crystalized_heart.description", "Grants +1 Charm Slots");
 
         this.add("enchantment.opposing_force.magic_protection", "Magic Protection");
         this.add("enchantment.opposing_force.magic_protection.desc", "Reduces magic damage taken and shortens the duration of negative effects applied to the wearer.");

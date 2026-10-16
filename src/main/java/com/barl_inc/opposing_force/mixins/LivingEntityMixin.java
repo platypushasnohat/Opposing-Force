@@ -28,7 +28,7 @@ public abstract class LivingEntityMixin {
             Holder<Enchantment> magicProtection = entity.level().registryAccess().registryOrThrow(Registries.ENCHANTMENT).getHolderOrThrow(OFEnchantments.MAGIC_PROTECTION);
             int level = 0;
             for (ItemStack stack : entity.getArmorSlots()) {
-                level += EnchantmentHelper.getItemEnchantmentLevel(magicProtection, stack);
+                level += EnchantmentHelper.getTagEnchantmentLevel(magicProtection, stack);
             }
             if (level > 0) {
                 result = new MobEffectInstance(instance.getEffect(), Math.round(instance.getDuration() * (1.0F - 0.025F * level)), instance.getAmplifier(), instance.isAmbient(), instance.isVisible(), instance.showIcon());

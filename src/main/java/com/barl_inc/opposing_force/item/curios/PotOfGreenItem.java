@@ -1,32 +1,26 @@
 package com.barl_inc.opposing_force.item.curios;
 
-import net.minecraft.ChatFormatting;
-import net.minecraft.network.chat.Component;
+import com.barl_inc.opposing_force.OpposingForce;
+import com.google.common.collect.Multimap;
+import com.platypushasnohat.sinew.registry.SinewAttributes;
+import net.minecraft.core.Holder;
+import net.minecraft.resources.ResourceLocation;
+import net.minecraft.world.entity.ai.attributes.Attribute;
+import net.minecraft.world.entity.ai.attributes.AttributeModifier;
 import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.level.storage.loot.LootContext;
 import top.theillusivec4.curios.api.SlotContext;
 
-import javax.annotation.Nullable;
-import java.util.function.Consumer;
-
 public class PotOfGreenItem extends CurioItem {
+
+    private static final ResourceLocation ATTRIBUTE_MODIFIER = OpposingForce.location("pot_of_green");
 
     public PotOfGreenItem(Properties properties) {
         super(properties);
     }
 
     @Override
-    public void addTooltipLines(Consumer<Component> consumer) {
-        consumer.accept(Component.translatable("item.opposing_force.pot_of_green.description").withStyle(ChatFormatting.BLUE));
-    }
-
-    @Override
-    public int getFortuneLevel(SlotContext slotContext, LootContext lootContext, ItemStack stack) {
-        return 1;
-    }
-
-    @Override
-    public int getLootingLevel(SlotContext slotContext, @Nullable LootContext lootContext, ItemStack stack) {
-        return 1;
+    public void addAttributeModifiers(Multimap<Holder<Attribute>, AttributeModifier> map, SlotContext slotContext, ItemStack stack) {
+        this.addAttributeModifier(map, SinewAttributes.FORTUNE, new AttributeModifier(ATTRIBUTE_MODIFIER, 1.0F, AttributeModifier.Operation.ADD_VALUE));
+        this.addAttributeModifier(map, SinewAttributes.LOOTING, new AttributeModifier(ATTRIBUTE_MODIFIER, 1.0F, AttributeModifier.Operation.ADD_VALUE));
     }
 }

@@ -85,6 +85,7 @@ public class OFCreativeTabs {
                         output.accept(OFItems.MAGNETISED_ENHANCEMENTS);
                         output.accept(OFItems.RELIC_FEATHER);
                         output.accept(OFItems.SHARPSHOOTER_COIN);
+                        output.accept(OFItems.SLIMY_SHIELD);
                         output.accept(OFItems.URANIUM_KNUCKLES);
 
                         // rare

@@ -43,7 +43,8 @@ public class OFItemModelProvider extends SinewItemModelProvider {
                 OFItems.FIRING_MECHANISM,
                 OFItems.CRYSTALIZED_HEART,
                 OFItems.MAGNETISED_ENHANCEMENTS,
-                OFItems.LUCKY_TACKLEBOX
+                OFItems.LUCKY_TACKLEBOX,
+                OFItems.SLIMY_SHIELD
         );
 
         this.handheldItem(

@@ -10,10 +10,14 @@ import com.barl_inc.opposing_force.registry.OFEntities;
 import com.barl_inc.opposing_force.registry.OFItems;
 import com.platypushasnohat.sinew.entity.base.AnimatedMonster;
 import com.platypushasnohat.sinew.entity.villager.MultipleInputsTrade;
+import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.network.chat.Component;
+import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.packs.PackType;
 import net.minecraft.server.packs.repository.Pack;
 import net.minecraft.server.packs.repository.PackSource;
+import net.minecraft.sounds.SoundEvents;
+import net.minecraft.tags.DamageTypeTags;
 import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.LivingEntity;
@@ -23,6 +27,7 @@ import net.minecraft.world.entity.ai.goal.AvoidEntityGoal;
 import net.minecraft.world.entity.monster.EnderMan;
 import net.minecraft.world.entity.monster.Spider;
 import net.minecraft.world.entity.npc.VillagerTrades;
+import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.level.levelgen.Heightmap;
 import net.neoforged.bus.api.EventPriority;
@@ -34,8 +39,10 @@ import net.neoforged.neoforge.event.entity.EntityJoinLevelEvent;
 import net.neoforged.neoforge.event.entity.EntityTeleportEvent;
 import net.neoforged.neoforge.event.entity.RegisterSpawnPlacementsEvent;
 import net.neoforged.neoforge.event.entity.living.LivingDamageEvent;
+import net.neoforged.neoforge.event.entity.living.LivingIncomingDamageEvent;
 import net.neoforged.neoforge.event.level.BlockEvent;
 import net.neoforged.neoforge.event.village.WandererTradesEvent;
+import top.theillusivec4.curios.api.CuriosApi;
 
 import java.util.List;
 
@@ -104,6 +111,26 @@ public class CommonEvents {
         DamageSource damageSource = event.getSource();
         if (entity instanceof Gnat && damageSource.getEntity() instanceof Spider) {
             event.setNewDamage(event.getOriginalDamage() * 4);
+        }
+    }
+
+    @SubscribeEvent
+    public static void onLivingIncomingDamage(LivingIncomingDamageEvent event) {
+        if (event.getEntity() instanceof Player player && !event.getSource().is(DamageTypeTags.BYPASSES_INVULNERABILITY) && CuriosApi.getCuriosInventory(player).map(inventory -> inventory.isEquipped(OFItems.SLIMY_SHIELD.get())).orElse(false)) {
+            if (!player.getCooldowns().isOnCooldown(OFItems.SLIMY_SHIELD.get()) && player.invulnerableTime <= 10 && player.level() instanceof ServerLevel serverLevel) {
+                event.setCanceled(true);
+                player.getCooldowns().addCooldown(OFItems.SLIMY_SHIELD.get(), 240);
+                serverLevel.sendParticles(ParticleTypes.ITEM_SLIME, player.getX(), player.getY(0.5D), player.getZ(), 60, 0.3D, 0.5D, 0.3D, 0.4D);
+                serverLevel.playSound(null, player.getX(), player.getY(), player.getZ(), SoundEvents.SLIME_SQUISH, player.getSoundSource(), 1.0F, 1.0F);
+                serverLevel.playSound(null, player.getX(), player.getY(), player.getZ(), SoundEvents.TOTEM_USE, player.getSoundSource(), 0.4F, 0.6F);
+            }
+        }
+    }
+
+    @SubscribeEvent
+    public static void onLivingDamagePost(LivingDamageEvent.Post event) {
+        if (event.getEntity() instanceof Player player && event.getNewDamage() > 0.0F && player.getCooldowns().isOnCooldown(OFItems.SLIMY_SHIELD.get())) {
+            player.getCooldowns().addCooldown(OFItems.SLIMY_SHIELD.get(), 240);
         }
     }
 

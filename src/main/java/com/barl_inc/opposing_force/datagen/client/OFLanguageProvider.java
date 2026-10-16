@@ -77,6 +77,7 @@ public class OFLanguageProvider extends SinewLanguageProvider {
         this.add("item.opposing_force.magnetised_enhancements.description", "+Mining Momentum");
         this.add("item.opposing_force.lucky_tacklebox.description.lure", "+Lure I");
         this.add("item.opposing_force.lucky_tacklebox.description.luck", "+Luck of the Sea I");
+        this.add("item.opposing_force.slimy_shield.description.shielding", "+Slimy Shielding");
 
         this.add("item.opposing_force.crystalized_heart.description", "Grants +1 Trinket Slots");
 

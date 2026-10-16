@@ -20,4 +20,9 @@ public class OFFoodProperties {
             .usingConvertsTo(Items.BONE)
             .build();
 
+    public static final FoodProperties CRYSTALIZED_HEART = new FoodProperties.Builder()
+            .nutrition(0)
+            .saturationModifier(0.0F)
+            .alwaysEdible()
+            .build();
 }

@@ -1,0 +1,11 @@
+{
+  "replace": false,
+  "values": [
+    "sinew:magic",
+    "minecraft:magic",
+    "minecraft:wither",
+    "minecraft:wither_skull",
+    "minecraft:indirect_magic",
+    "minecraft:sonic_boom"
+  ]
+}

@@ -30,6 +30,22 @@
         }
       ],
       "rolls": 1.0
+    },
+    {
+      "bonus_rolls": 0.0,
+      "conditions": [
+        {
+          "condition": "minecraft:random_chance",
+          "chance": 0.04
+        }
+      ],
+      "entries": [
+        {
+          "type": "minecraft:item",
+          "name": "opposing_force:fiery_carapace"
+        }
+      ],
+      "rolls": 1.0
     }
   ]
 }

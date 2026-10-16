@@ -7,6 +7,7 @@ import net.minecraft.core.HolderLookup.Provider;
 import net.minecraft.data.PackOutput;
 import net.minecraft.data.tags.EntityTypeTagsProvider;
 import net.minecraft.tags.EntityTypeTags;
+import net.minecraft.world.entity.EntityType;
 import net.neoforged.neoforge.common.data.ExistingFileHelper;
 import org.jetbrains.annotations.Nullable;
 
@@ -28,6 +29,11 @@ public class OFEntityTypeTagsProvider extends EntityTypeTagsProvider {
 				OFEntities.SCORCHER.get(),
 				OFEntities.TARANTULA.get()
 		);
+
+        this.tag(OFEntityTypeTags.SLIMY).add(
+                EntityType.SLIME,
+                EntityType.MAGMA_CUBE
+        );
 
         this.tag(OFEntityTypeTags.PROJECTILE_BYPASSES_BRICK).add(
                 OFEntities.ACID_CHARGE.get()

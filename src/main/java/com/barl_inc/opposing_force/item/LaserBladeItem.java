@@ -3,6 +3,7 @@ package com.barl_inc.opposing_force.item;
 import com.barl_inc.opposing_force.entity.projectile.LaserBlade;
 import com.barl_inc.opposing_force.registry.OFItems;
 import com.barl_inc.opposing_force.registry.OFSoundEvents;
+import com.platypushasnohat.sinew.item.DisabledItem;
 import com.platypushasnohat.sinew.utils.SinewSoundUtils;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.sounds.SoundSource;

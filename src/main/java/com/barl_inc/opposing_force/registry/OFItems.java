@@ -62,6 +62,8 @@ public class OFItems {
     public static final DeferredItem<Item> FILLET_SPAWN_EGG = registerSpawnEggItem("fillet", OFEntities.FILLET, 0x470e2f, 0xff6e1f);
     public static final DeferredItem<Item> FILLET_BUCKET = registerItemNoLang("fillet_bucket", () -> new FilletBucketItem(new Item.Properties()));
 
+    public static final DeferredItem<Item> FIRING_MECHANISM = registerItem("firing_mechanism", () -> new Item(new Item.Properties()));
+
     public static final DeferredItem<Item> BRICK_SPAWN_EGG = registerSpawnEggItem("brick", OFEntities.BRICK, 0x51a4ae, 0x040806);
 
     public static final DeferredItem<Item> EMERALD_SWORD = registerItem("emerald_sword", () -> new SinewSwordItem(OFToolDefinitions.EMERALD, 3.0F, -2.4F, new Item.Properties().rarity(Rarity.UNCOMMON)));
@@ -83,6 +85,7 @@ public class OFItems {
 
     public static final DeferredItem<Item> MOON_SHOES = registerItem("moon_shoes", () -> new MoonShoesItem(new Item.Properties().rarity(Rarity.UNCOMMON).durability(Type.BOOTS.getDurability(25))));
 
+    //trinket
     public static final DeferredItem<Item> RELIC_FEATHER = registerItem("relic_feather", () -> new RelicFeatherItem(new Item.Properties().rarity(Rarity.UNCOMMON).stacksTo(1)));
     public static final DeferredItem<Item> BEETLE_HUSK = registerItem("beetle_husk", () -> new BeetleHuskItem(new Item.Properties().stacksTo(1)));
     public static final DeferredItem<Item> ENCHANTED_CHISEL = registerItem("enchanted_chisel", () -> new EnchantedChiselItem(new Item.Properties().rarity(Rarity.UNCOMMON).stacksTo(1)));
@@ -91,6 +94,16 @@ public class OFItems {
     public static final DeferredItem<Item> RANGER_MANUAL = registerItem("ranger_manual", () -> new RangerManualItem(new Item.Properties().stacksTo(1)));
     public static final DeferredItem<Item> SHARPSHOOTER_COIN = registerItem("sharpshooter_coin", () -> new SharpshooterCoinItem(new Item.Properties().stacksTo(1).rarity(Rarity.UNCOMMON)));
     public static final DeferredItem<Item> TEAR_OF_AQUARIUS = registerItem("tear_of_aquarius", () -> new TearOfAquariusItem(new Item.Properties().stacksTo(1).rarity(Rarity.RARE)));
+    public static final DeferredItem<Item> BLACK_BELT = registerItem("black_belt", () -> new BlackBeltItem(new Item.Properties().stacksTo(1).rarity(Rarity.UNCOMMON)));
+    public static final DeferredItem<Item> BLOOD_AMULET = registerItem("blood_amulet", () -> new BloodAmuletItem(new Item.Properties().stacksTo(1).rarity(Rarity.RARE)));
+    public static final DeferredItem<Item> FIERY_CARAPACE = registerItem("fiery_carapace", () -> new FieryCarapaceItem(new Item.Properties().stacksTo(1)));
+    public static final DeferredItem<Item> URANIUM_KNUCKLES = registerItem("uranium_knuckles", () -> new UraniumKnucklesItem(new Item.Properties().stacksTo(1).rarity(Rarity.UNCOMMON)));
+    public static final DeferredItem<Item> MAGNETISED_ENHANCEMENTS = registerItem("magnetised_enhancements", () -> new MagnetisedEnhancementsItem(new Item.Properties().stacksTo(1).rarity(Rarity.UNCOMMON)));
+    public static final DeferredItem<Item> LUCKY_TACKLEBOX = registerItem("lucky_tacklebox", () -> new LuckyTackleboxItem(new Item.Properties().stacksTo(1)));
+    public static final DeferredItem<Item> SLIMY_SHIELD = registerItem("slimy_shield", () -> new SlimyShieldItem(new Item.Properties().stacksTo(1).rarity(Rarity.UNCOMMON)));
+
+    //Permanent Upgrades
+    public static final DeferredItem<Item> CRYSTALIZED_HEART = registerItem("crystalized_heart", () -> new CrystalizedHeartItem(new Item.Properties().stacksTo(1).rarity(Rarity.EPIC).food(OFFoodProperties.CRYSTALIZED_HEART)));
 
     private static <I extends Item> DeferredItem<I> registerItem(String name, Supplier<? extends I> supplier) {
         DeferredItem<I> item = ITEM.register(name, supplier);

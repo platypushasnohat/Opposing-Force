@@ -2,6 +2,7 @@
   "replace": false,
   "entries": [
     "opposing_force:entities/creeper",
-    "opposing_force:chests/trial_chambers/reward_ominous_unique"
+    "opposing_force:chests/trial_chambers/reward_ominous_unique",
+    "opposing_force:chests/firing_mechanisms"
   ]
 }

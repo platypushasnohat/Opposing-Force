@@ -5,23 +5,19 @@
     "I": {
       "item": "minecraft:iron_ingot"
     },
-    "N": {
-      "item": "minecraft:iron_nugget"
-    },
     "P": {
       "item": "opposing_force:power_cell"
     },
-    "Q": {
-      "item": "minecraft:quartz"
+    "F": {
+      "item": "opposing_force:firing_mechanism"
     },
     "L": {
       "item": "opposing_force:laser_focus"
     }
   },
   "pattern": [
-    "II ",
-    "PQL",
-    "IN "
+    "IPL",
+    "F  "
   ],
   "result": {
     "count": 1,

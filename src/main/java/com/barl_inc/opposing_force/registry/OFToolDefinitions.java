@@ -14,4 +14,10 @@ public class OFToolDefinitions {
     public static final ToolDefinition CHITIN = new ToolDefinition.Builder()
             .tier(OFItemTiers.CHITIN)
             .build();
+
+    public static final ToolDefinition LAPIS_LAZULI = new ToolDefinition.Builder()
+            .tier(OFItemTiers.LAPIS_LAZULI)
+            .attribute(SinewAttributes.MAGIC_DAMAGE, 2.0F, AttributeModifier.Operation.ADD_VALUE)
+            .build();
+
 }

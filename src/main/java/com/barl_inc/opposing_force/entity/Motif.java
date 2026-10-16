@@ -165,7 +165,7 @@ public class Motif extends AnimatedMonster {
                 this.timer = 0;
                 this.attackState = 1;
             }
-            else if (canSee && distance <= 8.0D * 8.0D) {
+            else if (canSee && distance <= 7.0D * 7.0D) {
                 this.lookAtTarget(target, 25.0F, 25.0F);
                 this.motif.getNavigation().stop();
             }

@@ -7,6 +7,8 @@ import com.platypushasnohat.sinew.utils.SinewSoundUtils;
 import net.minecraft.core.particles.BlockParticleOption;
 import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.network.protocol.game.ClientboundAddEntityPacket;
+import net.minecraft.network.syncher.EntityDataAccessor;
+import net.minecraft.network.syncher.EntityDataSerializers;
 import net.minecraft.network.syncher.SynchedEntityData;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.sounds.SoundSource;
@@ -15,26 +17,24 @@ import net.minecraft.world.entity.AnimationState;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.LivingEntity;
-import net.minecraft.world.entity.ai.attributes.Attributes;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.entity.projectile.Projectile;
 import net.minecraft.world.entity.projectile.ProjectileUtil;
 import net.minecraft.world.level.ClipContext;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Blocks;
-import net.minecraft.world.phys.BlockHitResult;
-import net.minecraft.world.phys.EntityHitResult;
-import net.minecraft.world.phys.HitResult;
-import net.minecraft.world.phys.Vec3;
+import net.minecraft.world.phys.*;
 import net.neoforged.neoforge.event.EventHooks;
 
+import java.util.List;
+
 public class Mudball extends Projectile {
+
+    private static final EntityDataAccessor<Float> DAMAGE = SynchedEntityData.defineId(Mudball.class, EntityDataSerializers.FLOAT);
 
     private static final byte HIT_EFFECTS = 3;
 
     public AnimationState projectileAnimationState = new AnimationState();
-
-    private float damage = 2.0F;
 
     public Mudball(EntityType<? extends Mudball> entityType, Level level) {
         super(entityType, level);
@@ -46,8 +46,17 @@ public class Mudball extends Projectile {
         this.setOwner(owner);
     }
 
+    @Override
+    protected void defineSynchedData(SynchedEntityData.Builder builder) {
+        builder.define(DAMAGE, 3.0F);
+    }
+
+    public float getDamage() {
+        return this.entityData.get(DAMAGE);
+    }
+
     public void setDamage(float damage) {
-        this.damage = damage;
+        this.entityData.set(DAMAGE, damage);
     }
 
     @Override
@@ -55,10 +64,6 @@ public class Mudball extends Projectile {
         super.recreateFromPacket(packet);
         this.xRotO = this.getXRot();
         this.yRotO = this.getYRot();
-    }
-
-    @Override
-    protected void defineSynchedData(SynchedEntityData.Builder builder) {
     }
 
     @Override
@@ -100,11 +105,11 @@ public class Mudball extends Projectile {
         if (!this.level().isClientSide) {
             Entity entity = result.getEntity();
             Entity owner = this.getOwner();
-            float damage = owner instanceof Motif motif ? (float) motif.getAttributeValue(Attributes.ATTACK_DAMAGE) * 0.5F : this.damage;
             DamageSource damageSource = this.damageSources().mobProjectile(this, owner instanceof LivingEntity shooter ? shooter : null);
             boolean blocked = entity instanceof LivingEntity hitEntity && hitEntity.isDamageSourceBlocked(damageSource);
-            entity.hurt(damageSource, damage);
             if (!blocked) {
+                entity.hurt(damageSource, this.getDamage());
+                this.explode();
                 this.placeSplatter(entity.position());
             }
             this.impact();
@@ -115,8 +120,36 @@ public class Mudball extends Projectile {
     protected void onHitBlock(BlockHitResult result) {
         super.onHitBlock(result);
         if (!this.level().isClientSide) {
+            this.explode();
             this.placeSplatter(result.getLocation().add(Vec3.atLowerCornerOf(result.getDirection().getNormal()).scale(0.05D)));
             this.impact();
+        }
+    }
+
+    private boolean hasLineOfSight(Entity entity) {
+        if (entity.level() != this.level()) {
+            return false;
+        } else {
+            Vec3 position = new Vec3(this.getX(), this.getEyeY(), this.getZ());
+            Vec3 targetPosition = new Vec3(entity.getX(), entity.getEyeY(), entity.getZ());
+            return !(targetPosition.distanceTo(position) > (double) 128.0F) && this.level().clip(new ClipContext(position, targetPosition, ClipContext.Block.COLLIDER, ClipContext.Fluid.NONE, this)).getType() == HitResult.Type.MISS;
+        }
+    }
+
+    private void explode() {
+        AABB aabb = this.getBoundingBox().inflate(0.9D);
+        List<LivingEntity> entities = this.level().getEntitiesOfClass(LivingEntity.class, aabb);
+        Entity owner = this.getOwner();
+        DamageSource damageSource = this.damageSources().mobProjectile(this, owner instanceof LivingEntity shooter ? shooter : null);
+        for (Entity entity : entities) {
+            if (!entities.isEmpty() && this.hasLineOfSight(entity) && owner != null) {
+                if (entity != owner && !entity.isAlliedTo(owner)) {
+                    entity.hurt(damageSource, this.getDamage());
+                }
+                if (entity.isOnFire()) {
+                    entity.extinguishFire();
+                }
+            }
         }
     }
 
@@ -145,7 +178,10 @@ public class Mudball extends Projectile {
         if (id == HIT_EFFECTS) {
             BlockParticleOption particle = new BlockParticleOption(ParticleTypes.BLOCK, Blocks.MUD.defaultBlockState());
             for (int i = 0; i < 8; i++) {
-                this.level().addParticle(particle, this.getX(), this.getY(), this.getZ(), 0.0D, 0.0D, 0.0D);
+                double x = this.getX() + (this.getRandom().nextDouble() - this.getRandom().nextDouble()) * 0.75D;
+                double y = this.getY() + (this.getRandom().nextDouble() - this.getRandom().nextDouble()) * 0.75D;
+                double z = this.getZ() + (this.getRandom().nextDouble() - this.getRandom().nextDouble()) * 0.75D;
+                this.level().addParticle(particle, x, y, z, 0.0D, 0.0D, 0.0D);
             }
         }
     }

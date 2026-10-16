@@ -160,7 +160,7 @@ public class LaserBolt extends Projectile {
     }
 
     public boolean hasTrail() {
-        return trailPointer != -1;
+        return this.trailPointer != -1;
     }
 
     @Override

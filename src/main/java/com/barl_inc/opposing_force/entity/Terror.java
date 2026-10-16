@@ -11,10 +11,13 @@ import com.platypushasnohat.sinew.entity.base.AnimatedMonster;
 import com.platypushasnohat.sinew.entity.utils.BodyChain;
 import com.platypushasnohat.sinew.entity.utils.BodyChainMob;
 import net.minecraft.core.BlockPos;
+import net.minecraft.core.registries.Registries;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.syncher.EntityDataAccessor;
 import net.minecraft.network.syncher.EntityDataSerializers;
 import net.minecraft.network.syncher.SynchedEntityData;
+import net.minecraft.resources.ResourceKey;
+import net.minecraft.server.level.ServerLevel;
 import net.minecraft.sounds.SoundEvent;
 import net.minecraft.tags.FluidTags;
 import net.minecraft.util.Mth;
@@ -32,13 +35,20 @@ import net.minecraft.world.entity.ai.goal.RandomStrollGoal;
 import net.minecraft.world.entity.ai.goal.target.HurtByTargetGoal;
 import net.minecraft.world.entity.ai.goal.target.NearestAttackableTargetGoal;
 import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.LevelReader;
 import net.minecraft.world.level.ServerLevelAccessor;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.pathfinder.PathType;
+import net.minecraft.world.level.storage.loot.LootParams;
+import net.minecraft.world.level.storage.loot.LootTable;
+import net.minecraft.world.level.storage.loot.parameters.LootContextParamSets;
+import net.minecraft.world.level.storage.loot.parameters.LootContextParams;
 import net.minecraft.world.phys.Vec3;
 import net.neoforged.neoforge.fluids.FluidType;
+
+import java.util.List;
 
 public class Terror extends AnimatedMonster implements BodyChainMob {
 
@@ -49,6 +59,8 @@ public class Terror extends AnimatedMonster implements BodyChainMob {
     public static final int GROW_LEGS_ANIMATION = 3;
 
     private static final EntityDimensions FISH_OUT_OF_WATER_DIMENSIONS = EntityDimensions.scalable(1.25F, 1.75F).withEyeHeight(1.65F);
+
+    public static final ResourceKey<LootTable> LEGS_LOOT = ResourceKey.create(Registries.LOOT_TABLE, OpposingForce.location("entities/terror_legs"));
 
     private final BodyChain bodyChain = new BodyChain(0.75F, 3.0F, 30.0F, 0.1F, new float[]{0.3F, 0.2F, 0.4F}, new float[]{0.3F, 0.2F, 0.4F});
 
@@ -115,6 +127,7 @@ public class Terror extends AnimatedMonster implements BodyChainMob {
         this.goalSelector.addGoal(6, new RandomLookAroundGoal(this));
         this.targetSelector.addGoal(0, new HurtByTargetGoal(this));
         this.targetSelector.addGoal(1, new NearestAttackableTargetGoal<>(this, Player.class, true));
+        this.targetSelector.addGoal(3, new NearestAttackableTargetGoal<>(this, Fillet.class, 50, true, true, this::canAttack));
     }
 
     @Override
@@ -255,6 +268,22 @@ public class Terror extends AnimatedMonster implements BodyChainMob {
     public void remove(RemovalReason reason) {
         OpposingForce.PROXY.clearSoundCacheFor(this);
         super.remove(reason);
+    }
+
+    @Override
+    protected void dropCustomDeathLoot(ServerLevel level, DamageSource damageSource, boolean recentlyHit) {
+        super.dropCustomDeathLoot(level, damageSource, recentlyHit);
+        if (!this.level().isClientSide && this.level() instanceof ServerLevel serverLevel) {
+            LootTable lootTable = serverLevel.getServer().reloadableRegistries().getLootTable(LEGS_LOOT);
+            if (this.hasLegs()) {
+                LootParams.Builder builder = new LootParams.Builder(serverLevel).withParameter(LootContextParams.THIS_ENTITY, this).withParameter(LootContextParams.ORIGIN, this.position()).withParameter(LootContextParams.DAMAGE_SOURCE, damageSource).withOptionalParameter(LootContextParams.ATTACKING_ENTITY, damageSource.getEntity()).withOptionalParameter(LootContextParams.DIRECT_ATTACKING_ENTITY, damageSource.getDirectEntity());
+                if (this.lastHurtByPlayer != null) {
+                    builder = builder.withParameter(LootContextParams.LAST_DAMAGE_PLAYER, this.lastHurtByPlayer).withLuck(this.lastHurtByPlayer.getLuck());
+                }
+                List<ItemStack> items = lootTable.getRandomItems(builder.create(LootContextParamSets.ENTITY));
+                items.forEach(this::spawnAtLocation);
+            }
+        }
     }
 
     @Override

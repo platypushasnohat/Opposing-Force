@@ -33,7 +33,10 @@ public class OFItemModelProvider extends SinewItemModelProvider {
                 OFItems.POT_OF_GREEN,
                 OFItems.THORNY_BRACELET,
                 OFItems.RANGER_MANUAL,
-                OFItems.SHARPSHOOTER_COIN
+                OFItems.SHARPSHOOTER_COIN,
+                OFItems.FILLET_BUCKET,
+                OFItems.TEAR_OF_AQUARIUS,
+                OFItems.FIRING_MECHANISM
         );
 
         this.handheldItem(
@@ -42,7 +45,14 @@ public class OFItemModelProvider extends SinewItemModelProvider {
                 OFItems.EMERALD_AXE,
                 OFItems.EMERALD_SHOVEL,
                 OFItems.EMERALD_HOE,
-                OFItems.ENCHANTED_CHISEL
+                OFItems.ENCHANTED_CHISEL,
+                OFItems.LAPIS_LAZULI_SWORD,
+                OFItems.LAPIS_LAZULI_PICKAXE,
+                OFItems.LAPIS_LAZULI_AXE,
+                OFItems.LAPIS_LAZULI_SHOVEL,
+                OFItems.LAPIS_LAZULI_HOE,
+                OFItems.TERROR_LEG,
+                OFItems.FRIED_TERROR_LEG
         );
 
         for (Item item : BuiltInRegistries.ITEM) {

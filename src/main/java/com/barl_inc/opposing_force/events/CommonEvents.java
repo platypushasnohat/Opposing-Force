@@ -44,6 +44,7 @@ public class CommonEvents {
         event.put(OFEntities.MUSHY.get(), Mushy.registerAttributes().build());
         event.put(OFEntities.MOTIF.get(), Motif.registerAttributes().build());
         event.put(OFEntities.OCTOVINE.get(), Octovine.registerAttributes().build());
+        event.put(OFEntities.FILLET.get(), Fillet.registerAttributes().build());
     }
 
     @SubscribeEvent
@@ -63,6 +64,7 @@ public class CommonEvents {
                         || SpawnPlacementTypes.IN_WATER.isSpawnPositionOk(level, pos, type);
         event.register(OFEntities.OCTOVINE.get(), groundOrWater, Heightmap.Types.MOTION_BLOCKING_NO_LEAVES, Octovine::checkOctovineSpawnRules, RegisterSpawnPlacementsEvent.Operation.AND);
 
+        event.register(OFEntities.FILLET.get(), SpawnPlacementTypes.IN_WATER, Heightmap.Types.MOTION_BLOCKING_NO_LEAVES, Fillet::checkFilletSpawnRules, RegisterSpawnPlacementsEvent.Operation.AND);
     }
 
     @SubscribeEvent

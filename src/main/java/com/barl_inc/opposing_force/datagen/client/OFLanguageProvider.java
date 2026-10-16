@@ -80,6 +80,10 @@ public class OFLanguageProvider extends SinewLanguageProvider {
 
         this.add("item.opposing_force.crystalized_heart.description", "Grants +1 Trinket Slots");
 
+        this.add("enchantment.opposing_force.magic_protection", "Magic Protection");
+        this.add("enchantment.opposing_force.magic_protection.desc", "Reduces magic damage taken and shortens the duration of negative effects applied to the wearer.");
+        this.add("pack.opposing_force.protection_tweaks", "Opposing Force Protection Tweaks");
+
         this.add("jukebox_song.opposing_force.slayser", "ChipsTheCat - Slayser");
 
         this.add("death.attack.laser_0", "%s was disintegrated");

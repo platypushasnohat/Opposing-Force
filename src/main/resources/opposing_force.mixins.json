@@ -5,6 +5,7 @@
   "refmap": "opposing_force.refmap.json",
   "mixins": [
     "EnchantmentHelperMixin",
+    "LivingEntityMixin",
     "MobCategoryMixin",
     "PlayerMixin",
     "ZombieMixin"

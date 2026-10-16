@@ -1,6 +1,7 @@
 package com.barl_inc.opposing_force.events;
 
 import com.barl_inc.opposing_force.OpposingForce;
+import com.barl_inc.opposing_force.config.OFConfig;
 import com.barl_inc.opposing_force.entity.*;
 import com.barl_inc.opposing_force.entity.ai.goal.LightDependentTargetGoal;
 import com.barl_inc.opposing_force.entity.misc.MudSplatter;
@@ -9,6 +10,10 @@ import com.barl_inc.opposing_force.registry.OFEntities;
 import com.barl_inc.opposing_force.registry.OFItems;
 import com.platypushasnohat.sinew.entity.base.AnimatedMonster;
 import com.platypushasnohat.sinew.entity.villager.MultipleInputsTrade;
+import net.minecraft.network.chat.Component;
+import net.minecraft.server.packs.PackType;
+import net.minecraft.server.packs.repository.Pack;
+import net.minecraft.server.packs.repository.PackSource;
 import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.LivingEntity;
@@ -23,6 +28,7 @@ import net.minecraft.world.level.levelgen.Heightmap;
 import net.neoforged.bus.api.EventPriority;
 import net.neoforged.bus.api.SubscribeEvent;
 import net.neoforged.fml.common.EventBusSubscriber;
+import net.neoforged.neoforge.event.AddPackFindersEvent;
 import net.neoforged.neoforge.event.entity.EntityAttributeCreationEvent;
 import net.neoforged.neoforge.event.entity.EntityJoinLevelEvent;
 import net.neoforged.neoforge.event.entity.EntityTeleportEvent;
@@ -111,5 +117,12 @@ public class CommonEvents {
     @SubscribeEvent
     public static void onBlockBreak(BlockEvent.BreakEvent event) {
         MagnetisedEnhancementsItem.addMomentum(event.getPlayer());
+    }
+
+    @SubscribeEvent
+    public static void addPackFinders(AddPackFindersEvent event) {
+        if (event.getPackType() == PackType.SERVER_DATA && OFConfig.PROTECTION_TWEAKS.get()) {
+            event.addPackFinders(OpposingForce.location("datapacks/protection_tweaks"), PackType.SERVER_DATA, Component.translatable("pack.opposing_force.protection_tweaks"), PackSource.BUILT_IN, true, Pack.Position.TOP);
+        }
     }
 }

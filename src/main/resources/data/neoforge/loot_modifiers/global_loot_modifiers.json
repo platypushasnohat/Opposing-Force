@@ -17,6 +17,8 @@
     "opposing_force:chests/black_belt",
     "opposing_force:chests/blood_amulet_dungeon",
     "opposing_force:chests/blood_amulet_mansion",
-    "opposing_force:chests/blood_amulet_stronghold"
+    "opposing_force:chests/blood_amulet_stronghold",
+    "opposing_force:chests/uranium_knuckles_dungeon",
+    "opposing_force:chests/uranium_knuckles_stronghold"
   ]
 }

@@ -39,6 +39,7 @@ public class OFItemModelProvider extends SinewItemModelProvider {
                 OFItems.BLACK_BELT,
                 OFItems.BLOOD_AMULET,
                 OFItems.FIERY_CARAPACE,
+                OFItems.URANIUM_KNUCKLES,
                 OFItems.FIRING_MECHANISM
         );
 

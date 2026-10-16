@@ -40,7 +40,8 @@ public class OFItemModelProvider extends SinewItemModelProvider {
                 OFItems.BLOOD_AMULET,
                 OFItems.FIERY_CARAPACE,
                 OFItems.URANIUM_KNUCKLES,
-                OFItems.FIRING_MECHANISM
+                OFItems.FIRING_MECHANISM,
+                OFItems.MAGNETISED_ENHANCEMENTS
         );
 
         this.handheldItem(

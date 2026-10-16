@@ -77,6 +77,7 @@ public class OFCreativeTabs {
                         // uncommon
                         output.accept(OFItems.BLACK_BELT);
                         output.accept(OFItems.ENCHANTED_CHISEL);
+                        output.accept(OFItems.MAGNETISED_ENHANCEMENTS);
                         output.accept(OFItems.RELIC_FEATHER);
                         output.accept(OFItems.SHARPSHOOTER_COIN);
                         output.accept(OFItems.URANIUM_KNUCKLES);

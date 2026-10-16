@@ -19,6 +19,7 @@
     "opposing_force:chests/blood_amulet_mansion",
     "opposing_force:chests/blood_amulet_stronghold",
     "opposing_force:chests/uranium_knuckles_dungeon",
-    "opposing_force:chests/uranium_knuckles_stronghold"
+    "opposing_force:chests/uranium_knuckles_stronghold",
+    "opposing_force:chests/magnetised_enhancements"
   ]
 }

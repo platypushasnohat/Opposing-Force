@@ -4,6 +4,7 @@ import com.barl_inc.opposing_force.OpposingForce;
 import com.barl_inc.opposing_force.entity.*;
 import com.barl_inc.opposing_force.entity.ai.goal.LightDependentTargetGoal;
 import com.barl_inc.opposing_force.entity.misc.MudSplatter;
+import com.barl_inc.opposing_force.item.curios.MagnetisedEnhancementsItem;
 import com.barl_inc.opposing_force.registry.OFEntities;
 import com.barl_inc.opposing_force.registry.OFItems;
 import com.platypushasnohat.sinew.entity.base.AnimatedMonster;
@@ -27,6 +28,7 @@ import net.neoforged.neoforge.event.entity.EntityJoinLevelEvent;
 import net.neoforged.neoforge.event.entity.EntityTeleportEvent;
 import net.neoforged.neoforge.event.entity.RegisterSpawnPlacementsEvent;
 import net.neoforged.neoforge.event.entity.living.LivingDamageEvent;
+import net.neoforged.neoforge.event.level.BlockEvent;
 import net.neoforged.neoforge.event.village.WandererTradesEvent;
 
 import java.util.List;
@@ -104,5 +106,10 @@ public class CommonEvents {
         if (event.getEntityLiving() instanceof EnderMan enderman && !enderman.level().getEntitiesOfClass(MudSplatter.class, enderman.getBoundingBox()).isEmpty()) {
             event.setCanceled(true);
         }
+    }
+
+    @SubscribeEvent
+    public static void onBlockBreak(BlockEvent.BreakEvent event) {
+        MagnetisedEnhancementsItem.addMomentum(event.getPlayer());
     }
 }

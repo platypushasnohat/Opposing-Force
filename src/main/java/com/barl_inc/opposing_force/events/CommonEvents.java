@@ -76,6 +76,7 @@ public class CommonEvents {
         rareTrades.add(new MultipleInputsTrade(Items.DIAMOND_CHESTPLATE, 1, 32, OFItems.EMERALD_CHESTPLATE.get(), 1, 1, 20));
         rareTrades.add(new MultipleInputsTrade(Items.DIAMOND_LEGGINGS, 1, 32, OFItems.EMERALD_LEGGINGS.get(), 1, 1, 20));
         rareTrades.add(new MultipleInputsTrade(Items.DIAMOND_BOOTS, 1, 32, OFItems.EMERALD_BOOTS.get(), 1, 1, 20));
+        rareTrades.add(new MultipleInputsTrade(Items.DECORATED_POT, 1, 64, OFItems.POT_OF_GREEN.get(), 1, 1, 20));
     }
 
     @SubscribeEvent(priority = EventPriority.LOWEST)

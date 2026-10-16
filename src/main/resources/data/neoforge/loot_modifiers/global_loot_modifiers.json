@@ -4,5 +4,15 @@
     "opposing_force:entities/creeper",
     "opposing_force:chests/trial_chambers/reward_ominous_unique",
     "opposing_force:chests/firing_mechanisms"
+    "opposing_force:chests/trial_chambers/reward_ominous_unique",
+    "opposing_force:chests/firing_mechanisms",
+    "opposing_force:entities/thorny_bracelet",
+    "opposing_force:gameplay/tear_of_aquarius",
+    "opposing_force:archaeology/archaeology_trinkets",
+    "opposing_force:chests/trial_chambers/relic_feather",
+    "opposing_force:chests/trial_chambers/ominous_relic_feather",
+    "opposing_force:chests/enchanted_chisel",
+    "opposing_force:chests/ranger_manual_fortress",
+    "opposing_force:chests/ranger_manual_bastion"
   ]
 }

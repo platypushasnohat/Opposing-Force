@@ -55,6 +55,7 @@ public class ClientEvents {
         event.registerEntityRenderer(OFEntities.MUSHY.get(), MushyRenderer::new);
         event.registerEntityRenderer(OFEntities.MOTIF.get(), MotifRenderer::new);
         event.registerEntityRenderer(OFEntities.FILLET.get(), FilletRenderer::new);
+        event.registerEntityRenderer(OFEntities.BRICK.get(), BrickRenderer::new);
 
         event.registerEntityRenderer(OFEntities.DICER_LASER.get(), DicerLaserRenderer::new);
         event.registerEntityRenderer(OFEntities.LASER_BOLT.get(), LaserBoltRenderer::new);
@@ -78,6 +79,7 @@ public class ClientEvents {
         event.registerLayerDefinition(OFModelLayers.MUSHY, MushyModel::createBodyLayer);
         event.registerLayerDefinition(OFModelLayers.MOTIF, MotifModel::createBodyLayer);
         event.registerLayerDefinition(OFModelLayers.FILLET, FilletModel::createBodyLayer);
+        event.registerLayerDefinition(OFModelLayers.BRICK, BrickModel::createBodyLayer);
 
         event.registerLayerDefinition(OFModelLayers.LASER_BOLT, LaserBoltModel::createBodyLayer);
         event.registerLayerDefinition(OFModelLayers.ACID_CHARGE, AcidChargeModel::createBodyLayer);
@@ -97,6 +99,7 @@ public class ClientEvents {
         event.registerSpriteSet(OFParticleTypes.ACID.get(), AcidParticle.Factory::new);
         event.registerSpriteSet(OFParticleTypes.FIRE_BREATH.get(), FireBreathParticle.Factory::new);
         event.registerSpriteSet(OFParticleTypes.SPORE_CLOUD.get(), SporeCloudParticle.Factory::new);
+        event.registerSpriteSet(OFParticleTypes.BRICK_SPORE_CLOUD.get(), SporeCloudParticle.BrickFactory::new);
     }
 
     @SubscribeEvent

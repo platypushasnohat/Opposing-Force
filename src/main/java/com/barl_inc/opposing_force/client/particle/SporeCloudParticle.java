@@ -8,9 +8,12 @@ import net.minecraft.util.Mth;
 
 public class SporeCloudParticle extends TextureSheetParticle {
 
+    private static final int[] MUSHY_COLORS = {0xc46b27, 0xd19c1f, 0xe35c22};
+    private static final int[] BRICK_COLORS = {0x508e96, 0x5aa9a3, 0x79baa7};
+
     private final SpriteSet spriteSet;
 
-    protected SporeCloudParticle(ClientLevel level, double x, double y, double z, double xSpeed, double ySpeed, double zSpeed, SpriteSet spriteSet) {
+    protected SporeCloudParticle(ClientLevel level, double x, double y, double z, double xSpeed, double ySpeed, double zSpeed, SpriteSet spriteSet, int[] colors) {
         super(level, x, y, z, 0.0F, 0.0F, 0.0F);
         this.friction = 0.96F;
         this.spriteSet = spriteSet;
@@ -20,20 +23,17 @@ public class SporeCloudParticle extends TextureSheetParticle {
         this.xd += xSpeed;
         this.yd += ySpeed;
         this.zd += zSpeed;
-
         float random = this.random.nextFloat();
-        int color = 0xe35c22;
+        int color = colors[2];
         float shade = 0.9F + this.random.nextFloat() * 0.1F;
         if (random < 0.5F) {
-            color = 0xc46b27;
+            color = colors[0];
         } else if (random < 0.75F) {
-            color = 0xd19c1f;
+            color = colors[1];
         }
-
         this.rCol = SinewColorUtils.unpackRed(color) * shade;
         this.gCol = SinewColorUtils.unpackGreen(color) * shade;
         this.bCol = SinewColorUtils.unpackBlue(color) * shade;
-
         this.quadSize *= 0.75F + this.random.nextFloat() * 0.5F;
         this.lifetime = 15 + this.random.nextInt(15);
         this.setSpriteFromAge(spriteSet);
@@ -67,7 +67,21 @@ public class SporeCloudParticle extends TextureSheetParticle {
 
         @Override
         public Particle createParticle(SimpleParticleType type, ClientLevel level, double x, double y, double z, double xSpeed, double ySpeed, double zSpeed) {
-            return new SporeCloudParticle(level, x, y, z, xSpeed, ySpeed, zSpeed, this.spriteSet);
+            return new SporeCloudParticle(level, x, y, z, xSpeed, ySpeed, zSpeed, this.spriteSet, MUSHY_COLORS);
+        }
+    }
+
+    public static class BrickFactory implements ParticleProvider<SimpleParticleType> {
+
+        private final SpriteSet spriteSet;
+
+        public BrickFactory(SpriteSet spriteSet) {
+            this.spriteSet = spriteSet;
+        }
+
+        @Override
+        public Particle createParticle(SimpleParticleType type, ClientLevel level, double x, double y, double z, double xSpeed, double ySpeed, double zSpeed) {
+            return new SporeCloudParticle(level, x, y, z, xSpeed, ySpeed, zSpeed, this.spriteSet, BRICK_COLORS);
         }
     }
 }

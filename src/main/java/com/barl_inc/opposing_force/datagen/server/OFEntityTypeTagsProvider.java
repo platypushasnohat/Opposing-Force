@@ -34,5 +34,9 @@ public class OFEntityTypeTagsProvider extends EntityTypeTagsProvider {
                 EntityType.SLIME,
                 EntityType.MAGMA_CUBE
         );
+
+        this.tag(OFEntityTypeTags.PROJECTILE_BYPASSES_BRICK).add(
+                OFEntities.ACID_CHARGE.get()
+        );
 	}
 }

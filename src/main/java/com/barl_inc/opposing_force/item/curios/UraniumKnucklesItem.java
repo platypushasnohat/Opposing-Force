@@ -20,6 +20,6 @@ public class UraniumKnucklesItem extends CurioItem {
 
     @Override
     public void addAttributeModifiers(Multimap<Holder<Attribute>, AttributeModifier> map, SlotContext slotContext, ItemStack stack) {
-        this.addAttributeModifier(map, SinewAttributes.ARMOR_PIERCING, new AttributeModifier(ATTRIBUTE_MODIFIER, 0.2F, AttributeModifier.Operation.ADD_VALUE));
+        this.addAttributeModifier(map, SinewAttributes.ARMOR_PIERCING, new AttributeModifier(ATTRIBUTE_MODIFIER, 0.15F, AttributeModifier.Operation.ADD_VALUE));
     }
 }

@@ -2,9 +2,7 @@ package com.barl_inc.opposing_force.client.render.entity.layer;
 
 import com.barl_inc.opposing_force.OpposingForce;
 import com.barl_inc.opposing_force.client.model.entity.BrickModel;
-import com.barl_inc.opposing_force.client.model.entity.FurballModel;
 import com.barl_inc.opposing_force.entity.Brick;
-import com.barl_inc.opposing_force.entity.Furball;
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.VertexConsumer;
 import net.minecraft.client.renderer.LightTexture;

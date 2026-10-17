@@ -1,13 +1,11 @@
 package com.barl_inc.opposing_force.client.model.entity;
 
 import com.barl_inc.opposing_force.client.model.entity.animation.BrickAnimations;
-import com.barl_inc.opposing_force.client.model.entity.animation.MushyAnimations;
 import com.barl_inc.opposing_force.entity.Brick;
 import com.platypushasnohat.sinew.client.model.entity.SinewEntityModel;
 import net.minecraft.client.model.geom.ModelPart;
 import net.minecraft.client.model.geom.PartPose;
 import net.minecraft.client.model.geom.builders.*;
-import net.minecraft.util.Mth;
 
 public class BrickModel extends SinewEntityModel<Brick> {
     private final ModelPart root;
@@ -23,7 +21,7 @@ public class BrickModel extends SinewEntityModel<Brick> {
 
     @Override
     protected void setupAnimations(Brick entity, float limbSwing, float limbSwingAmount, float ageInTicks, float partialTicks, float netHeadYaw, float headPitch) {
-        this.animateWalkSmooth(entity.walkAnimationState, BrickAnimations.MOVE, limbSwing, limbSwingAmount, partialTicks);
+        this.animateWalkSmooth(entity.walkAnimationState, BrickAnimations.MOVE, limbSwing, limbSwingAmount, 3.0F, 2.5F, partialTicks);
         this.animateWalkSmooth(entity.sprintAnimationState, BrickAnimations.RUN, limbSwing, limbSwingAmount, partialTicks);
         this.animateIdleSmooth(entity.idleAnimationState, BrickAnimations.IDLE, ageInTicks, partialTicks, limbSwingAmount);
         this.animateSmooth(entity.danceAnimationState, BrickAnimations.DANCE, ageInTicks, partialTicks);

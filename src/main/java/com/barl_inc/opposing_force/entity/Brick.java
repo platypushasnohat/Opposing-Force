@@ -62,7 +62,7 @@ public class Brick extends AnimatedMonster {
 
     public static AttributeSupplier.Builder registerAttributes() {
         return Mob.createMobAttributes()
-                .add(Attributes.MAX_HEALTH, 100.0D)
+                .add(Attributes.MAX_HEALTH, 90.0D)
                 .add(Attributes.ARMOR, 12.0D)
                 .add(Attributes.MOVEMENT_SPEED, 0.25D)
                 .add(Attributes.ATTACK_DAMAGE, 6.0D)
@@ -125,10 +125,8 @@ public class Brick extends AnimatedMonster {
         }
         else {
             hurt = super.hurt(source, amount);
-            if (hurt && this.isAlive()) {
-                if (this.critHit) {
-                    this.sporeTimer = 6;
-                }
+            if (hurt && this.critHit && this.isAlive()) {
+                this.sporeTimer = 6;
             }
         }
         this.critHit = false;
@@ -197,11 +195,11 @@ public class Brick extends AnimatedMonster {
     @Override
     public void setupAnimationStates() {
         int state = this.getAnimationState();
-        boolean grounded = !this.isInWaterOrBubble();
-        this.idleAnimationState.animateWhen(grounded && state == 0, this.tickCount);
-        this.walkAnimationState.animateWhen(grounded && state == 0 && !this.isAggressive(), this.tickCount);
-        this.sprintAnimationState.animateWhen(grounded && state == 0 && this.isAggressive(), this.tickCount);
-        this.danceAnimationState.animateWhen(grounded && this.onGround() && state == DANCE_ANIMATION, this.tickCount);
+        boolean outsideWater = !this.isInWaterOrBubble();
+        this.idleAnimationState.animateWhen(outsideWater && state == 0, this.tickCount);
+        this.walkAnimationState.animateWhen(outsideWater && state == 0 && !this.isAggressive(), this.tickCount);
+        this.sprintAnimationState.animateWhen(outsideWater && state == 0 && this.isAggressive(), this.tickCount);
+        this.danceAnimationState.animateWhen(outsideWater && this.onGround() && state == DANCE_ANIMATION, this.tickCount);
         this.defendStartAnimationState.animateWhen(state == DEFEND_START_ANIMATION, this.tickCount);
         this.defendAnimationState.animateWhen(state == DEFEND_ANIMATION, this.tickCount);
         this.meltAnimationState.animateWhen(state == MELT_ANIMATION, this.tickCount);

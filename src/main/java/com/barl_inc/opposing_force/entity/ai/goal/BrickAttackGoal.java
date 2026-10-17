@@ -6,6 +6,7 @@ import net.minecraft.world.effect.MobEffectInstance;
 import net.minecraft.world.effect.MobEffects;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.Mob;
+import net.minecraft.world.entity.ai.attributes.Attributes;
 import net.minecraft.world.entity.monster.Enemy;
 import net.minecraft.world.phys.Vec3;
 
@@ -28,6 +29,23 @@ public class BrickAttackGoal extends AttackGoal {
         super.start();
         this.defendCooldown = 60 + this.brick.getRandom().nextInt(60);
         this.pathCooldown = 0;
+    }
+
+    @Override
+    public boolean canContinueToUse() {
+        LivingEntity target = this.brick.getTarget();
+        double followRange = this.brick.getAttributeValue(Attributes.FOLLOW_RANGE);
+        return super.canContinueToUse() && target != null && this.brick.distanceToSqr(target) <= followRange * followRange;
+    }
+
+    @Override
+    public void stop() {
+        super.stop();
+        if (this.brick.getAnimationState() == Brick.DEFEND_START_ANIMATION || this.brick.getAnimationState() == Brick.DEFEND_ANIMATION) {
+            this.brick.setAnimationState(0);
+        }
+        this.attackState = 0;
+        this.timer = 0;
     }
 
     @Override
@@ -56,7 +74,7 @@ public class BrickAttackGoal extends AttackGoal {
             this.timer = 0;
         }
         else {
-            Vec3 guardPos = this.guardPosition(target);
+            Vec3 guardPos = this.getGuardPosition(target);
             double guardDistance = this.brick.distanceToSqr(guardPos);
             if (guardDistance > 3.0D * 3.0D) {
                 if (this.pathCooldown <= 0) {
@@ -64,18 +82,17 @@ public class BrickAttackGoal extends AttackGoal {
                     this.pathCooldown = 5;
                 }
             }
-            else if (guardDistance > 0.2D * 0.2D) {
-                this.brick.getNavigation().stop();
-                this.brick.getMoveControl().setWantedPosition(guardPos.x, guardPos.y, guardPos.z, 1.4D);
-            }
             else {
                 this.brick.getNavigation().stop();
+                if (guardDistance > 0.2D * 0.2D) {
+                    this.brick.getMoveControl().setWantedPosition(guardPos.x, guardPos.y, guardPos.z, 1.4D);
+                }
             }
         }
     }
 
     //stand between the target and the monster
-    private Vec3 guardPosition(LivingEntity target) {
+    private Vec3 getGuardPosition(LivingEntity target) {
         Mob ally = this.getProtectedAlly(target);
         Vec3 from = ally != null ? ally.position() : this.brick.position();
         Vec3 offset = new Vec3(from.x - target.getX(), 0.0D, from.z - target.getZ());

@@ -62,11 +62,12 @@ public class Brick extends AnimatedMonster {
 
     public static AttributeSupplier.Builder registerAttributes() {
         return Mob.createMobAttributes()
-                .add(Attributes.MAX_HEALTH, 90.0D)
+                .add(Attributes.MAX_HEALTH, 100.0D)
                 .add(Attributes.ARMOR, 12.0D)
                 .add(Attributes.MOVEMENT_SPEED, 0.25D)
                 .add(Attributes.ATTACK_DAMAGE, 6.0D)
-                .add(Attributes.ATTACK_KNOCKBACK, 1.0D);
+                .add(Attributes.ATTACK_KNOCKBACK, 1.0D)
+                .add(Attributes.KNOCKBACK_RESISTANCE, 0.7D);
     }
 
     @Override

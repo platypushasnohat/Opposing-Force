@@ -8,7 +8,8 @@
     "LivingEntityMixin",
     "MobCategoryMixin",
     "PlayerMixin",
-    "ZombieMixin"
+    "ZombieMixin",
+    "ItemParserMixin"
   ],
   "client": [],
   "injectors": {

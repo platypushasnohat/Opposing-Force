@@ -69,5 +69,7 @@ public class OFItemModelProvider extends SinewItemModelProvider {
                 this.withExistingParent(name(item), "item/template_spawn_egg");
             }
         }
+
+        this.withExistingParent("green_milk", "item/generated").texture("layer0", modLoc("misc/misc"));
     }
 }

@@ -1,0 +1,7 @@
+{
+  "sources": [
+    {
+      "type": "minecraft:single", "resource": "opposing_force:misc/green_milk"
+    }
+  ]
+}

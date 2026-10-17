@@ -11,7 +11,7 @@ public class OFArmorDefinitions {
 
     public static final ArmorDefinition MOON_SHOES = new ArmorDefinition.Builder()
             .material(OFArmorMaterials.MOON_SHOES)
-            .attribute(SinewAttributes.AIR_SPEED, 0.3F, AttributeModifier.Operation.ADD_MULTIPLIED_TOTAL)
+            .attribute(SinewAttributes.AIR_SPEED, 0.15F, AttributeModifier.Operation.ADD_VALUE)
             .attribute(Attributes.MOVEMENT_SPEED, 0.15F, AttributeModifier.Operation.ADD_MULTIPLIED_TOTAL)
             .attribute(Attributes.JUMP_STRENGTH, 0.1F, AttributeModifier.Operation.ADD_VALUE)
             .attribute(Attributes.GRAVITY, -0.3F, AttributeModifier.Operation.ADD_MULTIPLIED_TOTAL)

@@ -1,0 +1,26 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "equipment",
+  "key": {
+    "F": {
+      "item": "opposing_force:firing_mechanism"
+    },
+    "C": {
+      "item": "minecraft:copper_ingot"
+    },
+    "I": {
+      "item": "minecraft:iron_ingot"
+    },
+    "P": {
+      "tag": "minecraft:planks"
+    }
+  },
+  "pattern": [
+    "FCC",
+    "PI "
+  ],
+  "result": {
+    "count": 1,
+    "id": "opposing_force:crackshot"
+  }
+}

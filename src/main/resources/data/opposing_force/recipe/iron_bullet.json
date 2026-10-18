@@ -1,0 +1,21 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "equipment",
+  "key": {
+    "G": {
+      "item": "minecraft:gunpowder"
+    },
+    "I": {
+      "item": "minecraft:iron_nugget"
+    }
+  },
+  "pattern": [
+    "G",
+    "I",
+    "I"
+  ],
+  "result": {
+    "count": 8,
+    "id": "opposing_force:iron_bullet"
+  }
+}

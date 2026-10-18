@@ -1,0 +1,20 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "equipment",
+  "key": {
+    "S": {
+      "item": "minecraft:cobblestone"
+    },
+    "G": {
+      "item": "minecraft:gunpowder"
+    }
+  },
+  "pattern": [
+    "G",
+    "S"
+  ],
+  "result": {
+    "count": 16,
+    "id": "opposing_force:stone_bullet"
+  }
+}

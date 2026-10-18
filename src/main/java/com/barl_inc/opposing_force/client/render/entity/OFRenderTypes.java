@@ -28,6 +28,18 @@ public class OFRenderTypes extends SinewRenderTypes {
         return create("glow_effect", DefaultVertexFormat.NEW_ENTITY, VertexFormat.Mode.QUADS, 256, true, true, compositeState);
     }
 
+    //old
+    //public static RenderType getLaserBolt(ResourceLocation resourceLocation) {
+    //     RenderType.CompositeState compositeState = CompositeState.builder()
+    //             .setTextureState(new TextureStateShard(resourceLocation, false, false))
+    //             .setShaderState(RenderType.RENDERTYPE_ENERGY_SWIRL_SHADER)
+    //             .setTransparencyState(TRANSLUCENT_TRANSPARENCY)
+    //             .setCullState(NO_CULL)
+    //             .setLightmapState(LIGHTMAP)
+    //             .createCompositeState(false);
+    //     return create("laser_bolt", DefaultVertexFormat.NEW_ENTITY, VertexFormat.Mode.QUADS, 256,false,true, compositeState);
+    //}
+    //minor tweak
     private static final Function<ResourceLocation, RenderType> LASER_BOLT = Util.memoize(resourceLocation -> {
         CompositeState compositeState = CompositeState.builder()
                 .setTextureState(new TextureStateShard(resourceLocation, false, false))

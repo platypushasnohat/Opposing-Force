@@ -5,7 +5,7 @@ import net.minecraft.client.animation.AnimationDefinition;
 import net.minecraft.client.animation.Keyframe;
 import net.minecraft.client.animation.KeyframeAnimations;
 
-public class BlasterAnimations {
+public class GunAnimations {
 
 	public static final AnimationDefinition BLASTER_SHOOT = AnimationDefinition.Builder.withLength(0.25F)
 			.addAnimation("root", new AnimationChannel(AnimationChannel.Targets.ROTATION,

@@ -1,10 +1,13 @@
 package com.barl_inc.opposing_force.client.model.item;
 
-import com.barl_inc.opposing_force.client.model.item.animation.GorloffAnimations;
 import com.barl_inc.opposing_force.item.ranged.GorloffItem;
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.VertexConsumer;
 import com.platypushasnohat.sinew.client.model.item.AnimatedItemModel;
+import net.minecraft.client.animation.AnimationChannel;
+import net.minecraft.client.animation.AnimationDefinition;
+import net.minecraft.client.animation.Keyframe;
+import net.minecraft.client.animation.KeyframeAnimations;
 import net.minecraft.client.model.geom.ModelPart;
 import net.minecraft.client.model.geom.PartPose;
 import net.minecraft.client.model.geom.builders.CubeListBuilder;
@@ -21,6 +24,22 @@ public class GorloffModel extends AnimatedItemModel<GorloffItem> {
 
     public GorloffModel(ModelPart root) {
         this.root = root.getChild("root");
+    }
+
+    @Override
+    public void setupAnim(Entity entity, GorloffItem item, ItemStack stack, ItemDisplayContext displayContext, float ageInTicks) {
+        this.root().getAllParts().forEach(ModelPart::resetPose);
+        this.animate(entity, item.shootAnimationState, SHOOT, ageInTicks);
+    }
+
+    @Override
+    public void renderToBuffer(PoseStack poseStack, VertexConsumer buffer, int packedLight, int packedOverlay, int color) {
+        this.root().render(poseStack, buffer, packedLight, packedOverlay);
+    }
+
+    @Override
+    public ModelPart root() {
+        return this.root;
     }
 
     public static LayerDefinition createBodyLayer() {
@@ -51,19 +70,17 @@ public class GorloffModel extends AnimatedItemModel<GorloffItem> {
         return LayerDefinition.create(meshdefinition, 64, 64);
     }
 
-    @Override
-    public void setupAnim(Entity entity, GorloffItem item, ItemStack stack, ItemDisplayContext displayContext, float ageInTicks) {
-        this.root().getAllParts().forEach(ModelPart::resetPose);
-        this.animate(entity, item.shootAnimationState, GorloffAnimations.SHOOT, ageInTicks);
-    }
-
-    @Override
-    public void renderToBuffer(PoseStack poseStack, VertexConsumer buffer, int packedLight, int packedOverlay, int color) {
-        this.root().render(poseStack, buffer, packedLight, packedOverlay);
-    }
-
-    @Override
-    public ModelPart root() {
-        return this.root;
-    }
+    public static final AnimationDefinition SHOOT = AnimationDefinition.Builder.withLength(1.0F).looping()
+            .addAnimation("root", new AnimationChannel(AnimationChannel.Targets.POSITION,
+                    new Keyframe(0.0F, KeyframeAnimations.posVec(0.0F, 0.0F, 0.2658F), AnimationChannel.Interpolations.LINEAR)
+            ))
+            .addAnimation("trigger", new AnimationChannel(AnimationChannel.Targets.ROTATION,
+                    new Keyframe(0.0F, KeyframeAnimations.degreeVec(0.0F, 0.0F, 0.0F), AnimationChannel.Interpolations.LINEAR),
+                    new Keyframe(1.0F, KeyframeAnimations.degreeVec(-720.0F, 0.0F, 0.0F), AnimationChannel.Interpolations.LINEAR)
+            ))
+            .addAnimation("barrel_spin", new AnimationChannel(AnimationChannel.Targets.ROTATION,
+                    new Keyframe(0.0F, KeyframeAnimations.degreeVec(0.0F, 0.0F, 0.0F), AnimationChannel.Interpolations.LINEAR),
+                    new Keyframe(1.0F, KeyframeAnimations.degreeVec(0.0F, 0.0F, -1440.0F), AnimationChannel.Interpolations.LINEAR)
+            ))
+            .build();
 }

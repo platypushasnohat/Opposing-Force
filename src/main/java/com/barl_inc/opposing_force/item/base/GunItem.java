@@ -73,8 +73,9 @@ public abstract class GunItem extends ProjectileWeaponItem {
             if (!level.isClientSide) {
                 player.getCooldowns().addCooldown(this, 10);
             }
-            result = InteractionResultHolder.consume(stack);
-        } else if (level.isClientSide) {
+            return InteractionResultHolder.consume(stack);
+        }
+        if (level.isClientSide) {
             this.shootAnimationState.start(player.tickCount, player);
         } else {
             ItemStack ammo = this.getAmmo(player);

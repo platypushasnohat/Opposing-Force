@@ -48,6 +48,7 @@ public class OpposingForce {
         OFDataComponents.DATA_COMPONENTS.register(modEventBus);
         OFLootModifiers.LOOT_MODIFIERS.register(modEventBus);
         OFCreativeTabs.CREATIVE_MODE_TAB.register(modEventBus);
+        modEventBus.addListener(OFDataMaps::registerDataMapTypes);
         modEventBus.addListener(this::commonSetup);
         modEventBus.addListener(this::clientSetup);
         modEventBus.addListener(this::dataSetup);
@@ -80,6 +81,7 @@ public class OpposingForce {
         generator.addProvider(server, new OFItemTagsProvider(output, provider, blockTags.contentsGetter(), helper));
         generator.addProvider(server, new OFBiomeTagsProvider(output, provider, helper));
         generator.addProvider(server, new OFEntityTypeTagsProvider(output, provider, helper));
+        generator.addProvider(server, new OFDataMapProvider(output, provider));
 
         generator.addProvider(client, new OFItemModelProvider(output, helper));
         generator.addProvider(client, new OFSoundDefinitionsProvider(output, helper));

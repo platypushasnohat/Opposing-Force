@@ -2,8 +2,6 @@ package com.barl_inc.opposing_force.registry;
 
 import com.barl_inc.opposing_force.OpposingForce;
 import com.barl_inc.opposing_force.item.*;
-import com.barl_inc.opposing_force.item.base.BulletItem;
-import com.barl_inc.opposing_force.item.base.BulletTier;
 import com.barl_inc.opposing_force.item.curios.*;
 import com.barl_inc.opposing_force.item.ranged.*;
 import com.barl_inc.opposing_force.item.ranged.ammo.PowerCellItem;
@@ -95,9 +93,9 @@ public class OFItems {
     public static final DeferredItem<Item> MOON_SHOES = registerItem("moon_shoes", () -> new MoonShoesItem(new Item.Properties().rarity(Rarity.UNCOMMON).durability(Type.BOOTS.getDurability(25))));
 
     //misc ammo
-    public static final DeferredItem<Item> STONE_BULLET = registerItem("stone_bullet", () -> new BulletItem(BulletTier.STONE, new Item.Properties()));
-    public static final DeferredItem<Item> IRON_BULLET = registerItem("iron_bullet", () -> new BulletItem(BulletTier.IRON, new Item.Properties()));
-    public static final DeferredItem<Item> PRECISION_BULLET = registerItem("precision_bullet", () -> new BulletItem(BulletTier.PRECISION, new Item.Properties()));
+    public static final DeferredItem<Item> STONE_BULLET = registerItem("stone_bullet", () -> new Item(new Item.Properties()));
+    public static final DeferredItem<Item> IRON_BULLET = registerItem("iron_bullet", () -> new Item(new Item.Properties()));
+    public static final DeferredItem<Item> PRECISION_BULLET = registerItem("precision_bullet", () -> new Item(new Item.Properties()));
 
     //trinket
     public static final DeferredItem<Item> RELIC_FEATHER = registerItem("relic_feather", () -> new RelicFeatherItem(new Item.Properties().rarity(Rarity.UNCOMMON).stacksTo(1)));

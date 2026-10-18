@@ -1,6 +1,7 @@
 package com.barl_inc.opposing_force.item.base;
 
 import com.barl_inc.opposing_force.entity.projectile.Bullet;
+import com.barl_inc.opposing_force.registry.OFDataMaps;
 import com.barl_inc.opposing_force.registry.OFItems;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
@@ -24,7 +25,7 @@ public class BulletGunItem extends GunItem {
 
     @Override
     public boolean isAmmo(ItemStack stack) {
-        return stack.getItem() instanceof BulletItem;
+        return stack.getItemHolder().getData(OFDataMaps.BULLET_STATS) != null;
     }
 
     @Override
@@ -38,25 +39,26 @@ public class BulletGunItem extends GunItem {
         ammo.shrink(1);
     }
 
-    public BulletTier getTier(ItemStack ammo) {
-        return ammo.getItem() instanceof BulletItem bulletItem ? bulletItem.getTier() : BulletTier.IRON;
+    public BulletStats getStats(ItemStack ammo) {
+        BulletStats stats = ammo.getItemHolder().getData(OFDataMaps.BULLET_STATS);
+        return stats == null ? new BulletStats(1.0F, 1.0F, 1.0F, 1.0F) : stats;
     }
 
     public float getBulletDamage(ItemStack ammo) {
-        return this.damage * this.getTier(ammo).getDamageMultiplier();
+        return this.damage * this.getStats(ammo).damage();
     }
 
     public float getInaccuracy(ItemStack ammo) {
-        return this.inaccuracy * this.getTier(ammo).getInaccuracyMultiplier();
+        return this.inaccuracy * this.getStats(ammo).inaccuracy();
     }
 
     public float getVelocity(ItemStack ammo) {
-        return this.velocity * this.getTier(ammo).getVelocityMultiplier();
+        return this.velocity * this.getStats(ammo).velocity();
     }
 
     @Override
     protected int getCooldown(ItemStack stack, ItemStack ammo) {
-        return Math.round(this.cooldown * this.getTier(ammo).getCooldownMultiplier());
+        return Math.round(this.cooldown * this.getStats(ammo).cooldown());
     }
 
     protected int getBulletLifespan() {

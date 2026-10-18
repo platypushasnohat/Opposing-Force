@@ -1,5 +1,6 @@
 package com.barl_inc.opposing_force.item.base;
 
+import com.barl_inc.opposing_force.OpposingForce;
 import com.barl_inc.opposing_force.entity.projectile.Bullet;
 import com.barl_inc.opposing_force.registry.OFDataMaps;
 import com.barl_inc.opposing_force.registry.OFItems;
@@ -26,7 +27,7 @@ public class BulletGunItem extends GunItem {
 
     @Override
     public boolean isAmmo(ItemStack stack) {
-        return stack.getItemHolder().getData(OFDataMaps.BULLET_STATS) != null;
+        return stack.getItemHolder().getData(OFDataMaps.BULLET_DEFINITION) != null;
     }
 
     @Override
@@ -42,9 +43,9 @@ public class BulletGunItem extends GunItem {
         }
     }
 
-    public BulletStats getStats(ItemStack ammo) {
-        BulletStats stats = ammo.getItemHolder().getData(OFDataMaps.BULLET_STATS);
-        return stats == null ? new BulletStats(1.0F, 1.0F, 1.0F, 1.0F) : stats;
+    public BulletDefinition getStats(ItemStack ammo) {
+        BulletDefinition stats = ammo.getItemHolder().getData(OFDataMaps.BULLET_DEFINITION);
+        return stats == null ? new BulletDefinition(OFItems.SHOT_IRON_BULLET.toStack(), 1.0F, 1.0F, 1.0F, 1.0F) : stats;
     }
 
     public float getBulletDamage(ItemStack ammo) {

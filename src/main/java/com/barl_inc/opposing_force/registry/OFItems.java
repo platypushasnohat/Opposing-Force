@@ -97,6 +97,10 @@ public class OFItems {
     public static final DeferredItem<Item> IRON_BULLET = registerItem("iron_bullet", () -> new Item(new Item.Properties()));
     public static final DeferredItem<Item> PRECISION_BULLET = registerItem("precision_bullet", () -> new Item(new Item.Properties()));
 
+    public static final DeferredItem<Item> SHOT_STONE_BULLET = registerItem("shot_stone_bullet", () -> new Item(new Item.Properties()));
+    public static final DeferredItem<Item> SHOT_IRON_BULLET = registerItem("shot_iron_bullet", () -> new Item(new Item.Properties()));
+    public static final DeferredItem<Item> SHOT_PRECISION_BULLET = registerItem("shot_precision_bullet", () -> new Item(new Item.Properties()));
+
     //trinket
     public static final DeferredItem<Item> RELIC_FEATHER = registerItem("relic_feather", () -> new RelicFeatherItem(new Item.Properties().rarity(Rarity.UNCOMMON).stacksTo(1)));
     public static final DeferredItem<Item> BEETLE_HUSK = registerItem("beetle_husk", () -> new BeetleHuskItem(new Item.Properties().stacksTo(1)));

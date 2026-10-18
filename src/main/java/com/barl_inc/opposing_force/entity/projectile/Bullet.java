@@ -3,6 +3,7 @@ package com.barl_inc.opposing_force.entity.projectile;
 import com.barl_inc.opposing_force.registry.OFDamageTypes;
 import com.barl_inc.opposing_force.registry.OFEntities;
 import com.barl_inc.opposing_force.registry.OFItems;
+import com.barl_inc.opposing_force.registry.OFParticleTypes;
 import com.platypushasnohat.sinew.entity.utils.SplitProjectileBonus;
 import net.minecraft.core.particles.ItemParticleOption;
 import net.minecraft.core.particles.ParticleTypes;
@@ -56,6 +57,9 @@ public class Bullet extends ThrowableItemProjectile implements SplitProjectileBo
     @Override
     public void tick() {
         super.tick();
+        if (this.level().isClientSide && this.tickCount >= 2 && this.tickCount % 3 == 0) {
+            this.level().addAlwaysVisibleParticle(OFParticleTypes.BULLET_TRAIL.get(), this.getX(), this.getY() + this.getBbHeight() / 2, this.getZ(), 0, 0, 0);
+        }
         if (!this.level().isClientSide && this.tickCount > this.lifespan) {
             this.discard();
         }
@@ -68,7 +72,7 @@ public class Bullet extends ThrowableItemProjectile implements SplitProjectileBo
 
     @Override
     protected double getDefaultGravity() {
-        return 0.01D;
+        return 0.02D;
     }
 
     @Override

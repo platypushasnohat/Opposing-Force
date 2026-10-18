@@ -45,44 +45,94 @@ public class LaserBoltRenderer extends EntityRenderer<LaserBolt> {
             VertexConsumer outerTexture = buffer.getBuffer(RenderType.eyes(this.getOuterTextureLocation()));
             this.model.renderToBuffer(poseStack, outerTexture, LightTexture.FULL_BRIGHT, OverlayTexture.NO_OVERLAY, SinewColorUtils.packColor(1.0F, 1.0F, 1.0F, 1.0F));
             poseStack.popPose();
+            //old had stuff outside of rendertrail
+            //if (laserBolt.hasTrail()) {
+            //     double x = Mth.lerp(partialTicks, laserBolt.xOld, laserBolt.getX());
+            //     double y = Mth.lerp(partialTicks, laserBolt.yOld, laserBolt.getY());
+            //     double z = Mth.lerp(partialTicks, laserBolt.zOld, laserBolt.getZ());
+            //     poseStack.pushPose();
+            //     poseStack.translate(-x, -y, -z);
+            //     int color = 0xff246d;
+            //     float trailAlpha = 1.0F;
+            //     this.renderTrail(laserBolt, partialTicks, poseStack, buffer, SinewColorUtils.unpackRed(color), SinewColorUtils.unpackGreen(color), SinewColorUtils.unpackBlue(color), trailAlpha);
+            //     poseStack.popPose();
+            //}
+            //relative trail. no translate and stuff inside the rendertrail
             if (laserBolt.hasTrail()) {
-                double x = Mth.lerp(partialTicks, laserBolt.xOld, laserBolt.getX());
-                double y = Mth.lerp(partialTicks, laserBolt.yOld, laserBolt.getY());
-                double z = Mth.lerp(partialTicks, laserBolt.zOld, laserBolt.getZ());
-                poseStack.pushPose();
-                poseStack.translate(-x, -y, -z);
                 int color = 0xff246d;
                 float trailAlpha = 1.0F;
                 this.renderTrail(laserBolt, partialTicks, poseStack, buffer, SinewColorUtils.unpackRed(color), SinewColorUtils.unpackGreen(color), SinewColorUtils.unpackBlue(color), trailAlpha);
-                poseStack.popPose();
             }
             super.render(laserBolt, entityYaw, partialTicks, poseStack, buffer, packedLight);
         }
     }
 
     private void renderTrail(LaserBolt laserBolt, float partialTicks, PoseStack poseStack, MultiBufferSource bufferSource, float red, float green, float blue, float alpha) {
-        int samples = 0;
-        int sampleSize = 2;
+        int sampleSize = 3;
         float trailHeight = 0.08F;
-        float trailZRot = 0;
-        Vec3 topAngleVec = new Vec3(0, trailHeight, 0).zRot(trailZRot);
-        Vec3 bottomAngleVec = new Vec3(0, -trailHeight, 0).zRot(trailZRot);
-        Vec3 drawFrom = laserBolt.getTrailPosition(0, partialTicks);
-        VertexConsumer consumer = bufferSource.getBuffer(OFRenderTypes.getLaserBolt(TRAIL_LOCATION));
-        while (samples < sampleSize) {
-            Vec3 sample = laserBolt.getTrailPosition(samples + 2, partialTicks);
-            float u1 = samples / (float) sampleSize;
-            float u2 = u1 + 1 / (float) sampleSize;
-            Vec3 draw1 = drawFrom;
-            PoseStack.Pose last = poseStack.last();
-            Matrix4f matrix4f = last.pose();
-            consumer.addVertex(matrix4f, (float) draw1.x + (float) bottomAngleVec.x, (float) draw1.y + (float) bottomAngleVec.y, (float) draw1.z + (float) bottomAngleVec.z).setColor(red, green, blue, alpha).setUv(u1, 1.0F).setOverlay(OverlayTexture.NO_OVERLAY).setLight(LightTexture.FULL_BRIGHT).setNormal(0.0F, 1.0F, 0.0F);
-            consumer.addVertex(matrix4f, (float) sample.x + (float) bottomAngleVec.x, (float) sample.y + (float) bottomAngleVec.y, (float) sample.z + (float) bottomAngleVec.z).setColor(red, green, blue, alpha).setUv(u2, 1.0F).setOverlay(OverlayTexture.NO_OVERLAY).setLight(LightTexture.FULL_BRIGHT).setNormal(0.0F, 1.0F, 0.0F);
-            consumer.addVertex(matrix4f, (float) sample.x + (float) topAngleVec.x, (float) sample.y + (float) topAngleVec.y, (float) sample.z + (float) topAngleVec.z).setColor(red, green, blue, alpha).setUv(u2, 0).setOverlay(OverlayTexture.NO_OVERLAY).setLight(LightTexture.FULL_BRIGHT).setNormal(0.0F, 1.0F, 0.0F);
-            consumer.addVertex(matrix4f, (float) draw1.x + (float) topAngleVec.x, (float) draw1.y + (float) topAngleVec.y, (float) draw1.z + (float) topAngleVec.z).setColor(red, green, blue, alpha).setUv(u1, 0).setOverlay(OverlayTexture.NO_OVERLAY).setLight(LightTexture.FULL_BRIGHT).setNormal(0.0F, 1.0F, 0.0F);
-            samples++;
-            drawFrom = sample;
+
+        //bolt interpolated position so trail is relative to that
+        Vec3 origin = new Vec3(Mth.lerp(partialTicks, laserBolt.xOld, laserBolt.getX()), Mth.lerp(partialTicks, laserBolt.yOld, laserBolt.getY()), Mth.lerp(partialTicks, laserBolt.zOld, laserBolt.getZ()));
+        Vec3 cameraPos = this.entityRenderDispatcher.camera.getPosition();
+        //consecutive trail points, old skipped point 1
+        Vec3[] points = new Vec3[sampleSize + 1];
+        for (int i = 0; i <= sampleSize; i++) {
+            points[i] = laserBolt.getTrailPosition(i, partialTicks);
         }
+        //widen relative to the camera so it always appears square no matter angle
+        //old had fixed offsets Vec3(0, trailHeight, 0) / new Vec3(0, -trailHeight, 0) so it was always a flat rectangle so you couldnt see it from above
+        Vec3[] offsets = new Vec3[sampleSize + 1];
+        for (int i = 0; i <= sampleSize; i++) {
+            Vec3 direction = points[Math.max(i - 1, 0)].subtract(points[Math.min(i + 1, sampleSize)]);
+            Vec3 side = direction.cross(cameraPos.subtract(points[i]));
+            if (side.lengthSqr() < 1.0E-6) {
+                side = direction.cross(new Vec3(0.0, 1.0, 0.0));
+            }
+            offsets[i] = side.lengthSqr() < 1.0E-6 ? new Vec3(0.0, trailHeight, 0.0) : side.normalize().scale(trailHeight);
+        }
+        VertexConsumer consumer = bufferSource.getBuffer(OFRenderTypes.getLaserBolt(TRAIL_LOCATION));
+        Matrix4f matrix4f = poseStack.last().pose();
+        for (int i = 0; i < sampleSize; i++) {
+            Vec3 from = points[i].subtract(origin);
+            Vec3 to = points[i + 1].subtract(origin);
+            float u1 = i / (float) sampleSize;
+            float u2 = (i + 1) / (float) sampleSize;
+            this.trailVertex(consumer, matrix4f, from.subtract(offsets[i]), u1, 1.0F, red, green, blue, alpha);
+            this.trailVertex(consumer, matrix4f, to.subtract(offsets[i + 1]), u2, 1.0F, red, green, blue, alpha);
+            this.trailVertex(consumer, matrix4f, to.add(offsets[i + 1]), u2, 0.0F, red, green, blue, alpha);
+            this.trailVertex(consumer, matrix4f, from.add(offsets[i]), u1, 0.0F, red, green, blue, alpha);
+        }
+    }
+    //old
+    //skipped trail point 1 (0 -> 2 -> 3)
+    //private void renderTrail(LaserBolt laserBolt, float partialTicks, PoseStack poseStack, MultiBufferSource bufferSource, float red, float green, float blue, float alpha) {
+    //     int samples = 0;
+    //     int sampleSize = 2;
+    //     float trailHeight = 0.08F;
+    //     float trailZRot = 0;
+    //     Vec3 topAngleVec = new Vec3(0, trailHeight, 0).zRot(trailZRot);
+    //     Vec3 bottomAngleVec = new Vec3(0, -trailHeight, 0).zRot(trailZRot);
+    //     Vec3 drawFrom = laserBolt.getTrailPosition(0, partialTicks);
+    //     VertexConsumer consumer = bufferSource.getBuffer(OFRenderTypes.getLaserBolt(TRAIL_LOCATION));
+    //     while (samples < sampleSize) {
+    //         Vec3 sample = laserBolt.getTrailPosition(samples + 2, partialTicks);
+    //         float u1 = samples / (float) sampleSize;
+    //         float u2 = u1 + 1 / (float) sampleSize;
+    //         Vec3 draw1 = drawFrom;
+    //         PoseStack.Pose last = poseStack.last();
+    //         Matrix4f matrix4f = last.pose();
+    //         consumer.addVertex(matrix4f, (float) draw1.x + (float) bottomAngleVec.x, (float) draw1.y + (float) bottomAngleVec.y, (float) draw1.z + (float) bottomAngleVec.z).setColor(red, green, blue, alpha).setUv(u1, 1.0F).setOverlay(OverlayTexture.NO_OVERLAY).setLight(LightTexture.FULL_BRIGHT).setNormal(0.0F, 1.0F, 0.0F);
+    //         consumer.addVertex(matrix4f, (float) sample.x + (float) bottomAngleVec.x, (float) sample.y + (float) bottomAngleVec.y, (float) sample.z + (float) bottomAngleVec.z).setColor(red, green, blue, alpha).setUv(u2, 1.0F).setOverlay(OverlayTexture.NO_OVERLAY).setLight(LightTexture.FULL_BRIGHT).setNormal(0.0F, 1.0F, 0.0F);
+    //         consumer.addVertex(matrix4f, (float) sample.x + (float) topAngleVec.x, (float) sample.y + (float) topAngleVec.y, (float) sample.z + (float) topAngleVec.z).setColor(red, green, blue, alpha).setUv(u2, 0).setOverlay(OverlayTexture.NO_OVERLAY).setLight(LightTexture.FULL_BRIGHT).setNormal(0.0F, 1.0F, 0.0F);
+    //         consumer.addVertex(matrix4f, (float) draw1.x + (float) topAngleVec.x, (float) draw1.y + (float) topAngleVec.y, (float) draw1.z + (float) topAngleVec.z).setColor(red, green, blue, alpha).setUv(u1, 0).setOverlay(OverlayTexture.NO_OVERLAY).setLight(LightTexture.FULL_BRIGHT).setNormal(0.0F, 1.0F, 0.0F);
+    //         samples++;
+    //         drawFrom = sample;
+    //     }
+    //}
+
+    //same vertex as old consumer.addVertex(...)
+    private void trailVertex(VertexConsumer consumer, Matrix4f matrix4f, Vec3 pos, float u, float v, float red, float green, float blue, float alpha) {
+        consumer.addVertex(matrix4f, (float) pos.x, (float) pos.y, (float) pos.z).setColor(red, green, blue, alpha).setUv(u, v).setOverlay(OverlayTexture.NO_OVERLAY).setLight(LightTexture.FULL_BRIGHT).setNormal(0.0F, 1.0F, 0.0F);
     }
 
     @Override

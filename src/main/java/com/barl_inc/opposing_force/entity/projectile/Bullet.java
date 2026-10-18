@@ -6,6 +6,7 @@ import com.barl_inc.opposing_force.registry.OFItems;
 import net.minecraft.core.particles.ItemParticleOption;
 import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.nbt.CompoundTag;
+import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.projectile.ThrowableItemProjectile;
@@ -18,18 +19,35 @@ import net.minecraft.world.phys.HitResult;
 public class Bullet extends ThrowableItemProjectile {
 
     private float damage = 1.0F;
+    private int lifespan = 40;
 
     public Bullet(EntityType<? extends Bullet> entityType, Level level) {
         super(entityType, level);
     }
 
     public Bullet(Level level, LivingEntity owner, ItemStack stack) {
-        super(OFEntities.BULLET.get(), owner, level);
+        this(OFEntities.BULLET.get(), level, owner, stack);
+    }
+
+    protected Bullet(EntityType<? extends Bullet> entityType, Level level, LivingEntity owner, ItemStack stack) {
+        super(entityType, owner, level);
         this.setItem(stack);
     }
 
     public void setDamage(float damage) {
         this.damage = damage;
+    }
+
+    public void setLifespan(int lifespan) {
+        this.lifespan = lifespan;
+    }
+
+    @Override
+    public void tick() {
+        super.tick();
+        if (!this.level().isClientSide && this.tickCount > this.lifespan) {
+            this.discard();
+        }
     }
 
     @Override
@@ -45,7 +63,11 @@ public class Bullet extends ThrowableItemProjectile {
     @Override
     protected void onHitEntity(EntityHitResult result) {
         super.onHitEntity(result);
-        result.getEntity().hurt(OFDamageTypes.causeBulletDamage(this.level().registryAccess(), this, this.getOwner()), this.damage);
+        result.getEntity().hurt(this.getDamageSource(), this.damage);
+    }
+
+    protected DamageSource getDamageSource() {
+        return OFDamageTypes.causeBulletDamage(this.level().registryAccess(), this, this.getOwner());
     }
 
     @Override
@@ -71,11 +93,13 @@ public class Bullet extends ThrowableItemProjectile {
     public void addAdditionalSaveData(CompoundTag compound) {
         super.addAdditionalSaveData(compound);
         compound.putFloat("Damage", this.damage);
+        compound.putInt("Lifespan", this.lifespan);
     }
 
     @Override
     public void readAdditionalSaveData(CompoundTag compound) {
         super.readAdditionalSaveData(compound);
         this.damage = compound.getFloat("Damage");
+        this.lifespan = compound.getInt("Lifespan");
     }
 }

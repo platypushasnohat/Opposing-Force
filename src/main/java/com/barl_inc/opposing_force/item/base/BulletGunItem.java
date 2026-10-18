@@ -50,9 +50,17 @@ public class BulletGunItem extends GunItem {
         return this.inaccuracy * this.getTier(ammo).getInaccuracyMultiplier();
     }
 
+    public float getVelocity(ItemStack ammo) {
+        return this.velocity * this.getTier(ammo).getVelocityMultiplier();
+    }
+
     @Override
     protected int getCooldown(ItemStack stack, ItemStack ammo) {
         return Math.round(this.cooldown * this.getTier(ammo).getCooldownMultiplier());
+    }
+
+    protected int getBulletLifespan() {
+        return 40;
     }
 
     @Override
@@ -63,8 +71,9 @@ public class BulletGunItem extends GunItem {
     protected void shootBullet(Level level, Player player, ItemStack ammo, float extraInaccuracy) {
         Bullet bullet = new Bullet(level, player, ammo.copyWithCount(1));
         bullet.setDamage(this.getBulletDamage(ammo));
+        bullet.setLifespan(this.getBulletLifespan());
         Vec3 look = player.getLookAngle();
-        bullet.shoot(look.x, look.y, look.z, this.velocity, this.getInaccuracy(ammo) + extraInaccuracy);
+        bullet.shoot(look.x, look.y, look.z, this.getVelocity(ammo), this.getInaccuracy(ammo) + extraInaccuracy);
         level.addFreshEntity(bullet);
     }
 }

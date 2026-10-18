@@ -28,6 +28,8 @@ public class OFModelLayers {
     public static final ModelLayerLocation SCATTER_BLASTER = register("scatter_blaster");
     public static final ModelLayerLocation LEITMOTIF = register("leitmotif");
     public static final ModelLayerLocation CRACKSHOT = register("crackshot");
+    public static final ModelLayerLocation JAEGER = register("jaeger");
+    public static final ModelLayerLocation BOOMSTICK = register("boomstick");
 
     private static ModelLayerLocation register(String id) {
         return new ModelLayerLocation(OpposingForce.location(id), "main");

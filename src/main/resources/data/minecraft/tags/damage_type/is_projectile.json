@@ -4,6 +4,7 @@
     "opposing_force:laser",
     "opposing_force:laser_bolt",
     "opposing_force:laser_blade",
-    "opposing_force:bullet"
+    "opposing_force:bullet",
+    "opposing_force:shrapnel"
   ]
 }

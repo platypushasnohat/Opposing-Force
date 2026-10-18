@@ -120,5 +120,9 @@ public class OFLanguageProvider extends SinewLanguageProvider {
         this.add("death.attack.bullet", "%s was shot");
         this.add("death.attack.bullet.player", "%s was shot by %s");
         this.add("death.attack.bullet.item", "%s was shot by %s using %s");
+
+        this.add("death.attack.shrapnel", "%s was pumped full of shrapnel");
+        this.add("death.attack.shrapnel.player", "%s was pumped full of shrapnel by %s");
+        this.add("death.attack.shrapnel.item", "%s was pumped full of shrapnel by %s using %s");
     }
 }

@@ -38,6 +38,12 @@ public class OFItemRenderer extends BlockEntityWithoutLevelRenderer {
     public static final CrackshotModel CRACKSHOT_MODEL = new CrackshotModel(Minecraft.getInstance().getEntityModels().bakeLayer(OFModelLayers.CRACKSHOT));
     public static final ResourceLocation CRACKSHOT_TEXTURE = OpposingForce.location("textures/item/crackshot.png");
 
+    public static final JaegerModel JAEGER_MODEL = new JaegerModel(Minecraft.getInstance().getEntityModels().bakeLayer(OFModelLayers.JAEGER));
+    public static final ResourceLocation JAEGER_TEXTURE = OpposingForce.location("textures/item/jaeger.png");
+
+    public static final BoomstickModel BOOMSTICK_MODEL = new BoomstickModel(Minecraft.getInstance().getEntityModels().bakeLayer(OFModelLayers.BOOMSTICK));
+    public static final ResourceLocation BOOMSTICK_TEXTURE = OpposingForce.location("textures/item/boomstick.png");
+
     public OFItemRenderer() {
         super(Minecraft.getInstance().getBlockEntityRenderDispatcher(), Minecraft.getInstance().getEntityModels());
     }
@@ -100,6 +106,24 @@ public class OFItemRenderer extends BlockEntityWithoutLevelRenderer {
             CRACKSHOT_MODEL.renderToBuffer(poseStack, buffer.getBuffer(RenderType.entityCutout(CRACKSHOT_TEXTURE)), packedLight, packedOverlay, 0xFFFFFF);
             if (stack.hasFoil()) {
                 CRACKSHOT_MODEL.renderToBuffer(poseStack, ItemRenderer.getFoilBuffer(buffer, RenderType.entityCutout(CRACKSHOT_TEXTURE), false, true), packedLight, packedOverlay, 0xFFFFFF);
+            }
+            poseStack.popPose();
+        }
+        if (stack.is(OFItems.JAEGER.get())) {
+            poseStack.pushPose();
+            JAEGER_MODEL.setupAnim(player, (JaegerItem) stack.getItem(), stack, displayContext, ageInTicks);
+            JAEGER_MODEL.renderToBuffer(poseStack, buffer.getBuffer(RenderType.entityCutout(JAEGER_TEXTURE)), packedLight, packedOverlay, 0xFFFFFF);
+            if (stack.hasFoil()) {
+                JAEGER_MODEL.renderToBuffer(poseStack, ItemRenderer.getFoilBuffer(buffer, RenderType.entityCutout(JAEGER_TEXTURE), false, true), packedLight, packedOverlay, 0xFFFFFF);
+            }
+            poseStack.popPose();
+        }
+        if (stack.is(OFItems.BOOMSTICK.get())) {
+            poseStack.pushPose();
+            BOOMSTICK_MODEL.setupAnim(player, (BoomstickItem) stack.getItem(), stack, displayContext, ageInTicks);
+            BOOMSTICK_MODEL.renderToBuffer(poseStack, buffer.getBuffer(RenderType.entityCutout(BOOMSTICK_TEXTURE)), packedLight, packedOverlay, 0xFFFFFF);
+            if (stack.hasFoil()) {
+                BOOMSTICK_MODEL.renderToBuffer(poseStack, ItemRenderer.getFoilBuffer(buffer, RenderType.entityCutout(BOOMSTICK_TEXTURE), false, true), packedLight, packedOverlay, 0xFFFFFF);
             }
             poseStack.popPose();
         }

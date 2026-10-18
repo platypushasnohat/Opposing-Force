@@ -60,6 +60,7 @@ public class ClientEvents {
         event.registerEntityRenderer(OFEntities.MUDBALL.get(), MudballRenderer::new);
         event.registerEntityRenderer(OFEntities.MUD_SPLATTER.get(), MudSplatterRenderer::new);
         event.registerEntityRenderer(OFEntities.BULLET.get(), BulletRenderer::new);
+        event.registerEntityRenderer(OFEntities.SHRAPNEL.get(), ShrapnelRenderer::new);
     }
 
     @SubscribeEvent
@@ -85,6 +86,8 @@ public class ClientEvents {
         event.registerLayerDefinition(OFModelLayers.SCATTER_BLASTER, ScatterBlasterModel::createBodyLayer);
         event.registerLayerDefinition(OFModelLayers.LEITMOTIF, LeitmotifModel::createBodyLayer);
         event.registerLayerDefinition(OFModelLayers.CRACKSHOT, CrackshotModel::createBodyLayer);
+        event.registerLayerDefinition(OFModelLayers.JAEGER, JaegerModel::createBodyLayer);
+        event.registerLayerDefinition(OFModelLayers.BOOMSTICK, BoomstickModel::createBodyLayer);
     }
 
     @SubscribeEvent
@@ -104,6 +107,8 @@ public class ClientEvents {
         event.registerItem(OFItemExtensions.itemExtensions, OFItems.SCATTER_BLASTER.get());
         event.registerItem(OFItemExtensions.itemExtensions, OFItems.LEITMOTIF.get());
         event.registerItem(OFItemExtensions.itemExtensions, OFItems.CRACKSHOT.get());
+        event.registerItem(OFItemExtensions.itemExtensions, OFItems.JAEGER.get());
+        event.registerItem(OFItemExtensions.itemExtensions, OFItems.BOOMSTICK.get());
 
         event.registerItem(new IClientItemExtensions() {
             @Override

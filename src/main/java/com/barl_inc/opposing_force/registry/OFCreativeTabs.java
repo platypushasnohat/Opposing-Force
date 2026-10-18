@@ -71,7 +71,9 @@ public class OFCreativeTabs {
                         output.accept(OFItems.MOON_SHOES);
 
                         //misc weapons
+                        output.accept(OFItems.BOOMSTICK);
                         output.accept(OFItems.CRACKSHOT);
+                        output.accept(OFItems.JAEGER);
 
                         //misc bullets
                         output.accept(OFItems.STONE_BULLET);

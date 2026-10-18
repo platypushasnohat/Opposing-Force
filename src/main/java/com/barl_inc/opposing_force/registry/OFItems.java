@@ -2,7 +2,11 @@ package com.barl_inc.opposing_force.registry;
 
 import com.barl_inc.opposing_force.OpposingForce;
 import com.barl_inc.opposing_force.item.*;
+import com.barl_inc.opposing_force.item.base.BulletItem;
+import com.barl_inc.opposing_force.item.base.BulletTier;
 import com.barl_inc.opposing_force.item.curios.*;
+import com.barl_inc.opposing_force.item.ranged.*;
+import com.barl_inc.opposing_force.item.ranged.ammo.PowerCellItem;
 import com.platypushasnohat.sinew.item.*;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.Mob;
@@ -62,7 +66,11 @@ public class OFItems {
     public static final DeferredItem<Item> FILLET_SPAWN_EGG = registerSpawnEggItem("fillet", OFEntities.FILLET, 0x470e2f, 0xff6e1f);
     public static final DeferredItem<Item> FILLET_BUCKET = registerItemNoLang("fillet_bucket", () -> new FilletBucketItem(new Item.Properties()));
 
+    //materials
     public static final DeferredItem<Item> FIRING_MECHANISM = registerItem("firing_mechanism", () -> new Item(new Item.Properties()));
+
+    //misc items
+    public static final DeferredItem<Item> CRACKSHOT = registerItem("crackshot", () -> new CrackshotItem(new Item.Properties()));
 
     public static final DeferredItem<Item> EMERALD_SWORD = registerItem("emerald_sword", () -> new SinewSwordItem(OFToolDefinitions.EMERALD, 3.0F, -2.4F, new Item.Properties().rarity(Rarity.UNCOMMON)));
     public static final DeferredItem<Item> EMERALD_PICKAXE = registerItem("emerald_pickaxe", () -> new SinewPickaxeItem(OFToolDefinitions.EMERALD, 1.0F, -2.8F, new Item.Properties().rarity(Rarity.UNCOMMON)));
@@ -82,6 +90,11 @@ public class OFItems {
     public static final DeferredItem<Item> LAPIS_LAZULI_HOE = registerItem("lapis_lazuli_hoe", () -> new SinewHoeItem(OFToolDefinitions.LAPIS_LAZULI, 0.0F, -1.0F, new Item.Properties()));
 
     public static final DeferredItem<Item> MOON_SHOES = registerItem("moon_shoes", () -> new MoonShoesItem(new Item.Properties().rarity(Rarity.UNCOMMON).durability(Type.BOOTS.getDurability(25))));
+
+    //misc ammo
+    public static final DeferredItem<Item> STONE_BULLET = registerItem("stone_bullet", () -> new BulletItem(BulletTier.STONE, new Item.Properties()));
+    public static final DeferredItem<Item> IRON_BULLET = registerItem("iron_bullet", () -> new BulletItem(BulletTier.IRON, new Item.Properties()));
+    public static final DeferredItem<Item> PRECISION_BULLET = registerItem("precision_bullet", () -> new BulletItem(BulletTier.PRECISION, new Item.Properties()));
 
     //trinket
     public static final DeferredItem<Item> RELIC_FEATHER = registerItem("relic_feather", () -> new RelicFeatherItem(new Item.Properties().rarity(Rarity.UNCOMMON).stacksTo(1)));

@@ -27,6 +27,7 @@ public class OFModelLayers {
     public static final ModelLayerLocation TRI_BLASTER = register("tri_blaster");
     public static final ModelLayerLocation SCATTER_BLASTER = register("scatter_blaster");
     public static final ModelLayerLocation LEITMOTIF = register("leitmotif");
+    public static final ModelLayerLocation CRACKSHOT = register("crackshot");
 
     private static ModelLayerLocation register(String id) {
         return new ModelLayerLocation(OpposingForce.location(id), "main");

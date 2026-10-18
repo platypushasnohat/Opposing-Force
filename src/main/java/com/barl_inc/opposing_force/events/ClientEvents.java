@@ -4,15 +4,11 @@ import com.barl_inc.opposing_force.OpposingForce;
 import com.barl_inc.opposing_force.client.model.armor.EmeraldArmorModel;
 import com.barl_inc.opposing_force.client.model.armor.MoonShoesModel;
 import com.barl_inc.opposing_force.client.model.entity.*;
-import com.barl_inc.opposing_force.client.model.item.BlasterModel;
-import com.barl_inc.opposing_force.client.model.item.LeitmotifModel;
-import com.barl_inc.opposing_force.client.model.item.ScatterBlasterModel;
-import com.barl_inc.opposing_force.client.model.item.TriBlasterModel;
+import com.barl_inc.opposing_force.client.model.item.*;
 import com.barl_inc.opposing_force.client.particle.*;
 import com.barl_inc.opposing_force.client.render.entity.*;
 import com.barl_inc.opposing_force.client.render.item.OFItemExtensions;
-import com.barl_inc.opposing_force.item.BlasterItem;
-import com.barl_inc.opposing_force.item.LeitmotifItem;
+import com.barl_inc.opposing_force.item.base.GunItem;
 import com.barl_inc.opposing_force.registry.OFEntities;
 import com.barl_inc.opposing_force.registry.OFItems;
 import com.barl_inc.opposing_force.registry.OFModelLayers;
@@ -63,6 +59,7 @@ public class ClientEvents {
         event.registerEntityRenderer(OFEntities.ACID_CLOUD.get(), NoopRenderer::new);
         event.registerEntityRenderer(OFEntities.MUDBALL.get(), MudballRenderer::new);
         event.registerEntityRenderer(OFEntities.MUD_SPLATTER.get(), MudSplatterRenderer::new);
+        event.registerEntityRenderer(OFEntities.BULLET.get(), BulletRenderer::new);
     }
 
     @SubscribeEvent
@@ -87,6 +84,7 @@ public class ClientEvents {
         event.registerLayerDefinition(OFModelLayers.TRI_BLASTER, TriBlasterModel::createBodyLayer);
         event.registerLayerDefinition(OFModelLayers.SCATTER_BLASTER, ScatterBlasterModel::createBodyLayer);
         event.registerLayerDefinition(OFModelLayers.LEITMOTIF, LeitmotifModel::createBodyLayer);
+        event.registerLayerDefinition(OFModelLayers.CRACKSHOT, CrackshotModel::createBodyLayer);
     }
 
     @SubscribeEvent
@@ -105,6 +103,7 @@ public class ClientEvents {
         event.registerItem(OFItemExtensions.itemExtensions, OFItems.TRI_BLASTER.get());
         event.registerItem(OFItemExtensions.itemExtensions, OFItems.SCATTER_BLASTER.get());
         event.registerItem(OFItemExtensions.itemExtensions, OFItems.LEITMOTIF.get());
+        event.registerItem(OFItemExtensions.itemExtensions, OFItems.CRACKSHOT.get());
 
         event.registerItem(new IClientItemExtensions() {
             @Override
@@ -151,7 +150,7 @@ public class ClientEvents {
     }
 
     private static boolean isAimedGun(ItemStack stack) {
-        return stack.getItem() instanceof BlasterItem || stack.getItem() instanceof LeitmotifItem;
+        return stack.getItem() instanceof GunItem;
     }
 
     private static final ResourceLocation MYSTIC_POT_OVERLAY = OpposingForce.location("textures/misc/mystic_pot_overlay.png");

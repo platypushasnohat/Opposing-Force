@@ -1,14 +1,8 @@
 package com.barl_inc.opposing_force.client.render.item;
 
 import com.barl_inc.opposing_force.OpposingForce;
-import com.barl_inc.opposing_force.client.model.item.BlasterModel;
-import com.barl_inc.opposing_force.client.model.item.LeitmotifModel;
-import com.barl_inc.opposing_force.client.model.item.ScatterBlasterModel;
-import com.barl_inc.opposing_force.client.model.item.TriBlasterModel;
-import com.barl_inc.opposing_force.item.BlasterItem;
-import com.barl_inc.opposing_force.item.LeitmotifItem;
-import com.barl_inc.opposing_force.item.ScatterBlasterItem;
-import com.barl_inc.opposing_force.item.TriBlasterItem;
+import com.barl_inc.opposing_force.client.model.item.*;
+import com.barl_inc.opposing_force.item.ranged.*;
 import com.barl_inc.opposing_force.registry.OFItems;
 import com.barl_inc.opposing_force.registry.OFModelLayers;
 import com.mojang.blaze3d.vertex.PoseStack;
@@ -40,6 +34,9 @@ public class OFItemRenderer extends BlockEntityWithoutLevelRenderer {
 
     public static final LeitmotifModel LEITMOTIF_MODEL = new LeitmotifModel(Minecraft.getInstance().getEntityModels().bakeLayer(OFModelLayers.LEITMOTIF));
     public static final ResourceLocation LEITMOTIF_TEXTURE = OpposingForce.location("textures/item/leitmotif.png");
+
+    public static final CrackshotModel CRACKSHOT_MODEL = new CrackshotModel(Minecraft.getInstance().getEntityModels().bakeLayer(OFModelLayers.CRACKSHOT));
+    public static final ResourceLocation CRACKSHOT_TEXTURE = OpposingForce.location("textures/item/crackshot.png");
 
     public OFItemRenderer() {
         super(Minecraft.getInstance().getBlockEntityRenderDispatcher(), Minecraft.getInstance().getEntityModels());
@@ -94,6 +91,15 @@ public class OFItemRenderer extends BlockEntityWithoutLevelRenderer {
             LEITMOTIF_MODEL.renderToBuffer(poseStack, buffer.getBuffer(RenderType.entityCutout(LEITMOTIF_TEXTURE)), packedLight, packedOverlay, 0xFFFFFF);
             if (stack.hasFoil()) {
                 LEITMOTIF_MODEL.renderToBuffer(poseStack, ItemRenderer.getFoilBuffer(buffer, RenderType.entityCutout(LEITMOTIF_TEXTURE), false, true), packedLight, packedOverlay, 0xFFFFFF);
+            }
+            poseStack.popPose();
+        }
+        if (stack.is(OFItems.CRACKSHOT.get())) {
+            poseStack.pushPose();
+            CRACKSHOT_MODEL.setupAnim(player, (CrackshotItem) stack.getItem(), stack, displayContext, ageInTicks);
+            CRACKSHOT_MODEL.renderToBuffer(poseStack, buffer.getBuffer(RenderType.entityCutout(CRACKSHOT_TEXTURE)), packedLight, packedOverlay, 0xFFFFFF);
+            if (stack.hasFoil()) {
+                CRACKSHOT_MODEL.renderToBuffer(poseStack, ItemRenderer.getFoilBuffer(buffer, RenderType.entityCutout(CRACKSHOT_TEXTURE), false, true), packedLight, packedOverlay, 0xFFFFFF);
             }
             poseStack.popPose();
         }

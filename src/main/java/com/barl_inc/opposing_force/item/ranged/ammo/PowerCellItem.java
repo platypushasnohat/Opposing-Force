@@ -1,5 +1,6 @@
-package com.barl_inc.opposing_force.item;
+package com.barl_inc.opposing_force.item.ranged.ammo;
 
+import com.barl_inc.opposing_force.item.base.PoweredItem;
 import com.platypushasnohat.sinew.utils.SinewSoundUtils;
 import net.minecraft.ChatFormatting;
 import net.minecraft.network.chat.Component;

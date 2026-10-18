@@ -1,4 +1,4 @@
-package com.barl_inc.opposing_force.item;
+package com.barl_inc.opposing_force.item.base;
 
 import com.barl_inc.opposing_force.registry.OFDataComponents;
 import net.minecraft.util.Mth;

@@ -45,7 +45,10 @@ public class OFItemModelProvider extends SinewItemModelProvider {
                 OFItems.MAGNETISED_ENHANCEMENTS,
                 OFItems.LUCKY_TACKLEBOX,
                 OFItems.SLIMY_SHIELD,
-                OFItems.STALKERS_GLOVES
+                OFItems.STALKERS_GLOVES,
+                OFItems.STONE_BULLET,
+                OFItems.IRON_BULLET,
+                OFItems.PRECISION_BULLET
         );
 
         this.handheldItem(

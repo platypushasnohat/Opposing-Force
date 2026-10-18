@@ -1,13 +1,11 @@
-package com.barl_inc.opposing_force.item;
+package com.barl_inc.opposing_force.item.ranged;
 
 import com.barl_inc.opposing_force.entity.projectile.LaserBolt;
-import com.barl_inc.opposing_force.registry.OFItems;
 import com.barl_inc.opposing_force.registry.OFSoundEvents;
 import com.platypushasnohat.sinew.utils.SinewSoundUtils;
 import net.minecraft.core.component.DataComponents;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.sounds.SoundSource;
-import net.minecraft.stats.Stats;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResultHolder;
 import net.minecraft.world.entity.Entity;
@@ -21,12 +19,7 @@ import net.minecraft.world.phys.Vec3;
 public class TriBlasterItem extends BlasterItem {
 
     public TriBlasterItem(Properties properties) {
-        super(properties.stacksTo(1).durability(1280));
-    }
-
-    @Override
-    public boolean shouldCauseReequipAnimation(ItemStack oldStack, ItemStack newStack, boolean slotChanged) {
-        return !(oldStack.is(OFItems.TRI_BLASTER)) || !(newStack.is(OFItems.TRI_BLASTER));
+        super(properties, 1280);
     }
 
     @Override
@@ -35,19 +28,28 @@ public class TriBlasterItem extends BlasterItem {
     }
 
     @Override
+    protected boolean canShoot(Player player, InteractionHand hand) {
+        return hand == InteractionHand.MAIN_HAND && super.canShoot(player, hand);
+    }
+
+    @Override
+    protected int getCooldown(ItemStack stack, ItemStack ammo) {
+        return 16;
+    }
+
+    @Override
     public InteractionResultHolder<ItemStack> use(Level level, Player player, InteractionHand hand) {
         ItemStack stack = player.getItemInHand(hand);
-        ItemStack ammoStack = this.getAmmo(player);
-        if (hand == InteractionHand.OFF_HAND || (this.powerDepleted(player, ammoStack) && !player.isCreative())) {
+        InteractionResultHolder<ItemStack> result = InteractionResultHolder.pass(stack);
+        if (!this.canShoot(player, hand)) {
             if (!level.isClientSide) {
-                player.getCooldowns().addCooldown(stack.getItem(), 10);
+                player.getCooldowns().addCooldown(this, 10);
             }
-            return InteractionResultHolder.consume(stack);
-        }
-        if (getShootTime(stack) == 0 && !isShooting(stack)) {
+            result = InteractionResultHolder.consume(stack);
+        } else if (getShootTime(stack) == 0 && !isShooting(stack)) {
             setShooting(stack, true);
         }
-        return InteractionResultHolder.pass(stack);
+        return result;
     }
 
     @Override
@@ -56,37 +58,19 @@ public class TriBlasterItem extends BlasterItem {
         boolean shooting = isShooting(stack);
         int shootTime = getShootTime(stack);
         if (isSelected && entity instanceof Player player) {
-            ItemStack ammoStack = this.getAmmo(player);
-            if (shootTime == 1 && shooting) {
+            if (shooting && (shootTime == 1 || shootTime == 5 || shootTime == 9)) {
                 if (level.isClientSide) {
-                    this.blastAnimationState.start(player.tickCount, player);
-                }
-                else {
-                    this.shootLaser(level, player);
-                    player.getCooldowns().addCooldown(stack.getItem(), 16);
-                    player.awardStat(Stats.ITEM_USED.get(this));
-                    if (!player.getAbilities().instabuild) {
-                        this.consumePower(ammoStack);
-                        stack.hurtAndBreak(1, player, LivingEntity.getSlotForHand(player.getUsedItemHand()));
+                    this.shootAnimationState.start(player.tickCount, player);
+                } else {
+                    ItemStack ammo = this.getAmmo(player);
+                    this.shoot(level, player, stack, ammo);
+                    if (shootTime == 1) {
+                        this.onShot(player, InteractionHand.MAIN_HAND, stack, ammo);
                     }
                 }
-            }
-            if (shootTime == 5 && shooting) {
-                if (level.isClientSide) {
-                    this.blastAnimationState.start(player.tickCount, player);
+                if (shootTime == 9) {
+                    setShooting(stack, false);
                 }
-                else {
-                    this.shootLaser(level, player);
-                }
-            }
-            if (shootTime == 9 && shooting) {
-                if (level.isClientSide) {
-                    this.blastAnimationState.start(player.tickCount, player);
-                }
-                else {
-                    this.shootLaser(level, player);
-                }
-                setShooting(stack, false);
             }
             if (shooting && shootTime <= 9) {
                 setShootTime(stack, shootTime + 1);
@@ -99,7 +83,8 @@ public class TriBlasterItem extends BlasterItem {
         }
     }
 
-    private void shootLaser(Level level, Player player) {
+    @Override
+    protected void shoot(Level level, Player player, ItemStack stack, ItemStack ammo) {
         LaserBolt laserBolt = new LaserBolt(level, player, player.getX(), player.getY() + player.getBbHeight() * 0.8F, player.getZ());
         laserBolt.setDamage(7.0F);
         Vec3 look = player.getLookAngle();

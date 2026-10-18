@@ -1,7 +1,7 @@
 package com.barl_inc.opposing_force.client.model.item;
 
 import com.barl_inc.opposing_force.client.model.item.animation.LeitmotifAnimations;
-import com.barl_inc.opposing_force.item.LeitmotifItem;
+import com.barl_inc.opposing_force.item.ranged.LeitmotifItem;
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.VertexConsumer;
 import com.platypushasnohat.sinew.client.model.item.AnimatedItemModel;

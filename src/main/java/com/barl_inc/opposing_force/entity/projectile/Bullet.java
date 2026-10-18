@@ -3,6 +3,7 @@ package com.barl_inc.opposing_force.entity.projectile;
 import com.barl_inc.opposing_force.registry.OFDamageTypes;
 import com.barl_inc.opposing_force.registry.OFEntities;
 import com.barl_inc.opposing_force.registry.OFItems;
+import com.platypushasnohat.sinew.entity.utils.SplitProjectileBonus;
 import net.minecraft.core.particles.ItemParticleOption;
 import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.nbt.CompoundTag;
@@ -16,10 +17,11 @@ import net.minecraft.world.level.Level;
 import net.minecraft.world.phys.EntityHitResult;
 import net.minecraft.world.phys.HitResult;
 
-public class Bullet extends ThrowableItemProjectile {
+public class Bullet extends ThrowableItemProjectile implements SplitProjectileBonus {
 
     private float damage = 1.0F;
     private int lifespan = 40;
+    private int projectileCount = 1;
 
     public Bullet(EntityType<? extends Bullet> entityType, Level level) {
         super(entityType, level);
@@ -40,6 +42,15 @@ public class Bullet extends ThrowableItemProjectile {
 
     public void setLifespan(int lifespan) {
         this.lifespan = lifespan;
+    }
+
+    public void setProjectileCount(int projectileCount) {
+        this.projectileCount = projectileCount;
+    }
+
+    @Override
+    public int getProjectileCount() {
+        return this.projectileCount;
     }
 
     @Override
@@ -63,6 +74,9 @@ public class Bullet extends ThrowableItemProjectile {
     @Override
     protected void onHitEntity(EntityHitResult result) {
         super.onHitEntity(result);
+        if (this.projectileCount > 1) {
+            result.getEntity().invulnerableTime = 0;
+        }
         result.getEntity().hurt(this.getDamageSource(), this.damage);
     }
 
@@ -94,6 +108,7 @@ public class Bullet extends ThrowableItemProjectile {
         super.addAdditionalSaveData(compound);
         compound.putFloat("Damage", this.damage);
         compound.putInt("Lifespan", this.lifespan);
+        compound.putInt("ProjectileCount", this.projectileCount);
     }
 
     @Override
@@ -101,5 +116,6 @@ public class Bullet extends ThrowableItemProjectile {
         super.readAdditionalSaveData(compound);
         this.damage = compound.getFloat("Damage");
         this.lifespan = compound.getInt("Lifespan");
+        this.projectileCount = Math.max(1, compound.getInt("ProjectileCount"));
     }
 }

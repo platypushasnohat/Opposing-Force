@@ -88,6 +88,7 @@ public class ClientEvents {
         event.registerLayerDefinition(OFModelLayers.CRACKSHOT, CrackshotModel::createBodyLayer);
         event.registerLayerDefinition(OFModelLayers.JAEGER, JaegerModel::createBodyLayer);
         event.registerLayerDefinition(OFModelLayers.BOOMSTICK, BoomstickModel::createBodyLayer);
+        event.registerLayerDefinition(OFModelLayers.GORLOFF, GorloffModel::createBodyLayer);
     }
 
     @SubscribeEvent
@@ -109,6 +110,7 @@ public class ClientEvents {
         event.registerItem(OFItemExtensions.itemExtensions, OFItems.CRACKSHOT.get());
         event.registerItem(OFItemExtensions.itemExtensions, OFItems.JAEGER.get());
         event.registerItem(OFItemExtensions.itemExtensions, OFItems.BOOMSTICK.get());
+        event.registerItem(OFItemExtensions.itemExtensions, OFItems.GORLOFF.get());
 
         event.registerItem(new IClientItemExtensions() {
             @Override

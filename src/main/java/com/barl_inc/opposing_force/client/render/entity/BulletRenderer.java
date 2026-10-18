@@ -29,7 +29,7 @@ public class BulletRenderer extends EntityRenderer<Bullet> {
             poseStack.mulPose(Axis.YP.rotationDegrees(Mth.lerp(partialTicks, entity.yRotO, entity.getYRot()) - 90.0F));
             poseStack.mulPose(Axis.ZP.rotationDegrees(Mth.lerp(partialTicks, entity.xRotO, entity.getXRot())));
             poseStack.scale(0.6F, 0.6F, 0.6F);
-            poseStack.mulPose(Axis.ZP.rotationDegrees(-45.0F));
+            poseStack.mulPose(Axis.ZP.rotationDegrees(45.0F));
             this.itemRenderer.renderStatic(entity.getItem(), ItemDisplayContext.GROUND, packedLight, OverlayTexture.NO_OVERLAY, poseStack, bufferSource, entity.level(), entity.getId());
             poseStack.popPose();
             super.render(entity, entityYaw, partialTicks, poseStack, bufferSource, packedLight);

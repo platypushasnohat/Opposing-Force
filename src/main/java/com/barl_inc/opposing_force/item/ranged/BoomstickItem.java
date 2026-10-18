@@ -21,7 +21,7 @@ public class BoomstickItem extends BulletGunItem {
     public final ItemAnimationState reloadAnimationState = new ItemAnimationState();
 
     public BoomstickItem(Properties properties) {
-        super(properties.durability(640), 1.0F, 2.5F, 10.0F, 10);
+        super(properties.durability(640), 1.0F, 2.5F, 20.0F, 10);
     }
 
     @Override

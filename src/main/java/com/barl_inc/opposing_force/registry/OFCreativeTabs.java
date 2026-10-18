@@ -73,6 +73,7 @@ public class OFCreativeTabs {
                         //misc weapons
                         output.accept(OFItems.BOOMSTICK);
                         output.accept(OFItems.CRACKSHOT);
+                        output.accept(OFItems.GORLOFF);
                         output.accept(OFItems.JAEGER);
 
                         //misc bullets

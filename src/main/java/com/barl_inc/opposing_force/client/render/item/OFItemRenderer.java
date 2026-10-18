@@ -44,6 +44,9 @@ public class OFItemRenderer extends BlockEntityWithoutLevelRenderer {
     public static final BoomstickModel BOOMSTICK_MODEL = new BoomstickModel(Minecraft.getInstance().getEntityModels().bakeLayer(OFModelLayers.BOOMSTICK));
     public static final ResourceLocation BOOMSTICK_TEXTURE = OpposingForce.location("textures/item/boomstick.png");
 
+    public static final GorloffModel GORLOFF_MODEL = new GorloffModel(Minecraft.getInstance().getEntityModels().bakeLayer(OFModelLayers.GORLOFF));
+    public static final ResourceLocation GORLOFF_TEXTURE = OpposingForce.location("textures/item/gorloff.png");
+
     public OFItemRenderer() {
         super(Minecraft.getInstance().getBlockEntityRenderDispatcher(), Minecraft.getInstance().getEntityModels());
     }
@@ -124,6 +127,15 @@ public class OFItemRenderer extends BlockEntityWithoutLevelRenderer {
             BOOMSTICK_MODEL.renderToBuffer(poseStack, buffer.getBuffer(RenderType.entityCutout(BOOMSTICK_TEXTURE)), packedLight, packedOverlay, 0xFFFFFF);
             if (stack.hasFoil()) {
                 BOOMSTICK_MODEL.renderToBuffer(poseStack, ItemRenderer.getFoilBuffer(buffer, RenderType.entityCutout(BOOMSTICK_TEXTURE), false, true), packedLight, packedOverlay, 0xFFFFFF);
+            }
+            poseStack.popPose();
+        }
+        if (stack.is(OFItems.GORLOFF.get())) {
+            poseStack.pushPose();
+            GORLOFF_MODEL.setupAnim(player, (GorloffItem) stack.getItem(), stack, displayContext, ageInTicks);
+            GORLOFF_MODEL.renderToBuffer(poseStack, buffer.getBuffer(RenderType.entityCutout(GORLOFF_TEXTURE)), packedLight, packedOverlay, 0xFFFFFF);
+            if (stack.hasFoil()) {
+                GORLOFF_MODEL.renderToBuffer(poseStack, ItemRenderer.getFoilBuffer(buffer, RenderType.entityCutout(GORLOFF_TEXTURE), false, true), packedLight, packedOverlay, 0xFFFFFF);
             }
             poseStack.popPose();
         }

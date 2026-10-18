@@ -30,6 +30,7 @@ public class OFModelLayers {
     public static final ModelLayerLocation CRACKSHOT = register("crackshot");
     public static final ModelLayerLocation JAEGER = register("jaeger");
     public static final ModelLayerLocation BOOMSTICK = register("boomstick");
+    public static final ModelLayerLocation GORLOFF = register("gorloff");
 
     private static ModelLayerLocation register(String id) {
         return new ModelLayerLocation(OpposingForce.location(id), "main");

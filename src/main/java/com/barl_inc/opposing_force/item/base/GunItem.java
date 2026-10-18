@@ -26,7 +26,7 @@ public abstract class GunItem extends ProjectileWeaponItem {
 
     public abstract boolean isAmmo(ItemStack stack);
 
-    public abstract void consumeAmmo(Player player, ItemStack ammo);
+    public abstract void consumeAmmo(Player player, ItemStack stack, ItemStack ammo);
 
     protected abstract void shoot(Level level, Player player, ItemStack stack, ItemStack ammo);
 
@@ -60,7 +60,7 @@ public abstract class GunItem extends ProjectileWeaponItem {
         player.getCooldowns().addCooldown(this, this.getShotCooldown(player, hand, stack, ammo));
         player.awardStat(Stats.ITEM_USED.get(this));
         if (!player.hasInfiniteMaterials()) {
-            this.consumeAmmo(player, ammo);
+            this.consumeAmmo(player, stack, ammo);
             stack.hurtAndBreak(1, player, LivingEntity.getSlotForHand(hand));
         }
     }

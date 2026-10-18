@@ -37,9 +37,9 @@ public class BoomstickItem extends BulletGunItem {
     }
 
     @Override
-    public void consumeAmmo(Player player, ItemStack ammo) {
-        ammo.shrink(1);
-        this.getAmmo(player).shrink(1);
+    public void consumeAmmo(Player player, ItemStack stack, ItemStack ammo) {
+        super.consumeAmmo(player, stack, ammo);
+        super.consumeAmmo(player, stack, this.getAmmo(player));
     }
 
     @Override

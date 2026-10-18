@@ -2,6 +2,7 @@ package com.barl_inc.opposing_force.item.ranged;
 
 import com.barl_inc.opposing_force.entity.projectile.Mudball;
 import com.barl_inc.opposing_force.item.base.GunItem;
+import com.platypushasnohat.sinew.item.SinewItemUtils;
 import com.platypushasnohat.sinew.utils.SinewSoundUtils;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.sounds.SoundSource;
@@ -23,8 +24,10 @@ public class LeitmotifItem extends GunItem {
     }
 
     @Override
-    public void consumeAmmo(Player player, ItemStack ammo) {
-        ammo.shrink(1);
+    public void consumeAmmo(Player player, ItemStack stack, ItemStack ammo) {
+        if (SinewItemUtils.shouldConsumeAmmo(player, stack)) {
+            ammo.shrink(1);
+        }
     }
 
     @Override

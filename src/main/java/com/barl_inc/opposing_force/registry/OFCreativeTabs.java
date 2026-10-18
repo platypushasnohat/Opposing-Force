@@ -91,6 +91,7 @@ public class OFCreativeTabs {
                         output.accept(OFItems.BEETLE_HUSK);
                         output.accept(OFItems.FIERY_CARAPACE);
                         output.accept(OFItems.LUCKY_TACKLEBOX);
+                        output.accept(OFItems.MUNITIONS_BOX);
                         output.accept(OFItems.RANGER_MANUAL);
                         output.accept(OFItems.THORNY_BRACELET);
 

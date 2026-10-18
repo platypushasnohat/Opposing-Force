@@ -5,6 +5,7 @@ import com.barl_inc.opposing_force.item.base.GunItem;
 import com.barl_inc.opposing_force.item.base.PoweredItem;
 import com.barl_inc.opposing_force.registry.OFItems;
 import com.barl_inc.opposing_force.registry.OFSoundEvents;
+import com.platypushasnohat.sinew.item.SinewItemUtils;
 import com.platypushasnohat.sinew.utils.SinewSoundUtils;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.world.InteractionHand;
@@ -34,8 +35,8 @@ public class BlasterItem extends GunItem {
     }
 
     @Override
-    public void consumeAmmo(Player player, ItemStack ammo) {
-        if (ammo.getItem() instanceof PoweredItem poweredItem) {
+    public void consumeAmmo(Player player, ItemStack stack, ItemStack ammo) {
+        if (ammo.getItem() instanceof PoweredItem poweredItem && SinewItemUtils.shouldConsumeAmmo(player, stack)) {
             poweredItem.drainPower(ammo, 1, null);
         }
     }

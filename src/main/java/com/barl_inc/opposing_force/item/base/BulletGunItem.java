@@ -3,6 +3,7 @@ package com.barl_inc.opposing_force.item.base;
 import com.barl_inc.opposing_force.entity.projectile.Bullet;
 import com.barl_inc.opposing_force.registry.OFDataMaps;
 import com.barl_inc.opposing_force.registry.OFItems;
+import com.platypushasnohat.sinew.item.SinewItemUtils;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
@@ -35,8 +36,10 @@ public class BulletGunItem extends GunItem {
     }
 
     @Override
-    public void consumeAmmo(Player player, ItemStack ammo) {
-        ammo.shrink(1);
+    public void consumeAmmo(Player player, ItemStack stack, ItemStack ammo) {
+        if (SinewItemUtils.shouldConsumeAmmo(player, stack)) {
+            ammo.shrink(1);
+        }
     }
 
     public BulletStats getStats(ItemStack ammo) {

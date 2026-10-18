@@ -114,6 +114,7 @@ public class OFItems {
     public static final DeferredItem<Item> LUCKY_TACKLEBOX = registerItem("lucky_tacklebox", () -> new LuckyTackleboxItem(new Item.Properties().stacksTo(1)));
     public static final DeferredItem<Item> SLIMY_SHIELD = registerItem("slimy_shield", () -> new SlimyShieldItem(new Item.Properties().stacksTo(1).rarity(Rarity.UNCOMMON)));
     public static final DeferredItem<Item> STALKERS_GLOVES = registerItemNoLang("stalkers_gloves", () -> new StalkersGlovesItem(new Item.Properties().stacksTo(1)));
+    public static final DeferredItem<Item> MUNITIONS_BOX = registerItem("munitions_box", () -> new MunitionsBoxItem(new Item.Properties().stacksTo(1)));
 
     //Permanent Upgrades
     public static final DeferredItem<Item> CRYSTALIZED_HEART = registerItem("crystalized_heart", () -> new CrystalizedHeartItem(new Item.Properties().stacksTo(1).rarity(Rarity.EPIC).food(OFFoodProperties.CRYSTALIZED_HEART)));

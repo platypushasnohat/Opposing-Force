@@ -77,7 +77,7 @@ public class GorloffItem extends BulletGunItem {
     private void useBullet(Player player, ItemStack stack, ItemStack ammo) {
         player.awardStat(Stats.ITEM_USED.get(this));
         if (!player.hasInfiniteMaterials()) {
-            this.consumeAmmo(player, ammo);
+            this.consumeAmmo(player, stack, ammo);
             stack.hurtAndBreak(1, player, EquipmentSlot.MAINHAND);
         }
     }

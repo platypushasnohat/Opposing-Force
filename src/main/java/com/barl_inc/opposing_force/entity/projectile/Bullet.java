@@ -4,84 +4,171 @@ import com.barl_inc.opposing_force.registry.OFDamageTypes;
 import com.barl_inc.opposing_force.registry.OFEntities;
 import com.barl_inc.opposing_force.registry.OFItems;
 import com.barl_inc.opposing_force.registry.OFParticleTypes;
-import com.platypushasnohat.sinew.entity.utils.SplitProjectileBonus;
-import net.minecraft.core.particles.ItemParticleOption;
+import net.minecraft.core.particles.ParticleOptions;
 import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.nbt.CompoundTag;
+import net.minecraft.network.syncher.EntityDataAccessor;
+import net.minecraft.network.syncher.EntityDataSerializers;
+import net.minecraft.network.syncher.SynchedEntityData;
+import net.minecraft.server.level.ServerLevel;
+import net.minecraft.util.Mth;
 import net.minecraft.world.damagesource.DamageSource;
+import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.LivingEntity;
-import net.minecraft.world.entity.projectile.ThrowableItemProjectile;
+import net.minecraft.world.entity.ai.attributes.Attributes;
+import net.minecraft.world.entity.projectile.ItemSupplier;
+import net.minecraft.world.entity.projectile.Projectile;
+import net.minecraft.world.entity.projectile.ProjectileUtil;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.enchantment.EnchantmentHelper;
 import net.minecraft.world.level.Level;
+import net.minecraft.world.phys.BlockHitResult;
 import net.minecraft.world.phys.EntityHitResult;
 import net.minecraft.world.phys.HitResult;
+import net.minecraft.world.phys.Vec3;
+import net.neoforged.neoforge.event.EventHooks;
 
-public class Bullet extends ThrowableItemProjectile implements SplitProjectileBonus {
+import javax.annotation.Nullable;
 
-    private float damage = 1.0F;
-    private int lifespan = 40;
-    private int projectileCount = 1;
+public class Bullet extends Projectile implements ItemSupplier {
 
-    public Bullet(EntityType<? extends Bullet> entityType, Level level) {
+    protected static final EntityDataAccessor<ItemStack> RENDER_STACK = SynchedEntityData.defineId(Bullet.class, EntityDataSerializers.ITEM_STACK);
+    protected static final EntityDataAccessor<Float> DAMAGE = SynchedEntityData.defineId(Bullet.class, EntityDataSerializers.FLOAT);
+
+    public static final int LIFESPAN = 100;
+
+    @Nullable
+    private ItemStack firedFromWeapon = null;
+
+    public Bullet(EntityType<? extends Projectile> entityType, Level level) {
         super(entityType, level);
     }
 
-    public Bullet(Level level, LivingEntity owner, ItemStack stack) {
-        this(OFEntities.BULLET.get(), level, owner, stack);
+    public Bullet(EntityType<? extends Projectile> entityType, double x, double y, double z, Level level) {
+        this(entityType, level);
+        this.setPos(x, y, z);
     }
 
-    protected Bullet(EntityType<? extends Bullet> entityType, Level level, LivingEntity owner, ItemStack stack) {
-        super(entityType, owner, level);
-        this.setItem(stack);
+    public Bullet(LivingEntity shooter, Level level, ItemStack weapon) {
+        this(OFEntities.BULLET.get(), shooter.getX(), shooter.getEyeY() - 0.1F, shooter.getZ(), level);
+        this.setOwner(shooter);
+        if (weapon != null && level instanceof ServerLevel) {
+            this.firedFromWeapon = weapon.copy();
+        }
     }
 
+    @Override
+    protected void defineSynchedData(SynchedEntityData.Builder builder) {
+        builder.define(RENDER_STACK, new ItemStack(this.getDefaultItem()));
+        builder.define(DAMAGE, 1.0F);
+    }
+
+    @Override
+    public void addAdditionalSaveData(CompoundTag compoundTag) {
+        super.addAdditionalSaveData(compoundTag);
+        compoundTag.put("Item", this.getItem().save(this.registryAccess()));
+        if (this.firedFromWeapon != null) {
+            compoundTag.put("Weapon", this.firedFromWeapon.save(this.registryAccess(), new CompoundTag()));
+        }
+        compoundTag.putFloat("Damage", this.getDamage());
+    }
+
+    @Override
+    public void readAdditionalSaveData(CompoundTag compoundTag) {
+        super.readAdditionalSaveData(compoundTag);
+        if (compoundTag.contains("Item", 10)) {
+            this.setItem(ItemStack.parse(this.registryAccess(), compoundTag.getCompound("Item")).orElseGet(() -> new ItemStack(this.getDefaultItem())));
+        } else {
+            this.setItem(new ItemStack(this.getDefaultItem()));
+        }
+        if (compoundTag.contains("Weapon", 10)) {
+            this.firedFromWeapon = ItemStack.parse(this.registryAccess(), compoundTag.getCompound("Weapon")).orElse(null);
+        } else {
+            this.firedFromWeapon = null;
+        }
+        this.setDamage(compoundTag.getFloat("Damage"));
+    }
+
+    @Override
+    public ItemStack getItem() {
+        return this.getEntityData().get(RENDER_STACK);
+    }
+    public void setItem(ItemStack stack) {
+        this.getEntityData().set(RENDER_STACK, stack.copyWithCount(1));
+    }
+    public Item getDefaultItem() {
+        return OFItems.SHOT_IRON_BULLET.get();
+    }
+    @Override
+    public ItemStack getWeaponItem() {
+        return this.firedFromWeapon;
+    }
+
+    public float getDamage() {
+        return this.entityData.get(DAMAGE);
+    }
     public void setDamage(float damage) {
-        this.damage = damage;
+        this.entityData.set(DAMAGE, damage);
     }
 
-    public void setLifespan(int lifespan) {
-        this.lifespan = lifespan;
-    }
-
-    public void setProjectileCount(int projectileCount) {
-        this.projectileCount = projectileCount;
-    }
-
-    @Override
-    public int getProjectileCount() {
-        return this.projectileCount;
-    }
-
-    @Override
-    public void tick() {
-        super.tick();
-        if (this.level().isClientSide && this.tickCount >= 2 && this.tickCount % 3 == 0) {
-            this.level().addAlwaysVisibleParticle(OFParticleTypes.BULLET_TRAIL.get(), this.getX(), this.getY() + this.getBbHeight() / 2, this.getZ(), 0, 0, 0);
+    public void tickMovement() {
+        Vec3 movement = this.getDeltaMovement();
+        double nextX = this.getX() + movement.x;
+        double nextY = this.getY() + movement.y;
+        double nextZ = this.getZ() + movement.z;
+        ProjectileUtil.rotateTowardsMovement(this, 0.2F);
+        if (this.isInWater()) {
+            for (int i = 0; i < 4; i++) {
+                this.level().addParticle(ParticleTypes.BUBBLE, nextX - movement.x * 0.25D, nextY - movement.y * 0.25D, nextZ - movement.z * 0.25D, movement.x, movement.y, movement.z);
+            }
+            this.setDeltaMovement(movement.scale(0.8F));
         }
-        if (!this.level().isClientSide && this.tickCount > this.lifespan) {
-            this.discard();
+        if (this.level().isClientSide) {
+            float height = this.getBbHeight() / 2;
+            if (this.getTrailParticle() != null) {
+                this.level().addParticle(this.getTrailParticle(), nextX, nextY + height, nextZ, 0.0D, 0.0D, 0.0D);
+            }
+            if (this.getRingParticle() != null && this.tickCount % 3 == 0) {
+                this.level().addParticle(this.getRingParticle(), nextX, nextY + height, nextZ, 0.0D, 0.0D, 0.0D);
+            }
+        }
+        this.applyGravity();
+        this.setPos(nextX, nextY, nextZ);
+    }
+
+    public void processCollision() {
+        HitResult hitResult = ProjectileUtil.getHitResultOnMoveVector(this, this::canHitEntity);
+        if (hitResult.getType() != HitResult.Type.MISS && !EventHooks.onProjectileImpact(this, hitResult)) {
+            this.onHit(hitResult);
         }
     }
 
-    @Override
-    protected Item getDefaultItem() {
-        return OFItems.IRON_BULLET.get();
+    protected void hitBlockEnchantmentEffects(ServerLevel level, BlockHitResult hitResult, ItemStack stack) {
+        Vec3 clamped = hitResult.getBlockPos().clampLocationWithin(hitResult.getLocation());
+        EnchantmentHelper.onHitBlock(level, stack, this.getOwner() instanceof LivingEntity living ? living : null, this, null, clamped, level.getBlockState(hitResult.getBlockPos()), item -> this.discard());
     }
 
-    @Override
-    protected double getDefaultGravity() {
-        return 0.02D;
-    }
-
-    @Override
-    protected void onHitEntity(EntityHitResult result) {
-        super.onHitEntity(result);
-        if (this.projectileCount > 1) {
-            result.getEntity().invulnerableTime = 0;
+    protected void doKnockback(LivingEntity entity, DamageSource damageSource) {
+        double knockbackModifier = this.firedFromWeapon != null && this.level() instanceof ServerLevel serverlevel ? EnchantmentHelper.modifyKnockback(serverlevel, this.firedFromWeapon, entity, damageSource, 0.0F) : 0.0F;
+        if (knockbackModifier > 0.0D) {
+            double resistance = Math.max(0.0D, 1.0D - entity.getAttributeValue(Attributes.KNOCKBACK_RESISTANCE));
+            Vec3 scaled = this.getDeltaMovement().multiply(1.0D, 0.0D, 1.0D).normalize().scale(knockbackModifier * 0.2D * resistance);
+            if (scaled.lengthSqr() > 0.0D) {
+                entity.push(scaled.x, 0.1D, scaled.z);
+            }
         }
-        result.getEntity().hurt(this.getDamageSource(), this.damage);
+    }
+
+    @Nullable
+    protected ParticleOptions getTrailParticle() {
+        return ParticleTypes.SMOKE;
+    }
+
+    @Nullable
+    protected ParticleOptions getRingParticle() {
+        return OFParticleTypes.BULLET_TRAIL.get();
     }
 
     protected DamageSource getDamageSource() {
@@ -89,37 +176,95 @@ public class Bullet extends ThrowableItemProjectile implements SplitProjectileBo
     }
 
     @Override
-    protected void onHit(HitResult result) {
-        super.onHit(result);
-        if (!this.level().isClientSide) {
-            this.level().broadcastEntityEvent(this, (byte) 3);
-            this.discard();
-        }
-    }
+    public void tick() {
+        super.tick();
+        this.processCollision();
+        this.checkInsideBlocks();
+        this.tickMovement();
 
-    @Override
-    public void handleEntityEvent(byte id) {
-        if (id == 3) {
-            ItemParticleOption particle = new ItemParticleOption(ParticleTypes.ITEM, this.getItem());
-            for (int i = 0; i < 6; i++) {
-                this.level().addParticle(particle, this.getX(), this.getY(), this.getZ(), (this.random.nextDouble() - 0.5D) * 0.1D, this.random.nextDouble() * 0.1D, (this.random.nextDouble() - 0.5D) * 0.1D);
+        if (!this.level().isClientSide) {
+            if (this.tickCount > LIFESPAN) {
+                this.discard();
             }
         }
     }
 
     @Override
-    public void addAdditionalSaveData(CompoundTag compound) {
-        super.addAdditionalSaveData(compound);
-        compound.putFloat("Damage", this.damage);
-        compound.putInt("Lifespan", this.lifespan);
-        compound.putInt("ProjectileCount", this.projectileCount);
+    protected double getDefaultGravity() {
+        return 0.01D;
     }
 
     @Override
-    public void readAdditionalSaveData(CompoundTag compound) {
-        super.readAdditionalSaveData(compound);
-        this.damage = compound.getFloat("Damage");
-        this.lifespan = compound.getInt("Lifespan");
-        this.projectileCount = Math.max(1, compound.getInt("ProjectileCount"));
+    public boolean canUsePortal(boolean allowPassengers) {
+        return true;
+    }
+
+    @Override
+    public boolean isPickable() {
+        return false;
+    }
+
+    @Override
+    public boolean hurt(DamageSource source, float amount) {
+        return false;
+    }
+
+    @Override
+    public boolean shouldRenderAtSqrDistance(double distance) {
+        double size = this.getBoundingBox().getSize() * 10.0;
+        if (Double.isNaN(size)) {
+            size = 1.0;
+        }
+        size *= 64.0 * getViewScale();
+        return distance < size * size;
+    }
+
+    @Override
+    protected void onHit(HitResult result) {
+        super.onHit(result);
+        if (!this.level().isClientSide) {
+            this.discard();
+        }
+    }
+
+    @Override
+    protected void onHitEntity(EntityHitResult result) {
+        super.onHitEntity(result);
+        Entity entity = result.getEntity();
+        float damage = this.getDamage();
+        DamageSource damageSource = this.getDamageSource();
+        ItemStack weapon = this.getWeaponItem();
+        if (!this.level().isClientSide && this.level() instanceof ServerLevel serverLevel) {
+            if (weapon != null) {
+                damage = EnchantmentHelper.modifyDamage(serverLevel, weapon, entity, damageSource, damage);
+            }
+            if (entity.hurt(damageSource, damage) && entity instanceof LivingEntity living) {
+                this.doKnockback(living, damageSource);
+                EnchantmentHelper.doPostAttackEffectsWithItemSource(serverLevel, living, damageSource, weapon);
+            }
+        }
+    }
+
+    @Override
+    protected void onHitBlock(BlockHitResult result) {
+        super.onHitBlock(result);
+        Vec3 subtracted = result.getLocation().subtract(this.getX(), this.getY(), this.getZ());
+        this.setDeltaMovement(subtracted);
+        ItemStack weapon = this.getWeaponItem();
+        if (this.level() instanceof ServerLevel serverLevel && weapon != null) {
+            this.hitBlockEnchantmentEffects(serverLevel, result, weapon);
+        }
+        Vec3 scaled = subtracted.normalize().scale(0.05F);
+        this.setPosRaw(this.getX() - scaled.x, this.getY() - scaled.y, this.getZ() - scaled.z);
+    }
+
+    @Override
+    public void shootFromRotation(Entity shooter, float x, float y, float z, float velocity, float inaccuracy) {
+        float xPos = -Mth.sin(y * Mth.DEG_TO_RAD) * Mth.cos(x * Mth.DEG_TO_RAD);
+        float yPos = -Mth.sin((x + z) * Mth.DEG_TO_RAD);
+        float zPos = Mth.cos(y * Mth.DEG_TO_RAD) * Mth.cos(x * Mth.DEG_TO_RAD);
+        this.shoot(xPos, yPos, zPos, velocity, inaccuracy);
+        Vec3 knownMovement = shooter.getKnownMovement();
+        this.setDeltaMovement(this.getDeltaMovement().add(knownMovement.x, 0.0F, knownMovement.z));
     }
 }

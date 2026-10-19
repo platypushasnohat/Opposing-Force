@@ -31,12 +31,12 @@ public class LeitmotifItem extends GunItem {
     }
 
     @Override
-    protected int getCooldown(ItemStack stack, ItemStack ammo) {
+    public int getCooldown(ItemStack stack, ItemStack ammo) {
         return 10;
     }
 
     @Override
-    protected void shoot(Level level, Player player, ItemStack stack, ItemStack ammo) {
+    public void shoot(Level level, Player player, ItemStack stack, ItemStack ammo) {
         Mudball mudball = new Mudball(level, player, player.getX(), player.getY() + player.getBbHeight() * 0.8F, player.getZ());
         Vec3 look = player.getLookAngle();
         mudball.setDamage(3.5F);

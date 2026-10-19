@@ -23,12 +23,12 @@ public class ScatterBlasterItem extends BlasterItem {
     }
 
     @Override
-    protected int getCooldown(ItemStack stack, ItemStack ammo) {
+    public int getCooldown(ItemStack stack, ItemStack ammo) {
         return 40;
     }
 
     @Override
-    protected void shoot(Level level, Player player, ItemStack stack, ItemStack ammo) {
+    public void shoot(Level level, Player player, ItemStack stack, ItemStack ammo) {
         Vec3 look = player.getLookAngle();
         for (int i = 0; i < 8; i++) {
             LaserBolt laserBolt = new LaserBolt(level, player, player.getX(), player.getY() + player.getBbHeight() * 0.8F, player.getZ());

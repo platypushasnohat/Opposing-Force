@@ -28,9 +28,9 @@ public abstract class GunItem extends ProjectileWeaponItem {
 
     public abstract void consumeAmmo(Player player, ItemStack stack, ItemStack ammo);
 
-    protected abstract void shoot(Level level, Player player, ItemStack stack, ItemStack ammo);
+    public abstract void shoot(Level level, Player player, ItemStack stack, ItemStack ammo);
 
-    protected abstract int getCooldown(ItemStack stack, ItemStack ammo);
+    public abstract int getCooldown(ItemStack stack, ItemStack ammo);
 
     public ItemStack getAmmo(Player player) {
         ItemStack ammo = this.isAmmo(player.getOffhandItem()) ? player.getOffhandItem() : ItemStack.EMPTY;

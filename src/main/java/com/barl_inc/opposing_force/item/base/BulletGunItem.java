@@ -1,21 +1,20 @@
 package com.barl_inc.opposing_force.item.base;
 
-import com.barl_inc.opposing_force.OpposingForce;
 import com.barl_inc.opposing_force.entity.projectile.Bullet;
-import com.barl_inc.opposing_force.registry.OFDataMaps;
+import com.barl_inc.opposing_force.item.ranged.ammo.BulletComponent;
+import com.barl_inc.opposing_force.registry.OFDataComponents;
 import com.barl_inc.opposing_force.registry.OFItems;
 import com.platypushasnohat.sinew.item.SinewItemUtils;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
-import net.minecraft.world.phys.Vec3;
 
 public class BulletGunItem extends GunItem {
 
-    private final float damage;
-    private final float velocity;
-    private final float inaccuracy;
-    private final int cooldown;
+    public final float damage;
+    public final float velocity;
+    public final float inaccuracy;
+    public final int cooldown;
 
     public BulletGunItem(Properties properties, float damage, float velocity, float inaccuracy, int cooldown) {
         super(properties.stacksTo(1));
@@ -27,7 +26,7 @@ public class BulletGunItem extends GunItem {
 
     @Override
     public boolean isAmmo(ItemStack stack) {
-        return stack.getItemHolder().getData(OFDataMaps.BULLET_DEFINITION) != null;
+        return stack.get(OFDataComponents.BULLET) != null;
     }
 
     @Override
@@ -43,43 +42,32 @@ public class BulletGunItem extends GunItem {
         }
     }
 
-    public BulletDefinition getStats(ItemStack ammo) {
-        BulletDefinition stats = ammo.getItemHolder().getData(OFDataMaps.BULLET_DEFINITION);
-        return stats == null ? new BulletDefinition(OFItems.SHOT_IRON_BULLET.toStack(), 1.0F, 1.0F, 1.0F, 1.0F) : stats;
-    }
-
-    public float getBulletDamage(ItemStack ammo) {
-        return this.damage * this.getStats(ammo).damage();
-    }
-
-    public float getInaccuracy(ItemStack ammo) {
-        return this.inaccuracy * this.getStats(ammo).inaccuracy();
-    }
-
-    public float getVelocity(ItemStack ammo) {
-        return this.velocity * this.getStats(ammo).velocity();
+    @Override
+    public void shoot(Level level, Player player, ItemStack stack, ItemStack ammo) {
+        this.shootBullet(level, player, stack, ammo);
     }
 
     @Override
-    protected int getCooldown(ItemStack stack, ItemStack ammo) {
-        return Math.round(this.cooldown * this.getStats(ammo).cooldown());
+    public int getCooldown(ItemStack stack, ItemStack ammo) {
+        return this.cooldown;
     }
 
-    protected int getBulletLifespan() {
-        return 40;
-    }
-
-    @Override
-    protected void shoot(Level level, Player player, ItemStack stack, ItemStack ammo) {
-        this.shootBullet(level, player, ammo, 0.0F);
-    }
-
-    protected void shootBullet(Level level, Player player, ItemStack ammo, float extraInaccuracy) {
-        Bullet bullet = new Bullet(level, player, ammo.copyWithCount(1));
-        bullet.setDamage(this.getBulletDamage(ammo));
-        bullet.setLifespan(this.getBulletLifespan());
-        Vec3 look = player.getLookAngle();
-        bullet.shoot(look.x, look.y, look.z, this.getVelocity(ammo), this.getInaccuracy(ammo) + extraInaccuracy);
+    public void shootBullet(Level level, Player player, ItemStack stack, ItemStack ammo) {
+        Bullet bullet = new Bullet(player, level, stack);
+        BulletComponent bulletComponent = ammo.get(OFDataComponents.BULLET);
+        float damage = this.damage;
+        float velocity = this.velocity;
+        float inaccuracy = this.inaccuracy;
+        ItemStack renderItem = OFItems.SHOT_IRON_BULLET.toStack();
+        if (bulletComponent != null) {
+            renderItem = bulletComponent.renderItem();
+            damage = this.damage * bulletComponent.damageMultiplier();
+            velocity = this.velocity * bulletComponent.velocityMultiplier();
+            inaccuracy = this.inaccuracy * bulletComponent.inaccuracyMultiplier();
+        }
+        bullet.setDamage(damage);
+        bullet.setItem(renderItem);
+        bullet.shootFromRotation(player, player.getXRot(), player.getYRot(), 0, velocity, inaccuracy);
         level.addFreshEntity(bullet);
     }
 }

@@ -33,7 +33,7 @@ public class TriBlasterItem extends BlasterItem {
     }
 
     @Override
-    protected int getCooldown(ItemStack stack, ItemStack ammo) {
+    public int getCooldown(ItemStack stack, ItemStack ammo) {
         return 16;
     }
 
@@ -84,7 +84,7 @@ public class TriBlasterItem extends BlasterItem {
     }
 
     @Override
-    protected void shoot(Level level, Player player, ItemStack stack, ItemStack ammo) {
+    public void shoot(Level level, Player player, ItemStack stack, ItemStack ammo) {
         LaserBolt laserBolt = new LaserBolt(level, player, player.getX(), player.getY() + player.getBbHeight() * 0.8F, player.getZ());
         laserBolt.setDamage(7.0F);
         Vec3 look = player.getLookAngle();

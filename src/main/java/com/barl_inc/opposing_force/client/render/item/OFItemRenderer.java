@@ -35,14 +35,8 @@ public class OFItemRenderer extends BlockEntityWithoutLevelRenderer {
     public static final LeitmotifModel LEITMOTIF_MODEL = new LeitmotifModel(Minecraft.getInstance().getEntityModels().bakeLayer(OFModelLayers.LEITMOTIF));
     public static final ResourceLocation LEITMOTIF_TEXTURE = OpposingForce.location("textures/item/leitmotif.png");
 
-    public static final JaegerModel JAEGER_MODEL = new JaegerModel(Minecraft.getInstance().getEntityModels().bakeLayer(OFModelLayers.JAEGER));
-    public static final ResourceLocation JAEGER_TEXTURE = OpposingForce.location("textures/item/jaeger.png");
-
     public static final BoomstickModel BOOMSTICK_MODEL = new BoomstickModel(Minecraft.getInstance().getEntityModels().bakeLayer(OFModelLayers.BOOMSTICK));
     public static final ResourceLocation BOOMSTICK_TEXTURE = OpposingForce.location("textures/item/boomstick.png");
-
-    public static final GorloffModel GORLOFF_MODEL = new GorloffModel(Minecraft.getInstance().getEntityModels().bakeLayer(OFModelLayers.GORLOFF));
-    public static final ResourceLocation GORLOFF_TEXTURE = OpposingForce.location("textures/item/gorloff.png");
 
     public OFItemRenderer() {
         super(Minecraft.getInstance().getBlockEntityRenderDispatcher(), Minecraft.getInstance().getEntityModels());
@@ -104,13 +98,7 @@ public class OFItemRenderer extends BlockEntityWithoutLevelRenderer {
             CrackshotModel.renderItem(player, stack, displayContext, poseStack, buffer, packedLight, packedOverlay, ageInTicks);
         }
         if (stack.is(OFItems.JAEGER.get())) {
-            poseStack.pushPose();
-            JAEGER_MODEL.setupAnim(player, (JaegerItem) stack.getItem(), stack, displayContext, ageInTicks);
-            JAEGER_MODEL.renderToBuffer(poseStack, buffer.getBuffer(RenderType.entityCutout(JAEGER_TEXTURE)), packedLight, packedOverlay, 0xFFFFFF);
-            if (stack.hasFoil()) {
-                JAEGER_MODEL.renderToBuffer(poseStack, ItemRenderer.getFoilBuffer(buffer, RenderType.entityCutout(JAEGER_TEXTURE), false, true), packedLight, packedOverlay, 0xFFFFFF);
-            }
-            poseStack.popPose();
+            JaegerModel.renderItem(player, stack, displayContext, poseStack, buffer, packedLight, packedOverlay, ageInTicks);
         }
         if (stack.is(OFItems.BOOMSTICK.get())) {
             poseStack.pushPose();
@@ -122,13 +110,7 @@ public class OFItemRenderer extends BlockEntityWithoutLevelRenderer {
             poseStack.popPose();
         }
         if (stack.is(OFItems.GORLOFF.get())) {
-            poseStack.pushPose();
-            GORLOFF_MODEL.setupAnim(player, (GorloffItem) stack.getItem(), stack, displayContext, ageInTicks);
-            GORLOFF_MODEL.renderToBuffer(poseStack, buffer.getBuffer(RenderType.entityCutout(GORLOFF_TEXTURE)), packedLight, packedOverlay, 0xFFFFFF);
-            if (stack.hasFoil()) {
-                GORLOFF_MODEL.renderToBuffer(poseStack, ItemRenderer.getFoilBuffer(buffer, RenderType.entityCutout(GORLOFF_TEXTURE), false, true), packedLight, packedOverlay, 0xFFFFFF);
-            }
-            poseStack.popPose();
+            GorloffModel.renderItem(player, stack, displayContext, poseStack, buffer, packedLight, packedOverlay, ageInTicks);
         }
     }
 }

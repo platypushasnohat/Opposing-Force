@@ -60,7 +60,6 @@ public class ClientEvents {
         event.registerEntityRenderer(OFEntities.MUDBALL.get(), MudballRenderer::new);
         event.registerEntityRenderer(OFEntities.MUD_SPLATTER.get(), MudSplatterRenderer::new);
         event.registerEntityRenderer(OFEntities.BULLET.get(), BulletRenderer::new);
-        event.registerEntityRenderer(OFEntities.SHRAPNEL.get(), ShrapnelRenderer::new);
     }
 
     @SubscribeEvent

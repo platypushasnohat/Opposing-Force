@@ -1,6 +1,5 @@
 package com.barl_inc.opposing_force.item.ranged;
 
-import com.barl_inc.opposing_force.entity.projectile.Bullet;
 import com.barl_inc.opposing_force.item.base.BulletGunItem;
 import com.platypushasnohat.sinew.utils.SinewSoundUtils;
 import net.minecraft.core.component.DataComponents;
@@ -17,12 +16,11 @@ import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.component.CustomData;
 import net.minecraft.world.level.Level;
-import net.minecraft.world.phys.Vec3;
 
 public class GorloffItem extends BulletGunItem {
 
     public GorloffItem(Properties properties) {
-        super(properties.durability(1024), 1.0F, 4.0F, 20.0F, 120);
+        super(properties.durability(650), 1.0F, 2.8F, 6.0F, 100);
     }
 
     @Override
@@ -49,10 +47,12 @@ public class GorloffItem extends BulletGunItem {
                 player.releaseUsingItem();
             } else if (!level.isClientSide && shots < (this.getUseDuration(stack, player) - remainingUseDuration) * 2 / 5 + 1) {
                 ItemStack ammo = this.getAmmo(player);
-                this.shoot(level, player, stack, ammo);
-                setShots(stack, shots + 1);
-                if ((shots + 1) % 4 == 0) {
-                    this.useBullet(player, stack, ammo);
+                if (entity.tickCount % 3 == 0) {
+                    this.shoot(level, player, stack, ammo);
+                    setShots(stack, shots + 1);
+                    if ((shots + 1) % 4 == 0) {
+                        this.useBullet(player, stack, ammo);
+                    }
                 }
             }
         }
@@ -83,14 +83,8 @@ public class GorloffItem extends BulletGunItem {
     }
 
     @Override
-    protected void shoot(Level level, Player player, ItemStack stack, ItemStack ammo) {
-        Bullet bullet = new Bullet(level, player, ammo.copyWithCount(1));
-        bullet.setDamage(this.getBulletDamage(ammo));
-        bullet.setLifespan(this.getBulletLifespan());
-        bullet.setProjectileCount(4);
-        Vec3 look = player.getLookAngle();
-        bullet.shoot(look.x, look.y, look.z, this.getVelocity(ammo), this.getInaccuracy(ammo));
-        level.addFreshEntity(bullet);
+    public void shoot(Level level, Player player, ItemStack stack, ItemStack ammo) {
+        super.shoot(level, player, stack, ammo);
         level.playSound(null, player.getX(), player.getY(), player.getZ(), SoundEvents.FIREWORK_ROCKET_BLAST, SoundSource.PLAYERS, 0.6F, 1.8F * SinewSoundUtils.randomizePitch(level));
     }
 

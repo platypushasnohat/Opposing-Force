@@ -24,8 +24,8 @@ public class OFDamageTypes {
         return new RandomMessageDamageSource(registryAccess.registry(Registries.DAMAGE_TYPE).get().getHolderOrThrow(LASER), source, 1);
     }
 
-    public static DamageSource causeLaserBoltDamage(RegistryAccess registryAccess, Entity source) {
-        return new RandomMessageDamageSource(registryAccess.registry(Registries.DAMAGE_TYPE).get().getHolderOrThrow(LASER_BOLT), source, 1);
+    public static DamageSource causeLaserBoltDamage(RegistryAccess registryAccess, Entity laserBolt, Entity source) {
+        return new RandomMessageDamageSource(registryAccess.registry(Registries.DAMAGE_TYPE).get().getHolderOrThrow(LASER_BOLT), laserBolt, source, 1);
     }
 
     public static DamageSource causeLaserBladeDamage(RegistryAccess registryAccess, Entity source) {

@@ -33,6 +33,7 @@ public class ScatterBlasterItem extends BlasterItem {
         for (int i = 0; i < 8; i++) {
             LaserBolt laserBolt = new LaserBolt(level, player, player.getX(), player.getY() + player.getBbHeight() * 0.8F, player.getZ());
             laserBolt.setDamage(4.0F);
+            laserBolt.setProjectileCount(2);
             laserBolt.shoot(look.x, look.y, look.z, 1.3F, 9.5F);
             level.addFreshEntity(laserBolt);
         }

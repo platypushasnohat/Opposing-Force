@@ -1,6 +1,8 @@
 package com.barl_inc.opposing_force.entity.projectile;
 
+import com.barl_inc.opposing_force.item.base.BulletDefinition;
 import com.barl_inc.opposing_force.registry.OFDamageTypes;
+import com.barl_inc.opposing_force.registry.OFDataMaps;
 import com.barl_inc.opposing_force.registry.OFEntities;
 import com.barl_inc.opposing_force.registry.OFItems;
 import com.barl_inc.opposing_force.registry.OFParticleTypes;
@@ -97,10 +99,15 @@ public class Bullet extends ThrowableItemProjectile implements SplitProjectileBo
         }
     }
 
+    public ItemStack getRenderItem() {
+        BulletDefinition definition = this.getItem().getItemHolder().getData(OFDataMaps.BULLET_DEFINITION);
+        return definition != null ? definition.renderItem() : OFItems.SHOT_IRON_BULLET.toStack();
+    }
+
     @Override
     public void handleEntityEvent(byte id) {
         if (id == 3) {
-            ItemParticleOption particle = new ItemParticleOption(ParticleTypes.ITEM, this.getItem());
+            ItemParticleOption particle = new ItemParticleOption(ParticleTypes.ITEM, this.getRenderItem());
             for (int i = 0; i < 6; i++) {
                 this.level().addParticle(particle, this.getX(), this.getY(), this.getZ(), (this.random.nextDouble() - 0.5D) * 0.1D, this.random.nextDouble() * 0.1D, (this.random.nextDouble() - 0.5D) * 0.1D);
             }

@@ -1,4 +1,4 @@
-package com.barl_inc.opposing_force.client.model.entity;
+package com.barl_inc.opposing_force.client.render.entity;
 
 import com.barl_inc.opposing_force.entity.projectile.Shrapnel;
 import com.mojang.blaze3d.vertex.PoseStack;
@@ -26,7 +26,7 @@ public class ShrapnelRenderer extends EntityRenderer<Shrapnel> {
     @Override
     public void render(Shrapnel entity, float entityYaw, float partialTicks, PoseStack poseStack, MultiBufferSource bufferSource, int packedLight) {
         if (entity.tickCount >= 2 || !(this.entityRenderDispatcher.camera.getEntity().distanceToSqr(entity) < 12.25D)) {
-            TextureAtlasSprite sprite = this.itemRenderer.getModel(entity.getItem(), entity.level(), null, entity.getId()).getParticleIcon();
+            TextureAtlasSprite sprite = this.itemRenderer.getModel(entity.getRenderItem(), entity.level(), null, entity.getId()).getParticleIcon();
             RandomSource random = RandomSource.create(entity.getId());
             float uo = random.nextFloat() * 3.0F;
             float vo = random.nextFloat() * 3.0F;

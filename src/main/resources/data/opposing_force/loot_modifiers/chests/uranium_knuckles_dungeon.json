@@ -7,7 +7,7 @@
     },
     {
       "condition": "minecraft:random_chance",
-      "chance": 0.02
+      "chance": 0.04
     }
   ],
   "table": "opposing_force:chests/uranium_knuckles"

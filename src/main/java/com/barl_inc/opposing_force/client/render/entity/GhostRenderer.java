@@ -19,7 +19,7 @@ public class GhostRenderer extends MobRenderer<Ghost, GhostModel> {
     private static final ResourceLocation TEXTURE_LOCATION = OpposingForce.location("textures/entity/ghost/ghost.png");
 
     public GhostRenderer(EntityRendererProvider.Context context) {
-        super(context, new GhostModel(context.bakeLayer(OFModelLayers.GHOST)), 0.5F);
+        super(context, new GhostModel(context.bakeLayer(OFModelLayers.GHOST)), 0.0F);
         this.addLayer(new GhostGlowLayer(this));
         this.addLayer(new GhostItemLayer(this, context.getItemInHandRenderer()));
     }
@@ -33,10 +33,5 @@ public class GhostRenderer extends MobRenderer<Ghost, GhostModel> {
     @Override
     protected RenderType getRenderType(Ghost ghost, boolean bodyVisible, boolean translucent, boolean glowing) {
         return SpectralSight.isPerceivedByClient(ghost) ? super.getRenderType(ghost, bodyVisible, translucent, glowing) : null;
-    }
-
-    @Override
-    protected float getShadowRadius(Ghost ghost) {
-        return SpectralSight.isPerceivedByClient(ghost) ? super.getShadowRadius(ghost) : 0.0F;
     }
 }

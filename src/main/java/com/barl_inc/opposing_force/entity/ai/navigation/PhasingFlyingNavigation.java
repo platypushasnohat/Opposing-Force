@@ -7,6 +7,7 @@ import net.minecraft.world.entity.Mob;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.pathfinder.Node;
 import net.minecraft.world.level.pathfinder.Path;
+import net.minecraft.world.phys.Vec3;
 
 import javax.annotation.Nullable;
 import java.util.Set;
@@ -25,6 +26,10 @@ public class PhasingFlyingNavigation extends SmoothFlyingNavigation {
         }
         BlockPos target = targets.iterator().next();
         return this.patchPath(new Path(Lists.newArrayList(new Node(target.getX(), target.getY(), target.getZ())), target, true));
+    }
+
+    @Override
+    protected void doStuckDetection(Vec3 position) {
     }
 
     @Override

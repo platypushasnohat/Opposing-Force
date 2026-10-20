@@ -2,19 +2,23 @@
   "type": "minecraft:crafting_shaped",
   "category": "equipment",
   "key": {
-    "S": {
-      "item": "minecraft:cobblestone"
+    "I": {
+      "item": "minecraft:iron_ingot"
     },
     "G": {
+      "item": "minecraft:gold_nugget"
+    },
+    "U": {
       "item": "minecraft:gunpowder"
     }
   },
   "pattern": [
     "G",
-    "S"
+    "U",
+    "I"
   ],
   "result": {
     "count": 16,
-    "id": "opposing_force:stone_bullet"
+    "id": "opposing_force:precision_bullet"
   }
 }

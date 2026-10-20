@@ -13,12 +13,15 @@
     },
     "R": {
       "item": "minecraft:redstone"
+    },
+    "B": {
+      "item": "minecraft:blackstone"
     }
   },
   "pattern": [
     "CGC",
     "CSC",
-    "R R"
+    "RBR"
   ],
   "result": {
     "count": 1,

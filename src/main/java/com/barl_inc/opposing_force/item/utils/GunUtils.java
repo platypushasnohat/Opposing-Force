@@ -14,7 +14,7 @@ public class GunUtils {
             return;
         }
         boolean gunInOtherHand = predicate.test(player.getItemInHand(hand == InteractionHand.MAIN_HAND ? InteractionHand.OFF_HAND : InteractionHand.MAIN_HAND));
-        player.getCooldowns().addCooldown(item.getItem(), gunInOtherHand ? cooldown * 2 / 3 : cooldown);
+        player.getCooldowns().addCooldown(item.getItem(), gunInOtherHand ? Math.round((float) (cooldown * 2) / 3) : cooldown);
     }
 
     public static boolean shouldSwap(Player player, ItemStack item, InteractionHand hand, Predicate<ItemStack> predicate) {

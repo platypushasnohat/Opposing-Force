@@ -26,6 +26,11 @@ public class BoomstickItem extends BulletGunItem {
     }
 
     @Override
+    public int getProjectileCount() {
+        return PROJECTILE_COUNT / 2;
+    }
+
+    @Override
     public InteractionResultHolder<ItemStack> use(Level level, Player player, InteractionHand hand) {
         ItemStack stack = player.getItemInHand(hand);
         InteractionResultHolder<ItemStack> result = InteractionResultHolder.pass(stack);

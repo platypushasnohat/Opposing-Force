@@ -24,6 +24,11 @@ public class GorloffItem extends BulletGunItem {
     }
 
     @Override
+    public int getProjectileCount() {
+        return 2;
+    }
+
+    @Override
     public int getUseDuration(ItemStack stack, LivingEntity entity) {
         return 72000;
     }

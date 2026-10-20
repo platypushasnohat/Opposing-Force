@@ -1,6 +1,7 @@
 package com.barl_inc.opposing_force.entity.projectile;
 
 import com.barl_inc.opposing_force.registry.*;
+import com.platypushasnohat.sinew.entity.utils.SplitProjectileBonus;
 import com.platypushasnohat.sinew.utils.SinewSoundUtils;
 import net.minecraft.core.particles.ParticleOptions;
 import net.minecraft.core.particles.ParticleTypes;
@@ -30,7 +31,7 @@ import net.neoforged.neoforge.event.EventHooks;
 
 import javax.annotation.Nullable;
 
-public class Bullet extends Projectile implements ItemSupplier {
+public class Bullet extends Projectile implements ItemSupplier, SplitProjectileBonus {
 
     protected static final EntityDataAccessor<ItemStack> RENDER_STACK = SynchedEntityData.defineId(Bullet.class, EntityDataSerializers.ITEM_STACK);
     protected static final EntityDataAccessor<Float> DAMAGE = SynchedEntityData.defineId(Bullet.class, EntityDataSerializers.FLOAT);
@@ -40,6 +41,7 @@ public class Bullet extends Projectile implements ItemSupplier {
 
     @Nullable
     protected ItemStack firedFromWeapon = null;
+    private int projectileCount = 1;
 
     public Bullet(EntityType<? extends Projectile> entityType, Level level) {
         super(entityType, level);
@@ -72,6 +74,7 @@ public class Bullet extends Projectile implements ItemSupplier {
             compoundTag.put("Weapon", this.firedFromWeapon.save(this.registryAccess(), new CompoundTag()));
         }
         compoundTag.putFloat("Damage", this.getDamage());
+        compoundTag.putInt("ProjectileCount", this.projectileCount);
     }
 
     @Override
@@ -88,6 +91,9 @@ public class Bullet extends Projectile implements ItemSupplier {
             this.firedFromWeapon = null;
         }
         this.setDamage(compoundTag.getFloat("Damage"));
+        if (compoundTag.contains("ProjectileCount")) {
+            this.projectileCount = compoundTag.getInt("ProjectileCount");
+        }
     }
 
     @Override
@@ -110,6 +116,14 @@ public class Bullet extends Projectile implements ItemSupplier {
     }
     public void setDamage(float damage) {
         this.entityData.set(DAMAGE, damage);
+    }
+
+    @Override
+    public int getProjectileCount() {
+        return this.projectileCount;
+    }
+    public void setProjectileCount(int projectileCount) {
+        this.projectileCount = projectileCount;
     }
 
     public void tickMovement() {

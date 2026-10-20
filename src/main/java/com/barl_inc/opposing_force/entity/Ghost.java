@@ -109,7 +109,7 @@ public class Ghost extends BasicFlyingMonster implements SpectralEntity {
     @Override
     public void setItemSlot(EquipmentSlot slot, ItemStack stack) {
         super.setItemSlot(slot, stack);
-        if (slot == EquipmentSlot.MAINHAND && !this.level().isClientSide) {
+        if (slot.getType() == EquipmentSlot.Type.HAND && !this.level().isClientSide) {
             SpectralSight.refreshTracking(this);
         }
     }
@@ -154,7 +154,7 @@ public class Ghost extends BasicFlyingMonster implements SpectralEntity {
 
     @Override
     public boolean isVisibleWithoutSight(Player viewer) {
-        return !this.getMainHandItem().isEmpty();
+        return !this.getMainHandItem().isEmpty() || !this.getOffhandItem().isEmpty();
     }
 
     @Override

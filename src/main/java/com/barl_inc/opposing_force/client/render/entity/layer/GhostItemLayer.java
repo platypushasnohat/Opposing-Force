@@ -4,7 +4,6 @@ import com.barl_inc.opposing_force.client.model.entity.GhostModel;
 import com.barl_inc.opposing_force.entity.Ghost;
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.math.Axis;
-import com.platypushasnohat.sinew.entity.spectral.SpectralSight;
 import net.minecraft.client.renderer.ItemInHandRenderer;
 import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.entity.RenderLayerParent;
@@ -24,9 +23,7 @@ public class GhostItemLayer extends RenderLayer<Ghost, GhostModel> {
     @Override
     public void render(PoseStack poseStack, MultiBufferSource buffer, int packedLight, Ghost ghost, float limbSwing, float limbSwingAmount, float partialTicks, float ageInTicks, float netHeadYaw, float headPitch) {
         this.renderHandItem(poseStack, buffer, packedLight, ghost, ghost.getMainHandItem(), false);
-        if (SpectralSight.isPerceivedByClient(ghost)) {
-            this.renderHandItem(poseStack, buffer, packedLight, ghost, ghost.getOffhandItem(), true);
-        }
+        this.renderHandItem(poseStack, buffer, packedLight, ghost, ghost.getOffhandItem(), true);
     }
 
     private void renderHandItem(PoseStack poseStack, MultiBufferSource buffer, int packedLight, Ghost ghost, ItemStack stack, boolean left) {

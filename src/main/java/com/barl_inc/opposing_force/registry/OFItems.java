@@ -103,23 +103,23 @@ public class OFItems {
     public static final DeferredItem<Item> PRECISION_BULLET = registerItem("precision_bullet", () -> new Item(new Item.Properties().component(OFDataComponents.BULLET.get(), new BulletComponent(SHOT_PRECISION_BULLET.toStack(), 1.2F, 0.8F, 1.2F))));
 
     //trinket
-    public static final DeferredItem<Item> RELIC_FEATHER = registerItem("relic_feather", () -> new RelicFeatherItem(new Item.Properties().rarity(Rarity.UNCOMMON).stacksTo(1)));
-    public static final DeferredItem<Item> BEETLE_HUSK = registerItem("beetle_husk", () -> new BeetleHuskItem(new Item.Properties().stacksTo(1)));
-    public static final DeferredItem<Item> ENCHANTED_CHISEL = registerItem("enchanted_chisel", () -> new EnchantedChiselItem(new Item.Properties().rarity(Rarity.UNCOMMON).stacksTo(1)));
-    public static final DeferredItem<Item> POT_OF_GREEN = registerItem("pot_of_green", () -> new PotOfGreenItem(new Item.Properties().rarity(Rarity.RARE).stacksTo(1)));
-    public static final DeferredItem<Item> THORNY_BRACELET = registerItem("thorny_bracelet", () -> new ThornyBraceletItem(new Item.Properties().stacksTo(1)));
-    public static final DeferredItem<Item> RANGER_MANUAL = registerItem("ranger_manual", () -> new RangerManualItem(new Item.Properties().stacksTo(1)));
-    public static final DeferredItem<Item> SHARPSHOOTER_COIN = registerItem("sharpshooter_coin", () -> new SharpshooterCoinItem(new Item.Properties().stacksTo(1).rarity(Rarity.UNCOMMON)));
-    public static final DeferredItem<Item> TEAR_OF_AQUARIUS = registerItem("tear_of_aquarius", () -> new TearOfAquariusItem(new Item.Properties().stacksTo(1).rarity(Rarity.RARE)));
-    public static final DeferredItem<Item> BLACK_BELT = registerItem("black_belt", () -> new BlackBeltItem(new Item.Properties().stacksTo(1).rarity(Rarity.UNCOMMON)));
-    public static final DeferredItem<Item> BLOOD_AMULET = registerItem("blood_amulet", () -> new BloodAmuletItem(new Item.Properties().stacksTo(1).rarity(Rarity.RARE)));
-    public static final DeferredItem<Item> FIERY_CARAPACE = registerItem("fiery_carapace", () -> new FieryCarapaceItem(new Item.Properties().stacksTo(1)));
-    public static final DeferredItem<Item> URANIUM_KNUCKLES = registerItem("uranium_knuckles", () -> new UraniumKnucklesItem(new Item.Properties().stacksTo(1).rarity(Rarity.UNCOMMON)));
-    public static final DeferredItem<Item> MAGNETISED_ENHANCEMENTS = registerItem("magnetised_enhancements", () -> new MagnetisedEnhancementsItem(new Item.Properties().stacksTo(1).rarity(Rarity.UNCOMMON)));
-    public static final DeferredItem<Item> LUCKY_TACKLEBOX = registerItem("lucky_tacklebox", () -> new LuckyTackleboxItem(new Item.Properties().stacksTo(1)));
-    public static final DeferredItem<Item> SLIMY_SHIELD = registerItem("slimy_shield", () -> new SlimyShieldItem(new Item.Properties().stacksTo(1).rarity(Rarity.UNCOMMON)));
-    public static final DeferredItem<Item> STALKERS_GLOVES = registerItemNoLang("stalkers_gloves", () -> new StalkersGlovesItem(new Item.Properties().stacksTo(1)));
-    public static final DeferredItem<Item> MUNITIONS_BOX = registerItem("munitions_box", () -> new MunitionsBoxItem(new Item.Properties().stacksTo(1)));
+    public static final DeferredItem<Item> RELIC_FEATHER = registerItem("relic_feather", () -> new RelicFeatherItem(new Item.Properties().rarity(Rarity.UNCOMMON).stacksTo(1), OFCurioDefinitions.RELIC_FEATHER));
+    public static final DeferredItem<Item> BEETLE_HUSK = registerItem("beetle_husk", () -> new CurioItem(new Item.Properties().stacksTo(1), OFCurioDefinitions.BEETLE_HUSK));
+    public static final DeferredItem<Item> ENCHANTED_CHISEL = registerItem("enchanted_chisel", () -> new CurioItem(new Item.Properties().rarity(Rarity.UNCOMMON).stacksTo(1), OFCurioDefinitions.ENCHANTED_CHISEL));
+    public static final DeferredItem<Item> POT_OF_GREEN = registerItem("pot_of_green", () -> new CurioItem(new Item.Properties().rarity(Rarity.RARE).stacksTo(1), OFCurioDefinitions.POT_OF_GREEN));
+    public static final DeferredItem<Item> THORNY_BRACELET = registerItem("thorny_bracelet", () -> new CurioItem(new Item.Properties().stacksTo(1), OFCurioDefinitions.THORNY_BRACELET));
+    public static final DeferredItem<Item> RANGER_MANUAL = registerItem("ranger_manual", () -> new CurioItem(new Item.Properties().stacksTo(1), OFCurioDefinitions.RANGER_MANUAL));
+    public static final DeferredItem<Item> SHARPSHOOTER_COIN = registerItem("sharpshooter_coin", () -> new CurioItem(new Item.Properties().stacksTo(1).rarity(Rarity.UNCOMMON), OFCurioDefinitions.SHARPSHOOTER_COIN));
+    public static final DeferredItem<Item> TEAR_OF_AQUARIUS = registerItem("tear_of_aquarius", () -> new CurioItem(new Item.Properties().stacksTo(1).rarity(Rarity.RARE), OFCurioDefinitions.TEAR_OF_AQUARIUS));
+    public static final DeferredItem<Item> BLACK_BELT = registerItem("black_belt", () -> new CurioItem(new Item.Properties().stacksTo(1).rarity(Rarity.UNCOMMON), OFCurioDefinitions.BLACK_BELT));
+    public static final DeferredItem<Item> BLOOD_AMULET = registerItem("blood_amulet", () -> new CurioItem(new Item.Properties().stacksTo(1).rarity(Rarity.RARE), OFCurioDefinitions.BLOOD_AMULET));
+    public static final DeferredItem<Item> FIERY_CARAPACE = registerItem("fiery_carapace", () -> new CurioItem(new Item.Properties().stacksTo(1), OFCurioDefinitions.FIERY_CARAPACE));
+    public static final DeferredItem<Item> URANIUM_KNUCKLES = registerItem("uranium_knuckles", () -> new CurioItem(new Item.Properties().stacksTo(1).rarity(Rarity.UNCOMMON), OFCurioDefinitions.URANIUM_KNUCKLES));
+    public static final DeferredItem<Item> MAGNETISED_ENHANCEMENTS = registerItem("magnetised_enhancements", () -> new MagnetisedEnhancementsItem(new Item.Properties().stacksTo(1).rarity(Rarity.UNCOMMON), OFCurioDefinitions.MAGNETISED_ENHANCEMENTS));
+    public static final DeferredItem<Item> LUCKY_TACKLEBOX = registerItem("lucky_tacklebox", () -> new CurioItem(new Item.Properties().stacksTo(1), OFCurioDefinitions.LUCKY_TACKLEBOX));
+    public static final DeferredItem<Item> SLIMY_SHIELD = registerItem("slimy_shield", () -> new CurioItem(new Item.Properties().stacksTo(1).rarity(Rarity.UNCOMMON), OFCurioDefinitions.SLIMY_SHIELD));
+    public static final DeferredItem<Item> STALKERS_GLOVES = registerItemNoLang("stalkers_gloves", () -> new CurioItem(new Item.Properties().stacksTo(1), OFCurioDefinitions.STALKERS_GLOVES));
+    public static final DeferredItem<Item> MUNITIONS_BOX = registerItem("munitions_box", () -> new CurioItem(new Item.Properties().stacksTo(1), OFCurioDefinitions.MUNITIONS_BOX));
 
     //Permanent Upgrades
     public static final DeferredItem<Item> CRYSTALIZED_HEART = registerItem("crystalized_heart", () -> new CrystalizedHeartItem(new Item.Properties().stacksTo(1).rarity(Rarity.EPIC).food(OFFoodProperties.CRYSTALIZED_HEART)));

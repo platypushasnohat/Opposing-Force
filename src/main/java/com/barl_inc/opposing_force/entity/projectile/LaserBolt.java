@@ -4,6 +4,7 @@ import com.barl_inc.opposing_force.registry.OFDamageTypes;
 import com.barl_inc.opposing_force.registry.OFEntities;
 import com.barl_inc.opposing_force.registry.OFParticleTypes;
 import com.barl_inc.opposing_force.registry.OFSoundEvents;
+import com.platypushasnohat.sinew.entity.utils.SplitProjectileBonus;
 import com.platypushasnohat.sinew.utils.SinewSoundUtils;
 import net.minecraft.core.BlockPos;
 import net.minecraft.network.protocol.game.ClientboundAddEntityPacket;
@@ -27,13 +28,14 @@ import net.neoforged.neoforge.event.EventHooks;
 
 import java.util.Arrays;
 
-public class LaserBolt extends Projectile {
+public class LaserBolt extends Projectile implements SplitProjectileBonus {
 
     private static final EntityDataAccessor<Float> DAMAGE = SynchedEntityData.defineId(LaserBolt.class, EntityDataSerializers.FLOAT);
 
     private static final byte HIT_EFFECTS = 3;
 
     private int pierceCount = 0;
+    private int projectileCount = 1;
 
     private final Vec3[] trailPositions = new Vec3[64];
     private int trailPointer = -1;
@@ -69,6 +71,15 @@ public class LaserBolt extends Projectile {
     }
 
     @Override
+    public int getProjectileCount() {
+        return this.projectileCount;
+    }
+
+    public void setProjectileCount(int projectileCount) {
+        this.projectileCount = projectileCount;
+    }
+
+    @Override
     public void tick() {
         super.tick();
         HitResult hitresult = ProjectileUtil.getHitResultOnMoveVector(this, this::canHitEntity);
@@ -98,7 +109,7 @@ public class LaserBolt extends Projectile {
     @Override
     protected void onHitEntity(EntityHitResult result) {
         Entity entity = result.getEntity();
-        DamageSource damageSource = OFDamageTypes.causeLaserBoltDamage(this.level().registryAccess(), this.getOwner());
+        DamageSource damageSource = OFDamageTypes.causeLaserBoltDamage(this.level().registryAccess(), this, this.getOwner());
         if (!this.level().isClientSide) {
             if (entity.hurt(damageSource, this.getDamage())) {
                 this.pierceCount++;

@@ -2,9 +2,7 @@ package com.barl_inc.opposing_force.item.curios;
 
 import com.barl_inc.opposing_force.OpposingForce;
 import com.barl_inc.opposing_force.registry.OFItems;
-import net.minecraft.ChatFormatting;
 import net.minecraft.nbt.CompoundTag;
-import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.Mth;
 import net.minecraft.world.entity.LivingEntity;
@@ -15,19 +13,12 @@ import net.minecraft.world.item.ItemStack;
 import top.theillusivec4.curios.api.CuriosApi;
 import top.theillusivec4.curios.api.SlotContext;
 
-import java.util.function.Consumer;
-
 public class MagnetisedEnhancementsItem extends CurioItem {
 
     private static final ResourceLocation MINING_MOMENTUM = OpposingForce.location("mining_momentum");
 
-    public MagnetisedEnhancementsItem(Properties properties) {
-        super(properties);
-    }
-
-    @Override
-    public void addTooltipLines(Consumer<Component> consumer) {
-        consumer.accept(Component.translatable("item.opposing_force.magnetised_enhancements.description").withStyle(ChatFormatting.BLUE));
+    public MagnetisedEnhancementsItem(Properties properties, CurioDefinition definition) {
+        super(properties, definition);
     }
 
     @Override

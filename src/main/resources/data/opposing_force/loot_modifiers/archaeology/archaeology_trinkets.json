@@ -16,7 +16,7 @@
     },
     {
       "condition": "minecraft:random_chance",
-      "chance": 0.16
+      "chance": 0.18
     }
   ],
   "table": "opposing_force:archaeology/archaeology_trinkets"

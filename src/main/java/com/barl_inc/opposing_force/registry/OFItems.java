@@ -2,7 +2,9 @@ package com.barl_inc.opposing_force.registry;
 
 import com.barl_inc.opposing_force.OpposingForce;
 import com.barl_inc.opposing_force.item.*;
-import com.barl_inc.opposing_force.item.curios.*;
+import com.barl_inc.opposing_force.item.curios.CurioItem;
+import com.barl_inc.opposing_force.item.curios.MagnetisedEnhancementsItem;
+import com.barl_inc.opposing_force.item.curios.RelicFeatherItem;
 import com.barl_inc.opposing_force.item.ranged.*;
 import com.barl_inc.opposing_force.item.ranged.ammo.BulletComponent;
 import com.barl_inc.opposing_force.item.ranged.ammo.PowerCellItem;

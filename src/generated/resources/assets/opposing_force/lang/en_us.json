@@ -28,6 +28,8 @@
   "death.attack.scorch_0.entity": "%s was scorched by %s",
   "death.attack.scorch_1": "%s was burnt to ash",
   "death.attack.scorch_1.entity": "%s was burnt to ash by %s",
+  "enchantment.opposing_force.frost_aspect": "Frost Aspect",
+  "enchantment.opposing_force.frost_aspect.desc": "Inflicts freezing on hit",
   "enchantment.opposing_force.magic_protection": "Magic Protection",
   "enchantment.opposing_force.magic_protection.desc": "Reduces magic damageMultiplier taken and shortens the duration of negative effects applied to the wearer.",
   "entity.opposing_force.acid_charge": "Acid Charge",

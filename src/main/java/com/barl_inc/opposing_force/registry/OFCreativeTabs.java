@@ -52,7 +52,7 @@ public class OFCreativeTabs {
                         output.accept(OFItems.TERROR_LEG);
                         output.accept(OFItems.FRIED_TERROR_LEG);
 
-                        // misc tools and armor (non individual weapons)
+                        // misc tools and armor (non-individual weapons)
                         output.accept(OFItems.EMERALD_SWORD);
                         output.accept(OFItems.EMERALD_SHOVEL);
                         output.accept(OFItems.EMERALD_PICKAXE);
@@ -72,10 +72,10 @@ public class OFCreativeTabs {
                         output.accept(OFItems.MOON_SHOES);
 
                         //misc weapons
-                        output.accept(OFItems.BOOMSTICK);
                         output.accept(OFItems.CRACKSHOT);
-                        output.accept(OFItems.GORLOFF);
                         output.accept(OFItems.JAEGER);
+                        output.accept(OFItems.BOOMSTICK);
+                        output.accept(OFItems.GORLOFF);
 
                         //misc bullets
                         output.accept(OFItems.STONE_BULLET);

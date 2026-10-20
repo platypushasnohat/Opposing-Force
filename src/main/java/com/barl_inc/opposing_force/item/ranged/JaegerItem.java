@@ -2,7 +2,7 @@ package com.barl_inc.opposing_force.item.ranged;
 
 import com.barl_inc.opposing_force.item.base.BulletGunItem;
 import com.barl_inc.opposing_force.registry.OFSoundEvents;
-import com.platypushasnohat.sinew.client.animation.ItemAnimationState;
+import com.platypushasnohat.sinew.item.ItemAnimations;
 import com.platypushasnohat.sinew.utils.SinewSoundUtils;
 import net.minecraft.core.component.DataComponents;
 import net.minecraft.nbt.CompoundTag;
@@ -17,7 +17,7 @@ import net.minecraft.world.level.Level;
 
 public class JaegerItem extends BulletGunItem {
 
-    public final ItemAnimationState cockAnimationState = new ItemAnimationState();
+    public static final String COCK_ANIMATION = "cock";
 
     public JaegerItem(Properties properties) {
         super(properties.durability(650), 6.0F, 3.5F, 0.5F, 20);
@@ -29,12 +29,13 @@ public class JaegerItem extends BulletGunItem {
         InteractionResultHolder<ItemStack> result = InteractionResultHolder.pass(stack);
         if (isCocked(stack) || !this.canShoot(player, hand)) {
             result = super.use(level, player, hand);
-        } else if (level.isClientSide) {
-            this.cockAnimationState.start(player.tickCount, player);
         } else {
-            setCocked(stack, true);
-            player.getCooldowns().addCooldown(this, this.getShotCooldown() - 5);
-            level.playSound(null, player.getX(), player.getY(), player.getZ(), SoundEvents.IRON_TRAPDOOR_CLOSE, SoundSource.PLAYERS, 0.5F, 1.4F * SinewSoundUtils.randomizePitch(player));
+            ItemAnimations.start(player, stack, COCK_ANIMATION);
+            if (!level.isClientSide) {
+                setCocked(stack, true);
+                player.getCooldowns().addCooldown(this, this.getCooldown(stack, ItemStack.EMPTY) - 5);
+                level.playSound(null, player.getX(), player.getY(), player.getZ(), SoundEvents.IRON_TRAPDOOR_CLOSE, SoundSource.PLAYERS, 0.5F, 1.4F * SinewSoundUtils.randomizePitch(player));
+            }
         }
         return result;
     }

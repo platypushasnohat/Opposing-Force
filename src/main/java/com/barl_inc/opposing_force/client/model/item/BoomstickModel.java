@@ -2,6 +2,7 @@ package com.barl_inc.opposing_force.client.model.item;
 
 import com.barl_inc.opposing_force.OpposingForce;
 import com.barl_inc.opposing_force.client.model.item.animation.BoomstickAnimations;
+import com.barl_inc.opposing_force.item.base.GunItem;
 import com.barl_inc.opposing_force.item.ranged.BoomstickItem;
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.VertexConsumer;
@@ -32,8 +33,8 @@ public class BoomstickModel extends AnimatedItemModel<BoomstickItem> {
     @Override
     public void setupAnim(Entity entity, BoomstickItem item, ItemStack stack, ItemDisplayContext displayContext, float ageInTicks) {
         this.root().getAllParts().forEach(ModelPart::resetPose);
-        this.animate(entity, item.shootAnimationState, BoomstickAnimations.SHOOT, ageInTicks);
-        this.animate(entity, item.reloadAnimationState, BoomstickAnimations.RELOAD, ageInTicks);
+        this.animate(stack, GunItem.SHOOT_ANIMATION, BoomstickAnimations.SHOOT);
+        this.animate(stack, BoomstickItem.RELOAD_ANIMATION, BoomstickAnimations.RELOAD);
     }
 
     @Override

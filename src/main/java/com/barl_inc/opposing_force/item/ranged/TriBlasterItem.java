@@ -2,6 +2,7 @@ package com.barl_inc.opposing_force.item.ranged;
 
 import com.barl_inc.opposing_force.entity.projectile.LaserBolt;
 import com.barl_inc.opposing_force.registry.OFSoundEvents;
+import com.platypushasnohat.sinew.item.ItemAnimations;
 import com.platypushasnohat.sinew.utils.SinewSoundUtils;
 import net.minecraft.core.component.DataComponents;
 import net.minecraft.nbt.CompoundTag;
@@ -63,9 +64,8 @@ public class TriBlasterItem extends BlasterItem {
         int shootTime = getShootTime(stack);
         if (isSelected && entity instanceof Player player) {
             if (shooting && (shootTime == 1 || shootTime == 5 || shootTime == 9)) {
-                if (level.isClientSide) {
-                    this.shootAnimationState.start(player.tickCount, player);
-                } else {
+                ItemAnimations.start(player, stack, SHOOT_ANIMATION);
+                if (!level.isClientSide) {
                     ItemStack ammo = this.getAmmo(player);
                     this.shoot(level, player, stack, ammo);
                     if (shootTime == 1) {

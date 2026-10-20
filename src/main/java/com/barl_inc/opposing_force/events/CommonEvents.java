@@ -6,6 +6,7 @@ import com.barl_inc.opposing_force.entity.*;
 import com.barl_inc.opposing_force.entity.ai.goal.LightDependentTargetGoal;
 import com.barl_inc.opposing_force.entity.misc.MudSplatter;
 import com.barl_inc.opposing_force.item.curios.MagnetisedEnhancementsItem;
+import com.barl_inc.opposing_force.item.curios.SpectralGogglesItem;
 import com.barl_inc.opposing_force.registry.OFEntities;
 import com.barl_inc.opposing_force.registry.OFItems;
 import com.platypushasnohat.sinew.entity.base.AnimatedMonster;
@@ -41,6 +42,7 @@ import net.neoforged.neoforge.event.entity.RegisterSpawnPlacementsEvent;
 import net.neoforged.neoforge.event.entity.living.LivingDamageEvent;
 import net.neoforged.neoforge.event.entity.living.LivingIncomingDamageEvent;
 import net.neoforged.neoforge.event.level.BlockEvent;
+import net.neoforged.neoforge.event.tick.PlayerTickEvent;
 import net.neoforged.neoforge.event.village.WandererTradesEvent;
 import top.theillusivec4.curios.api.CuriosApi;
 
@@ -145,6 +147,13 @@ public class CommonEvents {
     public static void onEnderTeleport(EntityTeleportEvent.EnderEntity event) {
         if (event.getEntityLiving() instanceof EnderMan enderman && !enderman.level().getEntitiesOfClass(MudSplatter.class, enderman.getBoundingBox()).isEmpty()) {
             event.setCanceled(true);
+        }
+    }
+
+    @SubscribeEvent
+    public static void onPlayerTick(PlayerTickEvent.Post event) {
+        if (!event.getEntity().level().isClientSide) {
+            SpectralGogglesItem.updateSight(event.getEntity());
         }
     }
 

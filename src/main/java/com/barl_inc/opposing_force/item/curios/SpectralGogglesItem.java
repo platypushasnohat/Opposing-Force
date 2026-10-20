@@ -1,13 +1,13 @@
 package com.barl_inc.opposing_force.item.curios;
 
 import com.barl_inc.opposing_force.OpposingForce;
+import com.barl_inc.opposing_force.registry.OFItems;
 import com.platypushasnohat.sinew.entity.spectral.SpectralSight;
 import net.minecraft.ChatFormatting;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
-import net.minecraft.world.entity.LivingEntity;
-import net.minecraft.world.item.ItemStack;
-import top.theillusivec4.curios.api.SlotContext;
+import net.minecraft.world.entity.player.Player;
+import top.theillusivec4.curios.api.CuriosApi;
 
 import java.util.function.Consumer;
 
@@ -24,21 +24,11 @@ public class SpectralGogglesItem extends CurioItem {
         super.addTooltipLines(component -> consumer.accept(component.copy().withStyle(ChatFormatting.ITALIC)));
     }
 
-    @Override
-    public void curioTick(SlotContext context, ItemStack stack) {
-        LivingEntity entity = context.entity();
-        if (!entity.level().isClientSide) {
-            SpectralSight.addSource(entity, SPECTRAL_SIGHT);
+    public static void updateSight(Player player) {
+        if (CuriosApi.getCuriosInventory(player).map(inventory -> inventory.isEquipped(OFItems.SPECTRAL_GOGGLES.get())).orElse(false)) {
+            SpectralSight.addSource(player, SPECTRAL_SIGHT);
+        } else {
+            SpectralSight.removeSource(player, SPECTRAL_SIGHT);
         }
-        super.curioTick(context, stack);
-    }
-
-    @Override
-    public void onUnequip(SlotContext context, ItemStack newStack, ItemStack stack) {
-        LivingEntity entity = context.entity();
-        if (!entity.level().isClientSide && !newStack.is(this)) {
-            SpectralSight.removeSource(entity, SPECTRAL_SIGHT);
-        }
-        super.onUnequip(context, newStack, stack);
     }
 }

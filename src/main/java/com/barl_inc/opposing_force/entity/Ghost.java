@@ -101,9 +101,9 @@ public class Ghost extends BasicFlyingMonster implements SpectralEntity {
     public float getAttackCooldownMultiplier() {
         ItemStack tool = this.getMainHandItem();
         if (tool.getItem() instanceof AxeItem) {
-            return 2.0F;
+            return 1.4F;
         }
-        return tool.getItem() instanceof SwordItem ? 1.5F : 1.0F;
+        return tool.getItem() instanceof SwordItem ? 1.1F : 0.7F;
     }
 
     @Override
@@ -149,7 +149,7 @@ public class Ghost extends BasicFlyingMonster implements SpectralEntity {
         this.setItemSlot(EquipmentSlot.OFFHAND, taken);
         this.setGuaranteedDrop(EquipmentSlot.OFFHAND);
         this.setPersistenceRequired();
-        this.carryCooldown = 600 + this.random.nextInt(600);
+        this.carryCooldown = 100 + this.random.nextInt(100);
     }
 
     @Override

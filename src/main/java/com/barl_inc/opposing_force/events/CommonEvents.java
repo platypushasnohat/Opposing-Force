@@ -64,6 +64,7 @@ public class CommonEvents {
         event.put(OFEntities.MUSHY.get(), Mushy.registerAttributes().build());
         event.put(OFEntities.MOTIF.get(), Motif.registerAttributes().build());
         event.put(OFEntities.FILLET.get(), Fillet.registerAttributes().build());
+        event.put(OFEntities.GHOST.get(), Ghost.registerAttributes().build());
     }
 
     @SubscribeEvent

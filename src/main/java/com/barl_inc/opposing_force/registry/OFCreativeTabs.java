@@ -21,6 +21,7 @@ public class OFCreativeTabs {
                         output.accept(OFItems.DICER_SPAWN_EGG);
                         output.accept(OFItems.FILLET_SPAWN_EGG);
                         output.accept(OFItems.FURBALL_SPAWN_EGG);
+                        output.accept(OFItems.GHOST_SPAWN_EGG);
                         output.accept(OFItems.GNAT_SPAWN_EGG);
                         output.accept(OFItems.GUSHER_SPAWN_EGG);
                         output.accept(OFItems.MOTIF_SPAWN_EGG);

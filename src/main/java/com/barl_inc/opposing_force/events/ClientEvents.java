@@ -55,6 +55,7 @@ public class ClientEvents {
         event.registerEntityRenderer(OFEntities.MOTIF.get(), MotifRenderer::new);
         event.registerEntityRenderer(OFEntities.FILLET.get(), FilletRenderer::new);
         event.registerEntityRenderer(OFEntities.GHOST.get(), GhostRenderer::new);
+        event.registerEntityRenderer(OFEntities.ROAMER.get(), RoamerRenderer::new);
 
         event.registerEntityRenderer(OFEntities.DICER_LASER.get(), DicerLaserRenderer::new);
         event.registerEntityRenderer(OFEntities.LASER_BOLT.get(), LaserBoltRenderer::new);
@@ -80,6 +81,7 @@ public class ClientEvents {
         event.registerLayerDefinition(OFModelLayers.MOTIF, MotifModel::createBodyLayer);
         event.registerLayerDefinition(OFModelLayers.FILLET, FilletModel::createBodyLayer);
         event.registerLayerDefinition(OFModelLayers.GHOST, GhostModel::createBodyLayer);
+        event.registerLayerDefinition(OFModelLayers.ROAMER, RoamerModel::createBodyLayer);
 
         event.registerLayerDefinition(OFModelLayers.LASER_BOLT, LaserBoltModel::createBodyLayer);
         event.registerLayerDefinition(OFModelLayers.ACID_CHARGE, AcidChargeModel::createBodyLayer);

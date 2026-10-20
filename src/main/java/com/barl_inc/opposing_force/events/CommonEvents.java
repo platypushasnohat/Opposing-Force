@@ -26,6 +26,7 @@ import net.minecraft.world.entity.Mob;
 import net.minecraft.world.entity.SpawnPlacementTypes;
 import net.minecraft.world.entity.ai.goal.AvoidEntityGoal;
 import net.minecraft.world.entity.monster.EnderMan;
+import net.minecraft.world.entity.monster.Monster;
 import net.minecraft.world.entity.monster.Spider;
 import net.minecraft.world.entity.npc.VillagerTrades;
 import net.minecraft.world.entity.player.Player;
@@ -65,6 +66,7 @@ public class CommonEvents {
         event.put(OFEntities.MOTIF.get(), Motif.registerAttributes().build());
         event.put(OFEntities.FILLET.get(), Fillet.registerAttributes().build());
         event.put(OFEntities.GHOST.get(), Ghost.registerAttributes().build());
+        event.put(OFEntities.ROAMER.get(), Roamer.registerAttributes().build());
     }
 
     @SubscribeEvent
@@ -81,6 +83,7 @@ public class CommonEvents {
         event.register(OFEntities.MOTIF.get(), SpawnPlacementTypes.ON_GROUND, Heightmap.Types.MOTION_BLOCKING_NO_LEAVES, Motif::checkSurfaceMonsterSpawnRules, RegisterSpawnPlacementsEvent.Operation.AND);
         event.register(OFEntities.FILLET.get(), SpawnPlacementTypes.IN_WATER, Heightmap.Types.MOTION_BLOCKING_NO_LEAVES, Fillet::checkFilletSpawnRules, RegisterSpawnPlacementsEvent.Operation.AND);
         event.register(OFEntities.GHOST.get(), SpawnPlacementTypes.ON_GROUND, Heightmap.Types.MOTION_BLOCKING_NO_LEAVES, Ghost::checkGhostSpawnRules, RegisterSpawnPlacementsEvent.Operation.AND);
+        event.register(OFEntities.ROAMER.get(), SpawnPlacementTypes.ON_GROUND, Heightmap.Types.MOTION_BLOCKING_NO_LEAVES, Roamer::checkRoamerSpawnRules, RegisterSpawnPlacementsEvent.Operation.AND);
     }
 
     @SubscribeEvent

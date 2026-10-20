@@ -36,6 +36,7 @@ public class OFEntities {
     public static final DeferredHolder<EntityType<?>, EntityType<Motif>> MOTIF = registerEntity("motif", Motif::new, MobCategory.MONSTER, builder -> builder.sized(1.5F, 2.8F).eyeHeight(2.5F).clientTrackingRange(8));
     public static final DeferredHolder<EntityType<?>, EntityType<Fillet>> FILLET = registerEntity("fillet", Fillet::new, OFMobCategories.AQUIFER_MONSTER, builder -> builder.sized(0.5F, 0.5F).eyeHeight(0.25F).clientTrackingRange(8));
     public static final DeferredHolder<EntityType<?>, EntityType<Ghost>> GHOST = registerEntity("ghost", Ghost::new, MobCategory.MONSTER, builder -> builder.sized(0.75F, 1.85F).eyeHeight(1.55F).clientTrackingRange(8));
+    public static final DeferredHolder<EntityType<?>, EntityType<Roamer>> ROAMER = registerEntity("roamer", Roamer::new, MobCategory.MONSTER, builder -> builder.sized(0.7F, 1.75F).eyeHeight(1.45F).clientTrackingRange(8));
 
     //other
     public static final DeferredHolder<EntityType<?>, EntityType<DicerLaser>> DICER_LASER = registerEntity("dicer_laser", DicerLaser::new, MobCategory.MISC, builder -> builder.sized(0.1F, 0.1F).setUpdateInterval(1).clientTrackingRange(4).fireImmune());

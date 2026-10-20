@@ -17,6 +17,7 @@ public class OFModelLayers {
     public static final ModelLayerLocation MOTIF = register("motif");
     public static final ModelLayerLocation FILLET = register("fillet");
     public static final ModelLayerLocation GHOST = register("ghost");
+    public static final ModelLayerLocation ROAMER = register("roamer");
 
     public static final ModelLayerLocation LASER_BOLT = register("laser_bolt");
 

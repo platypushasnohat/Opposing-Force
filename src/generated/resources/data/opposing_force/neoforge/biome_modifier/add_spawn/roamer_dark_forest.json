@@ -1,0 +1,10 @@
+{
+  "type": "neoforge:add_spawns",
+  "biomes": "#opposing_force:has_monster/dark_forest",
+  "spawners": {
+    "type": "opposing_force:roamer",
+    "maxCount": 1,
+    "minCount": 1,
+    "weight": 8
+  }
+}

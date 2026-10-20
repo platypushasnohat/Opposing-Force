@@ -48,6 +48,7 @@ public class OpposingForce {
         OFDataComponents.DATA_COMPONENTS.register(modEventBus);
         OFLootModifiers.LOOT_MODIFIERS.register(modEventBus);
         OFCreativeTabs.CREATIVE_MODE_TAB.register(modEventBus);
+        modEventBus.addListener(OFMobVariants::registerDatapackRegistries);
         modEventBus.addListener(this::commonSetup);
         modEventBus.addListener(this::clientSetup);
         modEventBus.addListener(this::dataSetup);

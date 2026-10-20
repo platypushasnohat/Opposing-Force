@@ -3,8 +3,8 @@
   "biomes": "#opposing_force:has_monster/birch_forest",
   "spawners": {
     "type": "opposing_force:roamer",
-    "maxCount": 1,
+    "maxCount": 3,
     "minCount": 1,
-    "weight": 20
+    "weight": 33
   }
 }

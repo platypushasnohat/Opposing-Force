@@ -4,7 +4,6 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.tags.BlockTags;
 import net.minecraft.util.Mth;
-import net.minecraft.world.entity.EntitySelector;
 import net.minecraft.world.entity.PathfinderMob;
 import net.minecraft.world.entity.ai.goal.Goal;
 import net.minecraft.world.entity.player.Player;
@@ -41,13 +40,13 @@ public class StalkGoal extends Goal {
 
     @Override
     public boolean canUse() {
-        this.player = this.mob.level().getNearestPlayer(this.mob.getX(), this.mob.getY(), this.mob.getZ(), this.playerSearchRange, EntitySelector.NO_SPECTATORS);
+        this.player = this.mob.level().getNearestPlayer(this.mob, this.playerSearchRange);
         return this.player != null;
     }
 
     @Override
     public boolean canContinueToUse() {
-        return this.player != null && this.player.isAlive() && !this.player.isSpectator() && this.mob.distanceToSqr(this.player) < this.playerSearchRange * this.playerSearchRange;
+        return this.player != null && this.player.isAlive() && !this.player.isSpectator() && this.mob.closerThan(this.player, this.playerSearchRange);
     }
 
     @Override
@@ -86,7 +85,7 @@ public class StalkGoal extends Goal {
         Vec3 fallback = null;
         for (int i = 0; i < 10; i++) {
             float angle = this.mob.getRandom().nextFloat() * Mth.TWO_PI;
-            double distance = this.minPlayerDistance + this.mob.getRandom().nextDouble() * (this.maxPlayerDistance - this.minPlayerDistance);
+            double distance = Mth.nextDouble(this.mob.getRandom(), this.minPlayerDistance, this.maxPlayerDistance);
             int x = Mth.floor(player.getX() + Mth.cos(angle) * distance);
             int z = Mth.floor(player.getZ() + Mth.sin(angle) * distance);
             BlockPos pos = new BlockPos(x, level.getHeight(Heightmap.Types.MOTION_BLOCKING_NO_LEAVES, x, z), z);
@@ -103,11 +102,6 @@ public class StalkGoal extends Goal {
     }
 
     private boolean isByTree(BlockPos pos) {
-        for (Direction direction : Direction.Plane.HORIZONTAL) {
-            if (this.mob.level().getBlockState(pos.relative(direction)).is(BlockTags.LOGS)) {
-                return true;
-            }
-        }
-        return false;
+        return Direction.Plane.HORIZONTAL.stream().anyMatch(direction -> this.mob.level().getBlockState(pos.relative(direction)).is(BlockTags.LOGS));
     }
 }

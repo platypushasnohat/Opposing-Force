@@ -18,22 +18,17 @@ import net.minecraft.network.syncher.EntityDataSerializers;
 import net.minecraft.network.syncher.SynchedEntityData;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.sounds.SoundEvent;
+import net.minecraft.sounds.SoundEvents;
+import net.minecraft.sounds.SoundSource;
 import net.minecraft.util.Mth;
 import net.minecraft.util.RandomSource;
 import net.minecraft.world.DifficultyInstance;
-import net.minecraft.world.entity.EntityType;
-import net.minecraft.world.entity.LivingEntity;
-import net.minecraft.world.entity.Mob;
-import net.minecraft.world.entity.MobSpawnType;
-import net.minecraft.world.entity.SpawnGroupData;
+import net.minecraft.world.entity.*;
 import net.minecraft.world.entity.ai.attributes.AttributeSupplier;
 import net.minecraft.world.entity.ai.attributes.Attributes;
 import net.minecraft.world.entity.ai.control.BodyRotationControl;
-import net.minecraft.world.entity.ai.goal.FloatGoal;
-import net.minecraft.world.entity.ai.goal.Goal;
-import net.minecraft.world.entity.ai.goal.LookAtPlayerGoal;
-import net.minecraft.world.entity.ai.goal.RandomLookAroundGoal;
-import net.minecraft.world.entity.ai.goal.WaterAvoidingRandomStrollGoal;
+import net.minecraft.world.entity.ai.goal.*;
 import net.minecraft.world.entity.ai.util.DefaultRandomPos;
 import net.minecraft.world.entity.npc.AbstractVillager;
 import net.minecraft.world.entity.player.Player;
@@ -159,6 +154,9 @@ public class Roamer extends AnimatedMonster implements SpectralEntity, SinewVari
         } else if (++this.lookAwayTicks > 10) {
             this.stareTicks = 0;
         }
+        if (this.level().isDay() && !this.hasCustomName() && !this.isPersistenceRequired()) {
+            this.discard();
+        }
     }
 
     @Override
@@ -169,6 +167,27 @@ public class Roamer extends AnimatedMonster implements SpectralEntity, SinewVari
     @Override
     public int getFadeInTicks() {
         return 0;
+    }
+
+    @Override
+    public boolean canBeHeardBy(Player listener) {
+        return true;
+    }
+
+    @Nullable
+    @Override
+    protected SoundEvent getAmbientSound() {
+        return this.getAnimationState() == 0 && this.getDeltaMovement().horizontalDistanceSqr() < 1.0E-4D ? SoundEvents.ENDERMAN_AMBIENT : null;
+    }
+
+    @Override
+    public int getAmbientSoundInterval() {
+        return 200;
+    }
+
+    @Override
+    public float getVoicePitch() {
+        return super.getVoicePitch() * 0.6F;
     }
 
     @Override
@@ -183,7 +202,7 @@ public class Roamer extends AnimatedMonster implements SpectralEntity, SinewVari
 
     @Override
     public void calculateEntityAnimation(boolean flying) {
-        float length = (float) Mth.length(this.getX() - this.xo, 0.0F, this.getZ() - this.zo);
+        float length = (float) Mth.length(this.getX() - this.xo, this.getZ() - this.zo);
         this.walkAnimation.update(Math.min(length * 10.0F, 1.0F), 0.2F);
     }
 
@@ -203,7 +222,7 @@ public class Roamer extends AnimatedMonster implements SpectralEntity, SinewVari
 
         @Override
         public boolean canUse() {
-            return this.roamer.stareTicks >= 6 && this.roamer.starer != null;
+            return !this.roamer.hasCustomName() && this.roamer.stareTicks >= 6 && this.roamer.starer != null;
         }
 
         @Override
@@ -229,8 +248,8 @@ public class Roamer extends AnimatedMonster implements SpectralEntity, SinewVari
             }
             this.hidingSpot = this.swapTarget == null ? this.findHidingSpot(starer) : null;
             if (this.isVanishing()) {
-                this.roamer.getNavigation().stop();
                 this.roamer.setAnimationState(DISAPPEAR_ANIMATION);
+                this.roamer.playSound(SoundEvents.ILLUSIONER_MIRROR_MOVE, 1.0F, 0.8F);
             } else {
                 Vec3 away = DefaultRandomPos.getPosAway(this.roamer, 16, 7, starer.position());
                 if (away != null) {
@@ -263,7 +282,7 @@ public class Roamer extends AnimatedMonster implements SpectralEntity, SinewVari
         }
 
         private boolean canSwapWith(LivingEntity entity) {
-            return entity.isAlive() && !(entity instanceof Roamer) && !(entity instanceof Player) && !(entity instanceof AbstractVillager) && !(entity instanceof SpectralEntity) && !entity.isInvisible() && !entity.isInWater() && !entity.isSleeping() && !entity.isPassenger() && !entity.isVehicle() && !entity.getType().is(Tags.EntityTypes.BOSSES);
+            return entity.isAlive() && !(entity instanceof Player) && !(entity instanceof AbstractVillager) && !(entity instanceof SpectralEntity) && !entity.isInvisible() && !entity.isInWater() && !entity.isSleeping() && !entity.isPassenger() && !entity.isVehicle() && !entity.getType().is(Tags.EntityTypes.BOSSES);
         }
 
         private boolean isVanishing() {
@@ -278,6 +297,9 @@ public class Roamer extends AnimatedMonster implements SpectralEntity, SinewVari
                 if (this.swapTarget instanceof Mob mob) {
                     mob.getNavigation().stop();
                 }
+                if (this.swapTarget instanceof Player player) {
+                    player.playNotifySound(SoundEvents.ELDER_GUARDIAN_CURSE, SoundSource.HOSTILE, 0.7F, 1.3F);
+                }
             } else if (this.hidingSpot != null) {
                 this.roamer.teleportTo(this.hidingSpot.x, this.hidingSpot.y, this.hidingSpot.z);
             }
@@ -287,8 +309,8 @@ public class Roamer extends AnimatedMonster implements SpectralEntity, SinewVari
         private Vec3 findHidingSpot(Player starer) {
             Level level = this.roamer.level();
             for (int i = 0; i < 16; i++) {
-                int x = Mth.floor(this.roamer.getX()) + this.roamer.getRandom().nextInt(33) - 16;
-                int z = Mth.floor(this.roamer.getZ()) + this.roamer.getRandom().nextInt(33) - 16;
+                int x = this.roamer.getBlockX() + this.roamer.getRandom().nextIntBetweenInclusive(-16, 16);
+                int z = this.roamer.getBlockZ() + this.roamer.getRandom().nextIntBetweenInclusive(-16, 16);
                 BlockPos pos = new BlockPos(x, level.getHeight(Heightmap.Types.MOTION_BLOCKING_NO_LEAVES, x, z), z);
                 Vec3 spot = Vec3.atBottomCenterOf(pos);
                 Vec3 eye = spot.add(0.0D, this.roamer.getEyeHeight(), 0.0D);
@@ -347,6 +369,10 @@ public class Roamer extends AnimatedMonster implements SpectralEntity, SinewVari
         @Override
         public void tick() {
             this.timer++;
+            int loopTick = this.timer % 40;
+            if (this.animation == TWEAKING_ANIMATION && (loopTick == 3 || loopTick == 25)) {
+                this.roamer.playSound(SoundEvents.WARDEN_TENDRIL_CLICKS, 0.8F, 1.4F + this.roamer.getRandom().nextFloat() * 0.3F);
+            }
         }
     }
 }

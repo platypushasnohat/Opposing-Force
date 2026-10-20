@@ -1,6 +1,6 @@
 package com.barl_inc.opposing_force.entity;
 
-import com.barl_inc.opposing_force.entity.ai.goal.FlyingWanderGoal;
+import com.barl_inc.opposing_force.entity.ai.goal.PhasingWanderGoal;
 import com.barl_inc.opposing_force.entity.ai.navigation.PhasingFlyingNavigation;
 import com.barl_inc.opposing_force.entity.base.BasicFlyingMonster;
 import com.platypushasnohat.sinew.client.animation.SmoothAnimationState;
@@ -74,7 +74,7 @@ public class Ghost extends BasicFlyingMonster implements SpectralEntity {
     protected void registerGoals() {
         this.goalSelector.addGoal(1, new GhostAttackGoal(this));
         this.goalSelector.addGoal(2, new GhostCarryGoal(this));
-        this.goalSelector.addGoal(3, new FlyingWanderGoal(this));
+        this.goalSelector.addGoal(3, new PhasingWanderGoal(this));
         this.goalSelector.addGoal(4, new LookAtPlayerGoal(this, Player.class, 12.0F));
         this.goalSelector.addGoal(4, new RandomLookAroundGoal(this));
         this.targetSelector.addGoal(0, new HurtByTargetGoal(this));

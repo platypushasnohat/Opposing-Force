@@ -10,6 +10,7 @@ import com.platypushasnohat.sinew.entity.spectral.SpectralSight;
 import net.minecraft.core.BlockPos;
 import net.minecraft.sounds.SoundEvent;
 import net.minecraft.sounds.SoundEvents;
+import net.minecraft.util.RandomSource;
 import net.minecraft.world.DifficultyInstance;
 import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.entity.EntityType;
@@ -28,10 +29,13 @@ import net.minecraft.world.entity.ai.goal.target.HurtByTargetGoal;
 import net.minecraft.world.entity.item.ItemEntity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.AxeItem;
 import net.minecraft.world.item.Items;
+import net.minecraft.world.item.SwordItem;
 import net.minecraft.world.item.TieredItem;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.ServerLevelAccessor;
+import net.minecraft.world.level.biome.Biomes;
 import net.minecraft.world.level.block.state.BlockState;
 
 import javax.annotation.Nullable;
@@ -84,9 +88,22 @@ public class Ghost extends BasicFlyingMonster implements SpectralEntity {
     @Override
     public SpawnGroupData finalizeSpawn(ServerLevelAccessor level, DifficultyInstance difficulty, MobSpawnType spawnType, @Nullable SpawnGroupData spawnGroupData) {
         if (this.random.nextBoolean()) {
-            this.setItemSlot(EquipmentSlot.MAINHAND, new ItemStack(Items.IRON_SWORD));
+            this.setItemSlot(EquipmentSlot.MAINHAND, new ItemStack(this.random.nextBoolean() ? Items.IRON_SWORD : Items.IRON_AXE));
+            this.setDropChance(EquipmentSlot.MAINHAND, 0.33F);
         }
         return super.finalizeSpawn(level, difficulty, spawnType, spawnGroupData);
+    }
+
+    public static boolean checkGhostSpawnRules(EntityType<Ghost> entityType, ServerLevelAccessor level, MobSpawnType spawnType, BlockPos pos, RandomSource random) {
+        return (pos.getY() < 40 || level.getBiome(pos).is(Biomes.DARK_FOREST) && random.nextBoolean()) && checkMonsterSpawnRules(entityType, level, spawnType, pos, random);
+    }
+
+    public float getAttackCooldownMultiplier() {
+        ItemStack tool = this.getMainHandItem();
+        if (tool.getItem() instanceof AxeItem) {
+            return 2.0F;
+        }
+        return tool.getItem() instanceof SwordItem ? 1.5F : 1.0F;
     }
 
     @Override
@@ -233,7 +250,7 @@ public class Ghost extends BasicFlyingMonster implements SpectralEntity {
             if (this.timer > 40) {
                 this.ghost.setAnimationState(0);
                 this.timer = 0;
-                this.attackCooldown = 10 + this.ghost.getRandom().nextInt(10);
+                this.attackCooldown = (int) ((10 + this.ghost.getRandom().nextInt(10)) * this.ghost.getAttackCooldownMultiplier());
                 this.attackState = 0;
             }
         }

@@ -34,5 +34,9 @@ public class OFEntityTypeTagsProvider extends EntityTypeTagsProvider {
                 EntityType.SLIME,
                 EntityType.MAGMA_CUBE
         );
+
+        this.tag(EntityTypeTags.UNDEAD).add(
+                OFEntities.GHOST.get()
+        );
 	}
 }

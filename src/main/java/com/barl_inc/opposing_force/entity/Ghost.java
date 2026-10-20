@@ -323,7 +323,7 @@ public class Ghost extends BasicFlyingMonster implements SpectralEntity {
         @Nullable
         private ItemEntity findItem() {
             boolean carryingTool = isTool(this.ghost.getOffhandItem());
-            return this.ghost.level().getEntitiesOfClass(ItemEntity.class, this.ghost.getBoundingBox().inflate(12.0D, 6.0D, 12.0D), item -> !item.hasPickUpDelay() && (!carryingTool || isTool(item.getItem())) && this.ghost.hasLineOfSight(item)).stream()
+            return this.ghost.level().getEntitiesOfClass(ItemEntity.class, this.ghost.getBoundingBox().inflate(12.0D, 0.0D, 12.0D).expandTowards(0.0D, -16.0D, 0.0D).expandTowards(0.0D, 4.0D, 0.0D), item -> !item.hasPickUpDelay() && (!carryingTool || isTool(item.getItem()))).stream()
                     .min(Comparator.<ItemEntity>comparingInt(item -> isTool(item.getItem()) ? 0 : 1).thenComparingDouble(this.ghost::distanceToSqr))
                     .orElse(null);
         }

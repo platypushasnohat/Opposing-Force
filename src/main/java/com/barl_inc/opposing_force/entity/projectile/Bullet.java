@@ -3,13 +3,16 @@ package com.barl_inc.opposing_force.entity.projectile;
 import com.barl_inc.opposing_force.registry.*;
 import com.platypushasnohat.sinew.entity.utils.SplitProjectileBonus;
 import com.platypushasnohat.sinew.utils.SinewSoundUtils;
+import net.minecraft.core.BlockPos;
 import net.minecraft.core.particles.ParticleOptions;
 import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.nbt.CompoundTag;
+import net.minecraft.network.protocol.game.ClientboundAddEntityPacket;
 import net.minecraft.network.syncher.EntityDataAccessor;
 import net.minecraft.network.syncher.EntityDataSerializers;
 import net.minecraft.network.syncher.SynchedEntityData;
 import net.minecraft.server.level.ServerLevel;
+import net.minecraft.sounds.SoundEvent;
 import net.minecraft.util.Mth;
 import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.entity.Entity;
@@ -22,6 +25,7 @@ import net.minecraft.world.entity.projectile.ProjectileUtil;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.enchantment.EnchantmentHelper;
+import net.minecraft.world.level.Explosion;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.phys.BlockHitResult;
 import net.minecraft.world.phys.EntityHitResult;
@@ -43,11 +47,11 @@ public class Bullet extends Projectile implements ItemSupplier, SplitProjectileB
     protected ItemStack firedFromWeapon = null;
     private int projectileCount = 1;
 
-    public Bullet(EntityType<? extends Projectile> entityType, Level level) {
+    public Bullet(EntityType<? extends Bullet> entityType, Level level) {
         super(entityType, level);
     }
 
-    public Bullet(EntityType<? extends Projectile> entityType, double x, double y, double z, Level level) {
+    public Bullet(EntityType<? extends Bullet> entityType, double x, double y, double z, Level level) {
         this(entityType, level);
         this.setPos(x, y, z);
     }
@@ -126,12 +130,16 @@ public class Bullet extends Projectile implements ItemSupplier, SplitProjectileB
         this.projectileCount = projectileCount;
     }
 
+    public void tickRotation() {
+        ProjectileUtil.rotateTowardsMovement(this, 0.2F);
+    }
+
     public void tickMovement() {
         Vec3 movement = this.getDeltaMovement();
         double nextX = this.getX() + movement.x;
         double nextY = this.getY() + movement.y;
         double nextZ = this.getZ() + movement.z;
-        ProjectileUtil.rotateTowardsMovement(this, 0.2F);
+        this.tickRotation();
         if (this.isInWater()) {
             for (int i = 0; i < 4; i++) {
                 this.level().addParticle(ParticleTypes.BUBBLE, nextX - movement.x * 0.25D, nextY - movement.y * 0.25D, nextZ - movement.z * 0.25D, movement.x, movement.y, movement.z);
@@ -143,7 +151,7 @@ public class Bullet extends Projectile implements ItemSupplier, SplitProjectileB
             if (this.getTrailParticle() != null) {
                 this.level().addParticle(this.getTrailParticle(), nextX, nextY + height, nextZ, 0.0D, 0.0D, 0.0D);
             }
-            if (this.getRingParticle() != null && this.tickCount % 3 == 0) {
+            if (this.getRingParticle() != null && this.tickCount % 2 == 0) {
                 this.level().addParticle(this.getRingParticle(), nextX, nextY + height, nextZ, 0.0D, 0.0D, 0.0D);
             }
         }
@@ -184,12 +192,32 @@ public class Bullet extends Projectile implements ItemSupplier, SplitProjectileB
         return OFParticleTypes.BULLET_TRAIL.get();
     }
 
+    @Nullable
+    protected ParticleOptions getImpactParticle() {
+        return OFParticleTypes.BULLET_IMPACT.get();
+    }
+
     protected DamageSource getDamageSource() {
         return OFDamageTypes.causeBulletDamage(this.level().registryAccess(), this, this.getOwner());
     }
 
-    private void playImpactSound(double x, double y, double z) {
-        this.level().playSound(null, x, y, z, OFSoundEvents.BULLET_IMPACT.get(), this.getSoundSource(), 1.0F, SinewSoundUtils.randomizePitch(this.level()));
+    protected SoundEvent getImpactSound() {
+        return OFSoundEvents.BULLET_IMPACT.get();
+    }
+
+    protected void playImpactSound(double x, double y, double z) {
+        this.level().playSound(null, x, y, z, this.getImpactSound(), this.getSoundSource(), 0.8F, SinewSoundUtils.randomizePitch(this.level()));
+    }
+
+    protected void spawnImpactParticles() {
+        if (this.getImpactParticle() != null) {
+            this.level().addParticle(this.getImpactParticle(), this.getX(), this.getY() + this.getBbHeight() / 2, this.getZ(), 0, 0, 0);
+        }
+    }
+
+    public void doImpactEffects(double x, double y, double z) {
+        this.playImpactSound(x, y, z);
+        this.level().broadcastEntityEvent(this, HIT_EFFECTS);
     }
 
     @Override
@@ -200,7 +228,8 @@ public class Bullet extends Projectile implements ItemSupplier, SplitProjectileB
         this.tickMovement();
 
         if (!this.level().isClientSide) {
-            if (this.tickCount > LIFESPAN) {
+            if (this.tickCount > LIFESPAN || this.getBlockY() > this.level().getMaxBuildHeight() + 30) {
+                this.doImpactEffects(this.getX(), this.getY(), this.getZ());
                 this.discard();
             }
         }
@@ -227,6 +256,15 @@ public class Bullet extends Projectile implements ItemSupplier, SplitProjectileB
     }
 
     @Override
+    public void push(double x, double y, double z) {
+    }
+
+    @Override
+    public boolean ignoreExplosion(Explosion explosion) {
+        return true;
+    }
+
+    @Override
     public boolean shouldRenderAtSqrDistance(double distance) {
         double size = this.getBoundingBox().getSize() * 10.0;
         if (Double.isNaN(size)) {
@@ -234,17 +272,6 @@ public class Bullet extends Projectile implements ItemSupplier, SplitProjectileB
         }
         size *= 64.0 * getViewScale();
         return distance < size * size;
-    }
-
-    @Override
-    protected void onHit(HitResult result) {
-        super.onHit(result);
-        Vec3 location = result.getLocation();
-        if (!this.level().isClientSide) {
-            this.playImpactSound(location.x, location.y, location.z);
-            this.level().broadcastEntityEvent(this, HIT_EFFECTS);
-            this.discard();
-        }
     }
 
     @Override
@@ -262,20 +289,23 @@ public class Bullet extends Projectile implements ItemSupplier, SplitProjectileB
                 this.doKnockback(living, damageSource);
                 EnchantmentHelper.doPostAttackEffectsWithItemSource(serverLevel, living, damageSource, weapon);
             }
+            this.doImpactEffects(entity.getX(), entity.getY(), entity.getZ());
+            this.discard();
         }
     }
 
     @Override
     protected void onHitBlock(BlockHitResult result) {
         super.onHitBlock(result);
-        Vec3 subtracted = result.getLocation().subtract(this.getX(), this.getY(), this.getZ());
-        this.setDeltaMovement(subtracted);
-        ItemStack weapon = this.getWeaponItem();
-        if (this.level() instanceof ServerLevel serverLevel && weapon != null) {
-            this.hitBlockEnchantmentEffects(serverLevel, result, weapon);
+        BlockPos pos = result.getBlockPos();
+        if (!this.level().isClientSide) {
+            ItemStack weapon = this.getWeaponItem();
+            if (this.level() instanceof ServerLevel serverLevel && weapon != null) {
+                this.hitBlockEnchantmentEffects(serverLevel, result, weapon);
+            }
+            this.doImpactEffects(pos.getX(), pos.getY(), pos.getZ());
+            this.discard();
         }
-        Vec3 scaled = subtracted.normalize().scale(0.05F);
-        this.setPosRaw(this.getX() - scaled.x, this.getY() - scaled.y, this.getZ() - scaled.z);
     }
 
     @Override
@@ -289,9 +319,16 @@ public class Bullet extends Projectile implements ItemSupplier, SplitProjectileB
     }
 
     @Override
+    public void recreateFromPacket(ClientboundAddEntityPacket packet) {
+        super.recreateFromPacket(packet);
+        this.xRotO = this.getXRot();
+        this.yRotO = this.getYRot();
+    }
+
+    @Override
     public void handleEntityEvent(byte id) {
         if (id == HIT_EFFECTS) {
-            this.level().addParticle(OFParticleTypes.BULLET_IMPACT.get(), this.getX(), this.getY() + this.getBbHeight() / 2, this.getZ(), 0, 0, 0);
+            this.spawnImpactParticles();
         }
     }
 }

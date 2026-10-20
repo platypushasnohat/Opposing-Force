@@ -9,9 +9,10 @@ import net.minecraft.world.InteractionResultHolder;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
-import net.minecraft.world.phys.Vec3;
 
 public class ScatterBlasterItem extends BlasterItem {
+
+    private static final int PROJECTILE_COUNT = 8;
 
     public ScatterBlasterItem(Properties properties) {
         super(properties, 1280);
@@ -28,13 +29,17 @@ public class ScatterBlasterItem extends BlasterItem {
     }
 
     @Override
+    protected boolean canDualWield() {
+        return false;
+    }
+
+    @Override
     public void shoot(Level level, Player player, ItemStack stack, ItemStack ammo) {
-        Vec3 look = player.getLookAngle();
-        for (int i = 0; i < 8; i++) {
-            LaserBolt laserBolt = new LaserBolt(level, player, player.getX(), player.getY() + player.getBbHeight() * 0.8F, player.getZ());
+        for (int i = 0; i < PROJECTILE_COUNT; i++) {
+            LaserBolt laserBolt = new LaserBolt(player, level, stack);
             laserBolt.setDamage(4.0F);
-            laserBolt.setProjectileCount(4);
-            laserBolt.shoot(look.x, look.y, look.z, 2.5F, 9.5F);
+            laserBolt.setProjectileCount(PROJECTILE_COUNT);
+            laserBolt.shootFromRotation(player, player.getXRot(), player.getYRot(), 0, 2.5F, 10.0F);
             level.addFreshEntity(laserBolt);
         }
         level.playSound(null, player.getX(), player.getY(), player.getZ(), OFSoundEvents.BLASTER_SHOOT.get(), SoundSource.PLAYERS, 1.0F, 0.5F * SinewSoundUtils.randomizePitch(level));
@@ -45,7 +50,7 @@ public class ScatterBlasterItem extends BlasterItem {
         boolean canShoot = this.canShoot(player, hand);
         InteractionResultHolder<ItemStack> result = super.use(level, player, hand);
         if (canShoot) {
-            player.push(player.getLookAngle().reverse().normalize().scale(0.8F));
+            player.push(player.getLookAngle().reverse().normalize().scale(0.4F));
         }
         return result;
     }

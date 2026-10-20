@@ -1,11 +1,11 @@
 package com.barl_inc.opposing_force.item.base;
 
+import com.barl_inc.opposing_force.item.utils.GunUtils;
 import com.platypushasnohat.sinew.client.animation.ItemAnimationState;
 import net.minecraft.stats.Stats;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResultHolder;
 import net.minecraft.world.entity.LivingEntity;
-import net.minecraft.world.entity.ai.attributes.Attributes;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.entity.projectile.Projectile;
 import net.minecraft.world.item.ItemStack;
@@ -48,34 +48,49 @@ public abstract class GunItem extends ProjectileWeaponItem {
     }
 
     protected boolean canShoot(Player player, InteractionHand hand) {
+        if (this.canDualWield()) {
+            return this.hasAmmo(player);
+        }
         return hand == InteractionHand.MAIN_HAND && this.hasAmmo(player);
     }
 
-    public int getShotCooldown(Player player, InteractionHand hand, ItemStack stack, ItemStack ammo) {
-        float attackSpeed = hand == InteractionHand.MAIN_HAND ? (float) player.getAttributeValue(Attributes.ATTACK_SPEED) : 4.0F;
-        return Math.max(1, Math.round(this.getCooldown(stack, ammo) * 4.0F / attackSpeed));
+    protected boolean canDualWield() {
+        return false;
+    }
+
+    public Predicate<ItemStack> swapPredicate() {
+        return itemStack -> itemStack.getItem() instanceof GunItem;
+    }
+
+    public int getShotCooldown() {
+        return 10;
     }
 
     protected void onShot(Level level, Player player, InteractionHand hand, ItemStack stack, ItemStack ammo) {
-        if (!level.isClientSide) {
-            player.getCooldowns().addCooldown(this, this.getShotCooldown(player, hand, stack, ammo));
-            player.awardStat(Stats.ITEM_USED.get(this));
-            if (!player.hasInfiniteMaterials()) {
-                this.consumeAmmo(player, stack, ammo);
-                stack.hurtAndBreak(1, player, LivingEntity.getSlotForHand(hand));
-            }
+        if (this.canDualWield()) {
+            GunUtils.applyDualWieldCooldown(player, stack, hand, this.swapPredicate(), this.getShotCooldown());
+        }
+        else {
+            player.getCooldowns().addCooldown(this, this.getShotCooldown());
+        }
+        player.awardStat(Stats.ITEM_USED.get(this));
+        if (!player.hasInfiniteMaterials()) {
+            this.consumeAmmo(player, stack, ammo);
+            stack.hurtAndBreak(1, player, LivingEntity.getSlotForHand(hand));
         }
     }
 
     @Override
     public InteractionResultHolder<ItemStack> use(Level level, Player player, InteractionHand hand) {
         ItemStack stack = player.getItemInHand(hand);
-        InteractionResultHolder<ItemStack> result = InteractionResultHolder.pass(stack);
+        InteractionResultHolder<ItemStack> result = InteractionResultHolder.success(stack);
         if (!this.canShoot(player, hand)) {
-            if (!level.isClientSide) {
-                player.getCooldowns().addCooldown(this, 10);
-            }
+            player.getCooldowns().addCooldown(this, 10);
             return InteractionResultHolder.consume(stack);
+        }
+
+        if (GunUtils.shouldSwap(player, stack, hand, this.swapPredicate()) && this.canDualWield()) {
+            return InteractionResultHolder.fail(stack);
         }
 
         if (level.isClientSide) {
@@ -105,6 +120,11 @@ public abstract class GunItem extends ProjectileWeaponItem {
     @Override
     public UseAnim getUseAnimation(ItemStack stack) {
         return UseAnim.NONE;
+    }
+
+    @Override
+    public boolean onEntitySwing(ItemStack stack, LivingEntity entity, InteractionHand hand) {
+        return true;
     }
 
     @Override

@@ -22,12 +22,12 @@ public class BoomstickItem extends BulletGunItem {
     public final ItemAnimationState reloadAnimationState = new ItemAnimationState();
 
     public BoomstickItem(Properties properties) {
-        super(properties.durability(650), 1.0F, 2.5F, 10.0F, 10);
+        super(properties.durability(650), 1.0F, 2.5F, 13.0F, 10);
     }
 
     @Override
     public int getProjectileCount() {
-        return PROJECTILE_COUNT / 2;
+        return PROJECTILE_COUNT;
     }
 
     @Override
@@ -35,6 +35,7 @@ public class BoomstickItem extends BulletGunItem {
         ItemStack stack = player.getItemInHand(hand);
         InteractionResultHolder<ItemStack> result = InteractionResultHolder.pass(stack);
         if (getShots(stack) < 2 || !this.canShoot(player, hand)) {
+            player.push(player.getLookAngle().reverse().normalize().scale(0.5F));
             result = super.use(level, player, hand);
         } else if (level.isClientSide) {
             this.reloadAnimationState.start(player.tickCount, player);

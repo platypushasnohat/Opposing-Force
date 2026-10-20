@@ -34,6 +34,8 @@ public class OFEntities {
     public static final DeferredHolder<EntityType<?>, EntityType<Tarantula>> TARANTULA = registerEntity("tarantula", Tarantula::new, MobCategory.MONSTER, builder -> builder.sized(3.4F, 1.9F).eyeHeight(1.5F).clientTrackingRange(8));
     public static final DeferredHolder<EntityType<?>, EntityType<Mushy>> MUSHY = registerEntity("mushy", Mushy::new, MobCategory.MONSTER, builder -> builder.sized(0.69F, 1.05F).eyeHeight(0.31F).clientTrackingRange(8).setUpdateInterval(1));
     public static final DeferredHolder<EntityType<?>, EntityType<Motif>> MOTIF = registerEntity("motif", Motif::new, MobCategory.MONSTER, builder -> builder.sized(1.5F, 2.8F).eyeHeight(2.5F).clientTrackingRange(8));
+    public static final DeferredHolder<EntityType<?>, EntityType<Octovine>> OCTOVINE = registerEntity("octovine", Octovine::new, MobCategory.MONSTER, builder -> builder.sized(1.42F, 1.62F).eyeHeight(0.82F).clientTrackingRange(8));
+
     public static final DeferredHolder<EntityType<?>, EntityType<Fillet>> FILLET = registerEntity("fillet", Fillet::new, OFMobCategories.AQUIFER_MONSTER, builder -> builder.sized(0.5F, 0.5F).eyeHeight(0.25F).clientTrackingRange(8));
 
     //other

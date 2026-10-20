@@ -29,5 +29,8 @@ public class OFBiomeTagsProvider extends BiomeTagsProvider {
 		this.tag(OFBiomeTags.HAS_DESERT_MONSTERS).addTag(Tags.Biomes.IS_DESERT);
 
         this.tag(OFBiomeTags.HAS_MOTIF_RUIN).addTag(Tags.Biomes.IS_DESERT);
+        this.tag(OFBiomeTags.HAS_MANGROVE_MONSTERS).add(
+                Biomes.MANGROVE_SWAMP
+        );
 	}
 }

@@ -90,6 +90,10 @@ public class OFLanguageProvider extends SinewLanguageProvider {
 
         this.add("enchantment.opposing_force.magic_protection", "Magic Protection");
         this.add("enchantment.opposing_force.magic_protection.desc", "Reduces magic damageMultiplier taken and shortens the duration of negative effects applied to the wearer.");
+
+        this.add("enchantment.opposing_force.frost_aspect", "Frost Aspect");
+        this.add("enchantment.opposing_force.frost_aspect.desc", "Inflicts freezing on hit");
+
         this.add("pack.opposing_force.protection_tweaks", "Opposing Force Protection Tweaks");
 
         this.add("jukebox_song.opposing_force.slayser", "ChipsTheCat - Slayser");

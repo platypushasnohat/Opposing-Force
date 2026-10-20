@@ -19,13 +19,15 @@ import net.minecraft.world.level.Level;
 
 public class GorloffItem extends BulletGunItem {
 
+    private static final int PROJECTILE_DAMAGE_DIVISOR = 2;
+
     public GorloffItem(Properties properties) {
-        super(properties.durability(650), 1.0F, 3.0F, 6.0F, 100);
+        super(properties.durability(650), 1.0F, 3.0F, 7.0F, 100);
     }
 
     @Override
     public int getProjectileCount() {
-        return 2;
+        return PROJECTILE_DAMAGE_DIVISOR;
     }
 
     @Override

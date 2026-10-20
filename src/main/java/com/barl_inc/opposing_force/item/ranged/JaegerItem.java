@@ -33,7 +33,7 @@ public class JaegerItem extends BulletGunItem {
             this.cockAnimationState.start(player.tickCount, player);
         } else {
             setCocked(stack, true);
-            player.getCooldowns().addCooldown(this, this.getShotCooldown(player, hand, stack, ItemStack.EMPTY) - 5);
+            player.getCooldowns().addCooldown(this, this.getShotCooldown() - 5);
             level.playSound(null, player.getX(), player.getY(), player.getZ(), SoundEvents.IRON_TRAPDOOR_CLOSE, SoundSource.PLAYERS, 0.5F, 1.4F * SinewSoundUtils.randomizePitch(player));
         }
         return result;

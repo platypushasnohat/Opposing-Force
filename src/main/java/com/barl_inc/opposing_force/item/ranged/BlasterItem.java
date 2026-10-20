@@ -14,6 +14,8 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.phys.Vec3;
 
+import java.util.function.Predicate;
+
 public class BlasterItem extends GunItem {
 
     public BlasterItem(Properties properties) {
@@ -48,12 +50,22 @@ public class BlasterItem extends GunItem {
 
     @Override
     public int getCooldown(ItemStack stack, ItemStack ammo) {
-        return 8;
+        return 10;
+    }
+
+    @Override
+    protected boolean canDualWield() {
+        return true;
+    }
+
+    @Override
+    public Predicate<ItemStack> swapPredicate() {
+        return itemStack -> itemStack.is(OFItems.BLASTER.get());
     }
 
     @Override
     public void shoot(Level level, Player player, ItemStack stack, ItemStack ammo) {
-        LaserBolt laserBolt = new LaserBolt(level, player, player.getX(), player.getY() + player.getBbHeight() * 0.8F, player.getZ());
+        LaserBolt laserBolt = new LaserBolt(player, level, stack);
         laserBolt.setDamage(6.0F);
         Vec3 look = player.getLookAngle();
         laserBolt.shoot(look.x, look.y, look.z, 3.0F, 1.0F);

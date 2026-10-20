@@ -44,9 +44,7 @@ public class BulletGunItem extends GunItem {
 
     @Override
     public void shoot(Level level, Player player, ItemStack stack, ItemStack ammo) {
-        if (!level.isClientSide) {
-            this.shootBullet(level, player, stack, ammo);
-        }
+        this.shootBullet(level, player, stack, ammo);
     }
 
     public int getProjectileCount() {

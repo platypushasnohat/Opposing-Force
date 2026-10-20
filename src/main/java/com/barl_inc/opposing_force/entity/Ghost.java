@@ -1,6 +1,7 @@
 package com.barl_inc.opposing_force.entity;
 
 import com.barl_inc.opposing_force.entity.ai.goal.FlyingWanderGoal;
+import com.barl_inc.opposing_force.entity.ai.navigation.PhasingFlyingNavigation;
 import com.barl_inc.opposing_force.entity.base.BasicFlyingMonster;
 import com.platypushasnohat.sinew.client.animation.SmoothAnimationState;
 import com.platypushasnohat.sinew.entity.ai.goal.AttackGoal;
@@ -26,6 +27,7 @@ import net.minecraft.world.entity.ai.goal.Goal;
 import net.minecraft.world.entity.ai.goal.LookAtPlayerGoal;
 import net.minecraft.world.entity.ai.goal.RandomLookAroundGoal;
 import net.minecraft.world.entity.ai.goal.target.HurtByTargetGoal;
+import net.minecraft.world.entity.ai.navigation.PathNavigation;
 import net.minecraft.world.entity.item.ItemEntity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
@@ -80,6 +82,19 @@ public class Ghost extends BasicFlyingMonster implements SpectralEntity {
     }
 
     @Override
+    protected PathNavigation createNavigation(Level level) {
+        return new PhasingFlyingNavigation(this, level);
+    }
+
+    @Override
+    public void tick() {
+        this.noPhysics = true;
+        super.tick();
+        this.noPhysics = false;
+        this.setNoGravity(true);
+    }
+
+    @Override
     public int getStareTicksToTarget() {
         return 60;
     }
@@ -101,9 +116,9 @@ public class Ghost extends BasicFlyingMonster implements SpectralEntity {
     public float getAttackCooldownMultiplier() {
         ItemStack tool = this.getMainHandItem();
         if (tool.getItem() instanceof AxeItem) {
-            return 1.4F;
+            return 2.0F;
         }
-        return tool.getItem() instanceof SwordItem ? 1.1F : 0.7F;
+        return tool.getItem() instanceof SwordItem ? 1.5F : 1.0F;
     }
 
     @Override

@@ -19,6 +19,7 @@ import com.mojang.blaze3d.vertex.DefaultVertexFormat;
 import com.platypushasnohat.sinew.events.custom.PoseHandEvent;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.model.HumanoidModel;
+import net.minecraft.client.model.geom.ModelPart;
 import net.minecraft.client.renderer.ShaderInstance;
 import net.minecraft.client.renderer.entity.NoopRenderer;
 import net.minecraft.resources.ResourceLocation;
@@ -140,34 +141,75 @@ public class ClientEvents {
     @SubscribeEvent
     public static void onPoseHand(PoseHandEvent event) {
         LivingEntity player = (LivingEntity) event.getEntity();
+        HumanoidModel<?> humanoidModel = event.getHumanoidModel();
+        ModelPart rightArm = humanoidModel.rightArm;
+        ModelPart leftArm = humanoidModel.leftArm;
+        ModelPart head = humanoidModel.head;
         if (isAimedGun(player.getItemInHand(InteractionHand.MAIN_HAND))) {
             if (player.getMainArm() == HumanoidArm.RIGHT) {
-                event.getHumanoidModel().rightArm.xRot = (event.getHumanoidModel().head.xRot - (float) Math.toRadians(80F));
-                event.getHumanoidModel().rightArm.yRot = event.getHumanoidModel().head.yRot;
-                event.getHumanoidModel().rightArm.zRot = 0;
+                rightArm.xRot = (head.xRot - (float) Math.toRadians(80.0F));
+                rightArm.yRot = head.yRot;
+                rightArm.zRot = 0.0F;
             } else {
-                event.getHumanoidModel().leftArm.xRot = (event.getHumanoidModel().head.xRot - (float) Math.toRadians(80F));
-                event.getHumanoidModel().leftArm.yRot = event.getHumanoidModel().head.yRot;
-                event.getHumanoidModel().leftArm.zRot = 0;
+                leftArm.xRot = (head.xRot - (float) Math.toRadians(80.0F));
+                leftArm.yRot = head.yRot;
+                leftArm.zRot = 0.0F;
             }
             event.setResult(TriState.TRUE);
         }
         if (isAimedGun(player.getItemInHand(InteractionHand.OFF_HAND))) {
             if (player.getMainArm() == HumanoidArm.RIGHT) {
-                event.getHumanoidModel().leftArm.xRot = (event.getHumanoidModel().head.xRot - (float) Math.toRadians(80F));
-                event.getHumanoidModel().leftArm.yRot = event.getHumanoidModel().head.yRot;
-                event.getHumanoidModel().leftArm.zRot = 0;
+                leftArm.xRot = (head.xRot - (float) Math.toRadians(80.0F));
+                leftArm.yRot = head.yRot;
+                leftArm.zRot = 0.0F;
             } else {
-                event.getHumanoidModel().rightArm.xRot = (event.getHumanoidModel().head.xRot - (float) Math.toRadians(80F));
-                event.getHumanoidModel().rightArm.yRot = event.getHumanoidModel().head.yRot;
-                event.getHumanoidModel().rightArm.zRot = 0;
+                rightArm.xRot = (head.xRot - (float) Math.toRadians(80.0F));
+                rightArm.yRot = head.yRot;
+                rightArm.zRot = 0.0F;
+            }
+            event.setResult(TriState.TRUE);
+        }
+
+        if (player.getItemInHand(InteractionHand.MAIN_HAND).is(OFItems.GORLOFF)) {
+            if (player.getMainArm() == HumanoidArm.RIGHT) {
+                rightArm.xRot = (head.xRot - (float) Math.toRadians(70.0F));
+                rightArm.yRot = head.yRot;
+                rightArm.zRot = 0.0F;
+                leftArm.xRot = head.xRot - (float) Math.toRadians(40.0F);
+                leftArm.yRot = head.yRot + (float) Math.toRadians(40.0F);
+                leftArm.zRot = 0.0F;
+            } else {
+                leftArm.xRot = (head.xRot - (float) Math.toRadians(70.0F));
+                leftArm.yRot = head.yRot;
+                leftArm.zRot = 0.0F;
+                rightArm.xRot = head.xRot - (float) Math.toRadians(40.0F);
+                rightArm.yRot = head.yRot + (float) Math.toRadians(-40.0F);
+                rightArm.zRot = 0.0F;
+            }
+            event.setResult(TriState.TRUE);
+        }
+        if (player.getItemInHand(InteractionHand.OFF_HAND).is(OFItems.GORLOFF)) {
+            if (player.getMainArm() == HumanoidArm.RIGHT) {
+                leftArm.xRot = (head.xRot - (float) Math.toRadians(70.0F));
+                leftArm.yRot = head.yRot;
+                leftArm.zRot = 0.0F;
+                rightArm.xRot = head.xRot - (float) Math.toRadians(40.0F);
+                rightArm.yRot = head.yRot + (float) Math.toRadians(-40.0F);
+                rightArm.zRot = 0.0F;
+            } else {
+                rightArm.xRot = (head.xRot - (float) Math.toRadians(70.0F));
+                rightArm.yRot = head.yRot;
+                rightArm.zRot = 0.0F;
+                leftArm.xRot = head.xRot - (float) Math.toRadians(40.0F);
+                leftArm.yRot = head.yRot + (float) Math.toRadians(40.0F);
+                leftArm.zRot = 0.0F;
             }
             event.setResult(TriState.TRUE);
         }
     }
 
     private static boolean isAimedGun(ItemStack stack) {
-        return stack.getItem() instanceof GunItem;
+        return stack.getItem() instanceof GunItem && !stack.is(OFItems.GORLOFF);
     }
 
     private static final ResourceLocation MYSTIC_POT_OVERLAY = OpposingForce.location("textures/misc/mystic_pot_overlay.png");

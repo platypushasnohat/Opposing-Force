@@ -33,7 +33,7 @@ public class GhostRenderer extends MobRenderer<Ghost, GhostModel> {
 
     @Override
     public void render(Ghost ghost, float entityYaw, float partialTicks, PoseStack poseStack, MultiBufferSource buffer, int packedLight) {
-        this.model.alpha = ghost.getFade(partialTicks) * 0.75F;
+        this.model.alpha = ghost.getFade(partialTicks);
         super.render(ghost, entityYaw, partialTicks, poseStack, buffer, packedLight);
     }
 

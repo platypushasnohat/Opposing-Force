@@ -102,6 +102,7 @@ public class OFCreativeTabs {
                         output.accept(OFItems.RELIC_FEATHER);
                         output.accept(OFItems.SHARPSHOOTER_COIN);
                         output.accept(OFItems.SLIMY_SHIELD);
+                        output.accept(OFItems.SPECTRAL_GOGGLES);
                         output.accept(OFItems.STALKERS_GLOVES);
                         output.accept(OFItems.URANIUM_KNUCKLES);
 

@@ -124,6 +124,9 @@ public class OFItems {
     //Permanent Upgrades
     public static final DeferredItem<Item> CRYSTALIZED_HEART = registerItem("crystalized_heart", () -> new CrystalizedHeartItem(new Item.Properties().stacksTo(1).rarity(Rarity.EPIC).food(OFFoodProperties.CRYSTALIZED_HEART)));
 
+    //Spectral sector
+    public static final DeferredItem<Item> SPECTRAL_GOGGLES = registerItem("spectral_goggles", () -> new SpectralGogglesItem(new Item.Properties().stacksTo(1).rarity(Rarity.UNCOMMON), OFCurioDefinitions.SPECTRAL_GOGGLES));
+
     private static <I extends Item> DeferredItem<I> registerItem(String name, Supplier<? extends I> supplier) {
         DeferredItem<I> item = ITEM.register(name, supplier);
         ITEM_TRANSLATIONS.add(item);

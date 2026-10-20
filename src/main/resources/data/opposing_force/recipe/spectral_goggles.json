@@ -1,0 +1,27 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "equipment",
+  "key": {
+    "C": {
+      "item": "minecraft:copper_ingot"
+    },
+    "G": {
+      "item": "minecraft:quartz"
+    },
+    "S": {
+      "item": "minecraft:soul_sand"
+    },
+    "R": {
+      "item": "minecraft:redstone"
+    }
+  },
+  "pattern": [
+    "CGC",
+    "CSC",
+    "R R"
+  ],
+  "result": {
+    "count": 1,
+    "id": "opposing_force:spectral_goggles"
+  }
+}

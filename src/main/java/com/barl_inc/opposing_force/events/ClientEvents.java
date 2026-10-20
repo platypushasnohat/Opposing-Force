@@ -8,15 +8,18 @@ import com.barl_inc.opposing_force.client.model.item.*;
 import com.barl_inc.opposing_force.client.particle.*;
 import com.barl_inc.opposing_force.client.render.entity.*;
 import com.barl_inc.opposing_force.client.render.item.OFItemExtensions;
+import com.barl_inc.opposing_force.client.render.shader.SpectralLensOverlay;
 import com.barl_inc.opposing_force.item.base.GunItem;
 import com.barl_inc.opposing_force.registry.OFEntities;
 import com.barl_inc.opposing_force.registry.OFItems;
 import com.barl_inc.opposing_force.registry.OFModelLayers;
 import com.barl_inc.opposing_force.registry.OFParticleTypes;
 import com.mojang.blaze3d.systems.RenderSystem;
+import com.mojang.blaze3d.vertex.DefaultVertexFormat;
 import com.platypushasnohat.sinew.events.custom.PoseHandEvent;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.model.HumanoidModel;
+import net.minecraft.client.renderer.ShaderInstance;
 import net.minecraft.client.renderer.entity.NoopRenderer;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.InteractionHand;
@@ -27,13 +30,13 @@ import net.minecraft.world.item.ItemStack;
 import net.neoforged.api.distmarker.Dist;
 import net.neoforged.bus.api.SubscribeEvent;
 import net.neoforged.fml.common.EventBusSubscriber;
-import net.neoforged.neoforge.client.event.EntityRenderersEvent;
-import net.neoforged.neoforge.client.event.RegisterGuiLayersEvent;
-import net.neoforged.neoforge.client.event.RegisterParticleProvidersEvent;
+import net.neoforged.neoforge.client.event.*;
 import net.neoforged.neoforge.client.extensions.common.IClientItemExtensions;
 import net.neoforged.neoforge.client.extensions.common.RegisterClientExtensionsEvent;
 import net.neoforged.neoforge.client.gui.VanillaGuiLayers;
 import net.neoforged.neoforge.common.util.TriState;
+
+import java.io.IOException;
 
 @EventBusSubscriber(modid = OpposingForce.MOD_ID, value = Dist.CLIENT)
 public class ClientEvents {
@@ -177,5 +180,15 @@ public class ClientEvents {
             RenderSystem.depthMask(true);
             RenderSystem.enableDepthTest();
         });
+        event.registerAbove(VanillaGuiLayers.CAMERA_OVERLAYS, OpposingForce.location("spectral_lens"), SpectralLensOverlay::render);
+    }
+    @SubscribeEvent
+    public static void registerShaders(RegisterShadersEvent event) throws IOException {
+        event.registerShader(new ShaderInstance(event.getResourceProvider(), OpposingForce.location("spectral_lens"), DefaultVertexFormat.POSITION), shader -> SpectralLensOverlay.shader = shader);
+    }
+
+    @SubscribeEvent
+    public static void onClientTick(ClientTickEvent.Post event) {
+        SpectralLensOverlay.tick();
     }
 }

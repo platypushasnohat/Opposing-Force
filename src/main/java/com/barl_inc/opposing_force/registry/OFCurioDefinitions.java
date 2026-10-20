@@ -83,4 +83,10 @@ public class OFCurioDefinitions {
             .attribute(SinewAttributes.AMMO_SAVE_CHANCE, 0.2F, AttributeModifier.Operation.ADD_VALUE)
             .build();
 
+    public static final CurioDefinition SPECTRAL_GOGGLES = new CurioDefinition.Builder()
+            .attribute(Attributes.ARMOR, 1.0F, AttributeModifier.Operation.ADD_VALUE)
+            .attribute(Attributes.ARMOR_TOUGHNESS, 1.0F, AttributeModifier.Operation.ADD_VALUE)
+            .description("item.opposing_force.spectral_goggles.description")
+            .build();
+
 }

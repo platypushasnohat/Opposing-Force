@@ -1,8 +1,8 @@
 package com.barl_inc.opposing_force.item.ranged;
 
 import com.barl_inc.opposing_force.item.base.BulletGunItem;
+import com.barl_inc.opposing_force.registry.OFSoundEvents;
 import com.platypushasnohat.sinew.utils.SinewSoundUtils;
-import net.minecraft.sounds.SoundEvents;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
@@ -17,6 +17,6 @@ public class CrackshotItem extends BulletGunItem {
     @Override
     public void shoot(Level level, Player player, ItemStack stack, ItemStack ammo) {
         super.shoot(level, player, stack, ammo);
-        level.playSound(null, player.getX(), player.getY(), player.getZ(), SoundEvents.FIREWORK_ROCKET_BLAST, SoundSource.PLAYERS, 1.0F, 1.5F * SinewSoundUtils.randomizePitch(level));
+        level.playSound(null, player.getX(), player.getY(), player.getZ(), OFSoundEvents.GUN_SHOOT, SoundSource.PLAYERS, 1.5F, SinewSoundUtils.randomizePitch(player));
     }
 }

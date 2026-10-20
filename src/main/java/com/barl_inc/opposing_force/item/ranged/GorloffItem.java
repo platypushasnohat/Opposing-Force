@@ -1,10 +1,10 @@
 package com.barl_inc.opposing_force.item.ranged;
 
 import com.barl_inc.opposing_force.item.base.BulletGunItem;
+import com.barl_inc.opposing_force.registry.OFSoundEvents;
 import com.platypushasnohat.sinew.utils.SinewSoundUtils;
 import net.minecraft.core.component.DataComponents;
 import net.minecraft.nbt.CompoundTag;
-import net.minecraft.sounds.SoundEvents;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.stats.Stats;
 import net.minecraft.world.InteractionHand;
@@ -20,12 +20,18 @@ import net.minecraft.world.level.Level;
 public class GorloffItem extends BulletGunItem {
 
     public GorloffItem(Properties properties) {
-        super(properties.durability(650), 1.0F, 2.8F, 6.0F, 100);
+        super(properties.durability(650), 1.0F, 3.0F, 6.0F, 100);
     }
 
     @Override
     public int getUseDuration(ItemStack stack, LivingEntity entity) {
         return 72000;
+    }
+
+    @Override
+    public void onStopUsing(ItemStack stack, LivingEntity entity, int count) {
+        super.onStopUsing(stack, entity, count);
+        entity.level().playSound(null, entity.getX(), entity.getY(), entity.getZ(), OFSoundEvents.GUN_WIND_DOWN, SoundSource.PLAYERS, 1.0F, SinewSoundUtils.randomizePitch(entity));
     }
 
     @Override
@@ -85,7 +91,7 @@ public class GorloffItem extends BulletGunItem {
     @Override
     public void shoot(Level level, Player player, ItemStack stack, ItemStack ammo) {
         super.shoot(level, player, stack, ammo);
-        level.playSound(null, player.getX(), player.getY(), player.getZ(), SoundEvents.FIREWORK_ROCKET_BLAST, SoundSource.PLAYERS, 0.6F, 1.8F * SinewSoundUtils.randomizePitch(level));
+        level.playSound(null, player.getX(), player.getY(), player.getZ(), OFSoundEvents.GUN_SHOOT_SHORT, SoundSource.PLAYERS, 1.0F, SinewSoundUtils.randomizePitch(player));
     }
 
     public static int getShots(ItemStack stack) {

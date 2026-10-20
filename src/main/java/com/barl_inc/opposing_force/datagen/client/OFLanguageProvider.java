@@ -63,6 +63,13 @@ public class OFLanguageProvider extends SinewLanguageProvider {
 
         this.addSound(OFSoundEvents.ZOMBIE_REINFORCEMENT, "Zombie summons reinforcement");
 
+        this.addSound(OFSoundEvents.BULLET_IMPACT, "Bullet impacts");
+
+        this.addSound(OFSoundEvents.GUN_SHOOT, "Gun fires");
+        this.addSound(OFSoundEvents.GUN_SHOOT_SHORT, "Gun fires fast");
+        this.addSound(OFSoundEvents.GUN_WIND_DOWN, "Gun winds down");
+        this.addSound(OFSoundEvents.GUN_WIND_UP, "Gun winds up");
+
         this.add(OFItems.TRI_BLASTER.get(), "Tri-Blaster");
 
         this.add(OFItems.DISABLED_LASER_BLADE.get(), "Laser Blade");

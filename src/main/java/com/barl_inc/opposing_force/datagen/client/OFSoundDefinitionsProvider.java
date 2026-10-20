@@ -144,5 +144,22 @@ public class OFSoundDefinitionsProvider extends SinewSoundDefinitionsProvider {
         this.registerSound(OFSoundEvents.ZOMBIE_REINFORCEMENT,
                 sound("mob/zombie/infect").pitch(0.9F)
         );
+
+        this.registerSound(OFSoundEvents.BULLET_IMPACT,
+                sound(OpposingForce.location("entity/bullet/impact"))
+        );
+
+        this.registerSound(OFSoundEvents.GUN_SHOOT,
+                sound(OpposingForce.location("item/gun/shoot"))
+        );
+        this.registerSound(OFSoundEvents.GUN_SHOOT_SHORT,
+                sound(OpposingForce.location("item/gun/shoot_short"))
+        );
+        this.registerSound(OFSoundEvents.GUN_WIND_DOWN,
+                sound(OpposingForce.location("item/gun/wind_down"))
+        );
+        this.registerSound(OFSoundEvents.GUN_WIND_UP,
+                sound(OpposingForce.location("item/gun/wind_up"))
+        );
     }
 }

@@ -1,9 +1,7 @@
 package com.barl_inc.opposing_force.entity.projectile;
 
-import com.barl_inc.opposing_force.registry.OFDamageTypes;
-import com.barl_inc.opposing_force.registry.OFEntities;
-import com.barl_inc.opposing_force.registry.OFItems;
-import com.barl_inc.opposing_force.registry.OFParticleTypes;
+import com.barl_inc.opposing_force.registry.*;
+import com.platypushasnohat.sinew.utils.SinewSoundUtils;
 import net.minecraft.core.particles.ParticleOptions;
 import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.nbt.CompoundTag;
@@ -38,9 +36,10 @@ public class Bullet extends Projectile implements ItemSupplier {
     protected static final EntityDataAccessor<Float> DAMAGE = SynchedEntityData.defineId(Bullet.class, EntityDataSerializers.FLOAT);
 
     public static final int LIFESPAN = 100;
+    public static final byte HIT_EFFECTS = 3;
 
     @Nullable
-    private ItemStack firedFromWeapon = null;
+    protected ItemStack firedFromWeapon = null;
 
     public Bullet(EntityType<? extends Projectile> entityType, Level level) {
         super(entityType, level);
@@ -175,6 +174,10 @@ public class Bullet extends Projectile implements ItemSupplier {
         return OFDamageTypes.causeBulletDamage(this.level().registryAccess(), this, this.getOwner());
     }
 
+    private void playImpactSound(double x, double y, double z) {
+        this.level().playSound(null, x, y, z, OFSoundEvents.BULLET_IMPACT.get(), this.getSoundSource(), 1.0F, SinewSoundUtils.randomizePitch(this.level()));
+    }
+
     @Override
     public void tick() {
         super.tick();
@@ -222,7 +225,10 @@ public class Bullet extends Projectile implements ItemSupplier {
     @Override
     protected void onHit(HitResult result) {
         super.onHit(result);
+        Vec3 location = result.getLocation();
         if (!this.level().isClientSide) {
+            this.playImpactSound(location.x, location.y, location.z);
+            this.level().broadcastEntityEvent(this, HIT_EFFECTS);
             this.discard();
         }
     }
@@ -266,5 +272,12 @@ public class Bullet extends Projectile implements ItemSupplier {
         this.shoot(xPos, yPos, zPos, velocity, inaccuracy);
         Vec3 knownMovement = shooter.getKnownMovement();
         this.setDeltaMovement(this.getDeltaMovement().add(knownMovement.x, 0.0F, knownMovement.z));
+    }
+
+    @Override
+    public void handleEntityEvent(byte id) {
+        if (id == HIT_EFFECTS) {
+            this.level().addParticle(OFParticleTypes.BULLET_IMPACT.get(), this.getX(), this.getY() + this.getBbHeight() / 2, this.getZ(), 0, 0, 0);
+        }
     }
 }

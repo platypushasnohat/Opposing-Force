@@ -1,6 +1,7 @@
 package com.barl_inc.opposing_force.item.ranged;
 
 import com.barl_inc.opposing_force.item.base.BulletGunItem;
+import com.barl_inc.opposing_force.registry.OFSoundEvents;
 import com.platypushasnohat.sinew.client.animation.ItemAnimationState;
 import com.platypushasnohat.sinew.utils.SinewSoundUtils;
 import net.minecraft.core.component.DataComponents;
@@ -21,7 +22,7 @@ public class BoomstickItem extends BulletGunItem {
     public final ItemAnimationState reloadAnimationState = new ItemAnimationState();
 
     public BoomstickItem(Properties properties) {
-        super(properties.durability(650), 1.0F, 2.8F, 10.0F, 10);
+        super(properties.durability(650), 1.0F, 2.5F, 10.0F, 10);
     }
 
     @Override
@@ -35,7 +36,7 @@ public class BoomstickItem extends BulletGunItem {
         } else {
             setShots(stack, 0);
             player.getCooldowns().addCooldown(this, 30);
-            level.playSound(null, player.getX(), player.getY(), player.getZ(), SoundEvents.IRON_TRAPDOOR_OPEN, SoundSource.PLAYERS, 1.0F, 1.2F * SinewSoundUtils.randomizePitch(level));
+            level.playSound(null, player.getX(), player.getY(), player.getZ(), SoundEvents.IRON_TRAPDOOR_OPEN, SoundSource.PLAYERS, 1.0F, 1.2F * SinewSoundUtils.randomizePitch(player));
         }
         return result;
     }
@@ -45,12 +46,12 @@ public class BoomstickItem extends BulletGunItem {
         for (int i = 0; i < PROJECTILE_COUNT; i++) {
             super.shoot(level, player, stack, ammo);
         }
-        level.playSound(null, player.getX(), player.getY(), player.getZ(), SoundEvents.GENERIC_EXPLODE.value(), SoundSource.PLAYERS, 0.6F, 1.4F * SinewSoundUtils.randomizePitch(level));
+        level.playSound(null, player.getX(), player.getY(), player.getZ(), OFSoundEvents.GUN_SHOOT, SoundSource.PLAYERS, 2.0F, 0.8F * SinewSoundUtils.randomizePitch(player));
     }
 
     @Override
-    protected void onShot(Player player, InteractionHand hand, ItemStack stack, ItemStack ammo) {
-        super.onShot(player, hand, stack, ammo);
+    protected void onShot(Level level, Player player, InteractionHand hand, ItemStack stack, ItemStack ammo) {
+        super.onShot(level, player, hand, stack, ammo);
         setShots(stack, getShots(stack) + 1);
     }
 

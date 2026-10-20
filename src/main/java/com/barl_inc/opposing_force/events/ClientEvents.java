@@ -93,12 +93,13 @@ public class ClientEvents {
     @SubscribeEvent
     public static void registerParticleProviders(RegisterParticleProvidersEvent event) {
         event.registerSpriteSet(OFParticleTypes.LASER_DUST.get(), LaserDustParticle.Factory::new);
-        event.registerSpriteSet(OFParticleTypes.LASER_IMPACT.get(), LaserImpactParticle.Factory::new);
+        event.registerSpriteSet(OFParticleTypes.LASER_IMPACT.get(), ImpactParticle.LaserFactory::new);
         event.registerSpriteSet(OFParticleTypes.LASER_SWEEP.get(), LaserSweepParticle.Factory::new);
         event.registerSpriteSet(OFParticleTypes.ACID.get(), AcidParticle.Factory::new);
         event.registerSpriteSet(OFParticleTypes.FIRE_BREATH.get(), FireBreathParticle.Factory::new);
         event.registerSpriteSet(OFParticleTypes.SPORE_CLOUD.get(), SporeCloudParticle.Factory::new);
         event.registerSpriteSet(OFParticleTypes.BULLET_TRAIL.get(), BulletTrailParticle.Factory::new);
+        event.registerSpriteSet(OFParticleTypes.BULLET_IMPACT.get(), ImpactParticle.BulletFactory::new);
     }
 
     @SubscribeEvent

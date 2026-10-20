@@ -21,6 +21,8 @@ import org.joml.Matrix4f;
 
 public class LaserBoltRenderer extends EntityRenderer<LaserBolt> {
 
+    private static final float MIN_CAMERA_DISTANCE_SQUARED = 12.5F;
+
     private static final ResourceLocation OUTER_LOCATION = OpposingForce.location("textures/entity/projectiles/laser_bolt_outer.png");
     private static final ResourceLocation INNER_LOCATION = OpposingForce.location("textures/entity/projectiles/laser_bolt_inner.png");
     private static final ResourceLocation TRAIL_LOCATION = OpposingForce.location("textures/particle/trail.png");
@@ -34,37 +36,38 @@ public class LaserBoltRenderer extends EntityRenderer<LaserBolt> {
 
     @Override
     public void render(LaserBolt laserBolt, float entityYaw, float partialTicks, PoseStack poseStack, MultiBufferSource buffer, int packedLight) {
-        if (laserBolt.tickCount >= 2 || !(this.entityRenderDispatcher.camera.getEntity().distanceToSqr(laserBolt) < 12.25F)) {
-            poseStack.pushPose();
-            VertexConsumer innerTexture = buffer.getBuffer(OFRenderTypes.getLaserBolt(this.getTextureLocation(laserBolt)));
-            poseStack.scale(-1.0F, -1.0F, 1.0F);
-            float yRot = Mth.rotLerp(partialTicks, laserBolt.yRotO, laserBolt.getYRot());
-            float xRot = Mth.lerp(partialTicks, laserBolt.xRotO, laserBolt.getXRot());
-            this.model.setupRotation(yRot, xRot);
-            this.model.renderToBuffer(poseStack, innerTexture, LightTexture.FULL_BRIGHT, OverlayTexture.NO_OVERLAY, -1);
-            VertexConsumer outerTexture = buffer.getBuffer(RenderType.eyes(this.getOuterTextureLocation()));
-            this.model.renderToBuffer(poseStack, outerTexture, LightTexture.FULL_BRIGHT, OverlayTexture.NO_OVERLAY, SinewColorUtils.packColor(1.0F, 1.0F, 1.0F, 1.0F));
-            poseStack.popPose();
-            //old had stuff outside of rendertrail
-            //if (laserBolt.hasTrail()) {
-            //     double x = Mth.lerp(partialTicks, laserBolt.xOld, laserBolt.getX());
-            //     double y = Mth.lerp(partialTicks, laserBolt.yOld, laserBolt.getY());
-            //     double z = Mth.lerp(partialTicks, laserBolt.zOld, laserBolt.getZ());
-            //     poseStack.pushPose();
-            //     poseStack.translate(-x, -y, -z);
-            //     int color = 0xff246d;
-            //     float trailAlpha = 1.0F;
-            //     this.renderTrail(laserBolt, partialTicks, poseStack, buffer, SinewColorUtils.unpackRed(color), SinewColorUtils.unpackGreen(color), SinewColorUtils.unpackBlue(color), trailAlpha);
-            //     poseStack.popPose();
-            //}
-            //relative trail. no translate and stuff inside the rendertrail
-            if (laserBolt.hasTrail()) {
-                int color = 0xff246d;
-                float trailAlpha = 1.0F;
-                this.renderTrail(laserBolt, partialTicks, poseStack, buffer, SinewColorUtils.unpackRed(color), SinewColorUtils.unpackGreen(color), SinewColorUtils.unpackBlue(color), trailAlpha);
-            }
-            super.render(laserBolt, entityYaw, partialTicks, poseStack, buffer, packedLight);
+        if (laserBolt.tickCount <= 2 && this.entityRenderDispatcher.camera.getPosition().distanceToSqr(laserBolt.position()) < MIN_CAMERA_DISTANCE_SQUARED) {
+            return;
         }
+        poseStack.pushPose();
+        VertexConsumer innerTexture = buffer.getBuffer(OFRenderTypes.getLaserBolt(this.getTextureLocation(laserBolt)));
+        poseStack.scale(-1.0F, -1.0F, 1.0F);
+        float yRot = Mth.rotLerp(partialTicks, laserBolt.yRotO, laserBolt.getYRot());
+        float xRot = Mth.lerp(partialTicks, laserBolt.xRotO, laserBolt.getXRot());
+        this.model.setupRotation(yRot, xRot);
+        this.model.renderToBuffer(poseStack, innerTexture, LightTexture.FULL_BRIGHT, OverlayTexture.NO_OVERLAY, -1);
+        VertexConsumer outerTexture = buffer.getBuffer(RenderType.eyes(this.getOuterTextureLocation()));
+        this.model.renderToBuffer(poseStack, outerTexture, LightTexture.FULL_BRIGHT, OverlayTexture.NO_OVERLAY, SinewColorUtils.packColor(1.0F, 1.0F, 1.0F, 1.0F));
+        poseStack.popPose();
+        //old had stuff outside of rendertrail
+        //if (laserBolt.hasTrail()) {
+        //     double x = Mth.lerp(partialTicks, laserBolt.xOld, laserBolt.getX());
+        //     double y = Mth.lerp(partialTicks, laserBolt.yOld, laserBolt.getY());
+        //     double z = Mth.lerp(partialTicks, laserBolt.zOld, laserBolt.getZ());
+        //     poseStack.pushPose();
+        //     poseStack.translate(-x, -y, -z);
+        //     int color = 0xff246d;
+        //     float trailAlpha = 1.0F;
+        //     this.renderTrail(laserBolt, partialTicks, poseStack, buffer, SinewColorUtils.unpackRed(color), SinewColorUtils.unpackGreen(color), SinewColorUtils.unpackBlue(color), trailAlpha);
+        //     poseStack.popPose();
+        //}
+        //relative trail. no translate and stuff inside the rendertrail
+        if (laserBolt.hasTrail()) {
+            int color = 0xff246d;
+            float trailAlpha = 1.0F;
+            this.renderTrail(laserBolt, partialTicks, poseStack, buffer, SinewColorUtils.unpackRed(color), SinewColorUtils.unpackGreen(color), SinewColorUtils.unpackBlue(color), trailAlpha);
+        }
+        super.render(laserBolt, entityYaw, partialTicks, poseStack, buffer, packedLight);
     }
 
     private void renderTrail(LaserBolt laserBolt, float partialTicks, PoseStack poseStack, MultiBufferSource bufferSource, float red, float green, float blue, float alpha) {

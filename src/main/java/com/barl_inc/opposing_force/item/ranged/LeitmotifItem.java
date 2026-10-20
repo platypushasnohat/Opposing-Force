@@ -15,7 +15,7 @@ import net.minecraft.world.phys.Vec3;
 public class LeitmotifItem extends GunItem {
 
     public LeitmotifItem(Properties properties) {
-        super(properties.stacksTo(1).durability(512));
+        super(properties.stacksTo(1).durability(400));
     }
 
     @Override

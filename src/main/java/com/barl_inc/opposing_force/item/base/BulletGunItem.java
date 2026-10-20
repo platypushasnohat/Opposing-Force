@@ -44,7 +44,9 @@ public class BulletGunItem extends GunItem {
 
     @Override
     public void shoot(Level level, Player player, ItemStack stack, ItemStack ammo) {
-        this.shootBullet(level, player, stack, ammo);
+        if (!level.isClientSide) {
+            this.shootBullet(level, player, stack, ammo);
+        }
     }
 
     @Override

@@ -9,9 +9,16 @@ import net.minecraft.client.model.geom.ModelPart;
 import net.minecraft.client.model.geom.PartPose;
 import net.minecraft.client.model.geom.builders.*;
 import net.minecraft.client.renderer.RenderType;
+import net.minecraft.core.Direction;
 import net.minecraft.util.Mth;
 
+import java.util.EnumSet;
+import java.util.Set;
+
 public class GhostModel extends SinewEntityModel<Ghost> {
+
+    private static final Set<Direction> PLANE_Z = EnumSet.of(Direction.NORTH);
+    private static final Set<Direction> PLANE_Y = EnumSet.of(Direction.UP);
 
     private final ModelPart root;
     private final ModelPart ghost;
@@ -61,12 +68,12 @@ public class GhostModel extends SinewEntityModel<Ghost> {
         PartDefinition ghost = partdefinition.addOrReplaceChild("Ghost", CubeListBuilder.create().texOffs(0, 0).addBox(-5.0F, -5.0F, -4.0F, 10.0F, 13.0F, 8.0F, new CubeDeformation(0.0F))
                 .texOffs(0, 43).addBox(-5.0F, -5.0F, -4.0F, 10.0F, 13.0F, 8.0F, new CubeDeformation(-0.01F)), PartPose.offset(0.0F, 0.0F, 0.0F));
 
-        ghost.addOrReplaceChild("Cloak", CubeListBuilder.create().texOffs(36, 0).addBox(-5.0F, 0.0F, 0.025F, 10.0F, 5.0F, 0.0F, new CubeDeformation(0.0025F)), PartPose.offset(0.0F, 8.0F, 3.975F));
+        ghost.addOrReplaceChild("Cloak", CubeListBuilder.create().texOffs(36, 0).addBox(-5.0F, 0.0F, 0.025F, 10.0F, 5.0F, 0.0F, PLANE_Z), PartPose.offset(0.0F, 8.0F, 3.975F));
 
-        PartDefinition head = ghost.addOrReplaceChild("Head", CubeListBuilder.create().texOffs(32, 37).addBox(-2.0F, 2.0F, -2.0F, 4.0F, 3.0F, 0.0F, new CubeDeformation(0.0025F))
+        PartDefinition head = ghost.addOrReplaceChild("Head", CubeListBuilder.create().texOffs(32, 37).addBox(-2.0F, 2.0F, -2.0F, 4.0F, 3.0F, 0.0F, PLANE_Z)
                 .texOffs(0, 33).addBox(-3.0F, -2.0F, -2.0F, 6.0F, 4.0F, 4.0F, new CubeDeformation(0.0F)), PartPose.offset(0.0F, 0.0F, -2.5F));
 
-        head.addOrReplaceChild("LowerJaw", CubeListBuilder.create().texOffs(36, 19).addBox(-2.0F, 0.0F, 0.0F, 4.0F, 2.0F, 0.0F, new CubeDeformation(0.0025F)), PartPose.offset(0.0F, 5.0F, -2.0F));
+        head.addOrReplaceChild("LowerJaw", CubeListBuilder.create().texOffs(36, 19).addBox(-2.0F, 0.0F, 0.0F, 4.0F, 2.0F, 0.0F, PLANE_Z), PartPose.offset(0.0F, 5.0F, -2.0F));
 
         addArm(ghost, "Arm_Left", 1, false);
         addArm(ghost, "Arm_Right", 4, true);
@@ -82,8 +89,8 @@ public class GhostModel extends SinewEntityModel<Ghost> {
                 .texOffs(20, 34).addBox(mirror ? -3.0F : 0.0F, 8.0F, -1.5F, 3.0F, 3.0F, 3.0F, new CubeDeformation(0.3F)), PartPose.offset(side * 5.275F, 5.0F, 0.0F));
 
         CubeListBuilder link = CubeListBuilder.create().mirror(mirror)
-                .texOffs(36, 16).addBox(mirror ? -5.0F : 1.0F, -1.5F, 0.0F, 4.0F, 3.0F, 0.0F, new CubeDeformation(0.0025F))
-                .texOffs(-1, 27).addBox(mirror ? -1.75F : -0.25F, 0.0F, -0.5F, 2.0F, 0.0F, 1.0F, new CubeDeformation(0.0025F));
+                .texOffs(36, 16).addBox(mirror ? -5.0F : 1.0F, -1.5F, 0.0F, 4.0F, 3.0F, 0.0F, PLANE_Z)
+                .texOffs(-1, 27).addBox(mirror ? -1.75F : -0.25F, 0.0F, -0.5F, 2.0F, 0.0F, 1.0F, PLANE_Y);
 
         PartDefinition chain = arm.addOrReplaceChild("Chain" + firstChain, link, PartPose.offset(side * 3.25F, 10.75F, 0.0F));
         for (int i = 1; i < 3; i++) {

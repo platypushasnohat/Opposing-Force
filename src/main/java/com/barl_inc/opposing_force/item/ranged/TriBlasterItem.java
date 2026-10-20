@@ -33,7 +33,7 @@ public class TriBlasterItem extends BlasterItem {
     }
 
     @Override
-    protected int getCooldown(ItemStack stack, ItemStack ammo) {
+    public int getCooldown(ItemStack stack, ItemStack ammo) {
         return 16;
     }
 
@@ -65,7 +65,7 @@ public class TriBlasterItem extends BlasterItem {
                     ItemStack ammo = this.getAmmo(player);
                     this.shoot(level, player, stack, ammo);
                     if (shootTime == 1) {
-                        this.onShot(player, InteractionHand.MAIN_HAND, stack, ammo);
+                        this.onShot(level, player, InteractionHand.MAIN_HAND, stack, ammo);
                     }
                 }
                 if (shootTime == 9) {
@@ -84,11 +84,11 @@ public class TriBlasterItem extends BlasterItem {
     }
 
     @Override
-    protected void shoot(Level level, Player player, ItemStack stack, ItemStack ammo) {
+    public void shoot(Level level, Player player, ItemStack stack, ItemStack ammo) {
         LaserBolt laserBolt = new LaserBolt(level, player, player.getX(), player.getY() + player.getBbHeight() * 0.8F, player.getZ());
         laserBolt.setDamage(7.0F);
         Vec3 look = player.getLookAngle();
-        laserBolt.shoot(look.x, look.y, look.z, 1.7F, 0.5F);
+        laserBolt.shoot(look.x, look.y, look.z, 3.25F, 0.5F);
         level.addFreshEntity(laserBolt);
         level.playSound(null, player.getX(), player.getY(), player.getZ(), OFSoundEvents.BLASTER_SHOOT.get(), SoundSource.PLAYERS, 1.0F, 0.8F * SinewSoundUtils.randomizePitch(level));
     }

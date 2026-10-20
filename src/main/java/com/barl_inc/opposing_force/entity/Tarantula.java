@@ -356,7 +356,7 @@ public class Tarantula extends TamableMonster implements KeybindUsingMount, Play
         return super.calculateFallDamage(fallDistance, damageMultiplier) - 6;
     }
 
-    // Override these so the rider doesn't take fall damage
+    // Override these so the rider doesn't take fall damageMultiplier
     @Override
     public boolean causeFallDamage(float fallDistance, float damageMultiplier, DamageSource damageSource) {
         float[] onLivingFall = CommonHooks.onLivingFall(this, fallDistance, damageMultiplier);

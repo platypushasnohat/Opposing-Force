@@ -63,6 +63,13 @@ public class OFLanguageProvider extends SinewLanguageProvider {
 
         this.addSound(OFSoundEvents.ZOMBIE_REINFORCEMENT, "Zombie summons reinforcement");
 
+        this.addSound(OFSoundEvents.BULLET_IMPACT, "Bullet impacts");
+
+        this.addSound(OFSoundEvents.GUN_SHOOT, "Gun fires");
+        this.addSound(OFSoundEvents.GUN_SHOOT_SHORT, "Gun fires fast");
+        this.addSound(OFSoundEvents.GUN_WIND_DOWN, "Gun winds down");
+        this.addSound(OFSoundEvents.GUN_WIND_UP, "Gun winds up");
+
         this.add(OFItems.TRI_BLASTER.get(), "Tri-Blaster");
 
         this.add(OFItems.DISABLED_LASER_BLADE.get(), "Laser Blade");
@@ -82,7 +89,7 @@ public class OFLanguageProvider extends SinewLanguageProvider {
         this.add("item.opposing_force.crystalized_heart.description", "Grants +1 Charm Slots");
 
         this.add("enchantment.opposing_force.magic_protection", "Magic Protection");
-        this.add("enchantment.opposing_force.magic_protection.desc", "Reduces magic damage taken and shortens the duration of negative effects applied to the wearer.");
+        this.add("enchantment.opposing_force.magic_protection.desc", "Reduces magic damageMultiplier taken and shortens the duration of negative effects applied to the wearer.");
         this.add("pack.opposing_force.protection_tweaks", "Opposing Force Protection Tweaks");
 
         this.add("jukebox_song.opposing_force.slayser", "ChipsTheCat - Slayser");
@@ -120,9 +127,5 @@ public class OFLanguageProvider extends SinewLanguageProvider {
         this.add("death.attack.bullet", "%s was shot");
         this.add("death.attack.bullet.player", "%s was shot by %s");
         this.add("death.attack.bullet.item", "%s was shot by %s using %s");
-
-        this.add("death.attack.shrapnel", "%s was pumped full of shrapnel");
-        this.add("death.attack.shrapnel.player", "%s was pumped full of shrapnel by %s");
-        this.add("death.attack.shrapnel.item", "%s was pumped full of shrapnel by %s using %s");
     }
 }

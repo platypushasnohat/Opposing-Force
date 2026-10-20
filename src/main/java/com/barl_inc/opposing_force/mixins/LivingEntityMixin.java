@@ -17,7 +17,7 @@ import org.spongepowered.asm.mixin.injection.ModifyVariable;
 @Mixin(LivingEntity.class)
 public abstract class LivingEntityMixin {
 
-    //so i made magic prot reduce 2.5% of negative pot duration per piece, so full set at lvl 4 would be 40% decreased time
+    //so i made magic prot reduce 2.5% of negative pot duration per piece, so full set at lvl 4 would be 40% decreased damageMultiplier
     @ModifyVariable(method = "addEffect(Lnet/minecraft/world/effect/MobEffectInstance;Lnet/minecraft/world/entity/Entity;)Z", at = @At(value = "HEAD"), argsOnly = true)
     private MobEffectInstance opposingForce$magicProtectionDuration(MobEffectInstance instance) {
         LivingEntity entity = (LivingEntity) (Object) this;

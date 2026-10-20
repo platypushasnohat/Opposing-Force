@@ -5,14 +5,14 @@ import net.minecraft.client.particle.*;
 import net.minecraft.client.renderer.LightTexture;
 import net.minecraft.core.particles.SimpleParticleType;
 
-public class LaserImpactParticle extends TextureSheetParticle {
+public class ImpactParticle extends TextureSheetParticle {
 
     private final SpriteSet spriteSet;
 
-    protected LaserImpactParticle(ClientLevel level, double x, double y, double z, double xSpeed, double ySpeed, double zSpeed, SpriteSet spriteSet) {
+    protected ImpactParticle(ClientLevel level, double x, double y, double z, double xSpeed, double ySpeed, double zSpeed, SpriteSet spriteSet) {
         super(level, x, y, z, xSpeed, ySpeed, zSpeed);
         this.spriteSet = spriteSet;
-        this.lifetime = 4;
+        this.lifetime = 5;
         this.quadSize = 0.4F;
         this.xd = 0.0F;
         this.yd = 0.0F;
@@ -42,17 +42,31 @@ public class LaserImpactParticle extends TextureSheetParticle {
         return ParticleRenderType.PARTICLE_SHEET_LIT;
     }
 
-    public static class Factory implements ParticleProvider<SimpleParticleType> {
+    public static class LaserFactory implements ParticleProvider<SimpleParticleType> {
 
         private final SpriteSet spriteSet;
 
-        public Factory(SpriteSet spriteSet) {
+        public LaserFactory(SpriteSet spriteSet) {
             this.spriteSet = spriteSet;
         }
 
         @Override
         public Particle createParticle(SimpleParticleType particleType, ClientLevel level, double x, double y, double z, double xSpeed, double ySpeed, double zSpeed) {
-            return new LaserImpactParticle(level, x, y, z, xSpeed, ySpeed, zSpeed, this.spriteSet);
+            return new ImpactParticle(level, x, y, z, xSpeed, ySpeed, zSpeed, this.spriteSet);
+        }
+    }
+
+    public static class BulletFactory implements ParticleProvider<SimpleParticleType> {
+
+        private final SpriteSet spriteSet;
+
+        public BulletFactory(SpriteSet spriteSet) {
+            this.spriteSet = spriteSet;
+        }
+
+        @Override
+        public Particle createParticle(SimpleParticleType particleType, ClientLevel level, double x, double y, double z, double xSpeed, double ySpeed, double zSpeed) {
+            return new ImpactParticle(level, x, y, z, xSpeed, ySpeed, zSpeed, this.spriteSet);
         }
     }
 }

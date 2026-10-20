@@ -18,5 +18,6 @@ public class OFParticleTypes {
     public static final DeferredHolder<ParticleType<?>, SimpleParticleType> FIRE_BREATH = PARTICLE_TYPE.register("fire_breath", () -> new SimpleParticleType(false));
     public static final DeferredHolder<ParticleType<?>, SimpleParticleType> SPORE_CLOUD = PARTICLE_TYPE.register("spore_cloud", () -> new SimpleParticleType(false));
     public static final DeferredHolder<ParticleType<?>, SimpleParticleType> BULLET_TRAIL = PARTICLE_TYPE.register("bullet_trail", () -> new SimpleParticleType(false));
+    public static final DeferredHolder<ParticleType<?>, SimpleParticleType> BULLET_IMPACT = PARTICLE_TYPE.register("bullet_impact", () -> new SimpleParticleType(false));
 
 }

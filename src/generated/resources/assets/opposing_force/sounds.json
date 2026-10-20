@@ -18,6 +18,12 @@
     ],
     "subtitle": "subtitles.opposing_force.blaster_shoot"
   },
+  "bullet_impact": {
+    "sounds": [
+      "opposing_force:entity/bullet/impact"
+    ],
+    "subtitle": "subtitles.opposing_force.bullet_impact"
+  },
   "dicer_attack": {
     "sounds": [
       "opposing_force:mob/dicer/attack"
@@ -115,6 +121,30 @@
       "opposing_force:mob/gnat/buzz"
     ],
     "subtitle": "subtitles.opposing_force.gnat_buzzing"
+  },
+  "gun_shoot": {
+    "sounds": [
+      "opposing_force:item/gun/shoot"
+    ],
+    "subtitle": "subtitles.opposing_force.gun_shoot"
+  },
+  "gun_shoot_short": {
+    "sounds": [
+      "opposing_force:item/gun/shoot_short"
+    ],
+    "subtitle": "subtitles.opposing_force.gun_shoot_short"
+  },
+  "gun_wind_down": {
+    "sounds": [
+      "opposing_force:item/gun/wind_down"
+    ],
+    "subtitle": "subtitles.opposing_force.gun_wind_down"
+  },
+  "gun_wind_up": {
+    "sounds": [
+      "opposing_force:item/gun/wind_up"
+    ],
+    "subtitle": "subtitles.opposing_force.gun_wind_up"
   },
   "laser_blade_catch": {
     "sounds": [

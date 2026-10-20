@@ -1,5 +1,6 @@
 package com.barl_inc.opposing_force.entity;
 
+import com.barl_inc.opposing_force.entity.ai.navigation.PhasingMoveControl;
 import com.barl_inc.opposing_force.entity.ai.goal.PhasingWanderGoal;
 import com.barl_inc.opposing_force.entity.ai.navigation.PhasingFlyingNavigation;
 import com.barl_inc.opposing_force.entity.base.BasicFlyingMonster;
@@ -11,6 +12,7 @@ import com.platypushasnohat.sinew.entity.spectral.SpectralSight;
 import net.minecraft.core.BlockPos;
 import net.minecraft.sounds.SoundEvent;
 import net.minecraft.sounds.SoundEvents;
+import net.minecraft.util.Mth;
 import net.minecraft.util.RandomSource;
 import net.minecraft.world.DifficultyInstance;
 import net.minecraft.world.damagesource.DamageSource;
@@ -22,7 +24,6 @@ import net.minecraft.world.entity.MobSpawnType;
 import net.minecraft.world.entity.SpawnGroupData;
 import net.minecraft.world.entity.ai.attributes.AttributeSupplier;
 import net.minecraft.world.entity.ai.attributes.Attributes;
-import net.minecraft.world.entity.ai.control.FlyingMoveControl;
 import net.minecraft.world.entity.ai.goal.Goal;
 import net.minecraft.world.entity.ai.goal.LookAtPlayerGoal;
 import net.minecraft.world.entity.ai.goal.RandomLookAroundGoal;
@@ -39,6 +40,8 @@ import net.minecraft.world.level.Level;
 import net.minecraft.world.level.ServerLevelAccessor;
 import net.minecraft.world.level.biome.Biomes;
 import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.phys.AABB;
+import net.minecraft.world.phys.Vec3;
 
 import javax.annotation.Nullable;
 import java.util.Comparator;
@@ -48,16 +51,21 @@ public class Ghost extends BasicFlyingMonster implements SpectralEntity {
 
     public static final int ATTACK_ANIMATION = 1;
     public static final int ATTACK_2_ANIMATION = 2;
+    private static final int FADE_TICKS = 50;
 
     public final SmoothAnimationState attackAnimationState = new SmoothAnimationState();
     public final SmoothAnimationState attack2AnimationState = new SmoothAnimationState();
 
     private int carryCooldown;
+    private int fadeTicks;
+    private int prevFadeTicks;
+    private float tilt;
+    private float prevTilt;
 
     public Ghost(EntityType<? extends Ghost> entityType, Level level) {
         super(entityType, level);
         this.xpReward = 5;
-        this.moveControl = new FlyingMoveControl(this, 20, true);
+        this.moveControl = new PhasingMoveControl(this);
     }
 
     public static AttributeSupplier.Builder registerAttributes() {
@@ -92,6 +100,25 @@ public class Ghost extends BasicFlyingMonster implements SpectralEntity {
         super.tick();
         this.noPhysics = false;
         this.setNoGravity(true);
+        if (this.level().isClientSide) {
+            this.prevFadeTicks = this.fadeTicks;
+            this.fadeTicks = Mth.clamp(this.fadeTicks + (SpectralSight.isPerceivedByClient(this) ? 1 : -1), 0, FADE_TICKS);
+            this.prevTilt = this.tilt;
+            this.tilt = Mth.approachDegrees(this.tilt, this.getXRot(), 6.0F);
+        }
+    }
+
+    public float getTilt(float partialTicks) {
+        return Mth.lerp(partialTicks, this.prevTilt, this.tilt);
+    }
+
+    public float getFade(float partialTicks) {
+        return Mth.lerp(partialTicks, this.prevFadeTicks, this.fadeTicks) / FADE_TICKS;
+    }
+
+    @Override
+    public int getFadeInTicks() {
+        return 0;
     }
 
     @Override
@@ -116,9 +143,9 @@ public class Ghost extends BasicFlyingMonster implements SpectralEntity {
     public float getAttackCooldownMultiplier() {
         ItemStack tool = this.getMainHandItem();
         if (tool.getItem() instanceof AxeItem) {
-            return 2.0F;
+            return 1.4F;
         }
-        return tool.getItem() instanceof SwordItem ? 1.5F : 1.0F;
+        return tool.getItem() instanceof SwordItem ? 1.1F : 0.8F;
     }
 
     @Override
@@ -208,8 +235,6 @@ public class Ghost extends BasicFlyingMonster implements SpectralEntity {
 
         private final Ghost ghost;
         private int attackCooldown;
-        private int burstTicks;
-        private int burstCooldown;
 
         public GhostAttackGoal(Ghost ghost) {
             super(ghost);
@@ -220,34 +245,25 @@ public class Ghost extends BasicFlyingMonster implements SpectralEntity {
         public void start() {
             super.start();
             this.attackCooldown = 0;
-            this.burstTicks = 0;
-            this.burstCooldown = 0;
         }
 
         @Override
         public void tick() {
             LivingEntity target = this.ghost.getTarget();
             if (target != null) {
-                double distance = this.ghost.distanceToSqr(target);
+                double gap = this.getGap(target);
                 this.lookAtTarget(target, 30.0F, 30.0F);
-                if (this.burstCooldown > 0) {
-                    this.burstCooldown--;
-                }
-                if (this.burstTicks > 0) {
-                    this.burstTicks--;
-                } else if (distance > 64.0D && this.burstCooldown <= 0) {
-                    this.burstTicks = 15;
-                    this.burstCooldown = 60;
-                }
+                this.ghost.getNavigation().stop();
                 if (this.attackState == 1) {
-                    this.ghost.getNavigation().stop();
                     this.tickAttack(target);
                 } else {
-                    this.ghost.getNavigation().moveTo(target.getX(), target.getY() + 0.5D, target.getZ(), this.burstTicks > 0 ? 2.2D : 1.2D);
+                    Vec3 center = target.getBoundingBox().getCenter();
+                    Vec3 approach = center.add(this.ghost.getBoundingBox().getCenter().subtract(center).normalize().scale(1.2D));
+                    this.ghost.getMoveControl().setWantedPosition(approach.x, approach.y - this.ghost.getBbHeight() / 2.0F, approach.z, 1.2D + Mth.clamp(gap - 1.25D, 0.0D, 4.0D) * 0.6D);
                     if (this.attackCooldown > 0) {
                         this.attackCooldown--;
                     }
-                    if (distance <= this.getAttackReachSqr(target) && this.attackCooldown <= 0) {
+                    if (gap <= 1.25D && this.attackCooldown <= 0) {
                         this.attackState = 1;
                     }
                 }
@@ -259,7 +275,7 @@ public class Ghost extends BasicFlyingMonster implements SpectralEntity {
             if (this.timer == 1) {
                 this.ghost.setAnimationState(!this.ghost.getMainHandItem().isEmpty() || this.ghost.getRandom().nextBoolean() ? ATTACK_ANIMATION : ATTACK_2_ANIMATION);
             }
-            if (this.timer == 21 && this.isInAttackRange(target, 1.2D)) {
+            if (this.timer == 21 && this.getGap(target) < 2.0D && this.ghost.hasLineOfSight(target)) {
                 this.ghost.doHurtTarget(target);
             }
             if (this.timer > 40) {
@@ -268,6 +284,15 @@ public class Ghost extends BasicFlyingMonster implements SpectralEntity {
                 this.attackCooldown = (int) ((10 + this.ghost.getRandom().nextInt(10)) * this.ghost.getAttackCooldownMultiplier());
                 this.attackState = 0;
             }
+        }
+
+        private double getGap(LivingEntity target) {
+            AABB box = this.ghost.getBoundingBox();
+            AABB targetBox = target.getBoundingBox();
+            double x = Math.max(0.0D, Math.max(box.minX - targetBox.maxX, targetBox.minX - box.maxX));
+            double y = Math.max(0.0D, Math.max(box.minY - targetBox.maxY, targetBox.minY - box.maxY));
+            double z = Math.max(0.0D, Math.max(box.minZ - targetBox.maxZ, targetBox.minZ - box.maxZ));
+            return Math.sqrt(x * x + y * y + z * z);
         }
     }
 

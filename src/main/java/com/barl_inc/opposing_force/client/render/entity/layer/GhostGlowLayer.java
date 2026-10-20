@@ -4,7 +4,6 @@ import com.barl_inc.opposing_force.OpposingForce;
 import com.barl_inc.opposing_force.client.model.entity.GhostModel;
 import com.barl_inc.opposing_force.entity.Ghost;
 import com.mojang.blaze3d.vertex.PoseStack;
-import com.platypushasnohat.sinew.entity.spectral.SpectralSight;
 import net.minecraft.client.renderer.LightTexture;
 import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.RenderType;
@@ -22,8 +21,10 @@ public class GhostGlowLayer extends RenderLayer<Ghost, GhostModel> {
 
     @Override
     public void render(PoseStack poseStack, MultiBufferSource buffer, int packedLight, Ghost ghost, float limbSwing, float limbSwingAmount, float partialTicks, float ageInTicks, float netHeadYaw, float headPitch) {
-        if (SpectralSight.isPerceivedByClient(ghost)) {
-            this.getParentModel().renderToBuffer(poseStack, buffer.getBuffer(TEXTURE_LOCATION), LightTexture.FULL_BRIGHT, OverlayTexture.NO_OVERLAY);
+        float fade = this.getParentModel().alpha;
+        if (fade > 0.0F) {
+            int brightness = (int) (255 * fade);
+            this.getParentModel().renderToBuffer(poseStack, buffer.getBuffer(TEXTURE_LOCATION), LightTexture.FULL_BRIGHT, OverlayTexture.NO_OVERLAY, 0xFF000000 | brightness << 16 | brightness << 8 | brightness);
         }
     }
 }

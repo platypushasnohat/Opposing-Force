@@ -6,7 +6,9 @@ import com.barl_inc.opposing_force.client.render.entity.layer.GhostGlowLayer;
 import com.barl_inc.opposing_force.client.render.entity.layer.GhostItemLayer;
 import com.barl_inc.opposing_force.entity.Ghost;
 import com.barl_inc.opposing_force.registry.OFModelLayers;
-import com.platypushasnohat.sinew.entity.spectral.SpectralSight;
+import com.mojang.blaze3d.vertex.PoseStack;
+import com.mojang.math.Axis;
+import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.RenderType;
 import net.minecraft.client.renderer.entity.EntityRendererProvider;
 import net.minecraft.client.renderer.entity.MobRenderer;
@@ -29,9 +31,23 @@ public class GhostRenderer extends MobRenderer<Ghost, GhostModel> {
         return TEXTURE_LOCATION;
     }
 
+    @Override
+    public void render(Ghost ghost, float entityYaw, float partialTicks, PoseStack poseStack, MultiBufferSource buffer, int packedLight) {
+        this.model.alpha = ghost.getFade(partialTicks) * 0.9F;
+        super.render(ghost, entityYaw, partialTicks, poseStack, buffer, packedLight);
+    }
+
+    @Override
+    protected void setupRotations(Ghost ghost, PoseStack poseStack, float bob, float yBodyRot, float partialTicks, float scale) {
+        super.setupRotations(ghost, poseStack, bob, yBodyRot, partialTicks, scale);
+        poseStack.translate(0.0F, 1.4F, 0.0F);
+        poseStack.mulPose(Axis.XP.rotationDegrees(-ghost.getTilt(partialTicks)));
+        poseStack.translate(0.0F, -1.4F, 0.0F);
+    }
+
     @Nullable
     @Override
     protected RenderType getRenderType(Ghost ghost, boolean bodyVisible, boolean translucent, boolean glowing) {
-        return SpectralSight.isPerceivedByClient(ghost) ? super.getRenderType(ghost, bodyVisible, translucent, glowing) : null;
+        return this.model.alpha > 0.0F ? super.getRenderType(ghost, bodyVisible, translucent, glowing) : null;
     }
 }

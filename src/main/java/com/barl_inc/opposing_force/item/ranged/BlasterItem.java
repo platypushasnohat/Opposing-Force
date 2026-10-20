@@ -47,16 +47,16 @@ public class BlasterItem extends GunItem {
     }
 
     @Override
-    protected int getCooldown(ItemStack stack, ItemStack ammo) {
+    public int getCooldown(ItemStack stack, ItemStack ammo) {
         return 8;
     }
 
     @Override
-    protected void shoot(Level level, Player player, ItemStack stack, ItemStack ammo) {
+    public void shoot(Level level, Player player, ItemStack stack, ItemStack ammo) {
         LaserBolt laserBolt = new LaserBolt(level, player, player.getX(), player.getY() + player.getBbHeight() * 0.8F, player.getZ());
         laserBolt.setDamage(6.0F);
         Vec3 look = player.getLookAngle();
-        laserBolt.shoot(look.x, look.y, look.z, 1.4F, 1.0F);
+        laserBolt.shoot(look.x, look.y, look.z, 3.0F, 1.0F);
         level.addFreshEntity(laserBolt);
         level.playSound(null, player.getX(), player.getY(), player.getZ(), OFSoundEvents.BLASTER_SHOOT.get(), SoundSource.PLAYERS, 1.0F, SinewSoundUtils.randomizePitch(level));
     }

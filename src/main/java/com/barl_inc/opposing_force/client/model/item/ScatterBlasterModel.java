@@ -1,6 +1,6 @@
 package com.barl_inc.opposing_force.client.model.item;
 
-import com.barl_inc.opposing_force.client.model.item.animation.GunAnimations;
+import com.barl_inc.opposing_force.client.model.item.animation.BlasterAnimations;
 import com.barl_inc.opposing_force.item.ranged.ScatterBlasterItem;
 import net.minecraft.client.model.geom.ModelPart;
 import net.minecraft.client.model.geom.PartPose;
@@ -18,7 +18,7 @@ public class ScatterBlasterModel extends BlasterModel<ScatterBlasterItem> {
     @Override
     public void setupAnim(Entity entity, ScatterBlasterItem item, ItemStack stack, ItemDisplayContext displayContext, float ageInTicks) {
         this.root().getAllParts().forEach(ModelPart::resetPose);
-        this.animate(entity, item.shootAnimationState, GunAnimations.SCATTER_BLASTER_SHOOT, ageInTicks);
+        this.animate(entity, item.shootAnimationState, BlasterAnimations.SCATTER_BLASTER_SHOOT, ageInTicks);
     }
 
     public static LayerDefinition createBodyLayer() {

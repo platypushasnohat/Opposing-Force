@@ -4,6 +4,7 @@ import com.barl_inc.opposing_force.OpposingForce;
 import com.barl_inc.opposing_force.item.*;
 import com.barl_inc.opposing_force.item.curios.*;
 import com.barl_inc.opposing_force.item.ranged.*;
+import com.barl_inc.opposing_force.item.ranged.ammo.BulletComponent;
 import com.barl_inc.opposing_force.item.ranged.ammo.PowerCellItem;
 import com.platypushasnohat.sinew.item.*;
 import net.minecraft.world.entity.EntityType;
@@ -93,13 +94,13 @@ public class OFItems {
     public static final DeferredItem<Item> MOON_SHOES = registerItem("moon_shoes", () -> new MoonShoesItem(new Item.Properties().rarity(Rarity.UNCOMMON).durability(Type.BOOTS.getDurability(25))));
 
     //misc ammo
-    public static final DeferredItem<Item> STONE_BULLET = registerItem("stone_bullet", () -> new Item(new Item.Properties()));
-    public static final DeferredItem<Item> IRON_BULLET = registerItem("iron_bullet", () -> new Item(new Item.Properties()));
-    public static final DeferredItem<Item> PRECISION_BULLET = registerItem("precision_bullet", () -> new Item(new Item.Properties()));
-
     public static final DeferredItem<Item> SHOT_STONE_BULLET = registerItem("shot_stone_bullet", () -> new Item(new Item.Properties()));
     public static final DeferredItem<Item> SHOT_IRON_BULLET = registerItem("shot_iron_bullet", () -> new Item(new Item.Properties()));
     public static final DeferredItem<Item> SHOT_PRECISION_BULLET = registerItem("shot_precision_bullet", () -> new Item(new Item.Properties()));
+
+    public static final DeferredItem<Item> STONE_BULLET = registerItem("stone_bullet", () -> new Item(new Item.Properties().component(OFDataComponents.BULLET.get(), new BulletComponent(SHOT_STONE_BULLET.toStack(), 0.8F, 1.2F, 0.8F))));
+    public static final DeferredItem<Item> IRON_BULLET = registerItem("iron_bullet", () -> new Item(new Item.Properties().component(OFDataComponents.BULLET.get(), new BulletComponent(SHOT_IRON_BULLET.toStack(), 1.0F, 1.0F, 1.0F))));
+    public static final DeferredItem<Item> PRECISION_BULLET = registerItem("precision_bullet", () -> new Item(new Item.Properties().component(OFDataComponents.BULLET.get(), new BulletComponent(SHOT_PRECISION_BULLET.toStack(), 1.2F, 0.8F, 1.2F))));
 
     //trinket
     public static final DeferredItem<Item> RELIC_FEATHER = registerItem("relic_feather", () -> new RelicFeatherItem(new Item.Properties().rarity(Rarity.UNCOMMON).stacksTo(1), OFCurioDefinitions.RELIC_FEATHER));

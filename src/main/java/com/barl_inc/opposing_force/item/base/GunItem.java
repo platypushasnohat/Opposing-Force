@@ -28,9 +28,9 @@ public abstract class GunItem extends ProjectileWeaponItem {
 
     public abstract void consumeAmmo(Player player, ItemStack stack, ItemStack ammo);
 
-    protected abstract void shoot(Level level, Player player, ItemStack stack, ItemStack ammo);
+    public abstract void shoot(Level level, Player player, ItemStack stack, ItemStack ammo);
 
-    protected abstract int getCooldown(ItemStack stack, ItemStack ammo);
+    public abstract int getCooldown(ItemStack stack, ItemStack ammo);
 
     public ItemStack getAmmo(Player player) {
         ItemStack ammo = this.isAmmo(player.getOffhandItem()) ? player.getOffhandItem() : ItemStack.EMPTY;
@@ -56,12 +56,14 @@ public abstract class GunItem extends ProjectileWeaponItem {
         return Math.max(1, Math.round(this.getCooldown(stack, ammo) * 4.0F / attackSpeed));
     }
 
-    protected void onShot(Player player, InteractionHand hand, ItemStack stack, ItemStack ammo) {
-        player.getCooldowns().addCooldown(this, this.getShotCooldown(player, hand, stack, ammo));
-        player.awardStat(Stats.ITEM_USED.get(this));
-        if (!player.hasInfiniteMaterials()) {
-            this.consumeAmmo(player, stack, ammo);
-            stack.hurtAndBreak(1, player, LivingEntity.getSlotForHand(hand));
+    protected void onShot(Level level, Player player, InteractionHand hand, ItemStack stack, ItemStack ammo) {
+        if (!level.isClientSide) {
+            player.getCooldowns().addCooldown(this, this.getShotCooldown(player, hand, stack, ammo));
+            player.awardStat(Stats.ITEM_USED.get(this));
+            if (!player.hasInfiniteMaterials()) {
+                this.consumeAmmo(player, stack, ammo);
+                stack.hurtAndBreak(1, player, LivingEntity.getSlotForHand(hand));
+            }
         }
     }
 
@@ -75,13 +77,13 @@ public abstract class GunItem extends ProjectileWeaponItem {
             }
             return InteractionResultHolder.consume(stack);
         }
+
         if (level.isClientSide) {
             this.shootAnimationState.start(player.tickCount, player);
-        } else {
-            ItemStack ammo = this.getAmmo(player);
-            this.shoot(level, player, stack, ammo);
-            this.onShot(player, hand, stack, ammo);
         }
+        ItemStack ammo = this.getAmmo(player);
+        this.shoot(level, player, stack, ammo);
+        this.onShot(level, player, hand, stack, ammo);
         return result;
     }
 

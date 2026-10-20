@@ -1,21 +1,14 @@
 package com.barl_inc.opposing_force.entity;
 
-import com.barl_inc.opposing_force.entity.ai.navigation.PhasingMoveControl;
 import com.barl_inc.opposing_force.entity.ai.goal.PhasingWanderGoal;
-import com.barl_inc.opposing_force.entity.ai.navigation.PhasingFlyingNavigation;
-import com.barl_inc.opposing_force.entity.base.BasicFlyingMonster;
+import com.barl_inc.opposing_force.entity.base.PhasingMonster;
 import com.platypushasnohat.sinew.client.animation.SmoothAnimationState;
 import com.platypushasnohat.sinew.entity.ai.goal.AttackGoal;
 import com.platypushasnohat.sinew.entity.ai.goal.SpectralStareGoal;
-import com.platypushasnohat.sinew.entity.spectral.SpectralEntity;
 import com.platypushasnohat.sinew.entity.spectral.SpectralSight;
 import net.minecraft.core.BlockPos;
-import net.minecraft.sounds.SoundEvent;
-import net.minecraft.sounds.SoundEvents;
-import net.minecraft.util.Mth;
 import net.minecraft.util.RandomSource;
 import net.minecraft.world.DifficultyInstance;
-import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.entity.LivingEntity;
@@ -28,7 +21,6 @@ import net.minecraft.world.entity.ai.goal.Goal;
 import net.minecraft.world.entity.ai.goal.LookAtPlayerGoal;
 import net.minecraft.world.entity.ai.goal.RandomLookAroundGoal;
 import net.minecraft.world.entity.ai.goal.target.HurtByTargetGoal;
-import net.minecraft.world.entity.ai.navigation.PathNavigation;
 import net.minecraft.world.entity.item.ItemEntity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
@@ -39,33 +31,23 @@ import net.minecraft.world.item.TieredItem;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.ServerLevelAccessor;
 import net.minecraft.world.level.biome.Biomes;
-import net.minecraft.world.level.block.state.BlockState;
-import net.minecraft.world.phys.AABB;
-import net.minecraft.world.phys.Vec3;
 
 import javax.annotation.Nullable;
 import java.util.Comparator;
 import java.util.EnumSet;
 
-public class Ghost extends BasicFlyingMonster implements SpectralEntity {
+public class Ghost extends PhasingMonster {
 
     public static final int ATTACK_ANIMATION = 1;
     public static final int ATTACK_2_ANIMATION = 2;
-    private static final int FADE_TICKS = 50;
 
     public final SmoothAnimationState attackAnimationState = new SmoothAnimationState();
     public final SmoothAnimationState attack2AnimationState = new SmoothAnimationState();
 
     private int carryCooldown;
-    private int fadeTicks;
-    private int prevFadeTicks;
-    private float tilt;
-    private float prevTilt;
 
     public Ghost(EntityType<? extends Ghost> entityType, Level level) {
         super(entityType, level);
-        this.xpReward = 5;
-        this.moveControl = new PhasingMoveControl(this);
     }
 
     public static AttributeSupplier.Builder registerAttributes() {
@@ -87,43 +69,6 @@ public class Ghost extends BasicFlyingMonster implements SpectralEntity {
         this.goalSelector.addGoal(4, new RandomLookAroundGoal(this));
         this.targetSelector.addGoal(0, new HurtByTargetGoal(this));
         this.targetSelector.addGoal(1, new SpectralStareGoal(this));
-    }
-
-    @Override
-    protected PathNavigation createNavigation(Level level) {
-        return new PhasingFlyingNavigation(this, level);
-    }
-
-    @Override
-    public void tick() {
-        this.noPhysics = true;
-        super.tick();
-        this.noPhysics = false;
-        this.setNoGravity(true);
-        if (this.level().isClientSide) {
-            this.prevFadeTicks = this.fadeTicks;
-            this.fadeTicks = Mth.clamp(this.fadeTicks + (SpectralSight.isPerceivedByClient(this) ? 1 : -1), 0, FADE_TICKS);
-            this.prevTilt = this.tilt;
-            this.tilt = Mth.approachDegrees(this.tilt, this.getXRot(), 6.0F);
-        }
-    }
-
-    public float getTilt(float partialTicks) {
-        return Mth.lerp(partialTicks, this.prevTilt, this.tilt);
-    }
-
-    public float getFade(float partialTicks) {
-        return Mth.lerp(partialTicks, this.prevFadeTicks, this.fadeTicks) / FADE_TICKS;
-    }
-
-    @Override
-    public int getFadeInTicks() {
-        return 0;
-    }
-
-    @Override
-    public int getStareTicksToTarget() {
-        return 60;
     }
 
     @Nullable
@@ -200,35 +145,11 @@ public class Ghost extends BasicFlyingMonster implements SpectralEntity {
     }
 
     @Override
-    public boolean canBeHeardBy(Player listener) {
-        return true;
-    }
-
-    @Override
     public void setupAnimationStates() {
         this.idleAnimationState.animateWhen(this.getAnimationState() == 0, this.tickCount);
         this.walkAnimationState.animateWhen(this.getAnimationState() == 0, this.tickCount);
         this.attackAnimationState.animateWhen(this.getAnimationState() == ATTACK_ANIMATION, this.tickCount);
         this.attack2AnimationState.animateWhen(this.getAnimationState() == ATTACK_2_ANIMATION, this.tickCount);
-    }
-
-    @Override
-    protected SoundEvent getAmbientSound() {
-        return SoundEvents.VEX_AMBIENT;
-    }
-
-    @Override
-    protected SoundEvent getHurtSound(DamageSource damageSource) {
-        return SoundEvents.VEX_HURT;
-    }
-
-    @Override
-    protected SoundEvent getDeathSound() {
-        return SoundEvents.VEX_DEATH;
-    }
-
-    @Override
-    protected void playStepSound(BlockPos pos, BlockState state) {
     }
 
     private static class GhostAttackGoal extends AttackGoal {
@@ -251,15 +172,13 @@ public class Ghost extends BasicFlyingMonster implements SpectralEntity {
         public void tick() {
             LivingEntity target = this.ghost.getTarget();
             if (target != null) {
-                double gap = this.getGap(target);
+                double gap = this.ghost.getGap(target);
                 this.lookAtTarget(target, 30.0F, 30.0F);
                 this.ghost.getNavigation().stop();
                 if (this.attackState == 1) {
                     this.tickAttack(target);
                 } else {
-                    Vec3 center = target.getBoundingBox().getCenter();
-                    Vec3 approach = center.add(this.ghost.getBoundingBox().getCenter().subtract(center).normalize().scale(1.2D));
-                    this.ghost.getMoveControl().setWantedPosition(approach.x, approach.y - this.ghost.getBbHeight() / 2.0F, approach.z, 1.2D + Mth.clamp(gap - 1.25D, 0.0D, 4.0D) * 0.6D);
+                    this.ghost.approach(target);
                     if (this.attackCooldown > 0) {
                         this.attackCooldown--;
                     }
@@ -275,7 +194,7 @@ public class Ghost extends BasicFlyingMonster implements SpectralEntity {
             if (this.timer == 1) {
                 this.ghost.setAnimationState(!this.ghost.getMainHandItem().isEmpty() || this.ghost.getRandom().nextBoolean() ? ATTACK_ANIMATION : ATTACK_2_ANIMATION);
             }
-            if (this.timer == 21 && this.getGap(target) < 2.0D && this.ghost.hasLineOfSight(target)) {
+            if (this.timer == 21 && this.ghost.getGap(target) < 2.0D && this.ghost.hasLineOfSight(target)) {
                 this.ghost.doHurtTarget(target);
             }
             if (this.timer > 40) {
@@ -284,15 +203,6 @@ public class Ghost extends BasicFlyingMonster implements SpectralEntity {
                 this.attackCooldown = (int) ((10 + this.ghost.getRandom().nextInt(10)) * this.ghost.getAttackCooldownMultiplier());
                 this.attackState = 0;
             }
-        }
-
-        private double getGap(LivingEntity target) {
-            AABB box = this.ghost.getBoundingBox();
-            AABB targetBox = target.getBoundingBox();
-            double x = Math.max(0.0D, Math.max(box.minX - targetBox.maxX, targetBox.minX - box.maxX));
-            double y = Math.max(0.0D, Math.max(box.minY - targetBox.maxY, targetBox.minY - box.maxY));
-            double z = Math.max(0.0D, Math.max(box.minZ - targetBox.maxZ, targetBox.minZ - box.maxZ));
-            return Math.sqrt(x * x + y * y + z * z);
         }
     }
 

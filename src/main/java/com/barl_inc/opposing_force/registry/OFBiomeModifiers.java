@@ -34,9 +34,10 @@ public class OFBiomeModifiers {
         addSpawn(context, "terror", OFBiomeTags.HAS_OVERWORLD_MONSTERS, new MobSpawnSettings.SpawnerData(OFEntities.TERROR.get(), 20, 1, 1));
         addSpawn(context, "motif", OFBiomeTags.HAS_DESERT_MONSTERS, new MobSpawnSettings.SpawnerData(OFEntities.MOTIF.get(), 4, 1, 2));
         addSpawn(context, "fillet", OFBiomeTags.HAS_OVERWORLD_MONSTERS, new MobSpawnSettings.SpawnerData(OFEntities.FILLET.get(), 100, 4, 4));
-        addSpawn(context, "ghost", OFBiomeTags.HAS_OVERWORLD_MONSTERS, new MobSpawnSettings.SpawnerData(OFEntities.GHOST.get(), 15, 1, 1));
+        addSpawn(context, "ghost", OFBiomeTags.HAS_OVERWORLD_MONSTERS, new MobSpawnSettings.SpawnerData(OFEntities.GHOST.get(), 30, 1, 3));
         addSpawn(context, "roamer_birch_forest", OFBiomeTags.HAS_BIRCH_FOREST_MONSTERS, new MobSpawnSettings.SpawnerData(OFEntities.ROAMER.get(), 33, 1, 3));
         addSpawn(context, "roamer_dark_forest", OFBiomeTags.HAS_DARK_FOREST_MONSTERS, new MobSpawnSettings.SpawnerData(OFEntities.ROAMER.get(), 14, 1, 1));
+        addSpawn(context, "haunt", OFBiomeTags.HAS_OVERWORLD_MONSTERS, new MobSpawnSettings.SpawnerData(OFEntities.HAUNT.get(), 20, 1, 2));
     }
 
     @SafeVarargs

@@ -3,8 +3,8 @@
   "biomes": "#opposing_force:has_monster/overworld",
   "spawners": {
     "type": "opposing_force:ghost",
-    "maxCount": 1,
+    "maxCount": 3,
     "minCount": 1,
-    "weight": 15
+    "weight": 30
   }
 }

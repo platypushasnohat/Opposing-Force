@@ -3,19 +3,16 @@ package com.barl_inc.opposing_force.client.model.entity;
 import com.barl_inc.opposing_force.client.model.entity.animation.GhostAnimations;
 import com.barl_inc.opposing_force.entity.Ghost;
 import com.mojang.blaze3d.vertex.PoseStack;
-import com.mojang.blaze3d.vertex.VertexConsumer;
-import com.platypushasnohat.sinew.client.model.entity.SinewEntityModel;
 import net.minecraft.client.model.geom.ModelPart;
 import net.minecraft.client.model.geom.PartPose;
 import net.minecraft.client.model.geom.builders.*;
-import net.minecraft.client.renderer.RenderType;
 import net.minecraft.core.Direction;
 import net.minecraft.util.Mth;
 
 import java.util.EnumSet;
 import java.util.Set;
 
-public class GhostModel extends SinewEntityModel<Ghost> {
+public class GhostModel extends PhasingMonsterModel<Ghost> {
 
     private static final Set<Direction> PLANE_Z = EnumSet.of(Direction.NORTH);
     private static final Set<Direction> PLANE_Y = EnumSet.of(Direction.UP);
@@ -25,10 +22,8 @@ public class GhostModel extends SinewEntityModel<Ghost> {
     private final ModelPart head;
     private final ModelPart armLeft;
     private final ModelPart armRight;
-    public float alpha = 1.0F;
 
     public GhostModel(ModelPart root) {
-        super(RenderType::entityTranslucent);
         this.root = root;
         this.ghost = root.getChild("Ghost");
         this.head = this.ghost.getChild("Head");
@@ -48,12 +43,6 @@ public class GhostModel extends SinewEntityModel<Ghost> {
         this.animateSmooth(entity.attackAnimationState, GhostAnimations.ATTACK, ageInTicks, partialTicks);
         this.animateSmooth(entity.attack2AnimationState, GhostAnimations.ATTACK2, ageInTicks, partialTicks);
         this.head.yRot += netHeadYaw * Mth.DEG_TO_RAD;
-    }
-
-    @Override
-    public void renderToBuffer(PoseStack poseStack, VertexConsumer buffer, int packedLight, int packedOverlay, int color) {
-        int alpha = (int) (((color >>> 24) & 0xFF) * this.alpha);
-        super.renderToBuffer(poseStack, buffer, packedLight, packedOverlay, (alpha << 24) | (color & 0xFFFFFF));
     }
 
     public void translateToHand(PoseStack poseStack, boolean left) {

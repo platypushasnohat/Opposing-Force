@@ -67,6 +67,7 @@ public class CommonEvents {
         event.put(OFEntities.FILLET.get(), Fillet.registerAttributes().build());
         event.put(OFEntities.GHOST.get(), Ghost.registerAttributes().build());
         event.put(OFEntities.ROAMER.get(), Roamer.registerAttributes().build());
+        event.put(OFEntities.HAUNT.get(), Haunt.registerAttributes().build());
     }
 
     @SubscribeEvent
@@ -84,6 +85,7 @@ public class CommonEvents {
         event.register(OFEntities.FILLET.get(), SpawnPlacementTypes.IN_WATER, Heightmap.Types.MOTION_BLOCKING_NO_LEAVES, Fillet::checkFilletSpawnRules, RegisterSpawnPlacementsEvent.Operation.AND);
         event.register(OFEntities.GHOST.get(), SpawnPlacementTypes.ON_GROUND, Heightmap.Types.MOTION_BLOCKING_NO_LEAVES, Ghost::checkGhostSpawnRules, RegisterSpawnPlacementsEvent.Operation.AND);
         event.register(OFEntities.ROAMER.get(), SpawnPlacementTypes.ON_GROUND, Heightmap.Types.MOTION_BLOCKING_NO_LEAVES, Roamer::checkRoamerSpawnRules, RegisterSpawnPlacementsEvent.Operation.AND);
+        event.register(OFEntities.HAUNT.get(), SpawnPlacementTypes.ON_GROUND, Heightmap.Types.MOTION_BLOCKING_NO_LEAVES, Haunt::checkHauntSpawnRules, RegisterSpawnPlacementsEvent.Operation.AND);
     }
 
     @SubscribeEvent

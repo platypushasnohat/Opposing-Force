@@ -24,6 +24,7 @@ public class OFCreativeTabs {
                         output.accept(OFItems.GHOST_SPAWN_EGG);
                         output.accept(OFItems.GNAT_SPAWN_EGG);
                         output.accept(OFItems.GUSHER_SPAWN_EGG);
+                        output.accept(OFItems.HAUNT_SPAWN_EGG);
                         output.accept(OFItems.MOTIF_SPAWN_EGG);
                         output.accept(OFItems.MUSHY_SPAWN_EGG);
                         output.accept(OFItems.ROAMER_SPAWN_EGG);

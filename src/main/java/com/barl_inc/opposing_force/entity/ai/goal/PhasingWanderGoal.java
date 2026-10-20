@@ -21,6 +21,7 @@ public class PhasingWanderGoal extends Goal {
     private final double idleHeight;
     @Nullable
     private Vec3 wanderPos;
+    private int pauseTicks;
 
     public PhasingWanderGoal(PathfinderMob mob) {
         this(mob, 64.0D, 6.0D, 20.0D, 7.0D, 8.0D, 4.0D);
@@ -39,6 +40,10 @@ public class PhasingWanderGoal extends Goal {
 
     @Override
     public boolean canUse() {
+        if (this.pauseTicks > 0) {
+            this.pauseTicks--;
+            return false;
+        }
         if (!this.mob.getNavigation().isDone() || this.mob.getRandom().nextInt(10) != 0) {
             return false;
         }
@@ -55,6 +60,13 @@ public class PhasingWanderGoal extends Goal {
     public void start() {
         if (this.wanderPos != null) {
             this.mob.getNavigation().moveTo(this.wanderPos.x, this.wanderPos.y, this.wanderPos.z, 1.0D);
+        }
+    }
+
+    @Override
+    public void stop() {
+        if (this.mob.getRandom().nextBoolean()) {
+            this.pauseTicks = 20 + this.mob.getRandom().nextInt(40);
         }
     }
 

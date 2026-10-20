@@ -36,7 +36,8 @@ public class OFEntityTypeTagsProvider extends EntityTypeTagsProvider {
         );
 
         this.tag(EntityTypeTags.UNDEAD).add(
-                OFEntities.GHOST.get()
+                OFEntities.GHOST.get(),
+                OFEntities.HAUNT.get()
         );
 	}
 }

@@ -2,7 +2,7 @@ package com.barl_inc.opposing_force.item.ranged;
 
 import com.barl_inc.opposing_force.item.base.BulletGunItem;
 import com.barl_inc.opposing_force.registry.OFSoundEvents;
-import com.platypushasnohat.sinew.client.animation.ItemAnimationState;
+import com.platypushasnohat.sinew.item.ItemAnimations;
 import com.platypushasnohat.sinew.utils.SinewSoundUtils;
 import net.minecraft.core.component.DataComponents;
 import net.minecraft.nbt.CompoundTag;
@@ -19,7 +19,7 @@ public class BoomstickItem extends BulletGunItem {
 
     private static final int PROJECTILE_COUNT = 10;
 
-    public final ItemAnimationState reloadAnimationState = new ItemAnimationState();
+    public static final String RELOAD_ANIMATION = "reload";
 
     public BoomstickItem(Properties properties) {
         super(properties.durability(650), 1.0F, 2.5F, 13.0F, 10);
@@ -37,12 +37,13 @@ public class BoomstickItem extends BulletGunItem {
         if (getShots(stack) < 2 || !this.canShoot(player, hand)) {
             player.push(player.getLookAngle().reverse().normalize().scale(0.5F));
             result = super.use(level, player, hand);
-        } else if (level.isClientSide) {
-            this.reloadAnimationState.start(player.tickCount, player);
         } else {
-            setShots(stack, 0);
-            player.getCooldowns().addCooldown(this, 30);
-            level.playSound(null, player.getX(), player.getY(), player.getZ(), SoundEvents.IRON_TRAPDOOR_OPEN, SoundSource.PLAYERS, 1.0F, 1.2F * SinewSoundUtils.randomizePitch(player));
+            ItemAnimations.start(player, stack, RELOAD_ANIMATION);
+            if (!level.isClientSide) {
+                setShots(stack, 0);
+                player.getCooldowns().addCooldown(this, 30);
+                level.playSound(null, player.getX(), player.getY(), player.getZ(), SoundEvents.IRON_TRAPDOOR_OPEN, SoundSource.PLAYERS, 1.0F, 1.2F * SinewSoundUtils.randomizePitch(player));
+            }
         }
         return result;
     }

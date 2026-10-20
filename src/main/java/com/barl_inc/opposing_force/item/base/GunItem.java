@@ -1,7 +1,7 @@
 package com.barl_inc.opposing_force.item.base;
 
 import com.barl_inc.opposing_force.item.utils.GunUtils;
-import com.platypushasnohat.sinew.client.animation.ItemAnimationState;
+import com.platypushasnohat.sinew.item.ItemAnimations;
 import net.minecraft.stats.Stats;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResultHolder;
@@ -18,7 +18,7 @@ import java.util.function.Predicate;
 
 public abstract class GunItem extends ProjectileWeaponItem {
 
-    public final ItemAnimationState shootAnimationState = new ItemAnimationState();
+    public static final String SHOOT_ANIMATION = "shoot";
 
     public GunItem(Properties properties) {
         super(properties);
@@ -62,16 +62,12 @@ public abstract class GunItem extends ProjectileWeaponItem {
         return itemStack -> itemStack.getItem() instanceof GunItem;
     }
 
-    public int getShotCooldown() {
-        return 10;
-    }
-
     protected void onShot(Level level, Player player, InteractionHand hand, ItemStack stack, ItemStack ammo) {
         if (this.canDualWield()) {
-            GunUtils.applyDualWieldCooldown(player, stack, hand, this.swapPredicate(), this.getShotCooldown());
+            GunUtils.applyDualWieldCooldown(player, stack, hand, this.swapPredicate(), this.getCooldown(stack, ammo));
         }
         else {
-            player.getCooldowns().addCooldown(this, this.getShotCooldown());
+            player.getCooldowns().addCooldown(this, this.getCooldown(stack, ammo));
         }
         player.awardStat(Stats.ITEM_USED.get(this));
         if (!player.hasInfiniteMaterials()) {
@@ -93,9 +89,7 @@ public abstract class GunItem extends ProjectileWeaponItem {
             return InteractionResultHolder.fail(stack);
         }
 
-        if (level.isClientSide) {
-            this.shootAnimationState.start(player.tickCount, player);
-        }
+        ItemAnimations.start(player, stack, SHOOT_ANIMATION);
         ItemStack ammo = this.getAmmo(player);
         this.shoot(level, player, stack, ammo);
         this.onShot(level, player, hand, stack, ammo);

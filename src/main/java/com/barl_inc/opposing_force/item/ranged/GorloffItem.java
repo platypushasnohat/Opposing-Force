@@ -2,6 +2,7 @@ package com.barl_inc.opposing_force.item.ranged;
 
 import com.barl_inc.opposing_force.item.base.BulletGunItem;
 import com.barl_inc.opposing_force.registry.OFSoundEvents;
+import com.platypushasnohat.sinew.item.ItemAnimations;
 import com.platypushasnohat.sinew.utils.SinewSoundUtils;
 import net.minecraft.core.component.DataComponents;
 import net.minecraft.nbt.CompoundTag;
@@ -75,9 +76,8 @@ public class GorloffItem extends BulletGunItem {
     public void inventoryTick(ItemStack stack, Level level, Entity entity, int slotId, boolean isSelected) {
         super.inventoryTick(stack, level, entity, slotId, isSelected);
         if (entity instanceof Player player) {
-            if (level.isClientSide) {
-                this.shootAnimationState.animateWhen(player.isUsingItem() && player.getUseItem().is(this), player.tickCount, player);
-            } else if (getShots(stack) > 0 && !(player.isUsingItem() && player.getUseItem() == stack)) {
+            ItemAnimations.animateWhen(player.isUsingItem() && player.getItemInHand(player.getUsedItemHand()) == stack, player, stack, SHOOT_ANIMATION);
+            if (!level.isClientSide && getShots(stack) > 0 && !(player.isUsingItem() && player.getUseItem() == stack)) {
                 if (getShots(stack) % 4 != 0) {
                     this.useBullet(player, stack, this.getAmmo(player));
                 }

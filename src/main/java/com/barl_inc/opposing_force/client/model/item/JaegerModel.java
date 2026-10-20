@@ -2,6 +2,7 @@ package com.barl_inc.opposing_force.client.model.item;
 
 import com.barl_inc.opposing_force.OpposingForce;
 import com.barl_inc.opposing_force.client.model.item.animation.JaegerAnimations;
+import com.barl_inc.opposing_force.item.base.GunItem;
 import com.barl_inc.opposing_force.item.ranged.JaegerItem;
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.VertexConsumer;
@@ -32,8 +33,8 @@ public class JaegerModel extends AnimatedItemModel<JaegerItem> {
     @Override
     public void setupAnim(Entity entity, JaegerItem item, ItemStack stack, ItemDisplayContext displayContext, float ageInTicks) {
         this.root().getAllParts().forEach(ModelPart::resetPose);
-        this.animate(entity, item.shootAnimationState, JaegerAnimations.SHOOT, ageInTicks);
-        this.animate(entity, item.cockAnimationState, JaegerAnimations.COCKING, ageInTicks);
+        this.animate(stack, GunItem.SHOOT_ANIMATION, JaegerAnimations.SHOOT);
+        this.animate(stack, JaegerItem.COCK_ANIMATION, JaegerAnimations.COCKING);
     }
 
     @Override

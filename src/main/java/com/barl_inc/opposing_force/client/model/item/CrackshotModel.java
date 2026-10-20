@@ -1,6 +1,7 @@
 package com.barl_inc.opposing_force.client.model.item;
 
 import com.barl_inc.opposing_force.OpposingForce;
+import com.barl_inc.opposing_force.item.base.GunItem;
 import com.barl_inc.opposing_force.item.ranged.CrackshotItem;
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.VertexConsumer;
@@ -35,7 +36,7 @@ public class CrackshotModel extends AnimatedItemModel<CrackshotItem> {
     @Override
     public void setupAnim(Entity entity, CrackshotItem item, ItemStack stack, ItemDisplayContext displayContext, float ageInTicks) {
         this.root().getAllParts().forEach(ModelPart::resetPose);
-        this.animate(entity, item.shootAnimationState, SHOOT, ageInTicks);
+        this.animate(stack, GunItem.SHOOT_ANIMATION, SHOOT);
     }
 
     @Override

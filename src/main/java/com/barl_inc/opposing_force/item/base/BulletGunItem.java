@@ -49,6 +49,10 @@ public class BulletGunItem extends GunItem {
         }
     }
 
+    public int getProjectileCount() {
+        return 1;
+    }
+
     @Override
     public int getCooldown(ItemStack stack, ItemStack ammo) {
         return this.cooldown;
@@ -69,6 +73,7 @@ public class BulletGunItem extends GunItem {
         }
         bullet.setDamage(damage);
         bullet.setItem(renderItem);
+        bullet.setProjectileCount(this.getProjectileCount());
         bullet.shootFromRotation(player, player.getXRot(), player.getYRot(), 0, velocity, inaccuracy);
         level.addFreshEntity(bullet);
     }

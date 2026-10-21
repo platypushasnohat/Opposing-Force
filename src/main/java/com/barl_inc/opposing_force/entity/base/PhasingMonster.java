@@ -2,8 +2,10 @@ package com.barl_inc.opposing_force.entity.base;
 
 import com.barl_inc.opposing_force.entity.ai.navigation.PhasingFlyingNavigation;
 import com.barl_inc.opposing_force.entity.ai.navigation.PhasingMoveControl;
+import com.barl_inc.opposing_force.registry.OFDamageTypes;
 import com.platypushasnohat.sinew.entity.spectral.SpectralEntity;
 import com.platypushasnohat.sinew.entity.spectral.SpectralSight;
+import com.platypushasnohat.sinew.registry.SinewDamageTypes;
 import net.minecraft.core.BlockPos;
 import net.minecraft.sounds.SoundEvent;
 import net.minecraft.sounds.SoundEvents;
@@ -85,7 +87,8 @@ public abstract class PhasingMonster extends BasicFlyingMonster implements Spect
 
     @Override
     public boolean hurt(DamageSource source, float amount) {
-        return !(source.getEntity() instanceof PhasingMonster) && super.hurt(source, amount);
+        float scale = source.is(OFDamageTypes.LASER_BOLT) ? 0.5F : source.is(SinewDamageTypes.MAGIC_DAMAGE) ? 1.25F : 1.0F;
+        return !(source.getEntity() instanceof PhasingMonster) && super.hurt(source, amount * scale);
     }
 
     @Override

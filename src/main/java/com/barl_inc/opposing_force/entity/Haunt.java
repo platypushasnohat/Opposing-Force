@@ -255,6 +255,8 @@ public class Haunt extends PhasingMonster {
             }
             if (this.timer > 40) {
                 this.haunt.returning = true;
+            } else if (!this.haunt.returning && this.haunt.distanceTo(target) > 20.0D) {
+                this.haunt.setDeltaMovement(this.aimAt(target, 1.5D));
             }
             if (this.haunt.returning) {
                 this.haunt.setDeltaMovement(this.aimAt(target, 1.5D));

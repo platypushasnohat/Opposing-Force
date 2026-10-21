@@ -26,8 +26,6 @@ public class RoamerModel extends SinewEntityModel<Roamer> {
         this.animateWalkSmooth(entity.walkAnimationState, RoamerAnimations.WALK, limbSwing, limbSwingAmount, 6.0F, 2.5F, partialTicks);
         this.animateSmooth(entity.lookAroundAnimationState, RoamerAnimations.LOOK_AROUND, ageInTicks, partialTicks);
         this.animateSmooth(entity.tweakingAnimationState, RoamerAnimations.TWEAKING, ageInTicks, partialTicks);
-        this.animateSmooth(entity.disappearAnimationState, RoamerAnimations.DISSAPEARING, ageInTicks, partialTicks);
-        this.animateSmooth(entity.appearAnimationState, RoamerAnimations.APPEARING, ageInTicks, partialTicks);
     }
 
     public static LayerDefinition createBodyLayer() {

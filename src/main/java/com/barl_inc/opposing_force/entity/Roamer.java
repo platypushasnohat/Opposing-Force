@@ -1,34 +1,29 @@
 package com.barl_inc.opposing_force.entity;
 
-import com.barl_inc.opposing_force.OpposingForce;
 import com.barl_inc.opposing_force.entity.ai.goal.StalkGoal;
-import com.barl_inc.opposing_force.registry.OFMobVariants;
 import com.platypushasnohat.sinew.client.animation.SmoothAnimationState;
 import com.platypushasnohat.sinew.entity.ai.control.UnrestrictedBodyRotationControl;
 import com.platypushasnohat.sinew.entity.base.AnimatedMonster;
 import com.platypushasnohat.sinew.entity.spectral.SpectralEntity;
 import com.platypushasnohat.sinew.entity.spectral.SpectralSight;
-import com.platypushasnohat.sinew.entity.variant.SinewMobVariant;
-import com.platypushasnohat.sinew.entity.variant.SinewVariantMob;
 import net.minecraft.core.BlockPos;
-import net.minecraft.core.Registry;
-import net.minecraft.nbt.CompoundTag;
-import net.minecraft.network.syncher.EntityDataAccessor;
-import net.minecraft.network.syncher.EntityDataSerializers;
-import net.minecraft.network.syncher.SynchedEntityData;
-import net.minecraft.resources.ResourceKey;
-import net.minecraft.resources.ResourceLocation;
 import net.minecraft.sounds.SoundEvent;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.util.Mth;
 import net.minecraft.util.RandomSource;
-import net.minecraft.world.DifficultyInstance;
-import net.minecraft.world.entity.*;
+import net.minecraft.world.entity.EntityType;
+import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.world.entity.Mob;
+import net.minecraft.world.entity.MobSpawnType;
 import net.minecraft.world.entity.ai.attributes.AttributeSupplier;
 import net.minecraft.world.entity.ai.attributes.Attributes;
 import net.minecraft.world.entity.ai.control.BodyRotationControl;
-import net.minecraft.world.entity.ai.goal.*;
+import net.minecraft.world.entity.ai.goal.FloatGoal;
+import net.minecraft.world.entity.ai.goal.Goal;
+import net.minecraft.world.entity.ai.goal.LookAtPlayerGoal;
+import net.minecraft.world.entity.ai.goal.RandomLookAroundGoal;
+import net.minecraft.world.entity.ai.goal.WaterAvoidingRandomStrollGoal;
 import net.minecraft.world.entity.ai.util.DefaultRandomPos;
 import net.minecraft.world.entity.npc.AbstractVillager;
 import net.minecraft.world.entity.player.Player;
@@ -44,19 +39,13 @@ import javax.annotation.Nullable;
 import java.util.Comparator;
 import java.util.EnumSet;
 
-public class Roamer extends AnimatedMonster implements SpectralEntity, SinewVariantMob {
-
-    private static final EntityDataAccessor<String> VARIANT = SynchedEntityData.defineId(Roamer.class, EntityDataSerializers.STRING);
+public class Roamer extends AnimatedMonster implements SpectralEntity {
 
     public static final int LOOK_AROUND_ANIMATION = 1;
     public static final int TWEAKING_ANIMATION = 2;
-    public static final int DISAPPEAR_ANIMATION = 3;
-    public static final int APPEAR_ANIMATION = 4;
 
     public final SmoothAnimationState lookAroundAnimationState = new SmoothAnimationState();
     public final SmoothAnimationState tweakingAnimationState = new SmoothAnimationState();
-    public final SmoothAnimationState disappearAnimationState = new SmoothAnimationState();
-    public final SmoothAnimationState appearAnimationState = new SmoothAnimationState();
 
     private int stareTicks;
     private int lookAwayTicks;
@@ -92,53 +81,6 @@ public class Roamer extends AnimatedMonster implements SpectralEntity, SinewVari
         return new UnrestrictedBodyRotationControl(this);
     }
 
-    @Override
-    protected void defineSynchedData(SynchedEntityData.Builder builder) {
-        super.defineSynchedData(builder);
-        builder.define(VARIANT, "");
-    }
-
-    @Override
-    public void addAdditionalSaveData(CompoundTag compoundTag) {
-        super.addAdditionalSaveData(compoundTag);
-        this.saveVariant(compoundTag);
-    }
-
-    @Override
-    public void readAdditionalSaveData(CompoundTag compoundTag) {
-        super.readAdditionalSaveData(compoundTag);
-        this.loadVariant(compoundTag);
-    }
-
-    @Override
-    public ResourceKey<Registry<SinewMobVariant>> variantRegistryKey() {
-        return OFMobVariants.ROAMER;
-    }
-
-    @Override
-    public ResourceLocation fallbackVariantTexture() {
-        return OpposingForce.location("textures/entity/roamer/roamer.png");
-    }
-
-    @Override
-    public String getVariantRawId() {
-        return this.entityData.get(VARIANT);
-    }
-
-    @Override
-    public void setVariantRawId(String id) {
-        this.entityData.set(VARIANT, id);
-    }
-
-    @Nullable
-    @Override
-    public SpawnGroupData finalizeSpawn(ServerLevelAccessor level, DifficultyInstance difficulty, MobSpawnType spawnType, @Nullable SpawnGroupData spawnGroupData) {
-        if (this.getVariantRawId().isEmpty()) {
-            this.pickVariantForSpawn(level);
-        }
-        return super.finalizeSpawn(level, difficulty, spawnType, spawnGroupData);
-    }
-
     public static boolean checkRoamerSpawnRules(EntityType<Roamer> entityType, ServerLevelAccessor level, MobSpawnType spawnType, BlockPos pos, RandomSource random) {
         return pos.getY() >= level.getHeight(Heightmap.Types.MOTION_BLOCKING_NO_LEAVES, pos.getX(), pos.getZ()) && checkSurfaceMonsterSpawnRules(entityType, level, spawnType, pos, random);
     }
@@ -157,6 +99,10 @@ public class Roamer extends AnimatedMonster implements SpectralEntity, SinewVari
         if (this.level().isDay() && !this.hasCustomName() && !this.isPersistenceRequired()) {
             this.discard();
         }
+    }
+
+    public boolean isFresno() {
+        return this.getCustomName() != null && this.getCustomName().getString().equalsIgnoreCase("fresno");
     }
 
     @Override
@@ -196,8 +142,6 @@ public class Roamer extends AnimatedMonster implements SpectralEntity, SinewVari
         this.walkAnimationState.animateWhen(this.getAnimationState() == 0, this.tickCount);
         this.lookAroundAnimationState.animateWhen(this.getAnimationState() == LOOK_AROUND_ANIMATION, this.tickCount);
         this.tweakingAnimationState.animateWhen(this.getAnimationState() == TWEAKING_ANIMATION, this.tickCount);
-        this.disappearAnimationState.animateWhen(this.getAnimationState() == DISAPPEAR_ANIMATION, this.tickCount);
-        this.appearAnimationState.animateWhen(this.getAnimationState() == APPEAR_ANIMATION, this.tickCount);
     }
 
     @Override
@@ -227,7 +171,7 @@ public class Roamer extends AnimatedMonster implements SpectralEntity, SinewVari
 
         @Override
         public boolean canContinueToUse() {
-            return this.isVanishing() ? this.timer < 22 : this.timer < 60 && !this.roamer.getNavigation().isDone();
+            return this.timer < 60 && !this.roamer.getNavigation().isDone();
         }
 
         @Override
@@ -247,9 +191,10 @@ public class Roamer extends AnimatedMonster implements SpectralEntity, SinewVari
                         .orElse(null);
             }
             this.hidingSpot = this.swapTarget == null ? this.findHidingSpot(starer) : null;
-            if (this.isVanishing()) {
-                this.roamer.setAnimationState(DISAPPEAR_ANIMATION);
+            if (this.swapTarget != null || this.hidingSpot != null) {
+                this.roamer.getNavigation().stop();
                 this.roamer.playSound(SoundEvents.ILLUSIONER_MIRROR_MOVE, 1.0F, 0.8F);
+                this.vanish();
             } else {
                 Vec3 away = DefaultRandomPos.getPosAway(this.roamer, 16, 7, starer.position());
                 if (away != null) {
@@ -264,29 +209,15 @@ public class Roamer extends AnimatedMonster implements SpectralEntity, SinewVari
             this.roamer.starer = null;
             this.swapTarget = null;
             this.hidingSpot = null;
-            if (this.roamer.getAnimationState() == DISAPPEAR_ANIMATION || this.roamer.getAnimationState() == APPEAR_ANIMATION) {
-                this.roamer.setAnimationState(0);
-            }
         }
 
         @Override
         public void tick() {
             this.timer++;
-            if (this.isVanishing()) {
-                this.roamer.getNavigation().stop();
-                if (this.timer == 12) {
-                    this.vanish();
-                    this.roamer.setAnimationState(APPEAR_ANIMATION);
-                }
-            }
         }
 
         private boolean canSwapWith(LivingEntity entity) {
             return entity.isAlive() && !(entity instanceof Player) && !(entity instanceof AbstractVillager) && !(entity instanceof SpectralEntity) && !entity.isInvisible() && !entity.isInWater() && !entity.isSleeping() && !entity.isPassenger() && !entity.isVehicle() && !entity.getType().is(Tags.EntityTypes.BOSSES);
-        }
-
-        private boolean isVanishing() {
-            return this.swapTarget != null || this.hidingSpot != null;
         }
 
         private void vanish() {

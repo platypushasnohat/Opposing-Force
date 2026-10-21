@@ -84,6 +84,11 @@ public abstract class PhasingMonster extends BasicFlyingMonster implements Spect
     }
 
     @Override
+    public boolean hurt(DamageSource source, float amount) {
+        return !(source.getEntity() instanceof PhasingMonster) && super.hurt(source, amount);
+    }
+
+    @Override
     public int getFadeInTicks() {
         return 0;
     }

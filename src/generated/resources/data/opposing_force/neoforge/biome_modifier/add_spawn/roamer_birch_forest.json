@@ -5,6 +5,6 @@
     "type": "opposing_force:roamer",
     "maxCount": 3,
     "minCount": 1,
-    "weight": 33
+    "weight": 20
   }
 }

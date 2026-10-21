@@ -9,7 +9,6 @@ import com.platypushasnohat.sinew.entity.spectral.SpectralSight;
 import net.minecraft.core.BlockPos;
 import net.minecraft.sounds.SoundEvent;
 import net.minecraft.sounds.SoundEvents;
-import net.minecraft.sounds.SoundSource;
 import net.minecraft.util.Mth;
 import net.minecraft.util.RandomSource;
 import net.minecraft.world.entity.EntityType;
@@ -193,7 +192,6 @@ public class Roamer extends AnimatedMonster implements SpectralEntity {
             this.hidingSpot = this.swapTarget == null ? this.findHidingSpot(starer) : null;
             if (this.swapTarget != null || this.hidingSpot != null) {
                 this.roamer.getNavigation().stop();
-                this.roamer.playSound(SoundEvents.ILLUSIONER_MIRROR_MOVE, 1.0F, 0.8F);
                 this.vanish();
             } else {
                 Vec3 away = DefaultRandomPos.getPosAway(this.roamer, 16, 7, starer.position());
@@ -227,9 +225,6 @@ public class Roamer extends AnimatedMonster implements SpectralEntity {
                 this.swapTarget.teleportTo(position.x, position.y, position.z);
                 if (this.swapTarget instanceof Mob mob) {
                     mob.getNavigation().stop();
-                }
-                if (this.swapTarget instanceof Player player) {
-                    player.playNotifySound(SoundEvents.ELDER_GUARDIAN_CURSE, SoundSource.HOSTILE, 0.7F, 1.3F);
                 }
             } else if (this.hidingSpot != null) {
                 this.roamer.teleportTo(this.hidingSpot.x, this.hidingSpot.y, this.hidingSpot.z);

@@ -30,7 +30,6 @@ public class Haunt extends PhasingMonster {
     public static final int ATTACK_ANIMATION = 1;
     public static final int SPIN_START_ANIMATION = 2;
     public static final int SPIN_ANIMATION = 3;
-    private static final double SPIN_SPEED = 1.5D;
 
     public final SmoothAnimationState attackAnimationState = new SmoothAnimationState();
     public final SmoothAnimationState spinStartAnimationState = new SmoothAnimationState();
@@ -46,7 +45,7 @@ public class Haunt extends PhasingMonster {
 
     public static AttributeSupplier.Builder registerAttributes() {
         return Mob.createMobAttributes()
-                .add(Attributes.MAX_HEALTH, 60.0D)
+                .add(Attributes.MAX_HEALTH, 50.0D)
                 .add(Attributes.ARMOR, 8.0D)
                 .add(Attributes.FLYING_SPEED, 0.4F)
                 .add(Attributes.MOVEMENT_SPEED, 0.25F)
@@ -174,14 +173,11 @@ public class Haunt extends PhasingMonster {
         public void tick() {
             LivingEntity target = this.haunt.getTarget();
             if (target != null) {
-                if (this.attackState == 1) {
-                    this.tickSlam(target);
-                } else if (this.attackState == 2) {
-                    this.tickSpinStart(target);
-                } else if (this.attackState == 3) {
-                    this.tickSpin(target);
-                } else {
-                    this.tickApproach(target);
+                switch (this.attackState) {
+                    case 1 -> this.tickSlam(target);
+                    case 2 -> this.tickSpinStart(target);
+                    case 3 -> this.tickSpin(target);
+                    default -> this.tickApproach(target);
                 }
             }
         }
@@ -217,14 +213,11 @@ public class Haunt extends PhasingMonster {
                 this.haunt.playSound(SoundEvents.PLAYER_ATTACK_SWEEP, 1.2F, 0.5F);
             }
             if (this.timer == 17 && this.haunt.getGap(target) < 1.0D && this.haunt.hasLineOfSight(target)) {
-                this.haunt.doHurtTarget(target);
+                target.hurt(this.haunt.damageSources().mobAttack(this.haunt), (float) this.haunt.getAttributeValue(Attributes.ATTACK_DAMAGE) * 2.0F);
                 this.haunt.playSound(SoundEvents.ZOMBIE_ATTACK_IRON_DOOR, 0.6F, 1.2F);
             }
             if (this.timer >= 30) {
-                this.haunt.setAnimationState(0);
-                this.timer = 0;
-                this.attackCooldown = 24;
-                this.attackState = 0;
+                this.finishAttack(24);
             }
         }
 
@@ -238,13 +231,13 @@ public class Haunt extends PhasingMonster {
             }
             if (this.timer >= 30) {
                 this.haunt.setAnimationState(SPIN_ANIMATION);
-                this.haunt.setDeltaMovement(this.haunt.twist(this.aimAt(target, SPIN_SPEED), 20.0F, 45.0F));
+                this.haunt.setDeltaMovement(this.haunt.twist(this.aimAt(target, 1.5D), 20.0F, 45.0F));
                 this.haunt.playSound(SoundEvents.PHANTOM_SWOOP, 1.0F, 1.2F);
                 this.haunt.bounced = false;
                 this.timer = 0;
                 this.bounces = 0;
                 this.spinTicks = 0;
-                this.maxBounces = 35 + this.haunt.getRandom().nextInt(16);
+                this.maxBounces = 15 + this.haunt.getRandom().nextInt(21);
                 this.attackState = 3;
             }
         }
@@ -253,26 +246,31 @@ public class Haunt extends PhasingMonster {
             this.timer++;
             this.spinTicks++;
             Vec3 velocity = this.haunt.getDeltaMovement();
-            for (LivingEntity entity : this.haunt.level().getEntitiesOfClass(LivingEntity.class, this.haunt.getBoundingBox().expandTowards(velocity), entity -> !(entity instanceof Haunt) && EntitySelector.NO_SPECTATORS.test(entity))) {
+            for (LivingEntity entity : this.haunt.level().getEntitiesOfClass(LivingEntity.class, this.haunt.getBoundingBox().expandTowards(velocity), entity -> !(entity instanceof PhasingMonster) && EntitySelector.NO_SPECTATORS.test(entity))) {
                 if (entity.hurt(this.haunt.damageSources().mobAttack(this.haunt), (float) this.haunt.getAttributeValue(Attributes.ATTACK_DAMAGE))) {
                     entity.knockback(1.2D, -velocity.x, -velocity.z);
                 }
             }
             if (this.haunt.bounced || this.timer > 40) {
                 this.bounces++;
-                if (this.haunt.getRandom().nextInt(6) == 0 || !this.haunt.bounced) {
-                    this.haunt.setDeltaMovement(this.aimAt(target, SPIN_SPEED));
+                if (this.haunt.getRandom().nextInt(4) == 0 || !this.haunt.bounced) {
+                    this.haunt.setDeltaMovement(this.aimAt(target, 1.5D));
                 }
                 this.haunt.bounced = false;
                 this.timer = 0;
             }
-            if (this.bounces >= this.maxBounces && this.spinTicks >= 400) {
+            if (this.bounces >= this.maxBounces && this.spinTicks >= 320) {
                 this.haunt.setDeltaMovement(Vec3.ZERO);
-                this.haunt.setAnimationState(0);
-                this.attackCooldown = 100;
                 this.spinCooldown = 100;
-                this.attackState = 0;
+                this.finishAttack(100);
             }
+        }
+
+        private void finishAttack(int cooldown) {
+            this.haunt.setAnimationState(0);
+            this.timer = 0;
+            this.attackCooldown = cooldown;
+            this.attackState = 0;
         }
 
         private Vec3 aimAt(LivingEntity target, double speed) {

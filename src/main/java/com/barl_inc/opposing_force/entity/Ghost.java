@@ -7,6 +7,7 @@ import com.platypushasnohat.sinew.entity.ai.goal.AttackGoal;
 import com.platypushasnohat.sinew.entity.ai.goal.SpectralStareGoal;
 import com.platypushasnohat.sinew.entity.spectral.SpectralSight;
 import net.minecraft.core.BlockPos;
+import net.minecraft.sounds.SoundEvents;
 import net.minecraft.util.RandomSource;
 import net.minecraft.world.DifficultyInstance;
 import net.minecraft.world.entity.EntityType;
@@ -193,6 +194,9 @@ public class Ghost extends PhasingMonster {
             this.timer++;
             if (this.timer == 1) {
                 this.ghost.setAnimationState(!this.ghost.getMainHandItem().isEmpty() || this.ghost.getRandom().nextBoolean() ? ATTACK_ANIMATION : ATTACK_2_ANIMATION);
+            }
+            if (this.timer == 19) {
+                this.ghost.playSound(SoundEvents.PLAYER_ATTACK_SWEEP, 0.7F, 1.3F);
             }
             if (this.timer == 21 && this.ghost.getGap(target) < 2.0D && this.ghost.hasLineOfSight(target)) {
                 this.ghost.doHurtTarget(target);

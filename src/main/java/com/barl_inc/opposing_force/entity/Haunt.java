@@ -213,6 +213,9 @@ public class Haunt extends PhasingMonster {
             if (this.timer == 14) {
                 this.haunt.setDeltaMovement(this.aimAt(target, 0.25D));
             }
+            if (this.timer == 15) {
+                this.haunt.playSound(SoundEvents.PLAYER_ATTACK_SWEEP, 1.2F, 0.5F);
+            }
             if (this.timer == 17 && this.haunt.getGap(target) < 1.0D && this.haunt.hasLineOfSight(target)) {
                 this.haunt.doHurtTarget(target);
                 this.haunt.playSound(SoundEvents.ZOMBIE_ATTACK_IRON_DOOR, 0.6F, 1.2F);
@@ -241,7 +244,7 @@ public class Haunt extends PhasingMonster {
                 this.timer = 0;
                 this.bounces = 0;
                 this.spinTicks = 0;
-                this.maxBounces = 30 + this.haunt.getRandom().nextInt(16);
+                this.maxBounces = 35 + this.haunt.getRandom().nextInt(16);
                 this.attackState = 3;
             }
         }

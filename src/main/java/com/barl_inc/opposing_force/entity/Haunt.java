@@ -45,7 +45,7 @@ public class Haunt extends PhasingMonster {
 
     public static AttributeSupplier.Builder registerAttributes() {
         return Mob.createMobAttributes()
-                .add(Attributes.MAX_HEALTH, 50.0D)
+                .add(Attributes.MAX_HEALTH, 40.0D)
                 .add(Attributes.ARMOR, 8.0D)
                 .add(Attributes.FLYING_SPEED, 0.4F)
                 .add(Attributes.MOVEMENT_SPEED, 0.25F)
@@ -193,7 +193,7 @@ public class Haunt extends PhasingMonster {
             if (this.spinCooldown > 0) {
                 this.spinCooldown--;
             }
-            if (this.haunt.getGap(target) <= 1.5D && this.attackCooldown <= 0) {
+            if (this.haunt.getGap(target) <= 2.0D && this.attackCooldown <= 0) {
                 this.attackState = 1;
             } else if (distance >= 4.0D && distance <= 24.0D && this.spinCooldown <= 0 && this.haunt.getRandom().nextInt(5) == 0 && this.haunt.hasLineOfSight(target) && this.haunt.level().noCollision(this.haunt)) {
                 this.attackState = 2;
@@ -212,12 +212,12 @@ public class Haunt extends PhasingMonster {
             if (this.timer == 15) {
                 this.haunt.playSound(SoundEvents.PLAYER_ATTACK_SWEEP, 1.2F, 0.5F);
             }
-            if (this.timer == 17 && this.haunt.getGap(target) < 1.0D && this.haunt.hasLineOfSight(target)) {
+            if (this.timer == 17 && this.haunt.getGap(target) < 1.5D && this.haunt.hasLineOfSight(target)) {
                 target.hurt(this.haunt.damageSources().mobAttack(this.haunt), (float) this.haunt.getAttributeValue(Attributes.ATTACK_DAMAGE) * 2.0F);
                 this.haunt.playSound(SoundEvents.ZOMBIE_ATTACK_IRON_DOOR, 0.6F, 1.2F);
             }
             if (this.timer >= 30) {
-                this.finishAttack(24);
+                this.finishAttack(14);
             }
         }
 
@@ -237,7 +237,7 @@ public class Haunt extends PhasingMonster {
                 this.timer = 0;
                 this.bounces = 0;
                 this.spinTicks = 0;
-                this.maxBounces = 15 + this.haunt.getRandom().nextInt(21);
+                this.maxBounces = 10 + this.haunt.getRandom().nextInt(11);
                 this.attackState = 3;
             }
         }
@@ -259,7 +259,7 @@ public class Haunt extends PhasingMonster {
                 this.haunt.bounced = false;
                 this.timer = 0;
             }
-            if (this.bounces >= this.maxBounces && this.spinTicks >= 320) {
+            if (this.bounces >= this.maxBounces && this.spinTicks >= 200) {
                 this.haunt.setDeltaMovement(Vec3.ZERO);
                 this.spinCooldown = 100;
                 this.finishAttack(100);

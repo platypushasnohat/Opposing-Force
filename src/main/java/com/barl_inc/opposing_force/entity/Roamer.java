@@ -115,6 +115,11 @@ public class Roamer extends AnimatedMonster implements SpectralEntity {
     }
 
     @Override
+    public boolean canBeLeashed() {
+        return this.hasCustomName();
+    }
+
+    @Override
     public boolean canBeHeardBy(Player listener) {
         return true;
     }

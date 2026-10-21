@@ -34,7 +34,7 @@ public class TriBlasterItem extends BlasterItem {
 
     @Override
     public int getCooldown(ItemStack stack, ItemStack ammo) {
-        return 30;
+        return 26;
     }
 
     @Override

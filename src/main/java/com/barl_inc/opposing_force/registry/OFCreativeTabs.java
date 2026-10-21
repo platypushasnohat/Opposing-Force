@@ -50,6 +50,7 @@ public class OFCreativeTabs {
 
                         output.accept(OFItems.TERROR_LEG);
                         output.accept(OFItems.FRIED_TERROR_LEG);
+                        output.accept(OFItems.SAWBLADE);
                         output.accept(OFItems.BUZZSAW);
 
                         // misc tools and armor (non-individual weapons)

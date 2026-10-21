@@ -50,7 +50,7 @@ public class BlasterItem extends GunItem {
 
     @Override
     public int getCooldown(ItemStack stack, ItemStack ammo) {
-        return 15;
+        return 12;
     }
 
     @Override

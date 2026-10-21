@@ -41,8 +41,8 @@ public class LaserBladeItem extends SwordItem {
             LaserBlade laserBlade = new LaserBlade(level, position.x, position.y, position.z);
             laserBlade.setOwner(player);
             laserBlade.setItem(stack);
-            laserBlade.setReturnTime(12);
-            laserBlade.setDamage(12.0F);
+            laserBlade.setReturnTime(15);
+            laserBlade.setDamage(11.0F);
             laserBlade.setSlot(slot);
             laserBlade.shootFromRotation(player, player.getXRot(), player.getYRot(), 0.0F, 1.5F, 0.0F);
             level.addFreshEntity(laserBlade);

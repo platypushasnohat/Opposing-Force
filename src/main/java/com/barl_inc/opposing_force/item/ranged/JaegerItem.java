@@ -33,7 +33,7 @@ public class JaegerItem extends BulletGunItem {
             ItemAnimations.start(player, stack, COCK_ANIMATION);
             if (!level.isClientSide) {
                 setCocked(stack, true);
-                player.getCooldowns().addCooldown(this, this.getCooldown(stack, ItemStack.EMPTY) - 10);
+                player.getCooldowns().addCooldown(this, this.getCooldown(stack, ItemStack.EMPTY) - 12);
                 level.playSound(null, player.getX(), player.getY(), player.getZ(), SoundEvents.IRON_TRAPDOOR_CLOSE, SoundSource.PLAYERS, 0.5F, 1.4F * SinewSoundUtils.randomizePitch(player));
             }
         }

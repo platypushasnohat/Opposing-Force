@@ -23,7 +23,7 @@ public class GorloffItem extends BulletGunItem {
     private static final int PROJECTILE_DAMAGE_DIVISOR = 3;
 
     public GorloffItem(Properties properties) {
-        super(properties.durability(650), 1.0F, 3.0F, 9.0F, 100);
+        super(properties.durability(650), 1.0F, 3.0F, 9.0F, 120);
     }
 
     @Override
@@ -33,7 +33,7 @@ public class GorloffItem extends BulletGunItem {
 
     @Override
     public int getUseDuration(ItemStack stack, LivingEntity entity) {
-        return 72000;
+        return 200;
     }
 
     @Override

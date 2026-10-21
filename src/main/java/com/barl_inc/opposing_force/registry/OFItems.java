@@ -56,6 +56,7 @@ public class OFItems {
     public static final DeferredItem<Item> TERROR_SPAWN_EGG = registerSpawnEggItem("terror", OFEntities.TERROR, 0x0d3625, 0xff0000);
     public static final DeferredItem<Item> TERROR_LEG = registerItem("terror_leg", () -> new Item(new Item.Properties().food(OFFoodProperties.TERROR_LEG)));
     public static final DeferredItem<Item> FRIED_TERROR_LEG = registerItem("fried_terror_leg", () -> new Item(new Item.Properties().food(OFFoodProperties.FRIED_TERROR_LEG)));
+    public static final DeferredItem<Item> SAWBLADE = registerItem("sawblade", () -> new SawbladeItem(new Item.Properties()));
     public static final DeferredItem<Item> BUZZSAW = registerItem("buzzsaw", () -> new BuzzsawItem(new Item.Properties()));
 
     public static final DeferredItem<Item> TARANTULA_SPAWN_EGG = registerSpawnEggItem("tarantula", OFEntities.TARANTULA, 0x4f4235, 0xedb24c);

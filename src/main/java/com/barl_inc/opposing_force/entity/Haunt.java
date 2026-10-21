@@ -157,6 +157,7 @@ public class Haunt extends PhasingMonster {
         private int spinCooldown;
         private int bounces;
         private int maxBounces;
+        private int spinTicks;
 
         public HauntAttackGoal(Haunt haunt) {
             super(haunt);
@@ -239,13 +240,15 @@ public class Haunt extends PhasingMonster {
                 this.haunt.bounced = false;
                 this.timer = 0;
                 this.bounces = 0;
-                this.maxBounces = 20 + this.haunt.getRandom().nextInt(11);
+                this.spinTicks = 0;
+                this.maxBounces = 30 + this.haunt.getRandom().nextInt(16);
                 this.attackState = 3;
             }
         }
 
         private void tickSpin(LivingEntity target) {
             this.timer++;
+            this.spinTicks++;
             Vec3 velocity = this.haunt.getDeltaMovement();
             for (LivingEntity entity : this.haunt.level().getEntitiesOfClass(LivingEntity.class, this.haunt.getBoundingBox().expandTowards(velocity), entity -> !(entity instanceof Haunt) && EntitySelector.NO_SPECTATORS.test(entity))) {
                 if (entity.hurt(this.haunt.damageSources().mobAttack(this.haunt), (float) this.haunt.getAttributeValue(Attributes.ATTACK_DAMAGE))) {
@@ -254,18 +257,18 @@ public class Haunt extends PhasingMonster {
             }
             if (this.haunt.bounced || this.timer > 40) {
                 this.bounces++;
-                if (this.bounces % 4 == 0 || !this.haunt.bounced) {
+                if (this.haunt.getRandom().nextInt(6) == 0 || !this.haunt.bounced) {
                     this.haunt.setDeltaMovement(this.aimAt(target, SPIN_SPEED));
                 }
                 this.haunt.bounced = false;
                 this.timer = 0;
-                if (this.bounces >= this.maxBounces) {
-                    this.haunt.setDeltaMovement(Vec3.ZERO);
-                    this.haunt.setAnimationState(0);
-                    this.attackCooldown = 100;
-                    this.spinCooldown = 100;
-                    this.attackState = 0;
-                }
+            }
+            if (this.bounces >= this.maxBounces && this.spinTicks >= 400) {
+                this.haunt.setDeltaMovement(Vec3.ZERO);
+                this.haunt.setAnimationState(0);
+                this.attackCooldown = 100;
+                this.spinCooldown = 100;
+                this.attackState = 0;
             }
         }
 

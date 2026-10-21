@@ -36,7 +36,8 @@ public class OFItemTagsProvider extends ItemTagsProvider {
 
         this.tag(ItemTags.AXES).add(
                 OFItems.EMERALD_AXE.get(),
-                OFItems.LAPIS_LAZULI_AXE.get()
+                OFItems.LAPIS_LAZULI_AXE.get(),
+                OFItems.BUZZSAW.get()
         );
 
         this.tag(ItemTags.SHOVELS).add(
@@ -47,6 +48,10 @@ public class OFItemTagsProvider extends ItemTagsProvider {
         this.tag(ItemTags.HOES).add(
                 OFItems.EMERALD_HOE.get(),
                 OFItems.LAPIS_LAZULI_HOE.get()
+        );
+
+        this.tag(ItemTags.SWORD_ENCHANTABLE).add(
+                OFItems.BUZZSAW.get()
         );
 
         this.tag(ItemTags.DURABILITY_ENCHANTABLE).add(

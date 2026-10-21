@@ -90,9 +90,9 @@ public class Terror extends AnimatedMonster implements BodyChainMob {
 
     public static AttributeSupplier.Builder registerAttributes() {
         return Mob.createMobAttributes()
-                .add(Attributes.MAX_HEALTH, 30.0D)
+                .add(Attributes.MAX_HEALTH, 40.0D)
                 .add(Attributes.MOVEMENT_SPEED, 0.25D)
-                .add(Attributes.ATTACK_DAMAGE, 3.0D)
+                .add(Attributes.ATTACK_DAMAGE, 4.0D)
                 .add(Attributes.STEP_HEIGHT, 1.2D)
                 .add(Attributes.KNOCKBACK_RESISTANCE, 0.25D);
     }

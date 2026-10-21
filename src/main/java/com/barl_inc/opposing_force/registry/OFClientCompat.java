@@ -17,5 +17,12 @@ public class OFClientCompat {
                 return living.getUseItem() == stack ? 1.0F : 0.0F;
             }
         });
+        ItemProperties.register(OFItems.BUZZSAW.get(), ResourceLocation.withDefaultNamespace("active"), (stack, level, living, j) ->  {
+            if (living == null) {
+                return 0.0F;
+            } else {
+                return living.getUseItem() == stack ? 1.0F : 0.0F;
+            }
+        });
     }
 }

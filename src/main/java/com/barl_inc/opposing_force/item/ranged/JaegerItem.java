@@ -20,7 +20,7 @@ public class JaegerItem extends BulletGunItem {
     public static final String COCK_ANIMATION = "cock";
 
     public JaegerItem(Properties properties) {
-        super(properties.durability(650), 6.0F, 3.5F, 0.5F, 20);
+        super(properties.durability(650), 6.0F, 3.5F, 0.5F, 25);
     }
 
     @Override
@@ -33,7 +33,7 @@ public class JaegerItem extends BulletGunItem {
             ItemAnimations.start(player, stack, COCK_ANIMATION);
             if (!level.isClientSide) {
                 setCocked(stack, true);
-                player.getCooldowns().addCooldown(this, this.getCooldown(stack, ItemStack.EMPTY) - 5);
+                player.getCooldowns().addCooldown(this, this.getCooldown(stack, ItemStack.EMPTY) - 10);
                 level.playSound(null, player.getX(), player.getY(), player.getZ(), SoundEvents.IRON_TRAPDOOR_CLOSE, SoundSource.PLAYERS, 0.5F, 1.4F * SinewSoundUtils.randomizePitch(player));
             }
         }

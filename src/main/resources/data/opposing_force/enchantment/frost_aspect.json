@@ -38,6 +38,7 @@
   "slots": [
     "mainhand"
   ],
+  "exclusive_set": "#opposing_force:exclusive_set/fire_aspect",
   "supported_items": "#minecraft:enchantable/fire_aspect",
   "weight": 2
 }

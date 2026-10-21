@@ -70,6 +70,10 @@ public class OFLanguageProvider extends SinewLanguageProvider {
         this.addSound(OFSoundEvents.GUN_WIND_DOWN, "Gun winds down");
         this.addSound(OFSoundEvents.GUN_WIND_UP, "Gun winds up");
 
+        this.addSound(OFSoundEvents.BUZZSAW_START, "Buzzsaw starts sawing");
+        this.addSound(OFSoundEvents.BUZZSAW_LOOP, "Buzzsaw saws");
+        this.addSound(OFSoundEvents.BUZZSAW_END, "Buzzsaw stops sawing");
+
         this.add(OFItems.TRI_BLASTER.get(), "Tri-Blaster");
 
         this.add(OFItems.DISABLED_LASER_BLADE.get(), "Laser Blade");
@@ -95,6 +99,9 @@ public class OFLanguageProvider extends SinewLanguageProvider {
 
         this.add("enchantment.opposing_force.frost_aspect", "Frost Aspect");
         this.add("enchantment.opposing_force.frost_aspect.desc", "Inflicts freezing on hit");
+
+        this.add("enchantment.opposing_force.freeze", "Freeze");
+        this.add("enchantment.opposing_force.freeze.desc", "Inflicts freezing on hit");
 
         this.add("pack.opposing_force.protection_tweaks", "Opposing Force Protection Tweaks");
 

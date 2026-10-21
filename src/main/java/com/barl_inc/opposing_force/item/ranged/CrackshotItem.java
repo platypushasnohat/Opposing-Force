@@ -14,7 +14,7 @@ import java.util.function.Predicate;
 public class CrackshotItem extends BulletGunItem {
 
     public CrackshotItem(Properties properties) {
-        super(properties.durability(400), 4.0F, 3.0F, 2.0F, 12);
+        super(properties.durability(400), 3.5F, 3.0F, 4.0F, 15);
     }
 
     @Override

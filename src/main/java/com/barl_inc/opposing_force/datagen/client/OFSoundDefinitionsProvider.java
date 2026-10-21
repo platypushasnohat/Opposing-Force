@@ -161,5 +161,15 @@ public class OFSoundDefinitionsProvider extends SinewSoundDefinitionsProvider {
         this.registerSound(OFSoundEvents.GUN_WIND_UP,
                 sound(OpposingForce.location("item/gun/wind_up"))
         );
+
+        this.registerSound(OFSoundEvents.BUZZSAW_START,
+                sound(OpposingForce.location("mob/terror/saw_start")).pitch(1.1F)
+        );
+        this.registerSound(OFSoundEvents.BUZZSAW_LOOP,
+                sound(OpposingForce.location("mob/terror/saw_loop")).pitch(1.1F)
+        );
+        this.registerSound(OFSoundEvents.BUZZSAW_END,
+                sound(OpposingForce.location("mob/terror/saw_end")).pitch(1.1F)
+        );
     }
 }

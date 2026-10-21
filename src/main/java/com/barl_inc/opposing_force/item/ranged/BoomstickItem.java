@@ -22,7 +22,7 @@ public class BoomstickItem extends BulletGunItem {
     public static final String RELOAD_ANIMATION = "reload";
 
     public BoomstickItem(Properties properties) {
-        super(properties.durability(650), 1.0F, 2.5F, 13.0F, 10);
+        super(properties.durability(650), 0.75F, 2.5F, 14.0F, 12);
     }
 
     @Override
@@ -41,7 +41,7 @@ public class BoomstickItem extends BulletGunItem {
             ItemAnimations.start(player, stack, RELOAD_ANIMATION);
             if (!level.isClientSide) {
                 setShots(stack, 0);
-                player.getCooldowns().addCooldown(this, 30);
+                player.getCooldowns().addCooldown(this, 40);
                 level.playSound(null, player.getX(), player.getY(), player.getZ(), SoundEvents.IRON_TRAPDOOR_OPEN, SoundSource.PLAYERS, 1.0F, 1.2F * SinewSoundUtils.randomizePitch(player));
             }
         }

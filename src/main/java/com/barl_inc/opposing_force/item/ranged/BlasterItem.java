@@ -50,7 +50,7 @@ public class BlasterItem extends GunItem {
 
     @Override
     public int getCooldown(ItemStack stack, ItemStack ammo) {
-        return 10;
+        return 15;
     }
 
     @Override
@@ -66,7 +66,7 @@ public class BlasterItem extends GunItem {
     @Override
     public void shoot(Level level, Player player, ItemStack stack, ItemStack ammo) {
         LaserBolt laserBolt = new LaserBolt(player, level, stack);
-        laserBolt.setDamage(6.0F);
+        laserBolt.setDamage(5.5F);
         Vec3 look = player.getLookAngle();
         laserBolt.shoot(look.x, look.y, look.z, 3.0F, 1.0F);
         level.addFreshEntity(laserBolt);

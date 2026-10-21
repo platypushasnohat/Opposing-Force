@@ -25,7 +25,7 @@ public class ScatterBlasterItem extends BlasterItem {
 
     @Override
     public int getCooldown(ItemStack stack, ItemStack ammo) {
-        return 40;
+        return 45;
     }
 
     @Override
@@ -37,7 +37,7 @@ public class ScatterBlasterItem extends BlasterItem {
     public void shoot(Level level, Player player, ItemStack stack, ItemStack ammo) {
         for (int i = 0; i < PROJECTILE_COUNT; i++) {
             LaserBolt laserBolt = new LaserBolt(player, level, stack);
-            laserBolt.setDamage(4.0F);
+            laserBolt.setDamage(3.5F);
             laserBolt.setProjectileCount(PROJECTILE_COUNT);
             laserBolt.shootFromRotation(player, player.getXRot(), player.getYRot(), 0, 2.5F, 10.0F);
             level.addFreshEntity(laserBolt);

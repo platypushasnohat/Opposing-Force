@@ -62,6 +62,10 @@ public class OFSoundEvents {
     public static final DeferredHolder<SoundEvent, SoundEvent> GUN_WIND_UP = registerSoundEvent("gun_wind_up");
     public static final DeferredHolder<SoundEvent, SoundEvent> GUN_WIND_DOWN = registerSoundEvent("gun_wind_down");
 
+    public static final DeferredHolder<SoundEvent, SoundEvent> BUZZSAW_START = registerSoundEvent("buzzsaw_start");
+    public static final DeferredHolder<SoundEvent, SoundEvent> BUZZSAW_LOOP = registerSoundEvent("buzzsaw_loop");
+    public static final DeferredHolder<SoundEvent, SoundEvent> BUZZSAW_END = registerSoundEvent("buzzsaw_end");
+
     private static DeferredHolder<SoundEvent, SoundEvent> registerSoundEvent(String soundName) {
         return SOUND_EVENT.register(soundName, () -> SoundEvent.createVariableRangeEvent(OpposingForce.location(soundName)));
     }

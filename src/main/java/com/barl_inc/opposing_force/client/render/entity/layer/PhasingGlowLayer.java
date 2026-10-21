@@ -1,6 +1,7 @@
 package com.barl_inc.opposing_force.client.render.entity.layer;
 
 import com.barl_inc.opposing_force.client.model.entity.PhasingMonsterModel;
+import com.barl_inc.opposing_force.client.render.entity.OFRenderTypes;
 import com.barl_inc.opposing_force.entity.base.PhasingMonster;
 import com.mojang.blaze3d.vertex.PoseStack;
 import net.minecraft.client.renderer.LightTexture;
@@ -17,7 +18,7 @@ public class PhasingGlowLayer<T extends PhasingMonster, M extends PhasingMonster
 
     public PhasingGlowLayer(RenderLayerParent<T, M> renderer, ResourceLocation texture) {
         super(renderer);
-        this.renderType = RenderType.eyes(texture);
+        this.renderType = OFRenderTypes.getPhasingMobGlow(texture);
     }
 
     @Override

@@ -62,6 +62,10 @@ public abstract class PhasingMonster extends BasicFlyingMonster implements Spect
         return 6.0F;
     }
 
+    protected double getChaseBoost() {
+        return 12.0D;
+    }
+
     public float getTilt(float partialTicks) {
         return Mth.lerp(partialTicks, this.prevTilt, this.tilt);
     }
@@ -73,7 +77,7 @@ public abstract class PhasingMonster extends BasicFlyingMonster implements Spect
     public void approach(LivingEntity target) {
         Vec3 center = target.getBoundingBox().getCenter();
         Vec3 approach = center.add(this.getBoundingBox().getCenter().subtract(center).normalize().scale(1.2D));
-        this.getMoveControl().setWantedPosition(approach.x, approach.y - this.getBbHeight() / 2.0F, approach.z, 1.2D + Mth.clamp(this.getGap(target) - 1.25D, 0.0D, 4.0D) * 0.6D);
+        this.getMoveControl().setWantedPosition(approach.x, approach.y - this.getBbHeight() / 2.0F, approach.z, 1.2D + Mth.clamp(this.getGap(target) - 1.25D, 0.0D, this.getChaseBoost()) * 0.6D);
     }
 
     public double getGap(LivingEntity target) {

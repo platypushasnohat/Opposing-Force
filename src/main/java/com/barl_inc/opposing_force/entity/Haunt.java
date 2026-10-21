@@ -25,6 +25,8 @@ import net.minecraft.world.level.Level;
 import net.minecraft.world.level.ServerLevelAccessor;
 import net.minecraft.world.phys.Vec3;
 
+import java.util.List;
+
 public class Haunt extends PhasingMonster {
 
     public static final int ATTACK_ANIMATION = 1;
@@ -85,6 +87,11 @@ public class Haunt extends PhasingMonster {
     @Override
     protected float getTiltSpeed() {
         return this.isSpinning() ? 30.0F : 6.0F;
+    }
+
+    @Override
+    protected double getChaseBoost() {
+        return 15.0D;
     }
 
     @Override
@@ -158,6 +165,7 @@ public class Haunt extends PhasingMonster {
         private int bounces;
         private int maxBounces;
         private int spinTicks;
+        private List<LivingEntity> touching = List.of();
 
         public HauntAttackGoal(Haunt haunt) {
             super(haunt);
@@ -184,7 +192,6 @@ public class Haunt extends PhasingMonster {
         }
 
         private void tickApproach(LivingEntity target) {
-            double distance = this.haunt.distanceTo(target);
             this.lookAtTarget(target, 30.0F, 30.0F);
             this.haunt.getNavigation().stop();
             this.haunt.approach(target);
@@ -196,19 +203,23 @@ public class Haunt extends PhasingMonster {
             }
             if (this.haunt.getGap(target) <= 2.0D && this.attackCooldown <= 0) {
                 this.attackState = 1;
-            } else if (distance >= 4.0D && distance <= 24.0D && this.spinCooldown <= 0 && this.haunt.getRandom().nextInt(5) == 0 && this.haunt.hasLineOfSight(target) && this.haunt.level().noCollision(this.haunt)) {
+            } else if (this.haunt.distanceTo(target) <= 24.0D && this.spinCooldown <= 0 && this.haunt.getRandom().nextInt(5) == 0 && this.haunt.hasLineOfSight(target) && this.haunt.level().noCollision(this.haunt)) {
                 this.attackState = 2;
             }
         }
 
         private void tickSlam(LivingEntity target) {
             this.timer++;
-            this.lookAtTarget(target, 30.0F, 30.0F);
+            if (this.timer < 14) {
+                this.lookAtTarget(target, 30.0F, 30.0F);
+            }
             if (this.timer == 1) {
                 this.haunt.setAnimationState(ATTACK_ANIMATION);
             }
             if (this.timer == 14) {
-                this.haunt.setDeltaMovement(this.aimAt(target, 0.25D));
+                this.haunt.setDeltaMovement(Vec3.directionFromRotation(0.0F, this.haunt.getYRot()).scale(Math.min(0.7D, this.haunt.getGap(target) * 0.4D)));
+            } else if (this.timer > 14) {
+                this.haunt.setDeltaMovement(this.haunt.getDeltaMovement().scale(0.6D));
             }
             if (this.timer == 15) {
                 this.haunt.playSound(SoundEvents.PLAYER_ATTACK_SWEEP, 1.2F, 0.5F);
@@ -218,7 +229,7 @@ public class Haunt extends PhasingMonster {
                 this.haunt.playSound(SoundEvents.ZOMBIE_ATTACK_IRON_DOOR, 0.6F, 1.2F);
             }
             if (this.timer >= 30) {
-                this.finishAttack(14);
+                this.finishAttack();
             }
         }
 
@@ -239,6 +250,7 @@ public class Haunt extends PhasingMonster {
                 this.timer = 0;
                 this.bounces = 0;
                 this.spinTicks = 0;
+                this.touching = List.of();
                 this.maxBounces = 10 + this.haunt.getRandom().nextInt(11);
                 this.attackState = 3;
             }
@@ -248,11 +260,13 @@ public class Haunt extends PhasingMonster {
             this.timer++;
             this.spinTicks++;
             Vec3 velocity = this.haunt.getDeltaMovement();
-            for (LivingEntity entity : this.haunt.level().getEntitiesOfClass(LivingEntity.class, this.haunt.getBoundingBox().expandTowards(velocity), entity -> !(entity instanceof PhasingMonster) && EntitySelector.NO_SPECTATORS.test(entity))) {
-                if (entity.hurt(this.haunt.damageSources().mobAttack(this.haunt), (float) this.haunt.getAttributeValue(Attributes.ATTACK_DAMAGE))) {
+            List<LivingEntity> touching = this.haunt.level().getEntitiesOfClass(LivingEntity.class, this.haunt.getBoundingBox().expandTowards(velocity), entity -> !(entity instanceof PhasingMonster) && EntitySelector.NO_SPECTATORS.test(entity));
+            for (LivingEntity entity : touching) {
+                if (!this.touching.contains(entity) && entity.hurt(this.haunt.damageSources().mobAttack(this.haunt), (float) this.haunt.getAttributeValue(Attributes.ATTACK_DAMAGE))) {
                     entity.knockback(1.2D, -velocity.x, -velocity.z);
                 }
             }
+            this.touching = touching;
             if (this.timer > 40) {
                 this.haunt.returning = true;
             } else if (!this.haunt.returning && this.haunt.distanceTo(target) > 20.0D) {
@@ -270,15 +284,15 @@ public class Haunt extends PhasingMonster {
             }
             if (this.haunt.returning ? this.haunt.getGap(target) < 2.0D : this.bounces >= this.maxBounces && this.spinTicks >= 200) {
                 this.haunt.setDeltaMovement(Vec3.ZERO);
-                this.spinCooldown = 100;
-                this.finishAttack(100);
+                this.spinCooldown = 300;
+                this.finishAttack();
             }
         }
 
-        private void finishAttack(int cooldown) {
+        private void finishAttack() {
             this.haunt.setAnimationState(0);
             this.timer = 0;
-            this.attackCooldown = cooldown;
+            this.attackCooldown = 10;
             this.attackState = 0;
         }
 

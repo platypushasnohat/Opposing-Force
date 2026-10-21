@@ -10,12 +10,7 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.util.RandomSource;
 import net.minecraft.world.DifficultyInstance;
-import net.minecraft.world.entity.EntityType;
-import net.minecraft.world.entity.EquipmentSlot;
-import net.minecraft.world.entity.LivingEntity;
-import net.minecraft.world.entity.Mob;
-import net.minecraft.world.entity.MobSpawnType;
-import net.minecraft.world.entity.SpawnGroupData;
+import net.minecraft.world.entity.*;
 import net.minecraft.world.entity.ai.attributes.AttributeSupplier;
 import net.minecraft.world.entity.ai.attributes.Attributes;
 import net.minecraft.world.entity.ai.goal.Goal;
@@ -25,13 +20,12 @@ import net.minecraft.world.entity.ai.goal.target.HurtByTargetGoal;
 import net.minecraft.world.entity.item.ItemEntity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.item.AxeItem;
 import net.minecraft.world.item.Items;
-import net.minecraft.world.item.SwordItem;
 import net.minecraft.world.item.TieredItem;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.ServerLevelAccessor;
 import net.minecraft.world.level.biome.Biomes;
+import net.minecraft.world.phys.Vec3;
 
 import javax.annotation.Nullable;
 import java.util.Comparator;
@@ -84,14 +78,6 @@ public class Ghost extends PhasingMonster {
 
     public static boolean checkGhostSpawnRules(EntityType<Ghost> entityType, ServerLevelAccessor level, MobSpawnType spawnType, BlockPos pos, RandomSource random) {
         return (pos.getY() < 40 || level.getBiome(pos).is(Biomes.DARK_FOREST) && random.nextBoolean()) && checkMonsterSpawnRules(entityType, level, spawnType, pos, random);
-    }
-
-    public float getAttackCooldownMultiplier() {
-        ItemStack tool = this.getMainHandItem();
-        if (tool.getItem() instanceof AxeItem) {
-            return 1.4F;
-        }
-        return tool.getItem() instanceof SwordItem ? 1.1F : 0.8F;
     }
 
     @Override
@@ -173,17 +159,16 @@ public class Ghost extends PhasingMonster {
         public void tick() {
             LivingEntity target = this.ghost.getTarget();
             if (target != null) {
-                double gap = this.ghost.getGap(target);
-                this.lookAtTarget(target, 30.0F, 30.0F);
                 this.ghost.getNavigation().stop();
                 if (this.attackState == 1) {
                     this.tickAttack(target);
                 } else {
+                    this.lookAtTarget(target, 30.0F, 30.0F);
                     this.ghost.approach(target);
                     if (this.attackCooldown > 0) {
                         this.attackCooldown--;
                     }
-                    if (gap <= 1.25D && this.attackCooldown <= 0) {
+                    if (this.ghost.getGap(target) <= 2.0D && this.attackCooldown <= 0) {
                         this.attackState = 1;
                     }
                 }
@@ -192,8 +177,16 @@ public class Ghost extends PhasingMonster {
 
         private void tickAttack(LivingEntity target) {
             this.timer++;
+            if (this.timer < 18) {
+                this.lookAtTarget(target, 30.0F, 30.0F);
+            }
             if (this.timer == 1) {
                 this.ghost.setAnimationState(!this.ghost.getMainHandItem().isEmpty() || this.ghost.getRandom().nextBoolean() ? ATTACK_ANIMATION : ATTACK_2_ANIMATION);
+            }
+            if (this.timer == 18) {
+                this.ghost.setDeltaMovement(Vec3.directionFromRotation(0.0F, this.ghost.getYRot()).scale(Math.min(0.4D, this.ghost.getGap(target) * 0.4D)));
+            } else if (this.timer > 18) {
+                this.ghost.setDeltaMovement(this.ghost.getDeltaMovement().scale(0.6D));
             }
             if (this.timer == 19) {
                 this.ghost.playSound(SoundEvents.PLAYER_ATTACK_SWEEP, 0.7F, 1.3F);
@@ -204,7 +197,7 @@ public class Ghost extends PhasingMonster {
             if (this.timer > 40) {
                 this.ghost.setAnimationState(0);
                 this.timer = 0;
-                this.attackCooldown = (int) ((10 + this.ghost.getRandom().nextInt(10)) * this.ghost.getAttackCooldownMultiplier());
+                this.attackCooldown = 10;
                 this.attackState = 0;
             }
         }

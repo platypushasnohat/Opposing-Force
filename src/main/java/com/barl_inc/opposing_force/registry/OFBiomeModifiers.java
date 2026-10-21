@@ -38,6 +38,9 @@ public class OFBiomeModifiers {
         addSpawn(context, "roamer_birch_forest", OFBiomeTags.HAS_BIRCH_FOREST_MONSTERS, new MobSpawnSettings.SpawnerData(OFEntities.ROAMER.get(), 20, 1, 3));
         addSpawn(context, "roamer_dark_forest", OFBiomeTags.HAS_DARK_FOREST_MONSTERS, new MobSpawnSettings.SpawnerData(OFEntities.ROAMER.get(), 10, 1, 1));
         addSpawn(context, "haunt", OFBiomeTags.HAS_OVERWORLD_MONSTERS, new MobSpawnSettings.SpawnerData(OFEntities.HAUNT.get(), 20, 1, 2));
+        addSpawn(context, "grasper_windswept", OFBiomeTags.HAS_WINDSWEPT_MONSTERS, new MobSpawnSettings.SpawnerData(OFEntities.GRASPER.get(), 25, 1, 2));
+        addSpawn(context, "grasper_windswept_savanna", OFBiomeTags.HAS_WINDSWEPT_SAVANNA_MONSTERS, new MobSpawnSettings.SpawnerData(OFEntities.GRASPER.get(), 20, 1, 2));
+        addSpawn(context, "grasper_wooded_badlands", OFBiomeTags.HAS_WOODED_BADLANDS_MONSTERS, new MobSpawnSettings.SpawnerData(OFEntities.GRASPER.get(), 8, 1, 1));
     }
 
     @SafeVarargs

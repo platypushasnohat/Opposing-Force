@@ -37,5 +37,14 @@ public class OFBiomeTagsProvider extends BiomeTagsProvider {
         this.tag(OFBiomeTags.HAS_DARK_FOREST_MONSTERS).add(
                 Biomes.DARK_FOREST
         );
+        this.tag(OFBiomeTags.HAS_WINDSWEPT_MONSTERS).addTag(
+                Tags.Biomes.IS_WINDSWEPT
+        );
+        this.tag(OFBiomeTags.HAS_WINDSWEPT_SAVANNA_MONSTERS).add(
+                Biomes.WINDSWEPT_SAVANNA
+        );
+        this.tag(OFBiomeTags.HAS_WOODED_BADLANDS_MONSTERS).add(
+                Biomes.WOODED_BADLANDS
+        );
 	}
 }

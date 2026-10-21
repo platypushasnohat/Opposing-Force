@@ -58,6 +58,7 @@ public class ClientEvents {
         event.registerEntityRenderer(OFEntities.GHOST.get(), GhostRenderer::new);
         event.registerEntityRenderer(OFEntities.ROAMER.get(), RoamerRenderer::new);
         event.registerEntityRenderer(OFEntities.HAUNT.get(), context -> new PhasingMonsterRenderer<>(context, new HauntModel(context.bakeLayer(OFModelLayers.HAUNT)), "haunt", 1.1F));
+        event.registerEntityRenderer(OFEntities.GRASPER.get(), GrasperRenderer::new);
 
         event.registerEntityRenderer(OFEntities.DICER_LASER.get(), DicerLaserRenderer::new);
         event.registerEntityRenderer(OFEntities.LASER_BOLT.get(), LaserBoltRenderer::new);
@@ -85,6 +86,7 @@ public class ClientEvents {
         event.registerLayerDefinition(OFModelLayers.GHOST, GhostModel::createBodyLayer);
         event.registerLayerDefinition(OFModelLayers.ROAMER, RoamerModel::createBodyLayer);
         event.registerLayerDefinition(OFModelLayers.HAUNT, HauntModel::createBodyLayer);
+        event.registerLayerDefinition(OFModelLayers.GRASPER, GrasperModel::createBodyLayer);
 
         event.registerLayerDefinition(OFModelLayers.LASER_BOLT, LaserBoltModel::createBodyLayer);
         event.registerLayerDefinition(OFModelLayers.ACID_CHARGE, AcidChargeModel::createBodyLayer);

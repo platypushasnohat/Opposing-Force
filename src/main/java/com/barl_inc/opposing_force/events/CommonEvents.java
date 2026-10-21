@@ -68,6 +68,7 @@ public class CommonEvents {
         event.put(OFEntities.GHOST.get(), Ghost.registerAttributes().build());
         event.put(OFEntities.ROAMER.get(), Roamer.registerAttributes().build());
         event.put(OFEntities.HAUNT.get(), Haunt.registerAttributes().build());
+        event.put(OFEntities.GRASPER.get(), Grasper.registerAttributes().build());
     }
 
     @SubscribeEvent
@@ -86,6 +87,7 @@ public class CommonEvents {
         event.register(OFEntities.GHOST.get(), SpawnPlacementTypes.ON_GROUND, Heightmap.Types.MOTION_BLOCKING_NO_LEAVES, Ghost::checkGhostSpawnRules, RegisterSpawnPlacementsEvent.Operation.AND);
         event.register(OFEntities.ROAMER.get(), SpawnPlacementTypes.ON_GROUND, Heightmap.Types.MOTION_BLOCKING_NO_LEAVES, Roamer::checkRoamerSpawnRules, RegisterSpawnPlacementsEvent.Operation.AND);
         event.register(OFEntities.HAUNT.get(), SpawnPlacementTypes.ON_GROUND, Heightmap.Types.MOTION_BLOCKING_NO_LEAVES, Haunt::checkHauntSpawnRules, RegisterSpawnPlacementsEvent.Operation.AND);
+        event.register(OFEntities.GRASPER.get(), SpawnPlacementTypes.ON_GROUND, Heightmap.Types.MOTION_BLOCKING_NO_LEAVES, Grasper::checkGrasperSpawnRules, RegisterSpawnPlacementsEvent.Operation.AND);
     }
 
     @SubscribeEvent

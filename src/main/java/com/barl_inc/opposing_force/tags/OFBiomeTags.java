@@ -15,6 +15,9 @@ public class OFBiomeTags {
     public static final TagKey<Biome> HAS_DESERT_MONSTERS = modBiomeTag("has_monster/desert");
     public static final TagKey<Biome> HAS_BIRCH_FOREST_MONSTERS = modBiomeTag("has_monster/birch_forest");
     public static final TagKey<Biome> HAS_DARK_FOREST_MONSTERS = modBiomeTag("has_monster/dark_forest");
+    public static final TagKey<Biome> HAS_WINDSWEPT_MONSTERS = modBiomeTag("has_monster/windswept");
+    public static final TagKey<Biome> HAS_WINDSWEPT_SAVANNA_MONSTERS = modBiomeTag("has_monster/windswept_savanna");
+    public static final TagKey<Biome> HAS_WOODED_BADLANDS_MONSTERS = modBiomeTag("has_monster/wooded_badlands");
 
     public static final TagKey<Biome> HAS_MOTIF_RUIN = modBiomeTag("has_structure/motif_ruin");
 

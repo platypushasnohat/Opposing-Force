@@ -24,6 +24,33 @@
     ],
     "subtitle": "subtitles.opposing_force.bullet_impact"
   },
+  "buzzsaw_end": {
+    "sounds": [
+      {
+        "name": "opposing_force:mob/terror/saw_end",
+        "pitch": 1.1
+      }
+    ],
+    "subtitle": "subtitles.opposing_force.buzzsaw_end"
+  },
+  "buzzsaw_loop": {
+    "sounds": [
+      {
+        "name": "opposing_force:mob/terror/saw_loop",
+        "pitch": 1.1
+      }
+    ],
+    "subtitle": "subtitles.opposing_force.buzzsaw_loop"
+  },
+  "buzzsaw_start": {
+    "sounds": [
+      {
+        "name": "opposing_force:mob/terror/saw_start",
+        "pitch": 1.1
+      }
+    ],
+    "subtitle": "subtitles.opposing_force.buzzsaw_start"
+  },
   "dicer_attack": {
     "sounds": [
       "opposing_force:mob/dicer/attack"

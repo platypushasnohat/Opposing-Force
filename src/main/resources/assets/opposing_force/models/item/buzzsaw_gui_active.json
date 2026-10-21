@@ -1,0 +1,16 @@
+{
+  "parent": "item/handheld",
+  "loader": "neoforge:item_layers",
+  "neoforge_data": {
+    "layers": {
+      "1": {
+        "block_light": 15,
+        "sky_light": 15
+      }
+    }
+  },
+  "textures": {
+    "layer0": "opposing_force:item/buzzsaw_active",
+    "layer1": "opposing_force:item/buzzsaw_glow"
+  }
+}

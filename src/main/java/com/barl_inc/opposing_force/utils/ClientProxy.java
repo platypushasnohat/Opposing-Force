@@ -1,9 +1,6 @@
 package com.barl_inc.opposing_force.utils;
 
-import com.barl_inc.opposing_force.client.sound.DicerLaserSoundInstance;
-import com.barl_inc.opposing_force.client.sound.GnatSoundInstance;
-import com.barl_inc.opposing_force.client.sound.LaserBladeSoundInstance;
-import com.barl_inc.opposing_force.client.sound.TerrorSoundInstance;
+import com.barl_inc.opposing_force.client.sound.*;
 import com.barl_inc.opposing_force.entity.Gnat;
 import com.barl_inc.opposing_force.entity.Terror;
 import com.barl_inc.opposing_force.entity.misc.DicerLaser;
@@ -17,6 +14,7 @@ import net.minecraft.client.resources.sounds.AbstractTickableSoundInstance;
 import net.minecraft.client.sounds.SoundEngine;
 import net.minecraft.client.sounds.SoundManager;
 import net.minecraft.world.entity.Entity;
+import net.minecraft.world.entity.LivingEntity;
 
 import javax.annotation.Nullable;
 
@@ -81,6 +79,21 @@ public class ClientProxy extends CommonProxy {
                 if (oldSound == null || !(oldSound instanceof TerrorSoundInstance soundInstance && soundInstance.isSameEntity(terror))) {
                     sound = new TerrorSoundInstance(terror);
                     ENTITY_SOUND_INSTANCE_MAP.put(terror.getId(), sound);
+                } else {
+                    sound = soundInstance;
+                }
+                if (!this.isSoundPlaying(sound) && sound.canPlaySound()) {
+                    Minecraft.getInstance().getSoundManager().queueTickingSound(sound);
+                }
+            }
+        }
+        if (type == 4) {
+            if (soundEmitter instanceof LivingEntity livingEntity) {
+                BuzzsawSoundInstance sound;
+                AbstractTickableSoundInstance oldSound = ENTITY_SOUND_INSTANCE_MAP.get(livingEntity.getId());
+                if (oldSound == null || !(oldSound instanceof BuzzsawSoundInstance soundInstance && soundInstance.isSameEntity(livingEntity))) {
+                    sound = new BuzzsawSoundInstance(livingEntity);
+                    ENTITY_SOUND_INSTANCE_MAP.put(livingEntity.getId(), sound);
                 } else {
                     sound = soundInstance;
                 }

@@ -20,4 +20,8 @@ public class OFToolDefinitions {
             .attribute(SinewAttributes.MAGIC_DAMAGE, 2.0F, AttributeModifier.Operation.ADD_VALUE)
             .build();
 
+    public static final ToolDefinition BUZZSAW = new ToolDefinition.Builder()
+            .tier(OFItemTiers.BUZZSAW)
+            .build();
+
 }

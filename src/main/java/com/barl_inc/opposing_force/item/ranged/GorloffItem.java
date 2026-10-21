@@ -20,10 +20,10 @@ import net.minecraft.world.level.Level;
 
 public class GorloffItem extends BulletGunItem {
 
-    private static final int PROJECTILE_DAMAGE_DIVISOR = 2;
+    private static final int PROJECTILE_DAMAGE_DIVISOR = 3;
 
     public GorloffItem(Properties properties) {
-        super(properties.durability(650), 1.0F, 3.0F, 7.0F, 100);
+        super(properties.durability(650), 1.0F, 3.0F, 9.0F, 100);
     }
 
     @Override
@@ -61,7 +61,7 @@ public class GorloffItem extends BulletGunItem {
                 player.releaseUsingItem();
             } else if (!level.isClientSide && shots < (this.getUseDuration(stack, player) - remainingUseDuration) * 2 / 5 + 1) {
                 ItemStack ammo = this.getAmmo(player);
-                if (entity.tickCount % 3 == 0) {
+                if (entity.tickCount % 4 == 0) {
                     this.shoot(level, player, stack, ammo);
                     setShots(stack, shots + 1);
                     if ((shots + 1) % 4 == 0) {

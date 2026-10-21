@@ -1,0 +1,30 @@
+{
+	"format_version": "1.9.0",
+	"credit": "Made with Blockbench",
+	"parent": "item/handheld",
+	"textures": {
+		"layer0": "opposing_force:item/buzzsaw_huge"
+	},
+	"display": {
+		"thirdperson_righthand": {
+			"rotation": [0, 90, 45],
+			"translation": [0, 13, 2],
+			"scale": [2, 2, 0.85]
+		},
+		"thirdperson_lefthand": {
+			"rotation": [0, -90, -45],
+			"translation": [0, 13, 2],
+			"scale": [2, 2, 0.85]
+		},
+		"firstperson_righthand": {
+			"rotation": [-30, 90, 0],
+			"translation": [2, 4, -5],
+			"scale": [1.5, 1.5, 0.68]
+		},
+		"firstperson_lefthand": {
+			"rotation": [-30, -90, 0],
+			"translation": [2, 4, -5],
+			"scale": [1.5, 1.5, 0.68]
+		}
+	}
+}

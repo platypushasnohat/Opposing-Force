@@ -1,0 +1,8 @@
+{
+  "replace": false,
+  "values": [
+    "opposing_force:magic_protection",
+    "opposing_force:frost_aspect",
+    "opposing_force:freeze"
+  ]
+}

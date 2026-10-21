@@ -1,0 +1,7 @@
+{
+  "replace": false,
+  "values": [
+    "minecraft:fire_aspect",
+    "opposing_force:frost_aspect"
+  ]
+}

@@ -37,6 +37,7 @@ public class Haunt extends PhasingMonster {
     public final SmoothAnimationState headSpinAnimationState = new SmoothAnimationState();
 
     private boolean bounced;
+    private boolean returning;
     private int headSpinTicks;
 
     public Haunt(EntityType<? extends Haunt> entityType, Level level) {
@@ -78,7 +79,7 @@ public class Haunt extends PhasingMonster {
 
     @Override
     protected boolean isPhasing() {
-        return !this.isSpinning();
+        return !this.isSpinning() || this.returning;
     }
 
     @Override
@@ -234,6 +235,7 @@ public class Haunt extends PhasingMonster {
                 this.haunt.setDeltaMovement(this.haunt.twist(this.aimAt(target, 1.5D), 20.0F, 45.0F));
                 this.haunt.playSound(SoundEvents.PHANTOM_SWOOP, 1.0F, 1.2F);
                 this.haunt.bounced = false;
+                this.haunt.returning = false;
                 this.timer = 0;
                 this.bounces = 0;
                 this.spinTicks = 0;
@@ -251,15 +253,20 @@ public class Haunt extends PhasingMonster {
                     entity.knockback(1.2D, -velocity.x, -velocity.z);
                 }
             }
-            if (this.haunt.bounced || this.timer > 40) {
+            if (this.timer > 40) {
+                this.haunt.returning = true;
+            }
+            if (this.haunt.returning) {
+                this.haunt.setDeltaMovement(this.aimAt(target, 1.5D));
+            } else if (this.haunt.bounced) {
                 this.bounces++;
-                if (this.haunt.getRandom().nextInt(4) == 0 || !this.haunt.bounced) {
+                if (this.haunt.getRandom().nextInt(4) == 0) {
                     this.haunt.setDeltaMovement(this.aimAt(target, 1.5D));
                 }
                 this.haunt.bounced = false;
                 this.timer = 0;
             }
-            if (this.bounces >= this.maxBounces && this.spinTicks >= 200) {
+            if (this.haunt.returning ? this.haunt.getGap(target) < 2.0D : this.bounces >= this.maxBounces && this.spinTicks >= 200) {
                 this.haunt.setDeltaMovement(Vec3.ZERO);
                 this.spinCooldown = 100;
                 this.finishAttack(100);

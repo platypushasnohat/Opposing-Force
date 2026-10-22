@@ -285,7 +285,7 @@ public class Haunt extends PhasingMonster {
             }
             if (this.haunt.returning ? this.haunt.getGap(target) < 2.0D : this.bounces >= this.maxBounces && this.spinTicks >= 200) {
                 this.haunt.setDeltaMovement(Vec3.ZERO);
-                this.spinCooldown = 300;
+                this.spinCooldown = 200;
                 this.finishAttack();
             }
         }

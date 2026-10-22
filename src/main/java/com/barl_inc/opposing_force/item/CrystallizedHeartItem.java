@@ -19,13 +19,13 @@ import top.theillusivec4.curios.api.CuriosApi;
 
 import java.util.List;
 
-public class CrystalizedHeartItem extends Item {
+public class CrystallizedHeartItem extends Item {
     //todo later
     //add gui overlay or visual effect when eating
 
     private static final ResourceLocation SLOT_MODIFIER = OpposingForce.location("crystallized_heart");
 
-    public CrystalizedHeartItem(Properties properties) {
+    public CrystallizedHeartItem(Properties properties) {
         super(properties);
     }
 
@@ -45,7 +45,7 @@ public class CrystalizedHeartItem extends Item {
 
     @Override
     public void appendHoverText(ItemStack stack, TooltipContext context, List<Component> tooltip, TooltipFlag flag) {
-        tooltip.add(Component.translatable("item.opposing_force.crystalized_heart.description").withStyle(ChatFormatting.BLUE));
+        tooltip.add(Component.translatable("item.opposing_force.crystallized_heart.description").withStyle(ChatFormatting.BLUE));
     }
 
     public static boolean hasEatenHeart(LivingEntity entity) {

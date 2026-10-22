@@ -72,6 +72,7 @@ public class ClientEvents {
         event.registerEntityRenderer(OFEntities.BULLET.get(), BulletRenderer::new);
         event.registerEntityRenderer(OFEntities.SAWBLADE.get(), SawbladeRenderer::new);
         event.registerEntityRenderer(OFEntities.RING_PROJECTILE.get(), RingProjectileRenderer::new);
+        event.registerEntityRenderer(OFEntities.SOUL.get(), SoulRenderer::new);
     }
 
     @SubscribeEvent
@@ -96,6 +97,7 @@ public class ClientEvents {
         event.registerLayerDefinition(OFModelLayers.ACID_CHARGE, AcidChargeModel::createBodyLayer);
         event.registerLayerDefinition(OFModelLayers.MUDBALL, MudballModel::createBodyLayer);
         event.registerLayerDefinition(OFModelLayers.RING_PROJECTILE, RingProjectileModel::createBodyLayer);
+        event.registerLayerDefinition(OFModelLayers.SOUL, SoulModel::createBodyLayer);
 
         event.registerLayerDefinition(OFModelLayers.BLASTER, BlasterModel::createBodyLayer);
         event.registerLayerDefinition(OFModelLayers.TRI_BLASTER, TriBlasterModel::createBodyLayer);
@@ -126,6 +128,7 @@ public class ClientEvents {
         event.registerSpriteSet(OFParticleTypes.SPORE_CLOUD.get(), SporeCloudParticle.Factory::new);
         event.registerSpriteSet(OFParticleTypes.BULLET_TRAIL.get(), BulletTrailParticle.Factory::new);
         event.registerSpriteSet(OFParticleTypes.BULLET_IMPACT.get(), ImpactParticle.BulletFactory::new);
+        event.registerSpriteSet(OFParticleTypes.SPECTRAL_SWEEP.get(), LaserSweepParticle.Factory::new);
     }
 
     @SubscribeEvent

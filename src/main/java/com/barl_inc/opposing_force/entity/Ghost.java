@@ -2,6 +2,7 @@ package com.barl_inc.opposing_force.entity;
 
 import com.barl_inc.opposing_force.entity.ai.goal.PhasingWanderGoal;
 import com.barl_inc.opposing_force.entity.base.PhasingMonster;
+import com.barl_inc.opposing_force.registry.OFItems;
 import com.platypushasnohat.sinew.client.animation.SmoothAnimationState;
 import com.platypushasnohat.sinew.entity.ai.goal.AttackGoal;
 import com.platypushasnohat.sinew.entity.ai.goal.SpectralStareGoal;
@@ -70,8 +71,12 @@ public class Ghost extends PhasingMonster {
     @Override
     public SpawnGroupData finalizeSpawn(ServerLevelAccessor level, DifficultyInstance difficulty, MobSpawnType spawnType, @Nullable SpawnGroupData spawnGroupData) {
         if (this.random.nextBoolean()) {
-            this.setItemSlot(EquipmentSlot.MAINHAND, new ItemStack(this.random.nextBoolean() ? Items.IRON_SWORD : Items.IRON_AXE));
-            this.setDropChance(EquipmentSlot.MAINHAND, 0.33F);
+            int weapon = this.random.nextInt(3);
+            this.setItemSlot(EquipmentSlot.MAINHAND, new ItemStack(weapon == 0 ? Items.IRON_SWORD : weapon == 1 ? Items.IRON_AXE : OFItems.SPECTRAL_CLEAVER.get()));
+            if (weapon < 2) {
+                this.enchantSpawnedWeapon(level, this.random, difficulty);
+            }
+            this.setDropChance(EquipmentSlot.MAINHAND, 0.5F);
         }
         return super.finalizeSpawn(level, difficulty, spawnType, spawnGroupData);
     }

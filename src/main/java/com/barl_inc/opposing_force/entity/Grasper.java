@@ -44,7 +44,7 @@ public class Grasper extends AnimatedMonster {
     public static final int FLIP_BACK_ANIMATION = 7;
 
     public final SmoothAnimationState leapStartAnimationState = new SmoothAnimationState();
-    public final SmoothAnimationState leapLoopAnimationState = new SmoothAnimationState();
+    public final SmoothAnimationState leapLoopAnimationState = new SmoothAnimationState(0.15F);
     public final SmoothAnimationState punchAnimationState = new SmoothAnimationState();
     public final SmoothAnimationState slapAnimationState = new SmoothAnimationState();
     public final SmoothAnimationState flingedAnimationState = new SmoothAnimationState();
@@ -162,6 +162,9 @@ public class Grasper extends AnimatedMonster {
         this.idleAnimationState.animateWhen(state == 0, this.tickCount);
         this.walkAnimationState.animateWhen(state == 0, this.tickCount);
         this.leapStartAnimationState.animateWhen(state == LEAP_START_ANIMATION, this.tickCount);
+        if (state == FLINGED_ANIMATION) {
+            this.leapLoopAnimationState.factor = 0.0F;
+        }
         this.leapLoopAnimationState.animateWhen(state >= LEAP_LOOP_ANIMATION && state <= SLAP_ANIMATION, this.tickCount);
         this.punchAnimationState.animateWhen(state == PUNCH_ANIMATION, this.tickCount);
         this.slapAnimationState.animateWhen(state == SLAP_ANIMATION, this.tickCount);

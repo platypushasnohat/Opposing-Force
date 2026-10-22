@@ -138,7 +138,14 @@ public class OFLanguageProvider extends SinewLanguageProvider {
         this.add("death.attack.bullet.player", "%s was shot by %s");
         this.add("death.attack.bullet.item", "%s was shot by %s using %s");
 
-        this.add("death.attack.cursed_ring", "%s was killed with cursed magic by %s");
-        this.add("death.attack.cursed_ring.item", "%s was killed with cursed magic by %s using %s");
+        this.add("death.attack.cursed_ring_0", "%s was killed with cursed magic");
+        this.add("death.attack.cursed_ring_1", "%s was hexed");
+        this.add("death.attack.cursed_ring_0.entity", "%s was killed with cursed magic by %s");
+        this.add("death.attack.cursed_ring_1.entity", "%s was hexed by %s");
+
+        this.add("death.attack.soul_0", "%s had their soul reaped");
+        this.add("death.attack.soul_1", "%s had their soul torn apart");
+        this.add("death.attack.soul_0.entity", "%s has their soul torn apart by %s");
+        this.add("death.attack.soul_1.entity", "%s was reaped %s");
     }
 }

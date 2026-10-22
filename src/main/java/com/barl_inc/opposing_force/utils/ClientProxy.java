@@ -5,6 +5,7 @@ import com.barl_inc.opposing_force.entity.Gnat;
 import com.barl_inc.opposing_force.entity.Terror;
 import com.barl_inc.opposing_force.entity.misc.DicerLaser;
 import com.barl_inc.opposing_force.entity.projectile.LaserBlade;
+import com.barl_inc.opposing_force.entity.projectile.Soul;
 import com.platypushasnohat.sinew.mixins.client.SoundEngineAccessor;
 import com.platypushasnohat.sinew.mixins.client.SoundManagerAccessor;
 import it.unimi.dsi.fastutil.ints.Int2ObjectMap;
@@ -94,6 +95,21 @@ public class ClientProxy extends CommonProxy {
                 if (oldSound == null || !(oldSound instanceof BuzzsawSoundInstance soundInstance && soundInstance.isSameEntity(livingEntity))) {
                     sound = new BuzzsawSoundInstance(livingEntity);
                     ENTITY_SOUND_INSTANCE_MAP.put(livingEntity.getId(), sound);
+                } else {
+                    sound = soundInstance;
+                }
+                if (!this.isSoundPlaying(sound) && sound.canPlaySound()) {
+                    Minecraft.getInstance().getSoundManager().queueTickingSound(sound);
+                }
+            }
+        }
+        if (type == 5) {
+            if (soundEmitter instanceof Soul soul) {
+                SoulSoundInstance sound;
+                AbstractTickableSoundInstance oldSound = ENTITY_SOUND_INSTANCE_MAP.get(soul.getId());
+                if (oldSound == null || !(oldSound instanceof SoulSoundInstance soundInstance && soundInstance.isSameEntity(soul))) {
+                    sound = new SoulSoundInstance(soul);
+                    ENTITY_SOUND_INSTANCE_MAP.put(soul.getId(), sound);
                 } else {
                     sound = soundInstance;
                 }

@@ -50,10 +50,11 @@ public class OFCreativeTabs {
                         output.accept(OFItems.CURSED_RING);
                         output.accept(OFItems.CURSED_RINGLINE);
 
-                        output.accept(OFItems.ACID_CHARGE);
-
                         output.accept(OFItems.ECTOPLASM);
+                        output.accept(OFItems.SPECTRAL_CLEAVER);
                         output.accept(OFItems.SPECTRAL_SHIELD);
+
+                        output.accept(OFItems.ACID_CHARGE);
 
                         output.accept(OFItems.MYSTIC_POT);
                         output.accept(OFItems.LEITMOTIF);

@@ -77,6 +77,7 @@ public class OFItems {
     public static final DeferredItem<Item> ROAMER_SPAWN_EGG = registerSpawnEggItem("roamer", OFEntities.ROAMER, 0x0d0e04, 0xe44928);
     public static final DeferredItem<Item> HAUNT_SPAWN_EGG = registerSpawnEggItem("haunt", OFEntities.HAUNT, 0x90a9a1, 0x2d2e49);
     public static final DeferredItem<Item> ECTOPLASM = registerItem("ectoplasm", () -> new Item(new Item.Properties()));
+    public static final DeferredItem<Item> SPECTRAL_CLEAVER = registerItem("spectral_cleaver", () -> new SpectralCleaverItem(OFItemTiers.SPECTRAL_CLEAVER, new Item.Properties().attributes(SwordItem.createAttributes(OFItemTiers.SPECTRAL_CLEAVER, 3.5F, -2.4F))));
     public static final DeferredItem<Item> SPECTRAL_SHIELD = registerItem("spectral_shield", () -> new SpectralShieldItem(new Item.Properties().durability(672)));
 
     public static final DeferredItem<Item> GRASPER_SPAWN_EGG = registerSpawnEggItem("grasper", OFEntities.GRASPER, 0x293c3b, 0xac8e16);
@@ -140,7 +141,7 @@ public class OFItems {
     public static final DeferredItem<Item> MOON_SHOES = registerItem("moon_shoes", () -> new MoonShoesItem(new Item.Properties().stacksTo(1).rarity(Rarity.RARE)));
 
     //Permanent Upgrades
-    public static final DeferredItem<Item> CRYSTALLIZED_HEART = registerItem("crystallized_heart", () -> new CrystalizedHeartItem(new Item.Properties().stacksTo(64).rarity(Rarity.EPIC).food(OFFoodProperties.CRYSTALIZED_HEART)));
+    public static final DeferredItem<Item> CRYSTALLIZED_HEART = registerItem("crystallized_heart", () -> new CrystallizedHeartItem(new Item.Properties().stacksTo(64).rarity(Rarity.EPIC).food(OFFoodProperties.CRYSTALLIZED_HEART)));
 
     //Spectral sector
     public static final DeferredItem<Item> SPECTRAL_GOGGLES = registerItem("spectral_goggles", () -> new SpectralGogglesItem(new Item.Properties().stacksTo(1).rarity(Rarity.UNCOMMON), OFCurioDefinitions.SPECTRAL_GOGGLES));

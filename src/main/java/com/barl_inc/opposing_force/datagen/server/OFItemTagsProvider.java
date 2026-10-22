@@ -29,7 +29,8 @@ public class OFItemTagsProvider extends ItemTagsProvider {
                 OFItems.LASER_BLADE.get(),
                 OFItems.EMERALD_SWORD.get(),
                 OFItems.CHITIN_LANCE.get(),
-                OFItems.LAPIS_LAZULI_SWORD.get()
+                OFItems.LAPIS_LAZULI_SWORD.get(),
+                OFItems.SPECTRAL_CLEAVER.get()
         );
 
         this.tag(ItemTags.PICKAXES).add(

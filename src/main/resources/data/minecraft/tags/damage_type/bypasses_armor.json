@@ -1,6 +1,7 @@
 {
   "replace": false,
   "values": [
-    "opposing_force:acid"
+    "opposing_force:acid",
+    "opposing_force:soul"
   ]
 }

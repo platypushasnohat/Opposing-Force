@@ -1,6 +1,6 @@
 package com.barl_inc.opposing_force.item.base;
 
-import com.barl_inc.opposing_force.tags.OFItemTags;
+import com.barl_inc.opposing_force.registry.datapack.tags.OFItemTags;
 import com.platypushasnohat.sinew.item.SinewItemUtils;
 import net.minecraft.tags.TagKey;
 import net.minecraft.world.entity.player.Player;

@@ -2,7 +2,7 @@ package com.barl_inc.opposing_force.datagen.server;
 
 import com.barl_inc.opposing_force.OpposingForce;
 import com.barl_inc.opposing_force.registry.OFItems;
-import com.barl_inc.opposing_force.tags.OFItemTags;
+import com.barl_inc.opposing_force.registry.datapack.tags.OFItemTags;
 import net.minecraft.core.HolderLookup.Provider;
 import net.minecraft.data.PackOutput;
 import net.minecraft.data.tags.ItemTagsProvider;

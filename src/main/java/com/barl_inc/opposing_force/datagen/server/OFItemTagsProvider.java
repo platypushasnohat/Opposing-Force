@@ -116,7 +116,9 @@ public class OFItemTagsProvider extends ItemTagsProvider {
                 OFItems.SLIMY_SHIELD.get(),
                 OFItems.STALKER_GLOVES.get(),
                 OFItems.MUNITIONS_BOX.get(),
-                OFItems.MOON_SHOES.get()
+                OFItems.MOON_SHOES.get(),
+                OFItems.SPECTRAL_GOGGLES.get(),
+                OFItems.CURSED_RING.get()
         );
 
         this.tag(Tags.Items.TOOLS_SHIELD).add(

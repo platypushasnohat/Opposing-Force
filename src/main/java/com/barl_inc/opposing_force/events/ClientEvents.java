@@ -134,70 +134,39 @@ public class ClientEvents {
     public static void onPoseHand(PoseHandEvent event) {
         LivingEntity player = (LivingEntity) event.getEntity();
         HumanoidModel<?> humanoidModel = event.getHumanoidModel();
-        ModelPart rightArm = humanoidModel.rightArm;
-        ModelPart leftArm = humanoidModel.leftArm;
-        ModelPart head = humanoidModel.head;
-        if (isAimedGun(player.getItemInHand(InteractionHand.MAIN_HAND))) {
-            if (player.getMainArm() == HumanoidArm.RIGHT) {
-                rightArm.xRot = (head.xRot - (float) Math.toRadians(80.0F));
-                rightArm.yRot = head.yRot;
-                rightArm.zRot = 0.0F;
-            } else {
-                leftArm.xRot = (head.xRot - (float) Math.toRadians(80.0F));
-                leftArm.yRot = head.yRot;
-                leftArm.zRot = 0.0F;
-            }
+        boolean left = event.isLeftHanded();
+        InteractionHand hand = left == (player.getMainArm() == HumanoidArm.LEFT) ? InteractionHand.MAIN_HAND : InteractionHand.OFF_HAND;
+        InteractionHand otherHand = hand == InteractionHand.MAIN_HAND ? InteractionHand.OFF_HAND : InteractionHand.MAIN_HAND;
+        if (poseGunArm(humanoidModel, left, player.getItemInHand(hand), player.getItemInHand(otherHand))) {
             event.setResult(TriState.TRUE);
         }
-        if (isAimedGun(player.getItemInHand(InteractionHand.OFF_HAND))) {
-            if (player.getMainArm() == HumanoidArm.RIGHT) {
-                leftArm.xRot = (head.xRot - (float) Math.toRadians(80.0F));
-                leftArm.yRot = head.yRot;
-                leftArm.zRot = 0.0F;
-            } else {
-                rightArm.xRot = (head.xRot - (float) Math.toRadians(80.0F));
-                rightArm.yRot = head.yRot;
-                rightArm.zRot = 0.0F;
-            }
-            event.setResult(TriState.TRUE);
+        if (player.isUsingItem() && !poseGunArm(humanoidModel, !left, player.getItemInHand(otherHand), player.getItemInHand(hand)) && player.getUseItem().getItem() instanceof GunItem && !player.getItemInHand(otherHand).isEmpty()) {
+            ModelPart arm = left ? humanoidModel.rightArm : humanoidModel.leftArm;
+            arm.xRot = arm.xRot * 0.5F - (float) Math.PI / 10.0F;
+            arm.yRot = 0.0F;
         }
+    }
 
-        if (player.getItemInHand(InteractionHand.MAIN_HAND).is(OFItems.GORLOFF)) {
-            if (player.getMainArm() == HumanoidArm.RIGHT) {
-                rightArm.xRot = (head.xRot - (float) Math.toRadians(70.0F));
-                rightArm.yRot = head.yRot;
-                rightArm.zRot = 0.0F;
-                leftArm.xRot = head.xRot - (float) Math.toRadians(40.0F);
-                leftArm.yRot = head.yRot + (float) Math.toRadians(40.0F);
-                leftArm.zRot = 0.0F;
-            } else {
-                leftArm.xRot = (head.xRot - (float) Math.toRadians(70.0F));
-                leftArm.yRot = head.yRot;
-                leftArm.zRot = 0.0F;
-                rightArm.xRot = head.xRot - (float) Math.toRadians(40.0F);
-                rightArm.yRot = head.yRot + (float) Math.toRadians(-40.0F);
-                rightArm.zRot = 0.0F;
-            }
-            event.setResult(TriState.TRUE);
+    private static boolean poseGunArm(HumanoidModel<?> humanoidModel, boolean left, ItemStack stack, ItemStack other) {
+        ModelPart arm = left ? humanoidModel.leftArm : humanoidModel.rightArm;
+        ModelPart head = humanoidModel.head;
+        boolean posed = true;
+        if (stack.is(OFItems.GORLOFF)) {
+            arm.xRot = head.xRot - (float) Math.toRadians(70.0F);
+            arm.yRot = head.yRot;
+        } else if (other.is(OFItems.GORLOFF)) {
+            arm.xRot = head.xRot - (float) Math.toRadians(40.0F);
+            arm.yRot = head.yRot + (float) Math.toRadians(left ? 40.0F : -40.0F);
+        } else if (isAimedGun(stack)) {
+            arm.xRot = head.xRot - (float) Math.toRadians(80.0F);
+            arm.yRot = head.yRot;
+        } else {
+            posed = false;
         }
-        if (player.getItemInHand(InteractionHand.OFF_HAND).is(OFItems.GORLOFF)) {
-            if (player.getMainArm() == HumanoidArm.RIGHT) {
-                leftArm.xRot = (head.xRot - (float) Math.toRadians(70.0F));
-                leftArm.yRot = head.yRot;
-                leftArm.zRot = 0.0F;
-                rightArm.xRot = head.xRot - (float) Math.toRadians(40.0F);
-                rightArm.yRot = head.yRot + (float) Math.toRadians(-40.0F);
-                rightArm.zRot = 0.0F;
-            } else {
-                rightArm.xRot = (head.xRot - (float) Math.toRadians(70.0F));
-                rightArm.yRot = head.yRot;
-                rightArm.zRot = 0.0F;
-                leftArm.xRot = head.xRot - (float) Math.toRadians(40.0F);
-                leftArm.yRot = head.yRot + (float) Math.toRadians(40.0F);
-                leftArm.zRot = 0.0F;
-            }
-            event.setResult(TriState.TRUE);
+        if (posed) {
+            arm.zRot = 0.0F;
         }
+        return posed;
     }
 
     private static boolean isAimedGun(ItemStack stack) {

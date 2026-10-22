@@ -79,7 +79,7 @@ public abstract class GunItem extends ProjectileWeaponItem {
     @Override
     public InteractionResultHolder<ItemStack> use(Level level, Player player, InteractionHand hand) {
         ItemStack stack = player.getItemInHand(hand);
-        InteractionResultHolder<ItemStack> result = InteractionResultHolder.pass(stack);
+        InteractionResultHolder<ItemStack> result = InteractionResultHolder.consume(stack);
         if (!this.canShoot(player, hand)) {
             player.getCooldowns().addCooldown(this, 10);
             return InteractionResultHolder.consume(stack);

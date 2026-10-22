@@ -1,12 +1,13 @@
 package com.barl_inc.opposing_force.item;
 
 import com.barl_inc.opposing_force.client.sound.SpectralShieldSoundInstance;
+import com.platypushasnohat.sinew.item.MovementModifyingItem;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.ShieldItem;
 import net.minecraft.world.level.Level;
 
-public class SpectralShieldItem extends ShieldItem {
+public class SpectralShieldItem extends ShieldItem implements MovementModifyingItem {
 
     public SpectralShieldItem(Properties properties) {
         super(properties);
@@ -17,5 +18,14 @@ public class SpectralShieldItem extends ShieldItem {
         if (level.isClientSide && entity.isBlocking()) {
             SpectralShieldSoundInstance.play(entity);
         }
+    }
+    @Override
+    public float getUseMovementMultiplier() {
+        return 0.40F;
+    }
+
+    @Override
+    public boolean canSprintWhileUsing() {
+        return false;
     }
 }

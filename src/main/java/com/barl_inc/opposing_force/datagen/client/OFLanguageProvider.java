@@ -90,10 +90,8 @@ public class OFLanguageProvider extends SinewLanguageProvider {
         this.add("item.opposing_force.slimy_shield.description", "+Slimy Shielding");
         this.add("item.opposing_force.stalkers_gloves.description", "+30% First Hit Damage");
 
-        this.add("item.opposing_force.crystalized_heart.description", "+1 Charm Slot");
+        this.add("item.opposing_force.crystallized_heart.description", "+1 Charm Slot");
         this.add("item.opposing_force.spectral_goggles.description", "Pierce the Veil...");
-
-        this.add("item.opposing_force.crystalized_heart.description", "Grants +1 Charm Slots");
 
         this.add("enchantment.opposing_force.magic_protection", "Magic Protection");
         this.add("enchantment.opposing_force.magic_protection.desc", "Reduces magic damageMultiplier taken and shortens the duration of negative effects applied to the wearer.");

@@ -2,11 +2,13 @@ package com.barl_inc.opposing_force.datagen.server;
 
 import com.barl_inc.opposing_force.OpposingForce;
 import com.barl_inc.opposing_force.registry.OFItems;
+import com.barl_inc.opposing_force.tags.OFItemTags;
 import net.minecraft.core.HolderLookup.Provider;
 import net.minecraft.data.PackOutput;
 import net.minecraft.data.tags.ItemTagsProvider;
 import net.minecraft.data.tags.TagsProvider;
 import net.minecraft.tags.ItemTags;
+import net.minecraft.world.item.Items;
 import net.minecraft.world.level.block.Block;
 import net.neoforged.neoforge.common.Tags;
 import net.neoforged.neoforge.common.data.ExistingFileHelper;
@@ -98,5 +100,11 @@ public class OFItemTagsProvider extends ItemTagsProvider {
         this.tag(Tags.Items.TOOLS_SHIELD).add(
                 OFItems.SPECTRAL_SHIELD.get()
         );
+
+        this.tag(OFItemTags.BASIC_MANA).add(
+                Items.LAPIS_LAZULI
+        );
+
+        this.tag(OFItemTags.CONSUMES_BASIC_MANA);
 	}
 }

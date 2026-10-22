@@ -1,6 +1,6 @@
 package com.barl_inc.opposing_force.item.curios;
 
-import com.barl_inc.opposing_force.registry.OFCurioDefinitions;
+import com.barl_inc.opposing_force.registry.properties.OFCurioDefinitions;
 import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.item.ItemStack;

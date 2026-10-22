@@ -98,7 +98,6 @@ public class OFCreativeTabs {
 
                         // trinkets
                         // common
-                        output.accept(OFItems.BEETLE_HUSK);
                         output.accept(OFItems.FIERY_CARAPACE);
                         output.accept(OFItems.LUCKY_TACKLEBOX);
                         output.accept(OFItems.MUNITIONS_BOX);
@@ -108,15 +107,16 @@ public class OFCreativeTabs {
                         // uncommon
                         output.accept(OFItems.BLACK_BELT);
                         output.accept(OFItems.ENCHANTED_CHISEL);
-                        output.accept(OFItems.MAGNETISED_ENHANCEMENTS);
+                        output.accept(OFItems.MOMENTUM_GAUNTLET);
                         output.accept(OFItems.RELIC_FEATHER);
                         output.accept(OFItems.SHARPSHOOTER_COIN);
                         output.accept(OFItems.SLIMY_SHIELD);
                         output.accept(OFItems.SPECTRAL_GOGGLES);
-                        output.accept(OFItems.STALKERS_GLOVES);
+                        output.accept(OFItems.STALKER_GLOVES);
                         output.accept(OFItems.URANIUM_KNUCKLES);
 
                         // rare
+                        output.accept(OFItems.BEETLE_HUSK);
                         output.accept(OFItems.BLOOD_AMULET);
                         output.accept(OFItems.POT_OF_GREEN);
                         output.accept(OFItems.TEAR_OF_AQUARIUS);

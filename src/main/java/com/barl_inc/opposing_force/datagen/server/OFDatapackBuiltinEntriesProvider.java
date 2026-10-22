@@ -1,8 +1,8 @@
 package com.barl_inc.opposing_force.datagen.server;
 
 import com.barl_inc.opposing_force.OpposingForce;
-import com.barl_inc.opposing_force.registry.OFBiomeModifiers;
-import com.barl_inc.opposing_force.registry.OFJukeboxSongs;
+import com.barl_inc.opposing_force.registry.datapack.OFBiomeModifiers;
+import com.barl_inc.opposing_force.registry.datapack.OFJukeboxSongs;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.core.RegistrySetBuilder;
 import net.minecraft.core.registries.Registries;

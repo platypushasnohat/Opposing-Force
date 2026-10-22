@@ -38,7 +38,7 @@ public class CrystalizedHeartItem extends Item {
     public ItemStack finishUsingItem(ItemStack stack, Level level, LivingEntity entity) {
         if (!level.isClientSide && !hasEatenHeart(entity)) {
             CuriosApi.getCuriosInventory(entity).ifPresent(inventory -> inventory.addPermanentSlotModifier("charm", SLOT_MODIFIER, 1.0D, AttributeModifier.Operation.ADD_VALUE));
-            level.playSound(null, entity.getX(), entity.getY(), entity.getZ(), SoundEvents.PORTAL_TRAVEL, SoundSource.PLAYERS, 0.5F, 1.0F);
+            level.playSound(null, entity.getX(), entity.getY(), entity.getZ(), SoundEvents.BEACON_POWER_SELECT, SoundSource.PLAYERS, 0.5F, 1.5F);
         }
         return super.finishUsingItem(stack, level, entity);
     }

@@ -4,15 +4,10 @@
   "compatibilityLevel": "JAVA_21",
   "refmap": "opposing_force.refmap.json",
   "mixins": [
-    "EnchantmentHelperMixin",
-    "LivingEntityMixin",
     "MobCategoryMixin",
-    "PlayerMixin",
     "ZombieMixin"
   ],
-  "client": [
-    "client.LocalPlayerMixin"
-  ],
+  "client": [],
   "injectors": {
     "defaultRequire": 1
   },

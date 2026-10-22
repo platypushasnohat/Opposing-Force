@@ -18,8 +18,8 @@
     "opposing_force:chests/blood_amulet_stronghold",
     "opposing_force:chests/uranium_knuckles_dungeon",
     "opposing_force:chests/uranium_knuckles_stronghold",
-    "opposing_force:chests/magnetised_enhancements",
+    "opposing_force:chests/momentum_gauntlet",
     "opposing_force:entities/slimy_shield",
-    "opposing_force:chests/stalkers_gloves"
+    "opposing_force:chests/stalker_gloves"
   ]
 }

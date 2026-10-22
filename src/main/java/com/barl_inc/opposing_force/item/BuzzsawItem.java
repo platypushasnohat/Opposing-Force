@@ -4,7 +4,8 @@ import com.barl_inc.opposing_force.OpposingForce;
 import com.barl_inc.opposing_force.registry.OFDamageTypes;
 import com.barl_inc.opposing_force.registry.OFItems;
 import com.barl_inc.opposing_force.registry.OFSoundEvents;
-import com.barl_inc.opposing_force.registry.OFToolDefinitions;
+import com.barl_inc.opposing_force.registry.properties.OFToolDefinitions;
+import com.platypushasnohat.sinew.item.MovementModifyingItem;
 import com.platypushasnohat.sinew.item.SinewAxeItem;
 import com.platypushasnohat.sinew.utils.SinewSoundUtils;
 import net.minecraft.core.component.DataComponents;
@@ -30,7 +31,7 @@ import net.minecraft.world.phys.AABB;
 
 import java.util.List;
 
-public class BuzzsawItem extends SinewAxeItem {
+public class BuzzsawItem extends SinewAxeItem implements MovementModifyingItem {
 
     public BuzzsawItem(Properties properties) {
         super(OFToolDefinitions.BUZZSAW, 2.5F, -3.0F, properties);
@@ -49,6 +50,16 @@ public class BuzzsawItem extends SinewAxeItem {
     @Override
     public int getUseDuration(ItemStack stack, LivingEntity entity) {
         return 200;
+    }
+
+    @Override
+    public float getUseMovementMultiplier() {
+        return 0.75F;
+    }
+
+    @Override
+    public boolean canSprintWhileUsing() {
+        return true;
     }
 
     @Override

@@ -1,17 +1,13 @@
 {
-  "type": "minecraft:crafting_shaped",
-  "category": "equipment",
-  "key": {
-    "S": {
-      "item": "minecraft:cobblestone"
-    },
-    "G": {
+  "type": "minecraft:crafting_shapeless",
+  "category": "building",
+  "ingredients": [
+    {
       "item": "minecraft:gunpowder"
+    },
+    {
+      "item": "minecraft:cobblestone"
     }
-  },
-  "pattern": [
-    "G",
-    "S"
   ],
   "result": {
     "count": 16,

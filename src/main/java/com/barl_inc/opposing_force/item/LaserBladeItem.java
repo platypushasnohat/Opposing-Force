@@ -2,9 +2,12 @@ package com.barl_inc.opposing_force.item;
 
 import com.barl_inc.opposing_force.entity.projectile.LaserBlade;
 import com.barl_inc.opposing_force.registry.OFItems;
+import com.barl_inc.opposing_force.registry.OFParticleTypes;
 import com.barl_inc.opposing_force.registry.OFSoundEvents;
+import com.platypushasnohat.sinew.item.CustomSweepParticle;
 import com.platypushasnohat.sinew.item.DisabledItem;
 import com.platypushasnohat.sinew.utils.SinewSoundUtils;
+import net.minecraft.core.particles.ParticleOptions;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.stats.Stats;
@@ -20,7 +23,7 @@ import net.minecraft.world.item.Tier;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.phys.Vec3;
 
-public class LaserBladeItem extends SwordItem {
+public class LaserBladeItem extends SwordItem implements CustomSweepParticle {
 
     private int swingSoundCooldown = 0;
 
@@ -81,5 +84,10 @@ public class LaserBladeItem extends SwordItem {
             }
         }
         return super.onEntitySwing(stack, entity, hand);
+    }
+
+    @Override
+    public ParticleOptions getSweepParticle() {
+        return OFParticleTypes.LASER_SWEEP.get();
     }
 }

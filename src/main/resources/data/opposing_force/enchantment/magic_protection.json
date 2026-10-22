@@ -4,6 +4,18 @@
     "translate": "enchantment.opposing_force.magic_protection"
   },
   "effects": {
+    "minecraft:attributes": [
+      {
+        "amount": {
+          "type": "minecraft:linear",
+          "base": -0.1,
+          "per_level_above_first": -0.1
+        },
+        "attribute": "sinew:negative_effect_duration",
+        "id": "opposing_force:enchantment.magic_protection",
+        "operation": "add_value"
+      }
+    ],
     "minecraft:damage_protection": [
       {
         "effect": {
@@ -15,19 +27,24 @@
           }
         },
         "requirements": {
-          "condition": "minecraft:damage_source_properties",
-          "predicate": {
-            "tags": [
-              {
-                "expected": true,
-                "id": "opposing_force:is_magic"
-              },
-              {
-                "expected": false,
-                "id": "minecraft:bypasses_invulnerability"
+          "condition": "minecraft:all_of",
+          "terms": [
+            {
+              "condition": "minecraft:damage_source_properties",
+              "predicate": {
+                "tags": [
+                  {
+                    "expected": true,
+                    "id": "c:is_magic"
+                  },
+                  {
+                    "expected": false,
+                    "id": "minecraft:bypasses_invulnerability"
+                  }
+                ]
               }
-            ]
-          }
+            }
+          ]
         }
       }
     ]

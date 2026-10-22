@@ -1,7 +1,7 @@
 package com.barl_inc.opposing_force.item;
 
 import com.barl_inc.opposing_force.registry.OFItems;
-import com.barl_inc.opposing_force.registry.OFToolDefinitions;
+import com.barl_inc.opposing_force.registry.properties.OFToolDefinitions;
 import com.platypushasnohat.sinew.item.SinewSwordItem;
 import com.platypushasnohat.sinew.utils.SinewSoundUtils;
 import net.minecraft.core.particles.ParticleTypes;

@@ -5,6 +5,7 @@ import com.barl_inc.opposing_force.config.OFConfig;
 import com.barl_inc.opposing_force.entity.*;
 import com.barl_inc.opposing_force.entity.ai.goal.LightDependentTargetGoal;
 import com.barl_inc.opposing_force.entity.misc.MudSplatter;
+import com.barl_inc.opposing_force.item.curios.MomentumGauntletItem;
 import com.barl_inc.opposing_force.item.SpectralShieldItem;
 import com.barl_inc.opposing_force.item.curios.MagnetisedEnhancementsItem;
 import com.barl_inc.opposing_force.item.curios.SpectralGogglesItem;
@@ -134,7 +135,7 @@ public class CommonEvents {
     public static void onLivingIncomingDamage(LivingIncomingDamageEvent event) {
         if (event.getSource().getEntity() instanceof LivingEntity attacker
                 && event.getEntity().getHealth() >= event.getEntity().getMaxHealth()
-                && CuriosApi.getCuriosInventory(attacker).map(inventory -> inventory.isEquipped(OFItems.STALKERS_GLOVES.get())).orElse(false)) {
+                && CuriosApi.getCuriosInventory(attacker).map(inventory -> inventory.isEquipped(OFItems.STALKER_GLOVES.get())).orElse(false)) {
             event.setAmount(event.getAmount() * 1.3F);
         }
         if (event.getEntity() instanceof Player player
@@ -142,8 +143,8 @@ public class CommonEvents {
                 && CuriosApi.getCuriosInventory(player).map(inventory -> inventory.isEquipped(OFItems.SLIMY_SHIELD.get())).orElse(false)) {
             if (!player.getCooldowns().isOnCooldown(OFItems.SLIMY_SHIELD.get()) && player.invulnerableTime <= 10 && player.level() instanceof ServerLevel serverLevel) {
                 event.setAmount(0.1F);
-                player.getCooldowns().addCooldown(OFItems.SLIMY_SHIELD.get(), 240);
-                serverLevel.sendParticles(ParticleTypes.ITEM_SLIME, player.getX(), player.getY(0.5D), player.getZ(), 60, 0.3D, 0.5D, 0.3D, 0.4D);
+                player.getCooldowns().addCooldown(OFItems.SLIMY_SHIELD.get(), 300);
+                serverLevel.sendParticles(ParticleTypes.ITEM_SLIME, player.getX(), player.getY(0.5D), player.getZ(), 20, 0.3D, 0.5D, 0.3D, 0.4D);
                 serverLevel.playSound(null, player.getX(), player.getY(), player.getZ(), SoundEvents.SLIME_ATTACK, player.getSoundSource(), 1.0F, 1.0F);
             }
         }
@@ -185,13 +186,13 @@ public class CommonEvents {
 
     @SubscribeEvent
     public static void onBlockBreak(BlockEvent.BreakEvent event) {
-        MagnetisedEnhancementsItem.addMomentum(event.getPlayer());
+        MomentumGauntletItem.addMomentum(event.getPlayer());
     }
 
     @SubscribeEvent
     public static void addPackFinders(AddPackFindersEvent event) {
         if (event.getPackType() == PackType.SERVER_DATA) {
-            event.addPackFinders(OpposingForce.location("datapacks/protection_tweaks"), PackType.SERVER_DATA, Component.translatable("pack.opposing_force.protection_tweaks"), PackSource.BUILT_IN, OFConfig.PROTECTION_TWEAKS.get(), Pack.Position.TOP);
+            event.addPackFinders(OpposingForce.location("datapacks/enchantment_tweaks"), PackType.SERVER_DATA, Component.translatable("pack.opposing_force.protection_tweaks"), PackSource.BUILT_IN, OFConfig.PROTECTION_TWEAKS.get(), Pack.Position.TOP);
         }
     }
 }

@@ -1,5 +1,5 @@
 {
-  "type": "opposing_force:replace_table",
+  "type": "sinew:replace_table",
   "conditions": [
     {
       "condition": "minecraft:any_of",

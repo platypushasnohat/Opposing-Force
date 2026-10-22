@@ -6,6 +6,9 @@ import com.barl_inc.opposing_force.datagen.client.OFLanguageProvider;
 import com.barl_inc.opposing_force.datagen.client.OFSoundDefinitionsProvider;
 import com.barl_inc.opposing_force.datagen.server.*;
 import com.barl_inc.opposing_force.registry.*;
+import com.barl_inc.opposing_force.registry.misc.OFClientCompat;
+import com.barl_inc.opposing_force.registry.misc.OFCompat;
+import com.barl_inc.opposing_force.registry.properties.OFArmorMaterials;
 import com.barl_inc.opposing_force.utils.ClientProxy;
 import com.barl_inc.opposing_force.utils.CommonProxy;
 import com.mojang.logging.LogUtils;
@@ -46,7 +49,6 @@ public class OpposingForce {
         OFParticleTypes.PARTICLE_TYPE.register(modEventBus);
         OFSoundEvents.SOUND_EVENT.register(modEventBus);
         OFDataComponents.DATA_COMPONENTS.register(modEventBus);
-        OFLootModifiers.LOOT_MODIFIERS.register(modEventBus);
         OFCreativeTabs.CREATIVE_MODE_TAB.register(modEventBus);
         modEventBus.addListener(OFMobVariants::registerDatapackRegistries);
         modEventBus.addListener(this::commonSetup);

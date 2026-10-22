@@ -1,21 +1,16 @@
 {
-  "type": "minecraft:crafting_shaped",
-  "category": "equipment",
-  "key": {
-    "I": {
-      "item": "minecraft:iron_ingot"
-    },
-    "G": {
-      "item": "minecraft:gold_nugget"
-    },
-    "U": {
+  "type": "minecraft:crafting_shapeless",
+  "category": "building",
+  "ingredients": [
+    {
       "item": "minecraft:gunpowder"
+    },
+    {
+      "item": "minecraft:iron_nugget"
+    },
+    {
+      "item": "minecraft:gold_nugget"
     }
-  },
-  "pattern": [
-    "G",
-    "U",
-    "I"
   ],
   "result": {
     "count": 4,

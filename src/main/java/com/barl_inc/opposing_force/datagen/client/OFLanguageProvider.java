@@ -81,15 +81,12 @@ public class OFLanguageProvider extends SinewLanguageProvider {
 
         this.add(OFItems.FILLET_BUCKET.get(), "Bucket of Fillet");
 
-        this.add(OFItems.STALKERS_GLOVES.get(), "Stalker's Gloves");
-
         this.add("item.opposing_force.powered_item.power", "Power: %s / %s");
 
         this.add("item.opposing_force.relic_feather.description", "+Slow Falling");
-        this.add("item.opposing_force.fiery_carapace.description", "+Fire Protection I");
-        this.add("item.opposing_force.magnetised_enhancements.description", "+Mining Momentum");
+        this.add("item.opposing_force.momentum_gauntlet.description", "+Mining Momentum");
         this.add("item.opposing_force.slimy_shield.description", "+Slimy Shielding");
-        this.add("item.opposing_force.stalkers_gloves.description", "+30% First Hit Damage");
+        this.add("item.opposing_force.stalker_gloves.description", "+30% Initial Damage");
 
         this.add("item.opposing_force.crystallized_heart.description", "+1 Charm Slot");
         this.add("item.opposing_force.spectral_goggles.description", "Pierce the Veil...");

@@ -41,7 +41,7 @@ public class SpectralLensOverlay {
 
     public static void render(GuiGraphics guiGraphics, DeltaTracker deltaTracker) {
         Minecraft minecraft = Minecraft.getInstance();
-        if (ticks >= 0 && shader != null && minecraft.options.getCameraType().isFirstPerson()) {
+        if (ticks >= 0 && shader != null) {
             float progress = Math.min((ticks + deltaTracker.getGameTimeDeltaPartialTick(false)) / 70, 1.0F);
             float width = guiGraphics.guiWidth();
             float height = guiGraphics.guiHeight();

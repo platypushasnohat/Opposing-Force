@@ -1,7 +1,7 @@
 package com.barl_inc.opposing_force.mixins;
 
-import com.barl_inc.opposing_force.registry.OFEnchantments;
-import com.barl_inc.opposing_force.tags.OFMobEffectTags;
+import com.barl_inc.opposing_force.registry.datapack.OFEnchantments;
+import com.barl_inc.opposing_force.registry.datapack.tags.OFMobEffectTags;
 import net.minecraft.core.Holder;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.world.effect.MobEffectCategory;

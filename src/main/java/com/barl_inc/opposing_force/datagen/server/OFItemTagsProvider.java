@@ -10,6 +10,7 @@ import net.minecraft.tags.ItemTags;
 import net.minecraft.world.level.block.Block;
 import net.neoforged.neoforge.common.Tags;
 import net.neoforged.neoforge.common.data.ExistingFileHelper;
+import top.theillusivec4.curios.api.CuriosTags;
 
 import java.util.concurrent.CompletableFuture;
 
@@ -92,6 +93,27 @@ public class OFItemTagsProvider extends ItemTagsProvider {
 
         this.tag(Tags.Items.MUSIC_DISCS).add(
                 OFItems.MUSIC_DISC_SLAYSER.get()
+        );
+
+        this.tag(CuriosTags.CHARM).add(
+                OFItems.RELIC_FEATHER.get(),
+                OFItems.BEETLE_HUSK.get(),
+                OFItems.ENCHANTED_CHISEL.get(),
+                OFItems.POT_OF_GREEN.get(),
+                OFItems.THORNY_BRACELET.get(),
+                OFItems.RANGER_MANUAL.get(),
+                OFItems.SHARPSHOOTER_COIN.get(),
+                OFItems.TEAR_OF_AQUARIUS.get(),
+                OFItems.BLACK_BELT.get(),
+                OFItems.BLOOD_AMULET.get(),
+                OFItems.FIERY_CARAPACE.get(),
+                OFItems.URANIUM_KNUCKLES.get(),
+                OFItems.MOMENTUM_GAUNTLET.get(),
+                OFItems.LUCKY_TACKLEBOX.get(),
+                OFItems.SLIMY_SHIELD.get(),
+                OFItems.STALKER_GLOVES.get(),
+                OFItems.MUNITIONS_BOX.get(),
+                OFItems.MOON_SHOES.get()
         );
 	}
 }

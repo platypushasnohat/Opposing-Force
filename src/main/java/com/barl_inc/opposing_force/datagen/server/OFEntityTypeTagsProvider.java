@@ -2,7 +2,8 @@ package com.barl_inc.opposing_force.datagen.server;
 
 import com.barl_inc.opposing_force.OpposingForce;
 import com.barl_inc.opposing_force.registry.OFEntities;
-import com.barl_inc.opposing_force.tags.OFEntityTypeTags;
+import com.barl_inc.opposing_force.registry.datapack.tags.OFEntityTypeTags;
+import com.platypushasnohat.sinew.tags.SinewEntityTags;
 import net.minecraft.core.HolderLookup.Provider;
 import net.minecraft.data.PackOutput;
 import net.minecraft.data.tags.EntityTypeTagsProvider;
@@ -34,5 +35,14 @@ public class OFEntityTypeTagsProvider extends EntityTypeTagsProvider {
                 EntityType.SLIME,
                 EntityType.MAGMA_CUBE
         );
+
+		this.tag(SinewEntityTags.POST_NETHER_SPAWNS).add(
+				OFEntities.DICER.get(),
+				OFEntities.GUSHER.get(),
+				OFEntities.SCORCHER.get(),
+				OFEntities.TARANTULA.get(),
+				OFEntities.MUSHY.get(),
+				OFEntities.TERROR.get()
+		);
 	}
 }

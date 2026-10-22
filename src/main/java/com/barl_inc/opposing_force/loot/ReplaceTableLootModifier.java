@@ -1,6 +1,6 @@
 package com.barl_inc.opposing_force.loot;
 
-import com.barl_inc.opposing_force.registry.OFLootModifiers;
+import com.barl_inc.opposing_force.registry.OFLootModifierTypes;
 import com.mojang.serialization.MapCodec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 import it.unimi.dsi.fastutil.objects.ObjectArrayList;
@@ -38,6 +38,6 @@ public class ReplaceTableLootModifier extends LootModifier {
 
     @Override
     public MapCodec<? extends IGlobalLootModifier> codec() {
-        return OFLootModifiers.REPLACE_TABLE.get();
+        return OFLootModifierTypes.REPLACE_TABLE.get();
     }
 }

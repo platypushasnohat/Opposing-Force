@@ -5,7 +5,7 @@ import com.barl_inc.opposing_force.config.OFConfig;
 import com.barl_inc.opposing_force.entity.*;
 import com.barl_inc.opposing_force.entity.ai.goal.LightDependentTargetGoal;
 import com.barl_inc.opposing_force.entity.misc.MudSplatter;
-import com.barl_inc.opposing_force.item.curios.MagnetisedEnhancementsItem;
+import com.barl_inc.opposing_force.item.curios.MomentumGauntletItem;
 import com.barl_inc.opposing_force.registry.OFEntities;
 import com.barl_inc.opposing_force.registry.OFItems;
 import com.platypushasnohat.sinew.entity.base.AnimatedMonster;
@@ -118,7 +118,7 @@ public class CommonEvents {
     public static void onLivingIncomingDamage(LivingIncomingDamageEvent event) {
         if (event.getSource().getEntity() instanceof LivingEntity attacker
                 && event.getEntity().getHealth() >= event.getEntity().getMaxHealth()
-                && CuriosApi.getCuriosInventory(attacker).map(inventory -> inventory.isEquipped(OFItems.STALKERS_GLOVES.get())).orElse(false)) {
+                && CuriosApi.getCuriosInventory(attacker).map(inventory -> inventory.isEquipped(OFItems.STALKER_GLOVES.get())).orElse(false)) {
             event.setAmount(event.getAmount() * 1.3F);
         }
         if (event.getEntity() instanceof Player player
@@ -149,13 +149,13 @@ public class CommonEvents {
 
     @SubscribeEvent
     public static void onBlockBreak(BlockEvent.BreakEvent event) {
-        MagnetisedEnhancementsItem.addMomentum(event.getPlayer());
+        MomentumGauntletItem.addMomentum(event.getPlayer());
     }
 
     @SubscribeEvent
     public static void addPackFinders(AddPackFindersEvent event) {
         if (event.getPackType() == PackType.SERVER_DATA) {
-            event.addPackFinders(OpposingForce.location("datapacks/protection_tweaks"), PackType.SERVER_DATA, Component.translatable("pack.opposing_force.protection_tweaks"), PackSource.BUILT_IN, OFConfig.PROTECTION_TWEAKS.get(), Pack.Position.TOP);
+            event.addPackFinders(OpposingForce.location("datapacks/enchantment_tweaks"), PackType.SERVER_DATA, Component.translatable("pack.opposing_force.protection_tweaks"), PackSource.BUILT_IN, OFConfig.PROTECTION_TWEAKS.get(), Pack.Position.TOP);
         }
     }
 }

@@ -98,11 +98,11 @@ public class OFCreativeTabs {
                         // uncommon
                         output.accept(OFItems.BLACK_BELT);
                         output.accept(OFItems.ENCHANTED_CHISEL);
-                        output.accept(OFItems.MAGNETISED_ENHANCEMENTS);
+                        output.accept(OFItems.MOMENTUM_GAUNTLET);
                         output.accept(OFItems.RELIC_FEATHER);
                         output.accept(OFItems.SHARPSHOOTER_COIN);
                         output.accept(OFItems.SLIMY_SHIELD);
-                        output.accept(OFItems.STALKERS_GLOVES);
+                        output.accept(OFItems.STALKER_GLOVES);
                         output.accept(OFItems.URANIUM_KNUCKLES);
 
                         // rare

@@ -105,7 +105,7 @@ public class RingProjectile extends Projectile implements SplitMagicBonus {
                     Vec3 direction = target.getBoundingBox().getCenter().subtract(this.position()).normalize().scale(0.9D);
                     this.setDeltaMovement(this.getDeltaMovement().lerp(direction, 0.3D));
                     if (this.getBoundingBox().inflate(0.2D).intersects(target.getBoundingBox())) {
-                        target.hurt(OFDamageTypes.causeCursedRingDamage(this.level().registryAccess(), this, owner), 3.0F);
+                        target.hurt(OFDamageTypes.causeCursedRingDamage(this.level().registryAccess(), this, owner), 3.5F);
                         this.level().playSound(null, this.getX(), this.getY(), this.getZ(), SoundEvents.AMETHYST_CLUSTER_BREAK, SoundSource.PLAYERS, 0.6F, SinewSoundUtils.randomizePitch(this.level()));
                         this.finish();
                     }

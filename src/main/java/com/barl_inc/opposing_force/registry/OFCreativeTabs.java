@@ -88,7 +88,6 @@ public class OFCreativeTabs {
 
                         // trinkets
                         // common
-                        output.accept(OFItems.BEETLE_HUSK);
                         output.accept(OFItems.FIERY_CARAPACE);
                         output.accept(OFItems.LUCKY_TACKLEBOX);
                         output.accept(OFItems.MUNITIONS_BOX);
@@ -106,6 +105,7 @@ public class OFCreativeTabs {
                         output.accept(OFItems.URANIUM_KNUCKLES);
 
                         // rare
+                        output.accept(OFItems.BEETLE_HUSK);
                         output.accept(OFItems.BLOOD_AMULET);
                         output.accept(OFItems.POT_OF_GREEN);
                         output.accept(OFItems.TEAR_OF_AQUARIUS);

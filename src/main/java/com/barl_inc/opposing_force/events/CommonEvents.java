@@ -126,8 +126,8 @@ public class CommonEvents {
                 && CuriosApi.getCuriosInventory(player).map(inventory -> inventory.isEquipped(OFItems.SLIMY_SHIELD.get())).orElse(false)) {
             if (!player.getCooldowns().isOnCooldown(OFItems.SLIMY_SHIELD.get()) && player.invulnerableTime <= 10 && player.level() instanceof ServerLevel serverLevel) {
                 event.setAmount(0.1F);
-                player.getCooldowns().addCooldown(OFItems.SLIMY_SHIELD.get(), 240);
-                serverLevel.sendParticles(ParticleTypes.ITEM_SLIME, player.getX(), player.getY(0.5D), player.getZ(), 60, 0.3D, 0.5D, 0.3D, 0.4D);
+                player.getCooldowns().addCooldown(OFItems.SLIMY_SHIELD.get(), 300);
+                serverLevel.sendParticles(ParticleTypes.ITEM_SLIME, player.getX(), player.getY(0.5D), player.getZ(), 20, 0.3D, 0.5D, 0.3D, 0.4D);
                 serverLevel.playSound(null, player.getX(), player.getY(), player.getZ(), SoundEvents.SLIME_ATTACK, player.getSoundSource(), 1.0F, 1.0F);
             }
         }

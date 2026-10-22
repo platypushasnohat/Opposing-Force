@@ -85,13 +85,13 @@ public class TerrorAttackGoal extends AttackGoal {
             this.terror.playSound(OFSoundEvents.TERROR_SAW_START.get(), 1.0F, SinewSoundUtils.randomizePitch(this.terror));
             this.terror.setAnimationState(Terror.ATTACK_ANIMATION);
         }
-        if (this.timer == 15) {
+        if (this.timer == 8) {
             this.terror.setSprinting(true);
         }
-        if (this.timer <= 15) {
+        if (this.timer <= 8) {
             this.lookAtTarget(target, 45.0F, 45.0F);
         }
-        if (this.timer > 15) {
+        if (this.timer > 8) {
             Vec3 chargeDirection = new Vec3(target.getX() - this.terror.getX(), target.getY() - this.terror.getY(), target.getZ() - this.terror.getZ()).normalize();
             float desiredYaw = (float) (Mth.atan2(chargeDirection.z, chargeDirection.x) * Mth.RAD_TO_DEG) - 90.0F;
             this.terror.setYRot(Mth.approachDegrees(this.terror.getYRot(), desiredYaw, 0.5F));
@@ -121,7 +121,7 @@ public class TerrorAttackGoal extends AttackGoal {
             this.attackCooldown();
             this.attackState = 0;
         }
-        if (this.timer > 50 || (this.timer > 22 && distance > 10)) {
+        if (this.timer > 50 || (this.timer > 15 && distance > 10)) {
             this.timer = 0;
             this.terror.setSprinting(false);
             this.terror.setAnimationState(0);

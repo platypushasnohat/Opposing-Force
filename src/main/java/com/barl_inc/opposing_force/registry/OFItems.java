@@ -109,7 +109,7 @@ public class OFItems {
 
     //trinket
     public static final DeferredItem<Item> RELIC_FEATHER = registerItem("relic_feather", () -> new RelicFeatherItem(new Item.Properties().rarity(Rarity.UNCOMMON).stacksTo(1), OFCurioDefinitions.RELIC_FEATHER));
-    public static final DeferredItem<Item> BEETLE_HUSK = registerItem("beetle_husk", () -> new CurioItem(new Item.Properties().stacksTo(1), OFCurioDefinitions.BEETLE_HUSK));
+    public static final DeferredItem<Item> BEETLE_HUSK = registerItem("beetle_husk", () -> new CurioItem(new Item.Properties().rarity(Rarity.RARE).stacksTo(1), OFCurioDefinitions.BEETLE_HUSK));
     public static final DeferredItem<Item> ENCHANTED_CHISEL = registerItem("enchanted_chisel", () -> new CurioItem(new Item.Properties().rarity(Rarity.UNCOMMON).stacksTo(1), OFCurioDefinitions.ENCHANTED_CHISEL));
     public static final DeferredItem<Item> POT_OF_GREEN = registerItem("pot_of_green", () -> new CurioItem(new Item.Properties().rarity(Rarity.RARE).stacksTo(1), OFCurioDefinitions.POT_OF_GREEN));
     public static final DeferredItem<Item> THORNY_BRACELET = registerItem("thorny_bracelet", () -> new CurioItem(new Item.Properties().stacksTo(1), OFCurioDefinitions.THORNY_BRACELET));
@@ -128,7 +128,7 @@ public class OFItems {
     public static final DeferredItem<Item> MOON_SHOES = registerItem("moon_shoes", () -> new MoonShoesItem(new Item.Properties().stacksTo(1).rarity(Rarity.RARE)));
 
     //Permanent Upgrades
-    public static final DeferredItem<Item> CRYSTALLIZED_HEART = registerItem("crystallized_heart", () -> new CrystalizedHeartItem(new Item.Properties().stacksTo(1).rarity(Rarity.EPIC).food(OFFoodProperties.CRYSTALIZED_HEART)));
+    public static final DeferredItem<Item> CRYSTALLIZED_HEART = registerItem("crystallized_heart", () -> new CrystalizedHeartItem(new Item.Properties().stacksTo(64).rarity(Rarity.EPIC).food(OFFoodProperties.CRYSTALIZED_HEART)));
 
     private static <I extends Item> DeferredItem<I> registerItem(String name, Supplier<? extends I> supplier) {
         DeferredItem<I> item = ITEM.register(name, supplier);

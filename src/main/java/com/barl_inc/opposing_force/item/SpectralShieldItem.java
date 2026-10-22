@@ -21,7 +21,7 @@ public class SpectralShieldItem extends ShieldItem implements MovementModifyingI
     }
     @Override
     public float getUseMovementMultiplier() {
-        return 0.40F;
+        return 0.33F;
     }
 
     @Override

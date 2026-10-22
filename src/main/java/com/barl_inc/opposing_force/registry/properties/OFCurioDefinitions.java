@@ -12,7 +12,9 @@ public class OFCurioDefinitions {
             .build();
 
     public static final CurioDefinition BEETLE_HUSK = new CurioDefinition.Builder()
-            .attribute(Attributes.ARMOR, 4.0F, AttributeModifier.Operation.ADD_VALUE)
+            .attribute(SinewAttributes.FIRE_RESISTANCE, 0.1F, AttributeModifier.Operation.ADD_VALUE)
+            .attribute(SinewAttributes.PROJECTILE_RESISTANCE, 0.1F, AttributeModifier.Operation.ADD_VALUE)
+            .attribute(SinewAttributes.MAGIC_RESISTANCE, 0.1F, AttributeModifier.Operation.ADD_VALUE)
             .build();
 
     public static final CurioDefinition ENCHANTED_CHISEL = new CurioDefinition.Builder()
@@ -47,13 +49,12 @@ public class OFCurioDefinitions {
             .build();
 
     public static final CurioDefinition BLOOD_AMULET = new CurioDefinition.Builder()
-            .attribute(SinewAttributes.LIFE_STEAL, 0.1F, AttributeModifier.Operation.ADD_VALUE)
+            .attribute(SinewAttributes.LIFESTEAL, 0.1F, AttributeModifier.Operation.ADD_VALUE)
             .build();
 
     public static final CurioDefinition FIERY_CARAPACE = new CurioDefinition.Builder()
-            .attribute(Attributes.ARMOR, 1.0F, AttributeModifier.Operation.ADD_VALUE)
+            .attribute(SinewAttributes.FIRE_RESISTANCE, 0.2F, AttributeModifier.Operation.ADD_VALUE)
             .attribute(Attributes.BURNING_TIME, -0.15F, AttributeModifier.Operation.ADD_MULTIPLIED_BASE)
-            .description("item.opposing_force.fiery_carapace.description")
             .build();
 
     public static final CurioDefinition URANIUM_KNUCKLES = new CurioDefinition.Builder()
@@ -70,7 +71,7 @@ public class OFCurioDefinitions {
             .build();
 
     public static final CurioDefinition SLIMY_SHIELD = new CurioDefinition.Builder()
-            .attribute(SinewAttributes.DAMAGE_REDUCTION, 0.1F, AttributeModifier.Operation.ADD_VALUE)
+            .attribute(Attributes.ARMOR, 2.0F, AttributeModifier.Operation.ADD_VALUE)
             .description("item.opposing_force.slimy_shield.description")
             .build();
 
@@ -80,7 +81,7 @@ public class OFCurioDefinitions {
 
     public static final CurioDefinition MUNITIONS_BOX = new CurioDefinition.Builder()
             .attribute(SinewAttributes.PROJECTILE_DAMAGE, 1.0F, AttributeModifier.Operation.ADD_VALUE)
-            .attribute(SinewAttributes.AMMO_SAVE_CHANCE, 0.2F, AttributeModifier.Operation.ADD_VALUE)
+            .attribute(SinewAttributes.AMMO_CONSERVATION, 0.2F, AttributeModifier.Operation.ADD_VALUE)
             .build();
 
     public static final CurioDefinition MOON_SHOES = new CurioDefinition.Builder()

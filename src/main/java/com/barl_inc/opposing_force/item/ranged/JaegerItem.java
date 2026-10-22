@@ -20,7 +20,7 @@ public class JaegerItem extends BulletGunItem {
     public static final String COCK_ANIMATION = "cock";
 
     public JaegerItem(Properties properties) {
-        super(properties.durability(650), 6.0F, 3.5F, 0.5F, 25);
+        super(properties.durability(650), 6.0F, 3.5F, 1.0F, 25);
     }
 
     @Override

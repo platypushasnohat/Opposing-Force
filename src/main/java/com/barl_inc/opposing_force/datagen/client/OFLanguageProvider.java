@@ -83,10 +83,9 @@ public class OFLanguageProvider extends SinewLanguageProvider {
         this.add("item.opposing_force.powered_item.power", "Power: %s / %s");
 
         this.add("item.opposing_force.relic_feather.description", "+Slow Falling");
-        this.add("item.opposing_force.fiery_carapace.description", "+Fire Protection I");
         this.add("item.opposing_force.momentum_gauntlet.description", "+Mining Momentum");
         this.add("item.opposing_force.slimy_shield.description", "+Slimy Shielding");
-        this.add("item.opposing_force.stalker_gloves.description", "+30% First Hit Damage");
+        this.add("item.opposing_force.stalker_gloves.description", "+30% Initial Damage");
 
         this.add("item.opposing_force.crystalized_heart.description", "+1 Charm Slot");
 

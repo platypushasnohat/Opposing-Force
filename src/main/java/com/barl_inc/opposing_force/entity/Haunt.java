@@ -9,6 +9,7 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.util.Mth;
 import net.minecraft.util.RandomSource;
+import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.entity.EntitySelector;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.LivingEntity;
@@ -225,7 +226,7 @@ public class Haunt extends PhasingMonster {
                 this.haunt.playSound(SoundEvents.PLAYER_ATTACK_SWEEP, 1.2F, 0.5F);
             }
             if (this.timer == 17 && this.haunt.getGap(target) < 1.5D && this.haunt.hasLineOfSight(target)) {
-                target.hurt(this.haunt.damageSources().mobAttack(this.haunt), (float) this.haunt.getAttributeValue(Attributes.ATTACK_DAMAGE) * 2.0F);
+                target.hurt(this.attackFrom(target, Vec3.directionFromRotation(0.0F, this.haunt.getYRot())), (float) this.haunt.getAttributeValue(Attributes.ATTACK_DAMAGE) * 2.0F);
                 this.haunt.playSound(SoundEvents.ZOMBIE_ATTACK_IRON_DOOR, 0.6F, 1.2F);
             }
             if (this.timer >= 30) {
@@ -262,7 +263,7 @@ public class Haunt extends PhasingMonster {
             Vec3 velocity = this.haunt.getDeltaMovement();
             List<LivingEntity> touching = this.haunt.level().getEntitiesOfClass(LivingEntity.class, this.haunt.getBoundingBox().expandTowards(velocity), entity -> !(entity instanceof PhasingMonster) && EntitySelector.NO_SPECTATORS.test(entity));
             for (LivingEntity entity : touching) {
-                if (!this.touching.contains(entity) && entity.hurt(this.haunt.damageSources().mobAttack(this.haunt), (float) this.haunt.getAttributeValue(Attributes.ATTACK_DAMAGE))) {
+                if (!this.touching.contains(entity) && entity.hurt(this.attackFrom(entity, velocity), (float) this.haunt.getAttributeValue(Attributes.ATTACK_DAMAGE))) {
                     entity.knockback(1.2D, -velocity.x, -velocity.z);
                 }
             }
@@ -294,6 +295,10 @@ public class Haunt extends PhasingMonster {
             this.timer = 0;
             this.attackCooldown = 10;
             this.attackState = 0;
+        }
+
+        private DamageSource attackFrom(LivingEntity target, Vec3 direction) {
+            return new DamageSource(this.haunt.damageSources().mobAttack(this.haunt).typeHolder(), this.haunt, this.haunt, target.position().subtract(direction.multiply(1.0D, 0.0D, 1.0D).normalize()));
         }
 
         private Vec3 aimAt(LivingEntity target, double speed) {

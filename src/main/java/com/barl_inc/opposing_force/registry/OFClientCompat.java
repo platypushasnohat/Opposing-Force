@@ -24,5 +24,12 @@ public class OFClientCompat {
                 return living.getUseItem() == stack ? 1.0F : 0.0F;
             }
         });
+        ItemProperties.register(OFItems.SPECTRAL_SHIELD.get(), ResourceLocation.withDefaultNamespace("blocking"), (stack, level, living, j) -> {
+            if (living == null) {
+                return 0.0F;
+            } else {
+                return living.isUsingItem() && living.getUseItem() == stack ? 1.0F : 0.0F;
+            }
+        });
     }
 }

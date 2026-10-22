@@ -49,6 +49,8 @@ public class OFCreativeTabs {
 
                         output.accept(OFItems.ACID_CHARGE);
 
+                        output.accept(OFItems.SPECTRAL_SHIELD);
+
                         output.accept(OFItems.MYSTIC_POT);
                         output.accept(OFItems.LEITMOTIF);
 

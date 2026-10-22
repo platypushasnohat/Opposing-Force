@@ -5,12 +5,14 @@ import com.barl_inc.opposing_force.config.OFConfig;
 import com.barl_inc.opposing_force.entity.*;
 import com.barl_inc.opposing_force.entity.ai.goal.LightDependentTargetGoal;
 import com.barl_inc.opposing_force.entity.misc.MudSplatter;
+import com.barl_inc.opposing_force.item.SpectralShieldItem;
 import com.barl_inc.opposing_force.item.curios.MagnetisedEnhancementsItem;
 import com.barl_inc.opposing_force.item.curios.SpectralGogglesItem;
 import com.barl_inc.opposing_force.registry.OFEntities;
 import com.barl_inc.opposing_force.registry.OFItems;
 import com.platypushasnohat.sinew.entity.base.AnimatedMonster;
 import com.platypushasnohat.sinew.entity.villager.MultipleInputsTrade;
+import com.platypushasnohat.sinew.registry.SinewDamageTypes;
 import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.network.chat.Component;
 import net.minecraft.server.level.ServerLevel;
@@ -30,11 +32,13 @@ import net.minecraft.world.entity.monster.Monster;
 import net.minecraft.world.entity.monster.Spider;
 import net.minecraft.world.entity.npc.VillagerTrades;
 import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.entity.projectile.AbstractArrow;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.level.levelgen.Heightmap;
 import net.neoforged.bus.api.EventPriority;
 import net.neoforged.bus.api.SubscribeEvent;
 import net.neoforged.fml.common.EventBusSubscriber;
+import net.neoforged.neoforge.common.Tags;
 import net.neoforged.neoforge.event.AddPackFindersEvent;
 import net.neoforged.neoforge.event.entity.EntityAttributeCreationEvent;
 import net.neoforged.neoforge.event.entity.EntityJoinLevelEvent;
@@ -42,6 +46,7 @@ import net.neoforged.neoforge.event.entity.EntityTeleportEvent;
 import net.neoforged.neoforge.event.entity.RegisterSpawnPlacementsEvent;
 import net.neoforged.neoforge.event.entity.living.LivingDamageEvent;
 import net.neoforged.neoforge.event.entity.living.LivingIncomingDamageEvent;
+import net.neoforged.neoforge.event.entity.living.LivingShieldBlockEvent;
 import net.neoforged.neoforge.event.level.BlockEvent;
 import net.neoforged.neoforge.event.tick.PlayerTickEvent;
 import net.neoforged.neoforge.event.village.WandererTradesEvent;
@@ -149,6 +154,19 @@ public class CommonEvents {
     public static void onLivingDamagePost(LivingDamageEvent.Post event) {
         if (event.getEntity() instanceof Player player && event.getNewDamage() > 0.0F && player.getCooldowns().isOnCooldown(OFItems.SLIMY_SHIELD.get())) {
             player.getCooldowns().addCooldown(OFItems.SLIMY_SHIELD.get(), 240);
+        }
+    }
+
+    @SubscribeEvent
+    public static void onShieldBlock(LivingShieldBlockEvent event) {
+        LivingEntity entity = event.getEntity();
+        DamageSource source = event.getDamageSource();
+        boolean magic = source.is(Tags.DamageTypes.IS_MAGIC) || source.is(SinewDamageTypes.MAGIC_DAMAGE);
+        if (entity.isBlocking()
+                && entity.getUseItem().getItem() instanceof SpectralShieldItem
+                && source.getSourcePosition() != null
+                && (magic || !source.is(DamageTypeTags.BYPASSES_SHIELD))) {
+            event.setBlocked(true);
         }
     }
 

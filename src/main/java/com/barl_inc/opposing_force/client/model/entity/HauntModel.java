@@ -37,7 +37,7 @@ public class HauntModel extends PhasingMonsterModel<Haunt> {
         this.animateSmooth(entity.spinStartAnimationState, HauntAnimations.SPINATTACK_START, ageInTicks, partialTicks);
         this.animateSmooth(entity.spinAnimationState, HauntAnimations.SPINATTACK_LOOP, ageInTicks, partialTicks);
         this.animateSmooth(entity.headSpinAnimationState, HauntAnimations.HEAD_SPIN_BLEND, ageInTicks, partialTicks);
-        this.head.yRot += netHeadYaw * Mth.DEG_TO_RAD;
+        this.head.yRot += Mth.clamp(Mth.wrapDegrees(netHeadYaw), -50.0F, 50.0F) * Mth.DEG_TO_RAD;
     }
 
     public static LayerDefinition createBodyLayer() {

@@ -62,7 +62,8 @@ public class OFItemTagsProvider extends ItemTagsProvider {
                 OFItems.CRACKSHOT.get(),
                 OFItems.JAEGER.get(),
                 OFItems.BOOMSTICK.get(),
-                OFItems.GORLOFF.get()
+                OFItems.GORLOFF.get(),
+                OFItems.SPECTRAL_SHIELD.get()
         );
 
         this.tag(ItemTags.HEAD_ARMOR).add(
@@ -93,6 +94,10 @@ public class OFItemTagsProvider extends ItemTagsProvider {
 
         this.tag(Tags.Items.MUSIC_DISCS).add(
                 OFItems.MUSIC_DISC_SLAYSER.get()
+        );
+
+        this.tag(Tags.Items.TOOLS_SHIELD).add(
+                OFItems.SPECTRAL_SHIELD.get()
         );
 	}
 }

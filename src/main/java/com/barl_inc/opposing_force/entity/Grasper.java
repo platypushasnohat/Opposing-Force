@@ -197,6 +197,7 @@ public class Grasper extends AnimatedMonster {
         private int attacks;
         private int maxAttacks;
         private boolean hit;
+        private boolean punchNext;
         private Vec3 retreatStart = Vec3.ZERO;
 
         public GrasperAttackGoal(Grasper grasper) {
@@ -251,20 +252,18 @@ public class Grasper extends AnimatedMonster {
         private void tickLeapStart() {
             this.timer++;
             if (this.timer >= 20) {
-                this.grasper.setAnimationState(LEAP_LOOP_ANIMATION);
                 this.attacks = 0;
                 this.maxAttacks = 2 + this.grasper.getRandom().nextInt(2);
-                this.timer = 0;
-                this.attackState = 2;
+                this.fly();
             }
         }
 
         private void tickFlying(LivingEntity target) {
             this.timer++;
             this.grasper.getNavigation().moveTo(target, 1.5D);
-            if (this.timer >= 15 && this.grasper.distanceTo(target) <= 2.5D) {
+            if ((this.punchNext || this.timer >= 15) && this.grasper.distanceTo(target) <= 2.5D) {
                 this.timer = 0;
-                if (this.grasper.getRandom().nextBoolean()) {
+                if (this.punchNext) {
                     this.grasper.getNavigation().stop();
                     this.retreatStart = this.grasper.position();
                     this.attackState = 4;
@@ -305,11 +304,16 @@ public class Grasper extends AnimatedMonster {
                 if (this.attacks >= this.maxAttacks) {
                     this.land();
                 } else {
-                    this.grasper.setAnimationState(LEAP_LOOP_ANIMATION);
-                    this.timer = 0;
-                    this.attackState = 2;
+                    this.fly();
                 }
             }
+        }
+
+        private void fly() {
+            this.grasper.setAnimationState(LEAP_LOOP_ANIMATION);
+            this.punchNext = this.grasper.getRandom().nextBoolean();
+            this.timer = 0;
+            this.attackState = 2;
         }
 
         private void land() {

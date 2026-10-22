@@ -37,25 +37,23 @@ public class SpectralShieldLayer<T extends LivingEntity, M extends EntityModel<T
     @Override
     public void render(PoseStack poseStack, MultiBufferSource buffer, int packedLight, T entity, float limbSwing, float limbSwingAmount, float partialTicks, float ageInTicks, float netHeadYaw, float headPitch) {
         ItemStack stack = ItemStack.EMPTY;
-        BakedModel model = null;
         float grow = 0.0F;
         if (entity.isBlocking() && entity.getUseItem().getItem() instanceof SpectralShieldItem) {
             float progress = 1.0F - Mth.clamp((entity.getTicksUsingItem() - 5 + partialTicks) / 14.0F, 0.0F, 1.0F);
             stack = entity.getUseItem();
-            model = Minecraft.getInstance().getItemRenderer().getModel(stack, entity.level(), entity, entity.getId());
             grow = 1.0F - progress * progress * progress;
-            this.retracting.put(entity, new Retract(stack, model, grow, ageInTicks));
+            this.retracting.put(entity, new Retract(stack, grow, ageInTicks));
         } else if (this.retracting.containsKey(entity)) {
             Retract retract = this.retracting.get(entity);
             float progress = Mth.clamp((ageInTicks - retract.start()) / 14.0F, 0.0F, 1.0F);
             stack = retract.stack();
-            model = retract.model();
             grow = retract.grow() * (1.0F - progress * progress * progress);
             if (progress >= 1.0F) {
                 this.retracting.remove(entity);
             }
         }
         if (grow > 0.0F) {
+            BakedModel model = Minecraft.getInstance().getItemRenderer().getModel(stack, entity.level(), entity, entity.getId());
             VertexConsumer consumer = ItemRenderer.getFoilBufferDirect(buffer, Sheets.cutoutBlockSheet(), true, stack.hasFoil());
             float pulse = Mth.sin(ageInTicks * 0.15F);
             float size = (0.3F + 0.7F * grow) * (1.0F + pulse * 0.04F);
@@ -69,7 +67,9 @@ public class SpectralShieldLayer<T extends LivingEntity, M extends EntityModel<T
                 poseStack.translate(-0.5F, -0.625F, -0.40625F);
                 for (Direction side : SIDES) {
                     for (BakedQuad quad : model.getQuads(null, side, this.random)) {
-                        consumer.putBulkData(poseStack.last(), quad, 1.0F, 1.0F, 1.0F, 1.0F, packedLight, OverlayTexture.NO_OVERLAY);
+                        if (!isHandle(quad)) {
+                            consumer.putBulkData(poseStack.last(), quad, 1.0F, 1.0F, 1.0F, 1.0F, packedLight, OverlayTexture.NO_OVERLAY);
+                        }
                     }
                 }
                 poseStack.popPose();
@@ -77,5 +77,16 @@ public class SpectralShieldLayer<T extends LivingEntity, M extends EntityModel<T
         }
     }
 
-    private record Retract(ItemStack stack, BakedModel model, float grow, float start) {}
+    private static boolean isHandle(BakedQuad quad) {
+        boolean handle = true;
+        for (int i = 0; i < 4; i++) {
+            float x = Float.intBitsToFloat(quad.getVertices()[i * 8]);
+            float z = Float.intBitsToFloat(quad.getVertices()[i * 8 + 2]);
+            handle &= x > 0.43F && x < 0.57F && z > 0.43F;
+        }
+        return handle;
+    }
+
+    private record Retract(ItemStack stack, float grow, float start) {
+    }
 }

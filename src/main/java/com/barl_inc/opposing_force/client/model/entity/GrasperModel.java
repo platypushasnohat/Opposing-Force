@@ -23,7 +23,7 @@ public class GrasperModel extends SinewEntityModel<Grasper> {
     @Override
     protected void setupAnimations(Grasper entity, float limbSwing, float limbSwingAmount, float ageInTicks, float partialTicks, float netHeadYaw, float headPitch) {
         this.animateIdleSmooth(entity.idleAnimationState, GrasperAnimations.IDLE, ageInTicks, partialTicks, limbSwingAmount);
-        this.animateWalkSmooth(entity.walkAnimationState, GrasperAnimations.MOVING, limbSwing, limbSwingAmount, 3.0F, 2.5F, partialTicks);
+        this.animateWalkSmooth(entity.walkAnimationState, GrasperAnimations.MOVING, limbSwing, limbSwingAmount, 2.0F, 2.5F, partialTicks);
         this.animateSmooth(entity.leapStartAnimationState, GrasperAnimations.LEAP_START, ageInTicks, partialTicks);
         this.animateSmooth(entity.leapLoopAnimationState, GrasperAnimations.LEAP_LOOP, ageInTicks, partialTicks);
         this.animateSmooth(entity.punchAnimationState, GrasperAnimations.PUNCH, ageInTicks, partialTicks);

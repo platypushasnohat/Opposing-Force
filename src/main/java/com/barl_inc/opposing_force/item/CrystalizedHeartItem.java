@@ -23,7 +23,7 @@ public class CrystalizedHeartItem extends Item {
     //todo later
     //add gui overlay or visual effect when eating
 
-    private static final ResourceLocation SLOT_MODIFIER = OpposingForce.location("crystalized_heart");
+    private static final ResourceLocation SLOT_MODIFIER = OpposingForce.location("crystallized_heart");
 
     public CrystalizedHeartItem(Properties properties) {
         super(properties);

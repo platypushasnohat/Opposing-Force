@@ -17,30 +17,24 @@ import net.minecraft.world.item.ItemDisplayContext;
 public class SawbladeRenderer extends EntityRenderer<Sawblade> {
 
 	private final ItemRenderer itemRenderer = Minecraft.getInstance().getItemRenderer();
-	private final float scale;
-
-	public SawbladeRenderer(EntityRendererProvider.Context context, float scale) {
-		super(context);
-		this.scale = scale;
-	}
 
 	public SawbladeRenderer(EntityRendererProvider.Context context) {
-		this(context, 1.0F);
+		super(context);
 	}
 
 	@Override
 	public void render(Sawblade entity, float entityYaw, float partialTicks, PoseStack poseStack, MultiBufferSource bufferSource, int packedLight) {
 		poseStack.pushPose();
-		poseStack.translate(0, entity.getBbHeight() / 2, 0);
+		float despawnTime = entity.getDespawnTime(partialTicks);
 		float testScale = 0.75F;
-		poseStack.scale(this.scale, this.scale, this.scale);
+		float ageInTicks = partialTicks + entity.tickCount;
+		float minAge = Math.min(1.0F, Math.min(ageInTicks, despawnTime) / 5.0F);
+		poseStack.translate(0, entity.getBbHeight() / 2, 0);
 		poseStack.scale(testScale, testScale, testScale);
-		poseStack.mulPose(Axis.YP.rotationDegrees(Mth.lerp(partialTicks, entity.yRotO, entity.getYRot()) - 90.0F));
-		poseStack.mulPose(Axis.ZP.rotationDegrees(Mth.lerp(partialTicks, entity.xRotO, entity.getXRot())));
-		poseStack.mulPose(Axis.ZP.rotationDegrees(-135.0F));
-		if (!entity.inGround) {
-			poseStack.mulPose(Axis.ZP.rotationDegrees((entity.tickCount + partialTicks) * -90.0F));
-		}
+		poseStack.scale(minAge, minAge, minAge);
+		poseStack.mulPose(Axis.YN.rotationDegrees(Mth.lerp(partialTicks, entity.yRotO, entity.getYRot()) + 90.0F));
+		poseStack.mulPose(Axis.ZN.rotationDegrees((float) (Mth.lerp(partialTicks, entity.xRotO, entity.getXRot()) + 5.0F * Math.sin(ageInTicks * 0.2F))));
+		poseStack.mulPose(Axis.ZP.rotationDegrees((entity.tickCount + partialTicks) * 45.0F));
 		this.itemRenderer.renderStatic(entity.getItem(), ItemDisplayContext.NONE, packedLight, OverlayTexture.NO_OVERLAY, poseStack, bufferSource, entity.level(), entity.getId());
 		poseStack.popPose();
 		super.render(entity, entityYaw, partialTicks, poseStack, bufferSource, packedLight);

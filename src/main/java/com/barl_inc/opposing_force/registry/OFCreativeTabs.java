@@ -70,8 +70,6 @@ public class OFCreativeTabs {
                         output.accept(OFItems.LAPIS_LAZULI_AXE);
                         output.accept(OFItems.LAPIS_LAZULI_HOE);
 
-                        output.accept(OFItems.MOON_SHOES);
-
                         //misc weapons
                         output.accept(OFItems.CRACKSHOT);
                         output.accept(OFItems.JAEGER);
@@ -111,9 +109,10 @@ public class OFCreativeTabs {
                         output.accept(OFItems.BLOOD_AMULET);
                         output.accept(OFItems.POT_OF_GREEN);
                         output.accept(OFItems.TEAR_OF_AQUARIUS);
+                        output.accept(OFItems.MOON_SHOES);
 
                         // permanent upgrades
-                        output.accept(OFItems.CRYSTALIZED_HEART);
+                        output.accept(OFItems.CRYSTALLIZED_HEART);
                     })
                     .build());
 }

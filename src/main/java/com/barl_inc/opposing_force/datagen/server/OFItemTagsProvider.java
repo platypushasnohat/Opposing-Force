@@ -78,8 +78,7 @@ public class OFItemTagsProvider extends ItemTagsProvider {
         );
 
         this.tag(ItemTags.FOOT_ARMOR).add(
-                OFItems.EMERALD_BOOTS.get(),
-                OFItems.MOON_SHOES.get()
+                OFItems.EMERALD_BOOTS.get()
         );
 
         this.tag(ItemTags.MEAT).add(

@@ -34,8 +34,8 @@ public class CurioItem extends AbstractCurioItem {
 
     @Override
     public void addAttributeModifiers(Multimap<Holder<Attribute>, AttributeModifier> map, SlotContext context, ItemStack stack) {
-        ResourceLocation id = BuiltInRegistries.ITEM.getKey(this);
-        this.definition.attributes().forEach(entry -> this.addAttributeModifier(map, entry.attribute(), new AttributeModifier(id, entry.value(), entry.operation())));
+        ResourceLocation location = BuiltInRegistries.ITEM.getKey(this);
+        this.definition.attributes().forEach(entry -> this.addAttributeModifier(map, entry.attribute(), new AttributeModifier(location, entry.value(), entry.operation())));
     }
 
     @Override

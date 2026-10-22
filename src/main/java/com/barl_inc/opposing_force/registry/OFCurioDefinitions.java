@@ -94,4 +94,8 @@ public class OFCurioDefinitions {
             .description("item.opposing_force.spectral_goggles.description")
             .build();
 
+    public static final CurioDefinition CURSED_RING = new CurioDefinition.Builder()
+            .attribute(SinewAttributes.MAGIC_DAMAGE, 1.0F, AttributeModifier.Operation.ADD_VALUE)
+            .build();
+
 }

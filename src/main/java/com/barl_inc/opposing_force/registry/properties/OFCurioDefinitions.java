@@ -12,7 +12,7 @@ public class OFCurioDefinitions {
             .build();
 
     public static final CurioDefinition BEETLE_HUSK = new CurioDefinition.Builder()
-            .attribute(Attributes.ARMOR, 2.0F, AttributeModifier.Operation.ADD_VALUE)
+            .attribute(Attributes.ARMOR, 3.0F, AttributeModifier.Operation.ADD_VALUE)
             .attribute(SinewAttributes.FIRE_RESISTANCE, 0.1F, AttributeModifier.Operation.ADD_VALUE)
             .attribute(SinewAttributes.PROJECTILE_RESISTANCE, 0.1F, AttributeModifier.Operation.ADD_VALUE)
             .attribute(SinewAttributes.MAGIC_RESISTANCE, 0.1F, AttributeModifier.Operation.ADD_VALUE)
@@ -72,7 +72,7 @@ public class OFCurioDefinitions {
             .build();
 
     public static final CurioDefinition SLIMY_SHIELD = new CurioDefinition.Builder()
-            .attribute(Attributes.ARMOR, 3.0F, AttributeModifier.Operation.ADD_VALUE)
+            .attribute(Attributes.ARMOR, 2.0F, AttributeModifier.Operation.ADD_VALUE)
             .description("item.opposing_force.slimy_shield.description")
             .build();
 

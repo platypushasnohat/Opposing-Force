@@ -42,7 +42,9 @@ public class GhostModel extends PhasingMonsterModel<Ghost> {
         this.animateWalkSmooth(entity.walkAnimationState, GhostAnimations.MOVE, limbSwing, limbSwingAmount, partialTicks);
         this.animateSmooth(entity.attackAnimationState, GhostAnimations.ATTACK, ageInTicks, partialTicks);
         this.animateSmooth(entity.attack2AnimationState, GhostAnimations.ATTACK2, ageInTicks, partialTicks);
-        this.head.yRot += Mth.clamp(Mth.wrapDegrees(netHeadYaw), -50.0F, 50.0F) * Mth.DEG_TO_RAD;
+        if (!entity.isPassenger()) {
+            this.head.yRot += netHeadYaw * Mth.DEG_TO_RAD;
+        }
     }
 
     public void translateToHand(PoseStack poseStack, boolean left) {

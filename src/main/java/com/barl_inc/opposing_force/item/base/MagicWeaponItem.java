@@ -1,19 +1,12 @@
 package com.barl_inc.opposing_force.item.base;
 
 import com.barl_inc.opposing_force.tags.OFItemTags;
-import com.platypushasnohat.sinew.registry.SinewAttributes;
-import com.platypushasnohat.sinew.registry.SinewDamageTypes;
-import net.minecraft.core.registries.Registries;
+import com.platypushasnohat.sinew.item.SinewItemUtils;
 import net.minecraft.tags.TagKey;
-import net.minecraft.world.damagesource.DamageSource;
-import net.minecraft.world.entity.Entity;
-import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.level.Level;
 
-import javax.annotation.Nullable;
 import java.util.Map;
 
 public abstract class MagicWeaponItem extends Item {
@@ -50,8 +43,18 @@ public abstract class MagicWeaponItem extends Item {
     }
 
     public void consumeMana(Player player, ItemStack weapon) {
+        this.consumeMana(player, weapon, this.getManaCost(weapon));
+    }
+
+    public void consumeMana(Player player, ItemStack weapon, int amount) {
         if (!player.hasInfiniteMaterials()) {
-            int remaining = this.consumeFrom(player.getOffhandItem(), weapon, this.getManaCost(weapon));
+            int remaining = 0;
+            for (int i = 0; i < amount; i++) {
+                if (SinewItemUtils.shouldConsumeMana(player, weapon)) {
+                    remaining++;
+                }
+            }
+            remaining = this.consumeFrom(player.getOffhandItem(), weapon, remaining);
             for (int i = 0; i < player.getInventory().getContainerSize() && remaining > 0; i++) {
                 remaining = this.consumeFrom(player.getInventory().getItem(i), weapon, remaining);
             }
@@ -62,13 +65,5 @@ public abstract class MagicWeaponItem extends Item {
         int taken = this.isMana(weapon, stack) ? Math.min(remaining, stack.getCount()) : 0;
         stack.shrink(taken);
         return remaining - taken;
-    }
-
-    public static DamageSource causeMagicDamage(Level level, Entity direct, @Nullable Entity owner) {
-        return new DamageSource(level.registryAccess().registryOrThrow(Registries.DAMAGE_TYPE).getHolderOrThrow(SinewDamageTypes.MAGIC_DAMAGE), direct, owner);
-    }
-
-    public static float getMagicDamage(@Nullable Entity owner, float damage) {
-        return owner instanceof LivingEntity living && living.getAttribute(SinewAttributes.MAGIC_DAMAGE) != null ? damage + (float) living.getAttributeValue(SinewAttributes.MAGIC_DAMAGE) : damage;
     }
 }

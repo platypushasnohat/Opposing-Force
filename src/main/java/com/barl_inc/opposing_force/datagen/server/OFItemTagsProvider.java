@@ -105,6 +105,8 @@ public class OFItemTagsProvider extends ItemTagsProvider {
                 Items.LAPIS_LAZULI
         );
 
-        this.tag(OFItemTags.CONSUMES_BASIC_MANA);
+        this.tag(OFItemTags.CONSUMES_BASIC_MANA).add(
+                OFItems.CURSED_RINGLINE.get()
+        );
 	}
 }

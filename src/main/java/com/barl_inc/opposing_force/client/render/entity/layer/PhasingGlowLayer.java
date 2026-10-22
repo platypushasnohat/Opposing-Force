@@ -18,7 +18,7 @@ public class PhasingGlowLayer<T extends PhasingMonster, M extends PhasingMonster
 
     public PhasingGlowLayer(RenderLayerParent<T, M> renderer, ResourceLocation texture) {
         super(renderer);
-        this.renderType = OFRenderTypes.getPhasingMobGlow(texture);
+        this.renderType = OFRenderTypes.getPhasingGlow(texture);
     }
 
     @Override

@@ -3,6 +3,7 @@
   "values": [
     "opposing_force:laser_bolt",
     "opposing_force:saw",
-    "opposing_force:bullet"
+    "opposing_force:bullet",
+    "opposing_force:cursed_ring"
   ]
 }

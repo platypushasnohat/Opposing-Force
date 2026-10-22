@@ -79,6 +79,8 @@ public class OFItems {
 
     public static final DeferredItem<Item> GRASPER_SPAWN_EGG = registerSpawnEggItem("grasper", OFEntities.GRASPER, 0x293c3b, 0xac8e16);
     public static final DeferredItem<Item> CURSED_RING = registerItem("cursed_ring", () -> new CurioItem(new Item.Properties().stacksTo(1), OFCurioDefinitions.CURSED_RING));
+    public static final DeferredItem<Item> CURSED_RINGLINE = registerItem("cursed_ringline", () -> new CursedRinglineItem(new Item.Properties().stacksTo(1)));
+    public static final DeferredItem<Item> DISABLED_CURSED_RINGLINE = registerItemNoLang("disabled_cursed_ringline", () -> new DisabledItem(new Item.Properties().stacksTo(1)));
 
     //materials
     public static final DeferredItem<Item> FIRING_MECHANISM = registerItem("firing_mechanism", () -> new Item(new Item.Properties()));

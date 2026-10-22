@@ -71,6 +71,7 @@ public class ClientEvents {
         event.registerEntityRenderer(OFEntities.MUD_SPLATTER.get(), MudSplatterRenderer::new);
         event.registerEntityRenderer(OFEntities.BULLET.get(), BulletRenderer::new);
         event.registerEntityRenderer(OFEntities.SAWBLADE.get(), SawbladeRenderer::new);
+        event.registerEntityRenderer(OFEntities.RING_PROJECTILE.get(), RingProjectileRenderer::new);
     }
 
     @SubscribeEvent
@@ -94,6 +95,7 @@ public class ClientEvents {
         event.registerLayerDefinition(OFModelLayers.LASER_BOLT, LaserBoltModel::createBodyLayer);
         event.registerLayerDefinition(OFModelLayers.ACID_CHARGE, AcidChargeModel::createBodyLayer);
         event.registerLayerDefinition(OFModelLayers.MUDBALL, MudballModel::createBodyLayer);
+        event.registerLayerDefinition(OFModelLayers.RING_PROJECTILE, RingProjectileModel::createBodyLayer);
 
         event.registerLayerDefinition(OFModelLayers.BLASTER, BlasterModel::createBodyLayer);
         event.registerLayerDefinition(OFModelLayers.TRI_BLASTER, TriBlasterModel::createBodyLayer);

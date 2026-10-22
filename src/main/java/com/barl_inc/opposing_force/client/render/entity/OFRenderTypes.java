@@ -50,7 +50,7 @@ public class OFRenderTypes extends SinewRenderTypes {
         return create("laser_bolt", DefaultVertexFormat.NEW_ENTITY, VertexFormat.Mode.QUADS, 256, false, true, compositeState);
     });
 
-    public static RenderType getPhasingMobGlow(ResourceLocation resourceLocation) {
+    public static RenderType getPhasingGlow(ResourceLocation resourceLocation) {
         CompositeState compositeState = CompositeState.builder()
                 .setShaderState(RENDERTYPE_EYES_SHADER)
                 .setTextureState(new TextureStateShard(resourceLocation, false, false))

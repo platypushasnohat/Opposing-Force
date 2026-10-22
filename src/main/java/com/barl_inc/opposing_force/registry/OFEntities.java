@@ -50,6 +50,7 @@ public class OFEntities {
     public static final DeferredHolder<EntityType<?>, EntityType<MudSplatter>> MUD_SPLATTER = registerEntity("mud_splatter", MudSplatter::new, MobCategory.MISC, builder -> builder.sized(1.3F, 0.15F).fireImmune().clientTrackingRange(10).setUpdateInterval(Integer.MAX_VALUE));
     public static final DeferredHolder<EntityType<?>, EntityType<Bullet>> BULLET = registerEntity("bullet", Bullet::new, MobCategory.MISC, builder -> builder.sized(0.25F, 0.25F).setUpdateInterval(1).setShouldReceiveVelocityUpdates(true).clientTrackingRange(4));
     public static final DeferredHolder<EntityType<?>, EntityType<Sawblade>> SAWBLADE = registerEntity("sawblade", Sawblade::new, MobCategory.MISC, builder -> builder.sized(0.5F, 0.5F).setUpdateInterval(20).clientTrackingRange(4));
+    public static final DeferredHolder<EntityType<?>, EntityType<RingProjectile>> RING_PROJECTILE = registerEntity("ring_projectile", RingProjectile::new, MobCategory.MISC, builder -> builder.sized(0.25F, 0.25F).setUpdateInterval(1).setShouldReceiveVelocityUpdates(true).clientTrackingRange(4).fireImmune());
 
     public static <E extends Entity> DeferredHolder<EntityType<?>, EntityType<E>> registerEntity(String name, EntityType.EntityFactory<E> factory, MobCategory entityClassification, Consumer<EntityType.Builder<E>> builderConsumer) {
         DeferredHolder<EntityType<?>, EntityType<E>> entity = registerEntityNoLang(name, factory, entityClassification, builderConsumer);

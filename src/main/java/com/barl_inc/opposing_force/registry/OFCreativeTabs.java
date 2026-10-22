@@ -48,6 +48,7 @@ public class OFCreativeTabs {
                         output.accept(OFItems.FILLET_BUCKET);
 
                         output.accept(OFItems.CURSED_RING);
+                        output.accept(OFItems.CURSED_RINGLINE);
 
                         output.accept(OFItems.ACID_CHARGE);
 

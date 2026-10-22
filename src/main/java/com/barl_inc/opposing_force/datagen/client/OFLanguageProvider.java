@@ -77,6 +77,7 @@ public class OFLanguageProvider extends SinewLanguageProvider {
         this.add(OFItems.TRI_BLASTER.get(), "Tri-Blaster");
 
         this.add(OFItems.DISABLED_LASER_BLADE.get(), "Laser Blade");
+        this.add(OFItems.DISABLED_CURSED_RINGLINE.get(), "Cursed Ringline");
 
         this.add(OFItems.FILLET_BUCKET.get(), "Bucket of Fillet");
 
@@ -139,5 +140,8 @@ public class OFLanguageProvider extends SinewLanguageProvider {
         this.add("death.attack.bullet", "%s was shot");
         this.add("death.attack.bullet.player", "%s was shot by %s");
         this.add("death.attack.bullet.item", "%s was shot by %s using %s");
+
+        this.add("death.attack.cursed_ring", "%s was killed with cursed magic by %s");
+        this.add("death.attack.cursed_ring.item", "%s was killed with cursed magic by %s using %s");
     }
 }

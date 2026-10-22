@@ -87,9 +87,10 @@ public class OFLanguageProvider extends SinewLanguageProvider {
         this.add("item.opposing_force.relic_feather.description", "+Slow Falling");
         this.add("item.opposing_force.fiery_carapace.description", "+Fire Protection I");
         this.add("item.opposing_force.magnetised_enhancements.description", "+Mining Momentum");
-        this.add("item.opposing_force.slimy_shield.description.shielding", "+Slimy Shielding");
-        this.add("item.opposing_force.stalkers_gloves.description", "+First Hit Bonus");
+        this.add("item.opposing_force.slimy_shield.description", "+Slimy Shielding");
+        this.add("item.opposing_force.stalkers_gloves.description", "+30% First Hit Damage");
 
+        this.add("item.opposing_force.crystalized_heart.description", "+1 Charm Slot");
         this.add("item.opposing_force.spectral_goggles.description", "Pierce the Veil...");
 
         this.add("item.opposing_force.crystalized_heart.description", "Grants +1 Charm Slots");

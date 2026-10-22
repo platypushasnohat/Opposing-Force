@@ -71,7 +71,7 @@ public class OFCurioDefinitions {
 
     public static final CurioDefinition SLIMY_SHIELD = new CurioDefinition.Builder()
             .attribute(SinewAttributes.DAMAGE_REDUCTION, 0.1F, AttributeModifier.Operation.ADD_VALUE)
-            .description("item.opposing_force.slimy_shield.description.shielding")
+            .description("item.opposing_force.slimy_shield.description")
             .build();
 
     public static final CurioDefinition STALKERS_GLOVES = new CurioDefinition.Builder()
@@ -81,6 +81,11 @@ public class OFCurioDefinitions {
     public static final CurioDefinition MUNITIONS_BOX = new CurioDefinition.Builder()
             .attribute(SinewAttributes.PROJECTILE_DAMAGE, 1.0F, AttributeModifier.Operation.ADD_VALUE)
             .attribute(SinewAttributes.AMMO_SAVE_CHANCE, 0.2F, AttributeModifier.Operation.ADD_VALUE)
+            .build();
+
+    public static final CurioDefinition MOON_SHOES = new CurioDefinition.Builder()
+            .attribute(SinewAttributes.AIR_SPEED, 0.15F, AttributeModifier.Operation.ADD_VALUE)
+            .attribute(Attributes.GRAVITY, -0.4F, AttributeModifier.Operation.ADD_MULTIPLIED_TOTAL)
             .build();
 
     public static final CurioDefinition SPECTRAL_GOGGLES = new CurioDefinition.Builder()

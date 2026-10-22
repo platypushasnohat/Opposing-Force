@@ -135,17 +135,16 @@ public class CommonEvents {
         if (event.getSource().getEntity() instanceof LivingEntity attacker
                 && event.getEntity().getHealth() >= event.getEntity().getMaxHealth()
                 && CuriosApi.getCuriosInventory(attacker).map(inventory -> inventory.isEquipped(OFItems.STALKERS_GLOVES.get())).orElse(false)) {
-            event.setAmount(event.getAmount() * 1.4F);
+            event.setAmount(event.getAmount() * 1.3F);
         }
         if (event.getEntity() instanceof Player player
                 && !event.getSource().is(DamageTypeTags.BYPASSES_INVULNERABILITY)
                 && CuriosApi.getCuriosInventory(player).map(inventory -> inventory.isEquipped(OFItems.SLIMY_SHIELD.get())).orElse(false)) {
             if (!player.getCooldowns().isOnCooldown(OFItems.SLIMY_SHIELD.get()) && player.invulnerableTime <= 10 && player.level() instanceof ServerLevel serverLevel) {
-                event.setCanceled(true);
+                event.setAmount(0.1F);
                 player.getCooldowns().addCooldown(OFItems.SLIMY_SHIELD.get(), 240);
                 serverLevel.sendParticles(ParticleTypes.ITEM_SLIME, player.getX(), player.getY(0.5D), player.getZ(), 60, 0.3D, 0.5D, 0.3D, 0.4D);
-                serverLevel.playSound(null, player.getX(), player.getY(), player.getZ(), SoundEvents.SLIME_SQUISH, player.getSoundSource(), 1.0F, 1.0F);
-                serverLevel.playSound(null, player.getX(), player.getY(), player.getZ(), SoundEvents.TOTEM_USE, player.getSoundSource(), 0.4F, 0.6F);
+                serverLevel.playSound(null, player.getX(), player.getY(), player.getZ(), SoundEvents.SLIME_ATTACK, player.getSoundSource(), 1.0F, 1.0F);
             }
         }
     }

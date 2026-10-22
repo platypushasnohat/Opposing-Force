@@ -2,7 +2,6 @@ package com.barl_inc.opposing_force.events;
 
 import com.barl_inc.opposing_force.OpposingForce;
 import com.barl_inc.opposing_force.client.model.armor.EmeraldArmorModel;
-import com.barl_inc.opposing_force.client.model.armor.MoonShoesModel;
 import com.barl_inc.opposing_force.client.model.entity.*;
 import com.barl_inc.opposing_force.client.model.item.*;
 import com.barl_inc.opposing_force.client.particle.*;
@@ -144,13 +143,6 @@ public class ClientEvents {
                 return EmeraldArmorModel.INSTANCE;
             }
         }, OFItems.EMERALD_MASK, OFItems.EMERALD_CHESTPLATE, OFItems.EMERALD_LEGGINGS, OFItems.EMERALD_BOOTS);
-
-        event.registerItem(new IClientItemExtensions() {
-            @Override
-            public HumanoidModel<?> getHumanoidArmorModel(LivingEntity entity, ItemStack stack, EquipmentSlot slot, HumanoidModel<?> properties) {
-                return MoonShoesModel.INSTANCE.withAnimations(entity);
-            }
-        }, OFItems.MOON_SHOES);
     }
 
     @SubscribeEvent

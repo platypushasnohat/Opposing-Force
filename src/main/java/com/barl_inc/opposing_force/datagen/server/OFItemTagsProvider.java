@@ -100,7 +100,9 @@ public class OFItemTagsProvider extends ItemTagsProvider {
                 OFItems.MUSIC_DISC_SLAYSER.get()
         );
 
-        this.tag(CuriosTags.CHARM).add(
+        this.tag(CuriosTags.CHARM).addTag(OFItemTags.TRINKETS);
+
+        this.tag(OFItemTags.TRINKETS).add(
                 OFItems.RELIC_FEATHER.get(),
                 OFItems.BEETLE_HUSK.get(),
                 OFItems.ENCHANTED_CHISEL.get(),

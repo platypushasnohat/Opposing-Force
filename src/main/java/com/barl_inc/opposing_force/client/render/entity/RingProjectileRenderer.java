@@ -30,7 +30,7 @@ public class RingProjectileRenderer extends EntityRenderer<RingProjectile> {
         float ageInTicks = entity.tickCount + partialTicks + entity.getIndex() * 4.0F;
         poseStack.pushPose();
         poseStack.translate(0.0F, entity.getBbHeight() / 2.0F, 0.0F);
-        poseStack.mulPose(Axis.YP.rotationDegrees(entity.getIndex() * 72.0F));
+        poseStack.mulPose(Axis.YP.rotationDegrees(entity.getIndex() * 360.0F / entity.getCount()));
         poseStack.mulPose(Axis.XP.rotationDegrees(ageInTicks * 18.0F));
         poseStack.scale(0.4F, 0.4F, 0.4F);
         this.itemRenderer.renderStatic(this.ring, ItemDisplayContext.NONE, LightTexture.FULL_BRIGHT, OverlayTexture.NO_OVERLAY, poseStack, bufferSource, entity.level(), entity.getId());

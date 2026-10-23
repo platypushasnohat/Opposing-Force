@@ -35,8 +35,9 @@ public class CursedRinglineItem extends MagicWeaponItem {
             if (player instanceof ServerPlayer serverPlayer) {
                 int slot = hand == InteractionHand.OFF_HAND ? Inventory.SLOT_OFFHAND : player.getInventory().selected;
                 this.consumeMana(player, stack, 1 + player.getRandom().nextInt(2));
-                for (int i = 0; i < 5; i++) {
-                    level.addFreshEntity(new RingProjectile(level, player, i, slot));
+                int count = this.getProjectileCount(player, stack, 5);
+                for (int i = 0; i < count; i++) {
+                    level.addFreshEntity(new RingProjectile(level, player, i, count, slot, stack));
                 }
                 DisabledItem.disableItem(serverPlayer, slot, OFItems.DISABLED_CURSED_RINGLINE);
                 level.playSound(null, player.getX(), player.getY(), player.getZ(), SoundEvents.EVOKER_CAST_SPELL, SoundSource.PLAYERS, 1.0F, SinewSoundUtils.randomizePitch(level));

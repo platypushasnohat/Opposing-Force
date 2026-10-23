@@ -67,7 +67,8 @@ public class OFItemTagsProvider extends ItemTagsProvider {
                 OFItems.JAEGER.get(),
                 OFItems.BOOMSTICK.get(),
                 OFItems.GORLOFF.get(),
-                OFItems.SPECTRAL_SHIELD.get()
+                OFItems.SPECTRAL_SHIELD.get(),
+                OFItems.CURSED_RINGLINE.get()
         );
 
         this.tag(ItemTags.HEAD_ARMOR).add(
@@ -132,6 +133,10 @@ public class OFItemTagsProvider extends ItemTagsProvider {
 
         this.tag(OFItemTags.CONSUMES_BASIC_MANA).add(
                 OFItems.CURSED_RINGLINE.get()
+        );
+
+        this.tag(OFItemTags.ENCHANTABLE_MAGIC).addTag(
+                OFItemTags.CONSUMES_BASIC_MANA
         );
 	}
 }

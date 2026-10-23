@@ -1,0 +1,40 @@
+{
+  "anvil_cost": 8,
+  "description": {
+    "translate": "enchantment.opposing_force.mana_thrifter"
+  },
+  "effects": {
+    "minecraft:ammo_use": [
+      {
+        "effect": {
+          "type": "minecraft:set",
+          "value": 0.0
+        }
+      }
+    ],
+    "minecraft:damage": [
+      {
+        "effect": {
+          "type": "minecraft:multiply",
+          "factor": 0.66
+        }
+      }
+    ]
+  },
+  "exclusive_set": "minecraft:mending",
+  "max_cost": {
+    "base": 50,
+    "per_level_above_first": 0
+  },
+  "max_level": 1,
+  "min_cost": {
+    "base": 20,
+    "per_level_above_first": 0
+  },
+  "slots": [
+    "mainhand",
+    "offhand"
+  ],
+  "supported_items": "#opposing_force:enchantable/magic",
+  "weight": 1
+}

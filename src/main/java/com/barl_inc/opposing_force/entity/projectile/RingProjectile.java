@@ -10,6 +10,7 @@ import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.syncher.EntityDataAccessor;
 import net.minecraft.network.syncher.EntityDataSerializers;
 import net.minecraft.network.syncher.SynchedEntityData;
+import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.sounds.SoundSource;
@@ -20,6 +21,8 @@ import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.entity.projectile.Projectile;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.enchantment.EnchantmentHelper;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.phys.Vec3;
 
@@ -28,7 +31,9 @@ import javax.annotation.Nullable;
 public class RingProjectile extends Projectile implements SplitMagicBonus {
 
     private static final EntityDataAccessor<Integer> INDEX = SynchedEntityData.defineId(RingProjectile.class, EntityDataSerializers.INT);
+    private static final EntityDataAccessor<Integer> COUNT = SynchedEntityData.defineId(RingProjectile.class, EntityDataSerializers.INT);
 
+    private ItemStack weapon = ItemStack.EMPTY;
     private int slot;
     private int launchDelay = -1;
 
@@ -37,23 +42,27 @@ public class RingProjectile extends Projectile implements SplitMagicBonus {
         this.noPhysics = true;
     }
 
-    public RingProjectile(Level level, Player owner, int index, int slot) {
+    public RingProjectile(Level level, Player owner, int index, int count, int slot, ItemStack weapon) {
         this(OFEntities.RING_PROJECTILE.get(), level);
         this.setOwner(owner);
         this.entityData.set(INDEX, index);
+        this.entityData.set(COUNT, count);
         this.slot = slot;
+        this.weapon = weapon.copy();
         this.setPos(owner.getX(), owner.getY(0.5D), owner.getZ());
     }
 
     @Override
     protected void defineSynchedData(SynchedEntityData.Builder builder) {
         builder.define(INDEX, 0);
+        builder.define(COUNT, 5);
     }
 
     @Override
     public void addAdditionalSaveData(CompoundTag compoundTag) {
         super.addAdditionalSaveData(compoundTag);
         compoundTag.putInt("Index", this.getIndex());
+        compoundTag.putInt("Count", this.getCount());
         compoundTag.putInt("Slot", this.slot);
     }
 
@@ -61,6 +70,7 @@ public class RingProjectile extends Projectile implements SplitMagicBonus {
     public void readAdditionalSaveData(CompoundTag compoundTag) {
         super.readAdditionalSaveData(compoundTag);
         this.entityData.set(INDEX, compoundTag.getInt("Index"));
+        this.entityData.set(COUNT, Math.max(1, compoundTag.getInt("Count")));
         this.slot = compoundTag.getInt("Slot");
     }
 
@@ -68,9 +78,13 @@ public class RingProjectile extends Projectile implements SplitMagicBonus {
         return this.entityData.get(INDEX);
     }
 
+    public int getCount() {
+        return this.entityData.get(COUNT);
+    }
+
     @Override
     public int getMagicCount() {
-        return 5;
+        return this.getCount();
     }
 
     @Override
@@ -105,12 +119,13 @@ public class RingProjectile extends Projectile implements SplitMagicBonus {
                     Vec3 direction = target.getBoundingBox().getCenter().subtract(this.position()).normalize().scale(0.9D);
                     this.setDeltaMovement(this.getDeltaMovement().lerp(direction, 0.3D));
                     if (this.getBoundingBox().inflate(0.2D).intersects(target.getBoundingBox())) {
-                        target.hurt(OFDamageTypes.causeCursedRingDamage(this.level().registryAccess(), this, owner), 3.5F);
+                        DamageSource source = OFDamageTypes.causeCursedRingDamage(this.level().registryAccess(), this, owner);
+                        target.hurt(source, EnchantmentHelper.modifyDamage((ServerLevel) this.level(), this.weapon, target, source, 3.5F));
                         this.level().playSound(null, this.getX(), this.getY(), this.getZ(), SoundEvents.AMETHYST_CLUSTER_BREAK, SoundSource.PLAYERS, 0.6F, SinewSoundUtils.randomizePitch(this.level()));
                         this.finish();
                     }
                 } else {
-                    float angle = owner.tickCount * 0.08F + this.getIndex() * Mth.TWO_PI / 5.0F;
+                    float angle = owner.tickCount * 0.08F + this.getIndex() * Mth.TWO_PI / this.getCount();
                     Vec3 orbit = owner.position().add(Mth.cos(angle) * 1.1F, owner.getBbHeight() * 0.6F + Mth.sin(this.tickCount * 0.15F + this.getIndex()) * 0.1F, Mth.sin(angle) * 1.1F);
                     this.setDeltaMovement(orbit.subtract(this.position()).scale(0.35D));
                 }

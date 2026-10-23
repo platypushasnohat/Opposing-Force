@@ -10,6 +10,7 @@ public class OFItemTags {
 
     public static final TagKey<Item> CONSUMES_BASIC_MANA = modItemTag("consumes_basic_mana");
     public static final TagKey<Item> BASIC_MANA = modItemTag("basic_mana");
+    public static final TagKey<Item> ENCHANTABLE_MAGIC = modItemTag("enchantable/magic");
 
     private static TagKey<Item> modItemTag(String name) {
         return itemTag(OpposingForce.MOD_ID, name);

@@ -2,10 +2,13 @@ package com.barl_inc.opposing_force.item.base;
 
 import com.barl_inc.opposing_force.registry.datapack.tags.OFItemTags;
 import com.platypushasnohat.sinew.item.SinewItemUtils;
+import net.minecraft.server.level.ServerLevel;
 import net.minecraft.tags.TagKey;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.enchantment.EnchantmentEffectComponents;
+import net.minecraft.world.item.enchantment.EnchantmentHelper;
 
 import java.util.Map;
 
@@ -39,7 +42,7 @@ public abstract class MagicWeaponItem extends Item {
     }
 
     public boolean hasMana(Player player, ItemStack weapon) {
-        return player.hasInfiniteMaterials() || this.countMana(player, weapon) >= this.getManaCost(weapon);
+        return player.hasInfiniteMaterials() || this.countMana(player, weapon) >= (EnchantmentHelper.has(weapon, EnchantmentEffectComponents.AMMO_USE) ? 1 : this.getManaCost(weapon));
     }
 
     public void consumeMana(Player player, ItemStack weapon) {
@@ -47,9 +50,10 @@ public abstract class MagicWeaponItem extends Item {
     }
 
     public void consumeMana(Player player, ItemStack weapon, int amount) {
-        if (!player.hasInfiniteMaterials()) {
+        if (!player.hasInfiniteMaterials() && player.level() instanceof ServerLevel serverLevel) {
             int remaining = 0;
-            for (int i = 0; i < amount; i++) {
+            int cost = EnchantmentHelper.processAmmoUse(serverLevel, weapon, weapon, amount);
+            for (int i = 0; i < cost; i++) {
                 if (SinewItemUtils.shouldConsumeMana(player, weapon)) {
                     remaining++;
                 }
@@ -59,6 +63,20 @@ public abstract class MagicWeaponItem extends Item {
                 remaining = this.consumeFrom(player.getInventory().getItem(i), weapon, remaining);
             }
         }
+    }
+
+    public int getProjectileCount(Player player, ItemStack weapon, int count) {
+        return player.level() instanceof ServerLevel serverLevel ? EnchantmentHelper.processProjectileCount(serverLevel, weapon, player, count) : count;
+    }
+
+    @Override
+    public boolean isEnchantable(ItemStack stack) {
+        return stack.getCount() == 1;
+    }
+
+    @Override
+    public int getEnchantmentValue() {
+        return 10;
     }
 
     private int consumeFrom(ItemStack stack, ItemStack weapon, int remaining) {

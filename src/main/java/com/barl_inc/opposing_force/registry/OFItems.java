@@ -7,6 +7,11 @@ import com.barl_inc.opposing_force.item.curios.MomentumGauntletItem;
 import com.barl_inc.opposing_force.item.curios.MoonShoesItem;
 import com.barl_inc.opposing_force.item.curios.RelicFeatherItem;
 import com.barl_inc.opposing_force.item.curios.SpectralGogglesItem;
+import com.barl_inc.opposing_force.item.magic.CursedRinglineItem;
+import com.barl_inc.opposing_force.item.melee.BuzzsawItem;
+import com.barl_inc.opposing_force.item.melee.ChitinLanceItem;
+import com.barl_inc.opposing_force.item.melee.LaserBladeItem;
+import com.barl_inc.opposing_force.item.melee.SpectralCleaverItem;
 import com.barl_inc.opposing_force.item.ranged.*;
 import com.barl_inc.opposing_force.item.ranged.ammo.BulletComponent;
 import com.barl_inc.opposing_force.item.ranged.ammo.PowerCellItem;
@@ -84,6 +89,9 @@ public class OFItems {
     public static final DeferredItem<Item> CURSED_RING = registerItem("cursed_ring", () -> new CurioItem(new Item.Properties().stacksTo(1), OFCurioDefinitions.CURSED_RING));
     public static final DeferredItem<Item> CURSED_RINGLINE = registerItem("cursed_ringline", () -> new CursedRinglineItem(new Item.Properties().stacksTo(1)));
     public static final DeferredItem<Item> DISABLED_CURSED_RINGLINE = registerItemNoLang("disabled_cursed_ringline", () -> new DisabledItem(new Item.Properties().stacksTo(1)));
+
+    public static final DeferredItem<Item> SAKE = registerItem("sake", () -> new SakeItem(new Item.Properties().stacksTo(16)));
+    public static final DeferredItem<Item> PARASOUL_SPAWN_EGG = registerSpawnEggItem("parasoul", OFEntities.PARASOUL, 0xf08a3e, 0xde3ca5);
 
     //materials
     public static final DeferredItem<Item> FIRING_MECHANISM = registerItem("firing_mechanism", () -> new Item(new Item.Properties()));

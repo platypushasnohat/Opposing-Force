@@ -62,6 +62,7 @@ public class ClientEvents {
         event.registerEntityRenderer(OFEntities.ROAMER.get(), RoamerRenderer::new);
         event.registerEntityRenderer(OFEntities.HAUNT.get(), context -> new PhasingMonsterRenderer<>(context, new HauntModel(context.bakeLayer(OFModelLayers.HAUNT)), "haunt", 1.1F));
         event.registerEntityRenderer(OFEntities.GRASPER.get(), GrasperRenderer::new);
+        event.registerEntityRenderer(OFEntities.PARASOUL.get(), ParasoulRenderer::new);
 
         event.registerEntityRenderer(OFEntities.DICER_LASER.get(), DicerLaserRenderer::new);
         event.registerEntityRenderer(OFEntities.LASER_BOLT.get(), LaserBoltRenderer::new);
@@ -74,6 +75,7 @@ public class ClientEvents {
         event.registerEntityRenderer(OFEntities.SAWBLADE.get(), SawbladeRenderer::new);
         event.registerEntityRenderer(OFEntities.RING_PROJECTILE.get(), RingProjectileRenderer::new);
         event.registerEntityRenderer(OFEntities.SOUL.get(), SoulRenderer::new);
+        event.registerEntityRenderer(OFEntities.SHOCKWAVE.get(), NoopRenderer::new);
     }
 
     @SubscribeEvent
@@ -93,6 +95,7 @@ public class ClientEvents {
         event.registerLayerDefinition(OFModelLayers.ROAMER, RoamerModel::createBodyLayer);
         event.registerLayerDefinition(OFModelLayers.HAUNT, HauntModel::createBodyLayer);
         event.registerLayerDefinition(OFModelLayers.GRASPER, GrasperModel::createBodyLayer);
+        event.registerLayerDefinition(OFModelLayers.PARASOUL, ParasoulModel::createBodyLayer);
 
         event.registerLayerDefinition(OFModelLayers.LASER_BOLT, LaserBoltModel::createBodyLayer);
         event.registerLayerDefinition(OFModelLayers.ACID_CHARGE, AcidChargeModel::createBodyLayer);
@@ -131,6 +134,8 @@ public class ClientEvents {
         event.registerSpriteSet(OFParticleTypes.BULLET_IMPACT.get(), ImpactParticle.BulletFactory::new);
         event.registerSpriteSet(OFParticleTypes.SPECTRAL_SWEEP.get(), LaserSweepParticle.Factory::new);
         event.registerSpriteSet(OFParticleTypes.SMALL_SOUL_FIRE_FLAME.get(), FlameParticle.SmallFlameProvider::new);
+        event.registerSpriteSet(OFParticleTypes.SHOCKWAVE.get(), ShockwaveParticle.Factory::new);
+        event.registerSpriteSet(OFParticleTypes.SMALL_SHOCKWAVE.get(), ShockwaveParticle.Factory::new);
     }
 
     @SubscribeEvent

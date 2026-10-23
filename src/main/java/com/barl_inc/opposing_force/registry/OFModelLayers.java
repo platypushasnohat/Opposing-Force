@@ -20,6 +20,7 @@ public class OFModelLayers {
     public static final ModelLayerLocation ROAMER = register("roamer");
     public static final ModelLayerLocation HAUNT = register("haunt");
     public static final ModelLayerLocation GRASPER = register("grasper");
+    public static final ModelLayerLocation PARASOUL = register("parasoul");
 
     public static final ModelLayerLocation LASER_BOLT = register("laser_bolt");
 

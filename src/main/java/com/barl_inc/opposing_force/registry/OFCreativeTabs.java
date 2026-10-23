@@ -28,6 +28,7 @@ public class OFCreativeTabs {
                         output.accept(OFItems.HAUNT_SPAWN_EGG);
                         output.accept(OFItems.MOTIF_SPAWN_EGG);
                         output.accept(OFItems.MUSHY_SPAWN_EGG);
+                        output.accept(OFItems.PARASOUL_SPAWN_EGG);
                         output.accept(OFItems.ROAMER_SPAWN_EGG);
                         output.accept(OFItems.SCORCHER_SPAWN_EGG);
                         output.accept(OFItems.TARANTULA_SPAWN_EGG);
@@ -58,6 +59,8 @@ public class OFCreativeTabs {
 
                         output.accept(OFItems.MYSTIC_POT);
                         output.accept(OFItems.LEITMOTIF);
+
+                        output.accept(OFItems.SAKE);
 
                         output.accept(OFItems.TERROR_LEG);
                         output.accept(OFItems.FRIED_TERROR_LEG);

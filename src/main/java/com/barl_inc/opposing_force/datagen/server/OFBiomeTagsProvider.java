@@ -46,5 +46,8 @@ public class OFBiomeTagsProvider extends BiomeTagsProvider {
         this.tag(OFBiomeTags.HAS_WOODED_BADLANDS_MONSTERS).add(
                 Biomes.WOODED_BADLANDS
         );
+        this.tag(OFBiomeTags.HAS_CHERRY_GROVE_MONSTERS).add(
+                Biomes.CHERRY_GROVE
+        );
 	}
 }

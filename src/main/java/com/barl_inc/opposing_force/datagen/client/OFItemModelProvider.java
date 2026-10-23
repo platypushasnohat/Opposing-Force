@@ -55,7 +55,8 @@ public class OFItemModelProvider extends SinewItemModelProvider {
                 OFItems.MUNITIONS_BOX,
                 OFItems.SPECTRAL_GOGGLES,
                 OFItems.ECTOPLASM,
-                OFItems.CURSED_RING
+                OFItems.CURSED_RING,
+                OFItems.SAKE
         );
 
         this.handheldItem(

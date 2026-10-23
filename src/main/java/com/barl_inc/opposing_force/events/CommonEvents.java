@@ -72,6 +72,7 @@ public class CommonEvents {
         event.put(OFEntities.ROAMER.get(), Roamer.registerAttributes().build());
         event.put(OFEntities.HAUNT.get(), Haunt.registerAttributes().build());
         event.put(OFEntities.GRASPER.get(), Grasper.registerAttributes().build());
+        event.put(OFEntities.PARASOUL.get(), Parasoul.registerAttributes().build());
     }
 
     @SubscribeEvent
@@ -85,12 +86,13 @@ public class CommonEvents {
         event.register(OFEntities.TERROR.get(), SpawnPlacementTypes.IN_WATER, Heightmap.Types.MOTION_BLOCKING_NO_LEAVES, Terror::checkTerrorSpawnRules, RegisterSpawnPlacementsEvent.Operation.AND);
         event.register(OFEntities.TARANTULA.get(), SpawnPlacementTypes.ON_GROUND, Heightmap.Types.MOTION_BLOCKING_NO_LEAVES, AnimatedMonster::checkSurfaceMonsterSpawnRules, RegisterSpawnPlacementsEvent.Operation.AND);
         event.register(OFEntities.MUSHY.get(), SpawnPlacementTypes.ON_GROUND, Heightmap.Types.MOTION_BLOCKING_NO_LEAVES, Mushy::checkMushySpawnRules, RegisterSpawnPlacementsEvent.Operation.AND);
-        event.register(OFEntities.MOTIF.get(), SpawnPlacementTypes.ON_GROUND, Heightmap.Types.MOTION_BLOCKING_NO_LEAVES, Motif::checkSurfaceMonsterSpawnRules, RegisterSpawnPlacementsEvent.Operation.AND);
+        event.register(OFEntities.MOTIF.get(), SpawnPlacementTypes.ON_GROUND, Heightmap.Types.MOTION_BLOCKING_NO_LEAVES, AnimatedMonster::checkSurfaceMonsterSpawnRules, RegisterSpawnPlacementsEvent.Operation.AND);
         event.register(OFEntities.FILLET.get(), SpawnPlacementTypes.IN_WATER, Heightmap.Types.MOTION_BLOCKING_NO_LEAVES, Fillet::checkFilletSpawnRules, RegisterSpawnPlacementsEvent.Operation.AND);
         event.register(OFEntities.GHOST.get(), SpawnPlacementTypes.ON_GROUND, Heightmap.Types.MOTION_BLOCKING_NO_LEAVES, Ghost::checkGhostSpawnRules, RegisterSpawnPlacementsEvent.Operation.AND);
         event.register(OFEntities.ROAMER.get(), SpawnPlacementTypes.ON_GROUND, Heightmap.Types.MOTION_BLOCKING_NO_LEAVES, Roamer::checkRoamerSpawnRules, RegisterSpawnPlacementsEvent.Operation.AND);
         event.register(OFEntities.HAUNT.get(), SpawnPlacementTypes.ON_GROUND, Heightmap.Types.MOTION_BLOCKING_NO_LEAVES, Haunt::checkHauntSpawnRules, RegisterSpawnPlacementsEvent.Operation.AND);
         event.register(OFEntities.GRASPER.get(), SpawnPlacementTypes.ON_GROUND, Heightmap.Types.MOTION_BLOCKING_NO_LEAVES, Grasper::checkGrasperSpawnRules, RegisterSpawnPlacementsEvent.Operation.AND);
+        event.register(OFEntities.PARASOUL.get(), SpawnPlacementTypes.ON_GROUND, Heightmap.Types.MOTION_BLOCKING_NO_LEAVES, AnimatedMonster::checkSurfaceMonsterSpawnRules, RegisterSpawnPlacementsEvent.Operation.AND);
     }
 
     @SubscribeEvent

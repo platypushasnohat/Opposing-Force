@@ -1,46 +1,45 @@
 package com.barl_inc.opposing_force.client.render.entity;
 
-import com.barl_inc.opposing_force.OpposingForce;
-import com.barl_inc.opposing_force.client.model.entity.RingProjectileModel;
 import com.barl_inc.opposing_force.entity.projectile.RingProjectile;
-import com.barl_inc.opposing_force.registry.OFModelLayers;
+import com.barl_inc.opposing_force.registry.OFItems;
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.math.Axis;
 import net.minecraft.client.renderer.LightTexture;
 import net.minecraft.client.renderer.MultiBufferSource;
-import net.minecraft.client.renderer.RenderType;
 import net.minecraft.client.renderer.entity.EntityRenderer;
 import net.minecraft.client.renderer.entity.EntityRendererProvider;
+import net.minecraft.client.renderer.entity.ItemRenderer;
 import net.minecraft.client.renderer.texture.OverlayTexture;
+import net.minecraft.client.renderer.texture.TextureAtlas;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.world.item.ItemDisplayContext;
+import net.minecraft.world.item.ItemStack;
 
 public class RingProjectileRenderer extends EntityRenderer<RingProjectile> {
 
-    private static final ResourceLocation TEXTURE = OpposingForce.location("textures/entity/projectiles/ring_projectile.png");
-
-    private final RingProjectileModel model;
+    private final ItemRenderer itemRenderer;
+    private final ItemStack ring = new ItemStack(OFItems.CURSED_RING.get());
 
     public RingProjectileRenderer(EntityRendererProvider.Context context) {
         super(context);
-        this.model = new RingProjectileModel(context.bakeLayer(OFModelLayers.RING_PROJECTILE));
+        this.itemRenderer = context.getItemRenderer();
     }
 
     @Override
     public void render(RingProjectile entity, float entityYaw, float partialTicks, PoseStack poseStack, MultiBufferSource bufferSource, int packedLight) {
-        float ageInTicks = entity.tickCount + partialTicks;
+        float ageInTicks = entity.tickCount + partialTicks + entity.getIndex() * 4.0F;
         poseStack.pushPose();
         poseStack.translate(0.0F, entity.getBbHeight() / 2.0F, 0.0F);
         poseStack.mulPose(Axis.YP.rotationDegrees(entity.getIndex() * 72.0F));
-        poseStack.scale(-1.0F, -1.0F, 1.0F);
-        this.model.setupAnim(entity, 0.0F, 0.0F, ageInTicks + entity.getIndex() * 4.0F, 0.0F, 0.0F);
-        this.model.renderToBuffer(poseStack, bufferSource.getBuffer(RenderType.entityCutoutNoCull(TEXTURE)), packedLight, OverlayTexture.NO_OVERLAY);
-        this.model.renderToBuffer(poseStack, bufferSource.getBuffer(OFRenderTypes.getPhasingGlow(TEXTURE)), LightTexture.FULL_BRIGHT, OverlayTexture.NO_OVERLAY, 0xFF404040);
+        poseStack.mulPose(Axis.XP.rotationDegrees(ageInTicks * 18.0F));
+        poseStack.scale(0.4F, 0.4F, 0.4F);
+        this.itemRenderer.renderStatic(this.ring, ItemDisplayContext.NONE, LightTexture.FULL_BRIGHT, OverlayTexture.NO_OVERLAY, poseStack, bufferSource, entity.level(), entity.getId());
         poseStack.popPose();
         super.render(entity, entityYaw, partialTicks, poseStack, bufferSource, packedLight);
     }
 
     @Override
     public ResourceLocation getTextureLocation(RingProjectile entity) {
-        return TEXTURE;
+        return TextureAtlas.LOCATION_BLOCKS;
     }
 }

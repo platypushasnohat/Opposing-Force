@@ -28,8 +28,6 @@ public class OFModelLayers {
 
     public static final ModelLayerLocation MUDBALL = register("mudball");
 
-    public static final ModelLayerLocation RING_PROJECTILE = register("ring_projectile");
-
     public static final ModelLayerLocation SOUL = register("soul");
 
     public static final ModelLayerLocation BLASTER = register("blaster");

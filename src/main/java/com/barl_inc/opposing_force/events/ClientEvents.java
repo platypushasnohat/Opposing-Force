@@ -100,7 +100,6 @@ public class ClientEvents {
         event.registerLayerDefinition(OFModelLayers.LASER_BOLT, LaserBoltModel::createBodyLayer);
         event.registerLayerDefinition(OFModelLayers.ACID_CHARGE, AcidChargeModel::createBodyLayer);
         event.registerLayerDefinition(OFModelLayers.MUDBALL, MudballModel::createBodyLayer);
-        event.registerLayerDefinition(OFModelLayers.RING_PROJECTILE, RingProjectileModel::createBodyLayer);
         event.registerLayerDefinition(OFModelLayers.SOUL, SoulModel::createBodyLayer);
 
         event.registerLayerDefinition(OFModelLayers.BLASTER, BlasterModel::createBodyLayer);

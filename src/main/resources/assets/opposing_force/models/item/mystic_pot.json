@@ -4,7 +4,7 @@
   "textures": {
     "0": "opposing_force:block/mystic_pot_bottom",
     "1": "opposing_force:block/mystic_pot_top",
-    "particle": "opposing_force:block/mystic_pot_bottom"
+    "particle": "opposing_force:block/mystic_pot_particle"
   },
   "elements": [
     {

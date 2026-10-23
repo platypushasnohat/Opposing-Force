@@ -16,7 +16,6 @@ import net.minecraft.sounds.SoundEvents;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.util.Mth;
 import net.minecraft.world.damagesource.DamageSource;
-import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.player.Player;
@@ -27,15 +26,20 @@ import net.minecraft.world.level.Level;
 import net.minecraft.world.phys.Vec3;
 
 import javax.annotation.Nullable;
+import java.util.List;
 
 public class RingProjectile extends Projectile implements SplitMagicBonus {
 
     private static final EntityDataAccessor<Integer> INDEX = SynchedEntityData.defineId(RingProjectile.class, EntityDataSerializers.INT);
     private static final EntityDataAccessor<Integer> COUNT = SynchedEntityData.defineId(RingProjectile.class, EntityDataSerializers.INT);
+    private static final EntityDataAccessor<Integer> ORBIT_INDEX = SynchedEntityData.defineId(RingProjectile.class, EntityDataSerializers.INT);
+    private static final EntityDataAccessor<Integer> ORBIT_COUNT = SynchedEntityData.defineId(RingProjectile.class, EntityDataSerializers.INT);
 
     private ItemStack weapon = ItemStack.EMPTY;
     private int slot;
     private int launchDelay = -1;
+    private float facing;
+    private float prevFacing;
 
     public RingProjectile(EntityType<? extends RingProjectile> entityType, Level level) {
         super(entityType, level);
@@ -47,6 +51,8 @@ public class RingProjectile extends Projectile implements SplitMagicBonus {
         this.setOwner(owner);
         this.entityData.set(INDEX, index);
         this.entityData.set(COUNT, count);
+        this.entityData.set(ORBIT_INDEX, index);
+        this.entityData.set(ORBIT_COUNT, count);
         this.slot = slot;
         this.weapon = weapon.copy();
         this.setPos(owner.getX(), owner.getY(0.5D), owner.getZ());
@@ -56,6 +62,8 @@ public class RingProjectile extends Projectile implements SplitMagicBonus {
     protected void defineSynchedData(SynchedEntityData.Builder builder) {
         builder.define(INDEX, 0);
         builder.define(COUNT, 5);
+        builder.define(ORBIT_INDEX, 0);
+        builder.define(ORBIT_COUNT, 5);
     }
 
     @Override
@@ -82,6 +90,18 @@ public class RingProjectile extends Projectile implements SplitMagicBonus {
         return this.entityData.get(COUNT);
     }
 
+    public int getOrbitIndex() {
+        return this.entityData.get(ORBIT_INDEX);
+    }
+
+    public int getOrbitCount() {
+        return this.entityData.get(ORBIT_COUNT);
+    }
+
+    public float getFacing(float partialTicks) {
+        return Mth.rotLerp(partialTicks, this.prevFacing, this.facing);
+    }
+
     @Override
     public int getMagicCount() {
         return this.getCount();
@@ -105,13 +125,23 @@ public class RingProjectile extends Projectile implements SplitMagicBonus {
     @Override
     public void tick() {
         super.tick();
-        if (!this.level().isClientSide) {
+        if (this.level().isClientSide) {
+            float target = this.getOrbitIndex() * 360.0F / this.getOrbitCount();
+            if (this.tickCount == 1) {
+                this.prevFacing = target;
+                this.facing = target;
+            } else {
+                this.prevFacing = this.facing;
+                this.facing = Mth.rotLerp(0.3F, this.facing, target);
+            }
+        } else {
             if (this.getOwner() instanceof LivingEntity owner && owner.isAlive() && owner.level() == this.level() && this.tickCount < 190) {
                 LivingEntity target = this.getTarget(owner);
                 if (target == null) {
                     this.launchDelay = -1;
+                    this.updateOrbit(owner);
                 } else if (this.launchDelay < 0) {
-                    this.launchDelay = this.getIndex() * 3;
+                    this.launchDelay = this.getOrbitIndex() * 3;
                 } else if (this.launchDelay > 0) {
                     this.launchDelay--;
                 }
@@ -125,7 +155,7 @@ public class RingProjectile extends Projectile implements SplitMagicBonus {
                         this.finish();
                     }
                 } else {
-                    float angle = owner.tickCount * 0.08F + this.getIndex() * Mth.TWO_PI / this.getCount();
+                    float angle = owner.tickCount * 0.08F + this.getOrbitIndex() * Mth.TWO_PI / this.getOrbitCount();
                     Vec3 orbit = owner.position().add(Mth.cos(angle) * 1.1F, owner.getBbHeight() * 0.6F + Mth.sin(this.tickCount * 0.15F + this.getIndex()) * 0.1F, Mth.sin(angle) * 1.1F);
                     this.setDeltaMovement(orbit.subtract(this.position()).scale(0.35D));
                 }
@@ -140,6 +170,12 @@ public class RingProjectile extends Projectile implements SplitMagicBonus {
     private LivingEntity getTarget(LivingEntity owner) {
         LivingEntity target = owner.getLastHurtMob();
         return target != null && target.isAlive() && target != owner && owner.tickCount - owner.getLastHurtMobTimestamp() < 100 ? target : null;
+    }
+
+    private void updateOrbit(LivingEntity owner) {
+        List<RingProjectile> rings = this.level().getEntitiesOfClass(RingProjectile.class, this.getBoundingBox().inflate(64.0D), ring -> ring.getOwner() == owner);
+        this.entityData.set(ORBIT_INDEX, (int) rings.stream().filter(ring -> ring.getIndex() < this.getIndex()).count());
+        this.entityData.set(ORBIT_COUNT, rings.size());
     }
 
     private void finish() {

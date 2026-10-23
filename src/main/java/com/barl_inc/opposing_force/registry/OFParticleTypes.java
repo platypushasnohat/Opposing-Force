@@ -20,5 +20,5 @@ public class OFParticleTypes {
     public static final DeferredHolder<ParticleType<?>, SimpleParticleType> BULLET_TRAIL = PARTICLE_TYPE.register("bullet_trail", () -> new SimpleParticleType(false));
     public static final DeferredHolder<ParticleType<?>, SimpleParticleType> BULLET_IMPACT = PARTICLE_TYPE.register("bullet_impact", () -> new SimpleParticleType(false));
     public static final DeferredHolder<ParticleType<?>, SimpleParticleType> SPECTRAL_SWEEP = PARTICLE_TYPE.register("spectral_sweep", () -> new SimpleParticleType(true));
-
+    public static final DeferredHolder<ParticleType<?>, SimpleParticleType> SMALL_SOUL_FIRE_FLAME = PARTICLE_TYPE.register("small_soul_fire_flame", () -> new SimpleParticleType(false));
 }

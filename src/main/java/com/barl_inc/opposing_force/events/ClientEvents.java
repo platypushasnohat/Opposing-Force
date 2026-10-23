@@ -20,6 +20,7 @@ import com.platypushasnohat.sinew.events.custom.PoseHandEvent;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.model.HumanoidModel;
 import net.minecraft.client.model.geom.ModelPart;
+import net.minecraft.client.particle.FlameParticle;
 import net.minecraft.client.renderer.ShaderInstance;
 import net.minecraft.client.renderer.entity.NoopRenderer;
 import net.minecraft.client.renderer.entity.player.PlayerRenderer;
@@ -129,6 +130,7 @@ public class ClientEvents {
         event.registerSpriteSet(OFParticleTypes.BULLET_TRAIL.get(), BulletTrailParticle.Factory::new);
         event.registerSpriteSet(OFParticleTypes.BULLET_IMPACT.get(), ImpactParticle.BulletFactory::new);
         event.registerSpriteSet(OFParticleTypes.SPECTRAL_SWEEP.get(), LaserSweepParticle.Factory::new);
+        event.registerSpriteSet(OFParticleTypes.SMALL_SOUL_FIRE_FLAME.get(), FlameParticle.SmallFlameProvider::new);
     }
 
     @SubscribeEvent

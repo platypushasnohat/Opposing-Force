@@ -133,7 +133,7 @@ public class Ghost extends PhasingMonster {
 
     @Override
     public boolean isVisibleWithoutSight(Player viewer) {
-        return !this.getMainHandItem().isEmpty() || !this.getOffhandItem().isEmpty();
+        return !this.getMainHandItem().isEmpty() || !this.getOffhandItem().isEmpty() || super.isVisibleWithoutSight(viewer);
     }
 
     @Override

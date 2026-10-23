@@ -1,10 +1,9 @@
 package com.barl_inc.opposing_force.entity.projectile;
 
-import com.barl_inc.opposing_force.OpposingForce;
 import com.barl_inc.opposing_force.registry.OFDamageTypes;
 import com.barl_inc.opposing_force.registry.OFEntities;
 import com.platypushasnohat.sinew.utils.SinewSoundUtils;
-import net.minecraft.core.particles.ParticleTypes;
+import com.barl_inc.opposing_force.registry.OFParticleTypes;
 import net.minecraft.network.syncher.SynchedEntityData;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.sounds.SoundSource;
@@ -75,17 +74,13 @@ public class Soul extends Projectile {
                 this.discard();
             }
         } else {
-            OpposingForce.PROXY.playSound(this, (byte) 5);
-            Vec3 trail = this.position().subtract(this.getDeltaMovement().scale(0.5D));
-            this.level().addParticle(ParticleTypes.SOUL_FIRE_FLAME, trail.x, trail.y + this.getBbHeight() / 2.0F, trail.z, 0.0D, 0.0D, 0.0D);
+            Vec3 drift = this.getDeltaMovement().scale(-0.15D);
+            for (int i = 0; i < 3; i++) {
+                Vec3 trail = this.position().subtract(this.getDeltaMovement().scale(this.random.nextDouble())).add(this.random.nextGaussian() * 0.08D, 0.1875D + this.random.nextGaussian() * 0.08D, this.random.nextGaussian() * 0.08D);
+                this.level().addParticle(OFParticleTypes.SMALL_SOUL_FIRE_FLAME.get(), trail.x, trail.y, trail.z, drift.x + this.random.nextGaussian() * 0.02D, drift.y + this.random.nextGaussian() * 0.02D, drift.z + this.random.nextGaussian() * 0.02D);
+            }
         }
         this.setPos(this.position().add(this.getDeltaMovement()));
         this.updateRotation();
-    }
-
-    @Override
-    public void remove(RemovalReason reason) {
-        OpposingForce.PROXY.clearSoundCacheFor(this);
-        super.remove(reason);
     }
 }

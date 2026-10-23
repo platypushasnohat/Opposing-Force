@@ -1,6 +1,7 @@
 package com.barl_inc.opposing_force.item;
 
 import com.barl_inc.opposing_force.client.sound.SpectralShieldSoundInstance;
+import com.barl_inc.opposing_force.registry.OFItems;
 import com.platypushasnohat.sinew.item.MovementModifyingItem;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.item.ItemStack;
@@ -22,6 +23,11 @@ public class SpectralShieldItem extends ShieldItem implements MovementModifyingI
     @Override
     public float getUseMovementMultiplier() {
         return 0.33F;
+    }
+
+    @Override
+    public boolean isValidRepairItem(ItemStack stack, ItemStack repairCandidate) {
+        return repairCandidate.is(OFItems.ECTOPLASM.get());
     }
 
     @Override

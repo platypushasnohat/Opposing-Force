@@ -103,21 +103,6 @@ public class ClientProxy extends CommonProxy {
                 }
             }
         }
-        if (type == 5) {
-            if (soundEmitter instanceof Soul soul) {
-                SoulSoundInstance sound;
-                AbstractTickableSoundInstance oldSound = ENTITY_SOUND_INSTANCE_MAP.get(soul.getId());
-                if (oldSound == null || !(oldSound instanceof SoulSoundInstance soundInstance && soundInstance.isSameEntity(soul))) {
-                    sound = new SoulSoundInstance(soul);
-                    ENTITY_SOUND_INSTANCE_MAP.put(soul.getId(), sound);
-                } else {
-                    sound = soundInstance;
-                }
-                if (!this.isSoundPlaying(sound) && sound.canPlaySound()) {
-                    Minecraft.getInstance().getSoundManager().queueTickingSound(sound);
-                }
-            }
-        }
     }
 
     @Override

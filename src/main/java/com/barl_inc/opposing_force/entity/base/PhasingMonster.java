@@ -20,6 +20,10 @@ import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.AABB;
 import net.minecraft.world.phys.Vec3;
 
+import java.util.HashMap;
+import java.util.Map;
+import java.util.UUID;
+
 public abstract class PhasingMonster extends BasicFlyingMonster implements SpectralEntity {
 
     private static final int FADE_TICKS = 50;
@@ -28,6 +32,7 @@ public abstract class PhasingMonster extends BasicFlyingMonster implements Spect
     private int prevFadeTicks;
     private float tilt;
     private float prevTilt;
+    private final Map<UUID, Integer> lastPerceived = new HashMap<>();
 
     protected PhasingMonster(EntityType<? extends PhasingMonster> entityType, Level level) {
         super(entityType, level);
@@ -46,6 +51,14 @@ public abstract class PhasingMonster extends BasicFlyingMonster implements Spect
         super.tick();
         this.noPhysics = false;
         this.setNoGravity(true);
+        for (Player player : this.level().players()) {
+            if (SpectralSight.canPerceive(player, this)) {
+                this.lastPerceived.put(player.getUUID(), this.tickCount);
+            }
+        }
+        if (this.lastPerceived.values().removeIf(tick -> this.tickCount - tick > FADE_TICKS) && !this.level().isClientSide) {
+            SpectralSight.refreshTracking(this);
+        }
         if (this.level().isClientSide) {
             this.prevFadeTicks = this.fadeTicks;
             this.fadeTicks = Mth.clamp(this.fadeTicks + (SpectralSight.isPerceivedByClient(this) ? 1 : -1), 0, FADE_TICKS);
@@ -93,6 +106,11 @@ public abstract class PhasingMonster extends BasicFlyingMonster implements Spect
     public boolean hurt(DamageSource source, float amount) {
         float scale = source.is(OFDamageTypes.LASER_BOLT) ? 0.5F : source.is(SinewDamageTypes.MAGIC_DAMAGE) ? 1.25F : 1.0F;
         return !(source.getEntity() instanceof PhasingMonster) && super.hurt(source, amount * scale);
+    }
+
+    @Override
+    public boolean isVisibleWithoutSight(Player viewer) {
+        return this.lastPerceived.containsKey(viewer.getUUID());
     }
 
     @Override

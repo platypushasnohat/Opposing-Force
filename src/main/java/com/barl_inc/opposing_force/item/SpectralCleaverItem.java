@@ -4,6 +4,8 @@ import com.barl_inc.opposing_force.entity.projectile.Soul;
 import com.barl_inc.opposing_force.registry.OFParticleTypes;
 import com.platypushasnohat.sinew.item.CustomSweepParticle;
 import net.minecraft.core.particles.ParticleOptions;
+import net.minecraft.sounds.SoundEvents;
+import net.minecraft.sounds.SoundSource;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.OwnableEntity;
 import net.minecraft.world.entity.ai.attributes.Attributes;
@@ -21,14 +23,15 @@ public class SpectralCleaverItem extends SwordItem implements CustomSweepParticl
 
     @Override
     public boolean hurtEnemy(ItemStack stack, LivingEntity target, LivingEntity attacker) {
-        if (attacker instanceof Player player && !player.level().isClientSide && !target.isAlliedTo(player) && !(target instanceof OwnableEntity ownable && ownable.getOwner() == player) && player.level().getGameTime() - player.getPersistentData().getLong("SoulCooldown") >= 15) {
+        if (attacker instanceof Player player && !player.level().isClientSide && !target.isAlliedTo(player) && !(target instanceof OwnableEntity ownable && ownable.getOwner() == player) && player.level().getGameTime() - player.getPersistentData().getLong("SoulCooldown") >= 8) {
             player.getPersistentData().putLong("SoulCooldown", player.level().getGameTime());
-            Vec3 back = Vec3.directionFromRotation(0.0F, player.getYRot() + 180.0F);
-            Vec3 side = Vec3.directionFromRotation(0.0F, player.getYRot() + 90.0F);
-            Vec3 position = player.position().add(back.scale(5.0D + player.getRandom().nextDouble() * 1.25D)).add(side.scale(player.getRandom().nextDouble() * 2.0D - 1.0D)).add(0.0D, player.getRandom().nextDouble() * 3.0D - 1.0D, 0.0D);
-            float damage = Math.max(0.0F, 3.0F + (float) player.getAttributeValue(Attributes.ATTACK_DAMAGE) - 7.5F);
+            Vec3 forward = Vec3.directionFromRotation(0.0F, player.getYRot());
+            Vec3 side = Vec3.directionFromRotation(0.0F, player.getYRot() + (player.getRandom().nextBoolean() ? 90.0F : -90.0F));
+            Vec3 position = player.position().add(side.scale(8.0D + player.getRandom().nextDouble() * 3.0D)).add(forward.scale(1.5D + player.getRandom().nextDouble() * 1.5D)).add(0.0D, player.getRandom().nextDouble() * 3.0D - 1.0D, 0.0D);
+            float damage = Math.max(0.0F, 2.5F + (((float) player.getAttributeValue(Attributes.ATTACK_DAMAGE) - 7.5F) / 2));
             float speed = 0.25F * (float) player.getAttributeValue(Attributes.ATTACK_SPEED);
             player.level().addFreshEntity(new Soul(player.level(), player, target, position, damage, speed));
+            player.level().playSound(null, position.x, position.y, position.z, SoundEvents.PHANTOM_AMBIENT, SoundSource.PLAYERS, 1.0F, 0.5F);
         }
         return super.hurtEnemy(stack, target, attacker);
     }

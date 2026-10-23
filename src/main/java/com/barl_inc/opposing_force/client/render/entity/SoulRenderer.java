@@ -27,10 +27,11 @@ public class SoulRenderer extends EntityRenderer<Soul> {
     @Override
     public void render(Soul entity, float entityYaw, float partialTicks, PoseStack poseStack, MultiBufferSource bufferSource, int packedLight) {
         poseStack.pushPose();
-        poseStack.scale(-1.0F, -1.0F, 1.0F);
+        poseStack.scale(-1.5F, -1.5F, 1.5F);
         poseStack.translate(0.0F, -1.501F, 0.0F);
-        this.model.setupAnim(entity, 0.0F, 0.0F, entity.tickCount + partialTicks, 0.0F, 0.0F);
-        this.model.renderToBuffer(poseStack, bufferSource.getBuffer(RenderType.entityTranslucentEmissive(TEXTURE)), LightTexture.FULL_BRIGHT, OverlayTexture.NO_OVERLAY, 0xCCFFFFFF);
+        float ageInTicks = entity.tickCount + partialTicks;
+        this.model.setupAnim(entity, 0.0F, 0.0F, ageInTicks, 0.0F, 0.0F);
+        this.model.renderToBuffer(poseStack, bufferSource.getBuffer(RenderType.entityTranslucentEmissive(TEXTURE)), LightTexture.FULL_BRIGHT, OverlayTexture.NO_OVERLAY, (int) (204 * Math.min(ageInTicks / 30.0F, 1.0F)) << 24 | 0xFFFFFF);
         poseStack.popPose();
         super.render(entity, entityYaw, partialTicks, poseStack, bufferSource, packedLight);
     }

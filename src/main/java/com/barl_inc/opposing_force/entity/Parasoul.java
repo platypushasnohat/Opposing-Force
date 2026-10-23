@@ -157,7 +157,7 @@ public class Parasoul extends AnimatedMonster implements SpectralEntity {
         super.tick();
         float lastPhase = this.walkPhase;
         //vanilla limb swing calc
-        this.walkSpeed += (Math.min((float) Math.sqrt(Mth.square(this.getX() - this.xo) + Mth.square(this.getZ() - this.zo)) * 4.0F, 1.0F) - this.walkSpeed) * 0.4F;
+        this.walkSpeed += (Math.min((float) Mth.length(this.getX() - this.xo, this.getZ() - this.zo) * 4.0F, 1.0F) - this.walkSpeed) * 0.4F;
         this.walkPhase += this.walkSpeed;
         for (Player player : this.level().players()) {
             if (SpectralSight.canPerceive(player, this)) {
@@ -195,11 +195,11 @@ public class Parasoul extends AnimatedMonster implements SpectralEntity {
     }
 
     private void shockwave(boolean big) {
-        Shockwave shockwave = big ? Shockwave.spawn(this, true, 5.0F, 10, 2.0F, 1.0F, 0.8F) : Shockwave.spawn(this, false, 1.75F, 6, 0.0F, 1.1F, 0.35F);
-        shockwave.setIgnoresPlayers(!big && this.pacified);
-        if(big) {
+        if (big) {
+            Shockwave.spawn(this, true, 5.0F, 10, 2.0F, 1.0F, 0.8F);
             this.playSound(SoundEvents.ANVIL_LAND, 1.2F, 0.6F);
         } else {
+            Shockwave.spawn(this, false, 1.75F, 6, 0.0F, 1.1F, 0.35F).setIgnoresPlayers(this.pacified);
             this.playSound(SoundEvents.SLIME_JUMP, 0.6F, 1.3F);
         }
     }
@@ -410,8 +410,7 @@ public class Parasoul extends AnimatedMonster implements SpectralEntity {
 
         @Override
         public boolean canUse() {
-            this.player = this.parasoul.level().getNearestPlayer(this.parasoul, 16.0D);
-            return this.parasoul.isDrunk() && this.parasoul.getTarget() == null && this.player != null;
+            return this.parasoul.isDrunk() && this.parasoul.getTarget() == null && (this.player = this.parasoul.level().getNearestPlayer(this.parasoul, 16.0D)) != null;
         }
 
         @Override

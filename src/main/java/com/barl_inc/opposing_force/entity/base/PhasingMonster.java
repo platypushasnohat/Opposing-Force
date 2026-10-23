@@ -4,7 +4,7 @@ import com.barl_inc.opposing_force.entity.ai.navigation.PhasingFlyingNavigation;
 import com.barl_inc.opposing_force.entity.ai.navigation.PhasingMoveControl;
 import com.barl_inc.opposing_force.registry.OFDamageTypes;
 import com.platypushasnohat.sinew.entity.spectral.SpectralEntity;
-import com.platypushasnohat.sinew.entity.spectral.SpectralSight;
+import com.platypushasnohat.sinew.entity.spectral.SpectralFade;
 import com.platypushasnohat.sinew.registry.SinewDamageTypes;
 import net.minecraft.core.BlockPos;
 import net.minecraft.sounds.SoundEvent;
@@ -20,19 +20,11 @@ import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.AABB;
 import net.minecraft.world.phys.Vec3;
 
-import java.util.HashMap;
-import java.util.Map;
-import java.util.UUID;
-
 public abstract class PhasingMonster extends BasicFlyingMonster implements SpectralEntity {
 
-    private static final int FADE_TICKS = 50;
-
-    private int fadeTicks;
-    private int prevFadeTicks;
+    private final SpectralFade fade = new SpectralFade(this);
     private float tilt;
     private float prevTilt;
-    private final Map<UUID, Integer> lastPerceived = new HashMap<>();
 
     protected PhasingMonster(EntityType<? extends PhasingMonster> entityType, Level level) {
         super(entityType, level);
@@ -51,17 +43,8 @@ public abstract class PhasingMonster extends BasicFlyingMonster implements Spect
         super.tick();
         this.noPhysics = false;
         this.setNoGravity(true);
-        for (Player player : this.level().players()) {
-            if (SpectralSight.canPerceive(player, this)) {
-                this.lastPerceived.put(player.getUUID(), this.tickCount);
-            }
-        }
-        if (this.lastPerceived.values().removeIf(tick -> this.tickCount - tick > FADE_TICKS) && !this.level().isClientSide) {
-            SpectralSight.refreshTracking(this);
-        }
+        this.fade.tick();
         if (this.level().isClientSide) {
-            this.prevFadeTicks = this.fadeTicks;
-            this.fadeTicks = Mth.clamp(this.fadeTicks + (SpectralSight.isPerceivedByClient(this) ? 1 : -1), 0, FADE_TICKS);
             this.prevTilt = this.tilt;
             this.tilt = Mth.approachDegrees(this.tilt, this.getXRot(), this.getTiltSpeed());
         }
@@ -84,7 +67,7 @@ public abstract class PhasingMonster extends BasicFlyingMonster implements Spect
     }
 
     public float getFade(float partialTicks) {
-        return Mth.lerp(partialTicks, this.prevFadeTicks, this.fadeTicks) / FADE_TICKS;
+        return this.fade.get(partialTicks);
     }
 
     public void approach(LivingEntity target) {
@@ -110,7 +93,7 @@ public abstract class PhasingMonster extends BasicFlyingMonster implements Spect
 
     @Override
     public boolean isVisibleWithoutSight(Player viewer) {
-        return this.lastPerceived.containsKey(viewer.getUUID());
+        return this.fade.isVisibleTo(viewer);
     }
 
     @Override

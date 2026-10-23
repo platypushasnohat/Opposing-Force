@@ -7,6 +7,7 @@ import com.platypushasnohat.sinew.entity.ai.goal.AttackGoal;
 import com.platypushasnohat.sinew.entity.ai.goal.SpectralStareGoal;
 import com.platypushasnohat.sinew.entity.base.AnimatedMonster;
 import com.platypushasnohat.sinew.entity.spectral.SpectralEntity;
+import com.platypushasnohat.sinew.entity.spectral.SpectralFade;
 import com.platypushasnohat.sinew.entity.spectral.SpectralSight;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.particles.ParticleTypes;
@@ -42,14 +43,10 @@ import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.Vec3;
 
 import java.util.EnumSet;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.UUID;
 
 public class Parasoul extends AnimatedMonster implements SpectralEntity {
 
     private static final EntityDataAccessor<Boolean> DRUNK = SynchedEntityData.defineId(Parasoul.class, EntityDataSerializers.BOOLEAN);
-    private static final int FADE_TICKS = 50;
     private static final float HOP_PHASE = 10.0F / 1.5F; //500ms (time on floor) / 75 ms(phase) = 6.67 (phase where spawn shockwave)
 
     public static final int LEAP_ANIMATION = 1;
@@ -58,9 +55,7 @@ public class Parasoul extends AnimatedMonster implements SpectralEntity {
     public final SmoothAnimationState mockAnimationState = new SmoothAnimationState();
     public final SmoothAnimationState leapAnimationState = new SmoothAnimationState();
 
-    private final Map<UUID, Integer> lastPerceived = new HashMap<>();
-    private int fadeTicks;
-    private int prevFadeTicks;
+    private final SpectralFade fade = new SpectralFade(this);
     private int drunkTicks;
     private float walkSpeed;
     private float walkPhase;
@@ -159,18 +154,8 @@ public class Parasoul extends AnimatedMonster implements SpectralEntity {
         //vanilla limb swing calc
         this.walkSpeed += (Math.min((float) Mth.length(this.getX() - this.xo, this.getZ() - this.zo) * 4.0F, 1.0F) - this.walkSpeed) * 0.4F;
         this.walkPhase += this.walkSpeed;
-        for (Player player : this.level().players()) {
-            if (SpectralSight.canPerceive(player, this)) {
-                this.lastPerceived.put(player.getUUID(), this.tickCount);
-            }
-        }
-        if (this.lastPerceived.values().removeIf(tick -> this.tickCount - tick > FADE_TICKS) && !this.level().isClientSide) {
-            SpectralSight.refreshTracking(this);
-        }
-        if (this.level().isClientSide) {
-            this.prevFadeTicks = this.fadeTicks;
-            this.fadeTicks = Mth.clamp(this.fadeTicks + (SpectralSight.isPerceivedByClient(this) ? 1 : -1), 0, FADE_TICKS);
-        } else {
+        this.fade.tick();
+        if (!this.level().isClientSide) {
             if (this.getAnimationState() == 0 && this.onGround() && this.walkSpeed > 0.2F && (int) (this.walkPhase / HOP_PHASE) > (int) (lastPhase / HOP_PHASE)) {
                 this.shockwave(false);
                 this.level().broadcastEntityEvent(this, (byte) 70);
@@ -224,7 +209,7 @@ public class Parasoul extends AnimatedMonster implements SpectralEntity {
     }
 
     public float getFade(float partialTicks) {
-        return Mth.lerp(partialTicks, this.prevFadeTicks, this.fadeTicks) / FADE_TICKS;
+        return this.fade.get(partialTicks);
     }
 
     @Override
@@ -234,7 +219,12 @@ public class Parasoul extends AnimatedMonster implements SpectralEntity {
 
     @Override
     public boolean isVisibleWithoutSight(Player viewer) {
-        return this.lastPerceived.containsKey(viewer.getUUID());
+        return this.fade.isVisibleTo(viewer);
+    }
+
+    @Override
+    public int getFadeInTicks() {
+        return 0;
     }
 
     @Override

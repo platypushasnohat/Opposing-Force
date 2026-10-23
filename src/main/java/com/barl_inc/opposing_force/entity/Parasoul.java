@@ -50,7 +50,7 @@ public class Parasoul extends AnimatedMonster implements SpectralEntity {
 
     private static final EntityDataAccessor<Boolean> DRUNK = SynchedEntityData.defineId(Parasoul.class, EntityDataSerializers.BOOLEAN);
     private static final int FADE_TICKS = 50;
-    private static final float HOP_PHASE = 10.0F / 1.5F; //500ms / 75ms per anim phase = 6.67
+    private static final float HOP_PHASE = 10.0F / 1.5F; //500ms (time on floor) / 75 ms(phase) = 6.67 (phase where spawn shockwave)
 
     public static final int LEAP_ANIMATION = 1;
     public static final int MOCK_ANIMATION = 2;
@@ -142,7 +142,7 @@ public class Parasoul extends AnimatedMonster implements SpectralEntity {
             } else {
                 this.drunkTicks = 6000;
                 this.pacified = true;
-                this.targetSelector.getAvailableGoals().forEach(WrappedGoal::stop);
+                this.targetSelector.getAvailableGoals().stream().filter(WrappedGoal::isRunning).forEach(WrappedGoal::stop);
                 this.setTarget(null);
                 this.setPersistenceRequired();
                 this.setDrunk(true);
@@ -156,7 +156,7 @@ public class Parasoul extends AnimatedMonster implements SpectralEntity {
     public void tick() {
         super.tick();
         float lastPhase = this.walkPhase;
-        //vanila limb swing speed
+        //vanilla limb swing calc
         this.walkSpeed += (Math.min((float) Math.sqrt(Mth.square(this.getX() - this.xo) + Mth.square(this.getZ() - this.zo)) * 4.0F, 1.0F) - this.walkSpeed) * 0.4F;
         this.walkPhase += this.walkSpeed;
         for (Player player : this.level().players()) {
@@ -194,11 +194,14 @@ public class Parasoul extends AnimatedMonster implements SpectralEntity {
         }
     }
 
-    private Shockwave shockwave(boolean big) {
+    private void shockwave(boolean big) {
         Shockwave shockwave = big ? Shockwave.spawn(this, true, 5.0F, 10, 2.0F, 1.0F, 0.8F) : Shockwave.spawn(this, false, 1.75F, 6, 0.0F, 1.1F, 0.35F);
         shockwave.setIgnoresPlayers(!big && this.pacified);
-        this.playSound(big ? SoundEvents.ANVIL_LAND : SoundEvents.SLIME_JUMP, big ? 1.2F : 0.6F, big ? 0.6F : 1.3F);
-        return shockwave;
+        if(big) {
+            this.playSound(SoundEvents.ANVIL_LAND, 1.2F, 0.6F);
+        } else {
+            this.playSound(SoundEvents.SLIME_JUMP, 0.6F, 1.3F);
+        }
     }
 
     @Override
@@ -331,10 +334,11 @@ public class Parasoul extends AnimatedMonster implements SpectralEntity {
 
         private void stomp() {
             this.parasoul.setDeltaMovement(Vec3.ZERO);
-            Shockwave shockwave = this.parasoul.shockwave(true);
-            for (LivingEntity entity : this.parasoul.level().getEntitiesOfClass(LivingEntity.class, this.parasoul.getBoundingBox().inflate(1.0D, 0.25D, 1.0D), entity -> entity != this.parasoul && EntitySelector.NO_CREATIVE_OR_SPECTATOR.test(entity))) {
-                entity.hurt(this.parasoul.damageSources().mobAttack(this.parasoul), (float) this.parasoul.getAttributeValue(Attributes.ATTACK_DAMAGE));
-                shockwave.exclude(entity);
+            this.parasoul.shockwave(true);
+            for (LivingEntity entity : this.parasoul.level().getEntitiesOfClass(LivingEntity.class, this.parasoul.getBoundingBox().inflate(2.0D, 0.25D, 2.0D), entity -> entity != this.parasoul && EntitySelector.NO_CREATIVE_OR_SPECTATOR.test(entity))) {
+                if (entity.hurt(this.parasoul.damageSources().mobAttack(this.parasoul), (float) this.parasoul.getAttributeValue(Attributes.ATTACK_DAMAGE))) {
+                    entity.invulnerableTime = 0;
+                }
             }
         }
     }
@@ -344,6 +348,7 @@ public class Parasoul extends AnimatedMonster implements SpectralEntity {
         private final Parasoul parasoul;
         private LivingEntity watched;
         private int timer;
+        private long lastMock = -1200L;
 
         public MockGoal(Parasoul parasoul) {
             this.parasoul = parasoul;
@@ -352,7 +357,7 @@ public class Parasoul extends AnimatedMonster implements SpectralEntity {
 
         @Override
         public boolean canUse() {
-            return this.parasoul.getAnimationState() == 0 && this.parasoul.getTarget() == null && this.parasoul.onGround() && this.parasoul.getRandom().nextInt(200) == 0;
+            return this.parasoul.level().getGameTime() - this.lastMock >= 1200L && this.parasoul.getAnimationState() == 0 && this.parasoul.getTarget() == null && this.parasoul.onGround() && this.parasoul.getRandom().nextInt(400) == 0;
         }
 
         @Override
@@ -377,6 +382,7 @@ public class Parasoul extends AnimatedMonster implements SpectralEntity {
                 this.parasoul.setAnimationState(0);
             }
             this.watched = null;
+            this.lastMock = this.parasoul.level().getGameTime();
         }
 
         @Override

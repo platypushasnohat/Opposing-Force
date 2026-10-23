@@ -1,4 +1,4 @@
-package com.barl_inc.opposing_force.item;
+package com.barl_inc.opposing_force.item.magic;
 
 import com.barl_inc.opposing_force.entity.projectile.RingProjectile;
 import com.barl_inc.opposing_force.item.base.MagicWeaponItem;

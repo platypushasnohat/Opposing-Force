@@ -1,4 +1,4 @@
-package com.barl_inc.opposing_force.item;
+package com.barl_inc.opposing_force.item.melee;
 
 import com.barl_inc.opposing_force.OpposingForce;
 import com.barl_inc.opposing_force.registry.OFDamageTypes;

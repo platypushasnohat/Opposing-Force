@@ -176,6 +176,9 @@ public class CommonEvents {
                 && entity.getUseItem().getItem() instanceof SpectralShieldItem
                 && source.getSourcePosition() != null
                 && (magic || !source.is(DamageTypeTags.BYPASSES_SHIELD))) {
+            if (entity instanceof Player player) {
+                SpectralShieldItem.onBlock(player, entity.getUseItem());
+            }
             event.setBlocked(true);
         }
     }

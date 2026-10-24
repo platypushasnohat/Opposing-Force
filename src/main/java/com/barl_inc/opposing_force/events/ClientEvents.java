@@ -9,6 +9,7 @@ import com.barl_inc.opposing_force.client.render.entity.*;
 import com.barl_inc.opposing_force.client.render.entity.layer.SpectralShieldLayer;
 import com.barl_inc.opposing_force.client.render.item.OFItemExtensions;
 import com.barl_inc.opposing_force.client.render.shader.SpectralLensOverlay;
+import com.barl_inc.opposing_force.item.SpectralShieldItem;
 import com.barl_inc.opposing_force.item.base.GunItem;
 import com.barl_inc.opposing_force.registry.OFEntities;
 import com.barl_inc.opposing_force.registry.OFItems;
@@ -16,21 +17,29 @@ import com.barl_inc.opposing_force.registry.OFModelLayers;
 import com.barl_inc.opposing_force.registry.OFParticleTypes;
 import com.mojang.blaze3d.systems.RenderSystem;
 import com.mojang.blaze3d.vertex.DefaultVertexFormat;
+import com.mojang.blaze3d.vertex.PoseStack;
+import com.mojang.math.Axis;
+import com.platypushasnohat.sinew.events.custom.PlayerPoseEvent;
 import com.platypushasnohat.sinew.events.custom.PoseHandEvent;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.model.HumanoidModel;
 import net.minecraft.client.model.geom.ModelPart;
 import net.minecraft.client.particle.FlameParticle;
+import net.minecraft.client.player.LocalPlayer;
+import net.minecraft.client.renderer.LightTexture;
+import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.ShaderInstance;
 import net.minecraft.client.renderer.entity.NoopRenderer;
 import net.minecraft.client.renderer.entity.player.PlayerRenderer;
 import net.minecraft.client.resources.PlayerSkin;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.util.Mth;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.entity.HumanoidArm;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.phys.Vec3;
 import net.neoforged.api.distmarker.Dist;
 import net.neoforged.bus.api.SubscribeEvent;
 import net.neoforged.fml.common.EventBusSubscriber;
@@ -225,5 +234,50 @@ public class ClientEvents {
     @SubscribeEvent
     public static void onClientTick(ClientTickEvent.Post event) {
         SpectralLensOverlay.tick();
+    }
+
+    //Spectral Shield BS below!!!
+
+    @SubscribeEvent
+    public static void onPlayerPose(PlayerPoseEvent event) {
+        LivingEntity entity = event.getEntity();
+        Minecraft minecraft = Minecraft.getInstance();
+        if (SpectralShieldLayer.isShielding(entity) && !(entity == minecraft.player && minecraft.options.getCameraType().isFirstPerson())) {
+            HumanoidModel<?> model = event.getHumanoidModel();
+            float swing = Mth.cos((entity.tickCount + minecraft.getTimer().getGameTimeDeltaPartialTick(true)) * 0.6662F) * 0.25F;
+            model.rightArm.xRot = swing;
+            model.leftArm.xRot = swing;
+            model.rightArm.yRot = 0.0F;
+            model.leftArm.yRot = 0.0F;
+            model.rightArm.zRot = 2.3561945F;
+            model.leftArm.zRot = -2.3561945F;
+        }
+    }
+
+    @SubscribeEvent
+    public static void onRenderLevelStage(RenderLevelStageEvent event) {
+        Minecraft minecraft = Minecraft.getInstance();
+        LocalPlayer player = minecraft.player;
+        if (event.getStage() == RenderLevelStageEvent.Stage.AFTER_ENTITIES && player != null && minecraft.options.getCameraType().isFirstPerson() && SpectralShieldLayer.isShielding(player)) {
+            float partialTicks = event.getPartialTick().getGameTimeDeltaPartialTick(false);
+            Vec3 camera = event.getCamera().getPosition();
+            PoseStack poseStack = event.getPoseStack();
+            MultiBufferSource.BufferSource buffer = minecraft.renderBuffers().bufferSource();
+            poseStack.pushPose();
+            poseStack.translate(Mth.lerp(partialTicks, player.xo, player.getX()) - camera.x, Mth.lerp(partialTicks, player.yo, player.getY()) - camera.y, Mth.lerp(partialTicks, player.zo, player.getZ()) - camera.z);
+            poseStack.mulPose(Axis.YP.rotationDegrees(180.0F - Mth.rotLerp(partialTicks, player.yBodyRotO, player.yBodyRot)));
+            poseStack.scale(-1.0F, -1.0F, 1.0F);
+            poseStack.translate(0.0F, -1.501F, 0.0F);
+            SpectralShieldLayer.renderShields(poseStack, buffer, LightTexture.FULL_BRIGHT, player, player.getUseItem(), SpectralShieldLayer.getGrow(player, partialTicks), player.tickCount + partialTicks, partialTicks);
+            poseStack.popPose();
+            buffer.endBatch();
+        }
+    }
+
+    @SubscribeEvent
+    public static void onRenderHand(RenderHandEvent event) {
+        if (event.getItemStack().getItem() instanceof SpectralShieldItem && SpectralShieldLayer.isShielding(Minecraft.getInstance().player)) {
+            event.setCanceled(true);
+        }
     }
 }

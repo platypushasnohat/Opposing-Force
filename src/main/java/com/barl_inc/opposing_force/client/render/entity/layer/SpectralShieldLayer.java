@@ -26,8 +26,8 @@ import java.util.WeakHashMap;
 public class SpectralShieldLayer<T extends LivingEntity, M extends EntityModel<T>> extends RenderLayer<T, M> {
 
     private static final Direction[] SIDES = {null, Direction.DOWN, Direction.UP, Direction.NORTH, Direction.SOUTH, Direction.WEST, Direction.EAST};
+    private static final RandomSource RANDOM = RandomSource.create();
 
-    private final RandomSource random = RandomSource.create();
     private final Map<LivingEntity, Retract> retracting = new WeakHashMap<>();
 
     public SpectralShieldLayer(RenderLayerParent<T, M> renderer) {
@@ -38,10 +38,9 @@ public class SpectralShieldLayer<T extends LivingEntity, M extends EntityModel<T
     public void render(PoseStack poseStack, MultiBufferSource buffer, int packedLight, T entity, float limbSwing, float limbSwingAmount, float partialTicks, float ageInTicks, float netHeadYaw, float headPitch) {
         ItemStack stack = ItemStack.EMPTY;
         float grow = 0.0F;
-        if (entity.isBlocking() && entity.getUseItem().getItem() instanceof SpectralShieldItem) {
-            float progress = 1.0F - Mth.clamp((entity.getTicksUsingItem() - 5 + partialTicks) / 14.0F, 0.0F, 1.0F);
+        if (isShielding(entity)) {
             stack = entity.getUseItem();
-            grow = 1.0F - progress * progress * progress;
+            grow = getGrow(entity, partialTicks);
             this.retracting.put(entity, new Retract(stack, grow, ageInTicks));
         } else if (this.retracting.containsKey(entity)) {
             Retract retract = this.retracting.get(entity);
@@ -53,27 +52,43 @@ public class SpectralShieldLayer<T extends LivingEntity, M extends EntityModel<T
             }
         }
         if (grow > 0.0F) {
-            BakedModel model = Minecraft.getInstance().getItemRenderer().getModel(stack, entity.level(), entity, entity.getId());
-            VertexConsumer consumer = ItemRenderer.getFoilBufferDirect(buffer, Sheets.cutoutBlockSheet(), true, stack.hasFoil());
-            float pulse = Mth.sin(ageInTicks * 0.15F);
-            float size = (0.3F + 0.7F * grow) * (1.0F + pulse * 0.04F);
-            for (int i = 1; i < 4; i++) {
-                poseStack.pushPose();
-                poseStack.translate(0.0F, 0.6F, 0.0F);
-                poseStack.mulPose(Axis.YP.rotationDegrees(i * 90.0F));
-                poseStack.translate(0.0F, 0.0F, -grow * (1.0F + pulse * 0.06F));
-                poseStack.scale(-size, -size, size);
-                poseStack.mulPose(Axis.XP.rotationDegrees(15.0F));
-                poseStack.translate(-0.5F, -0.625F, -0.40625F);
-                for (Direction side : SIDES) {
-                    for (BakedQuad quad : model.getQuads(null, side, this.random)) {
-                        if (!isHandle(quad)) {
-                            consumer.putBulkData(poseStack.last(), quad, 1.0F, 1.0F, 1.0F, 1.0F, packedLight, OverlayTexture.NO_OVERLAY);
-                        }
+            renderShields(poseStack, buffer, packedLight, entity, stack, grow, ageInTicks, partialTicks);
+        }
+    }
+
+    public static boolean isShielding(LivingEntity entity) {
+        return entity.isUsingItem() && entity.getUseItem().getItem() instanceof SpectralShieldItem;
+    }
+
+    public static float getGrow(LivingEntity entity, float partialTicks) {
+        float progress = 1.0F - Mth.clamp((entity.getTicksUsingItem() - 5 + partialTicks) / 14.0F, 0.0F, 1.0F);
+        return 1.0F - progress * progress * progress;
+    }
+
+    public static void renderShields(PoseStack poseStack, MultiBufferSource buffer, int packedLight, LivingEntity entity, ItemStack stack, float grow, float ageInTicks, float partialTicks) {
+        BakedModel model = Minecraft.getInstance().getItemRenderer().getItemModelShaper().getItemModel(stack);
+        VertexConsumer consumer = ItemRenderer.getFoilBufferDirect(buffer, Sheets.cutoutBlockSheet(), true, stack.hasFoil());
+        float pulse = Mth.sin(ageInTicks * 0.15F);
+        float size = (0.3F + 0.7F * grow) * (1.0F + pulse * 0.04F);
+        float wobble = SpectralShieldItem.getWobble(entity, stack, partialTicks);
+        for (int i = 0; i < 4; i++) {
+            poseStack.pushPose();
+            poseStack.translate(0.0F, 0.6F, 0.0F);
+            poseStack.mulPose(Axis.YP.rotationDegrees(i * 90.0F + ageInTicks * 3.0F));
+            poseStack.translate(0.0F, 0.0F, -grow * (1.0F + pulse * 0.06F));
+            poseStack.mulPose(Axis.ZP.rotationDegrees(Mth.sin((ageInTicks + i * 7.0F) * 2.5F) * 25.0F * wobble));
+            poseStack.mulPose(Axis.XP.rotationDegrees(Mth.cos((ageInTicks + i * 5.0F) * 3.1F) * 10.0F * wobble));
+            poseStack.scale(-size, -size, size);
+            poseStack.mulPose(Axis.XP.rotationDegrees(15.0F));
+            poseStack.translate(-0.5F, -0.625F, -0.40625F);
+            for (Direction side : SIDES) {
+                for (BakedQuad quad : model.getQuads(null, side, RANDOM)) {
+                    if (!isHandle(quad)) {
+                        consumer.putBulkData(poseStack.last(), quad, 1.0F, 1.0F, 1.0F, 1.0F, packedLight, OverlayTexture.NO_OVERLAY);
                     }
                 }
-                poseStack.popPose();
             }
+            poseStack.popPose();
         }
     }
 

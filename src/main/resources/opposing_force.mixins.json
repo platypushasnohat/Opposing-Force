@@ -9,7 +9,9 @@
     "MobCategoryMixin",
     "ZombieMixin"
   ],
-  "client": [],
+  "client": [
+    "ItemInHandLayerMixin"
+  ],
   "injectors": {
     "defaultRequire": 1
   },

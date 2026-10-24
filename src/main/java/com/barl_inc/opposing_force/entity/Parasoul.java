@@ -58,6 +58,7 @@ public class Parasoul extends AnimatedMonster implements SpectralEntity {
     private final SpectralFade fade = new SpectralFade(this);
     private int drunkTicks;
     private float walkSpeed;
+    private float prevWalkSpeed;
     private float walkPhase;
     private boolean pacified;
     private boolean bounce;
@@ -152,7 +153,8 @@ public class Parasoul extends AnimatedMonster implements SpectralEntity {
         super.tick();
         float lastPhase = this.walkPhase;
         //vanilla limb swing calc
-        this.walkSpeed += (Math.min((float) Mth.length(this.getX() - this.xo, this.getZ() - this.zo) * 4.0F, 1.0F) - this.walkSpeed) * 0.4F;
+        this.prevWalkSpeed = this.walkSpeed;
+        this.walkSpeed += ((this.hurtTime > 0 ? 0.0F : Math.min((float) Mth.length(this.getX() - this.xo, this.getZ() - this.zo) * 4.0F, 1.0F)) - this.walkSpeed) * 0.4F;
         this.walkPhase += this.walkSpeed;
         this.fade.tick();
         if (!this.level().isClientSide) {
@@ -196,6 +198,10 @@ public class Parasoul extends AnimatedMonster implements SpectralEntity {
         } else {
             super.handleEntityEvent(id);
         }
+    }
+
+    public float getWalkSpeed(float partialTicks) {
+        return Mth.lerp(partialTicks, this.prevWalkSpeed, this.walkSpeed);
     }
 
     public float getWalkPhase(float partialTicks) {

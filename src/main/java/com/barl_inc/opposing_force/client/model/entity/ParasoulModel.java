@@ -27,9 +27,10 @@ public class ParasoulModel extends SinewEntityModel<Parasoul> {
 
     @Override
     protected void setupAnimations(Parasoul entity, float limbSwing, float limbSwingAmount, float ageInTicks, float partialTicks, float netHeadYaw, float headPitch) {
-        this.animateIdleSmooth(entity.idleAnimationState, ParasoulAnimations.IDLE, ageInTicks, partialTicks, limbSwingAmount);
+        float walkSpeed = entity.getWalkSpeed(partialTicks);
+        this.animateIdleSmooth(entity.idleAnimationState, ParasoulAnimations.IDLE, ageInTicks, partialTicks, walkSpeed);
         this.animateSmooth(entity.mockAnimationState, ParasoulAnimations.MOCKING, ageInTicks, partialTicks);
-        this.animateWalkSmooth(entity.walkAnimationState, ParasoulAnimations.MOVING, entity.getWalkPhase(partialTicks), limbSwingAmount, 1.5F, 2.5F, partialTicks);
+        this.animateWalkSmooth(entity.walkAnimationState, ParasoulAnimations.MOVING, entity.getWalkPhase(partialTicks), walkSpeed, 1.5F, 2.5F, partialTicks);
         this.animateSmooth(entity.leapAnimationState, ParasoulAnimations.LEAP, ageInTicks, partialTicks);
     }
 

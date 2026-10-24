@@ -38,6 +38,6 @@
     "mainhand",
     "offhand"
   ],
-  "supported_items": "#opposing_force:enchantable/magic",
+  "supported_items": "#opposing_force:consumes_basic_mana",
   "weight": 1
 }

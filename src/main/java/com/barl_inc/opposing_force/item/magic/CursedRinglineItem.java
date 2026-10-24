@@ -24,7 +24,7 @@ public class CursedRinglineItem extends MagicWeaponItem {
 
     @Override
     public int getManaCost(ItemStack weapon) {
-        return 2;
+        return 2 + this.getAttunement(weapon);
     }
 
     @Override
@@ -34,7 +34,7 @@ public class CursedRinglineItem extends MagicWeaponItem {
         if (this.hasMana(player, stack)) {
             if (player instanceof ServerPlayer serverPlayer) {
                 int slot = hand == InteractionHand.OFF_HAND ? Inventory.SLOT_OFFHAND : player.getInventory().selected;
-                this.consumeMana(player, stack, 1 + player.getRandom().nextInt(2));
+                this.consumeMana(player, stack, 1 + player.getRandom().nextInt(this.getManaCost(stack)));
                 int count = this.getProjectileCount(player, stack, 5);
                 for (int i = 0; i < count; i++) {
                     level.addFreshEntity(new RingProjectile(level, player, i, count, slot, stack));

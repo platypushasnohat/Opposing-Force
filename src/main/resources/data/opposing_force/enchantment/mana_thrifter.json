@@ -21,7 +21,10 @@
       }
     ]
   },
-  "exclusive_set": "minecraft:mending",
+  "exclusive_set": [
+    "minecraft:mending",
+    "opposing_force:magic_attunement"
+  ],
   "max_cost": {
     "base": 50,
     "per_level_above_first": 0

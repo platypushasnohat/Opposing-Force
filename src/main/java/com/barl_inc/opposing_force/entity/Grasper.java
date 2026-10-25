@@ -308,8 +308,10 @@ public class Grasper extends AnimatedMonster {
                 this.grasper.setYRot(this.punchYaw);
                 this.grasper.setYHeadRot(this.punchYaw);
                 this.grasper.setYBodyRot(this.punchYaw);
-                Vec3 forward = !this.hit && this.timer <= 17 ? Vec3.directionFromRotation(0.0F, this.punchYaw).scale(0.3D) : Vec3.ZERO;
-                this.grasper.setDeltaMovement(forward.x, this.grasper.getDeltaMovement().y, forward.z);
+                if (!this.hit && this.timer <= 17) {
+                    Vec3 ahead = this.grasper.position().add(Vec3.directionFromRotation(0.0F, this.punchYaw).scale(4.0D));
+                    this.grasper.getMoveControl().setWantedPosition(ahead.x, ahead.y, ahead.z, 2.0D);
+                }
             } else {
                 this.grasper.getNavigation().moveTo(target, 1.5D);
             }

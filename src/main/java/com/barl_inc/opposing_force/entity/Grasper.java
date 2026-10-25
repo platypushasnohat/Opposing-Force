@@ -316,7 +316,8 @@ public class Grasper extends AnimatedMonster {
                 this.grasper.getNavigation().moveTo(target, 1.5D);
             }
             if (!this.hit && (punch ? this.timer >= 5 && this.timer <= 17 : this.timer >= 10 && this.timer <= 12) && this.isInAttackBox(target, 1.0D, 0.5D, 0.0D)) {
-                this.hit = target.hurt(this.grasper.damageSources().mobAttack(this.grasper), punch ? 4.0F : 6.0F);
+                target.hurt(this.grasper.damageSources().mobAttack(this.grasper), punch ? 4.0F : 6.0F);
+                this.hit = true;
             }
             if (this.timer >= 20) {
                 this.attacks++;

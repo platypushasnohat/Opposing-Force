@@ -7,6 +7,7 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.network.syncher.EntityDataAccessor;
 import net.minecraft.sounds.SoundEvent;
 import net.minecraft.sounds.SoundEvents;
+import net.minecraft.util.Mth;
 import net.minecraft.util.RandomSource;
 import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.entity.Entity;
@@ -201,6 +202,7 @@ public class Grasper extends AnimatedMonster {
         private int maxAttacks;
         private boolean hit;
         private boolean punchNext;
+        private float punchYaw;
         private Vec3 retreatStart = Vec3.ZERO;
 
         public GrasperAttackGoal(Grasper grasper) {
@@ -228,7 +230,9 @@ public class Grasper extends AnimatedMonster {
         public void tick() {
             LivingEntity target = this.grasper.getTarget();
             if (target != null) {
-                this.lookAtTarget(target, 30.0F, 30.0F);
+                if (this.attackState != 3 || this.grasper.getAnimationState() != PUNCH_ANIMATION) {
+                    this.lookAtTarget(target, 30.0F, 30.0F);
+                }
                 switch (this.attackState) {
                     case 1 -> this.tickLeapStart();
                     case 2 -> this.tickFlying(target);
@@ -271,7 +275,7 @@ public class Grasper extends AnimatedMonster {
                     this.retreatStart = this.grasper.position();
                     this.attackState = 4;
                 } else {
-                    this.startAttack(SLAP_ANIMATION);
+                    this.startAttack(SLAP_ANIMATION, target);
                 }
             } else if (this.timer > 100) {
                 this.land();
@@ -282,15 +286,16 @@ public class Grasper extends AnimatedMonster {
             this.timer++;
             if (this.grasper.position().distanceTo(this.retreatStart) >= 2.5D || this.timer >= 20) {
                 this.timer = 0;
-                this.startAttack(PUNCH_ANIMATION);
+                this.startAttack(PUNCH_ANIMATION, target);
             } else {
                 Vec3 back = this.grasper.position().subtract(target.position()).multiply(1.0D, 0.0D, 1.0D).normalize().scale(0.2D);
                 this.grasper.setDeltaMovement(back.x, this.grasper.getDeltaMovement().y, back.z);
             }
         }
 
-        private void startAttack(int animation) {
+        private void startAttack(int animation, LivingEntity target) {
             this.grasper.setAnimationState(animation);
+            this.punchYaw = (float) (Mth.atan2(target.getZ() - this.grasper.getZ(), target.getX() - this.grasper.getX()) * Mth.RAD_TO_DEG) - 90.0F;
             this.hit = false;
             this.attackState = 3;
         }
@@ -298,7 +303,16 @@ public class Grasper extends AnimatedMonster {
         private void tickAttack(LivingEntity target) {
             this.timer++;
             boolean punch = this.grasper.getAnimationState() == PUNCH_ANIMATION;
-            this.grasper.getNavigation().moveTo(target, punch ? 2.0D : 1.5D);
+            if (punch) {
+                this.grasper.getNavigation().stop();
+                this.grasper.setYRot(this.punchYaw);
+                this.grasper.setYHeadRot(this.punchYaw);
+                this.grasper.setYBodyRot(this.punchYaw);
+                Vec3 forward = !this.hit && this.timer <= 17 ? Vec3.directionFromRotation(0.0F, this.punchYaw).scale(0.3D) : Vec3.ZERO;
+                this.grasper.setDeltaMovement(forward.x, this.grasper.getDeltaMovement().y, forward.z);
+            } else {
+                this.grasper.getNavigation().moveTo(target, 1.5D);
+            }
             if (!this.hit && (punch ? this.timer >= 5 && this.timer <= 17 : this.timer >= 10 && this.timer <= 12) && this.isInAttackBox(target, 1.0D, 0.5D, 0.0D)) {
                 this.hit = target.hurt(this.grasper.damageSources().mobAttack(this.grasper), punch ? 4.0F : 6.0F);
             }

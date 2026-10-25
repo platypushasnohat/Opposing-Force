@@ -71,10 +71,11 @@ public class SpectralShieldLayer<T extends LivingEntity, M extends EntityModel<T
         float pulse = Mth.sin(ageInTicks * 0.15F);
         float size = (0.3F + 0.7F * grow) * (1.0F + pulse * 0.04F);
         float wobble = SpectralShieldItem.getWobble(entity, stack, partialTicks);
+        float bodyYaw = Mth.rotLerp(partialTicks, entity.yBodyRotO, entity.yBodyRot);
         for (int i = 0; i < 4; i++) {
             poseStack.pushPose();
             poseStack.translate(0.0F, 0.6F, 0.0F);
-            poseStack.mulPose(Axis.YP.rotationDegrees(i * 90.0F + ageInTicks * 3.0F));
+            poseStack.mulPose(Axis.YP.rotationDegrees(i * 90.0F + ageInTicks * 3.0F - bodyYaw));
             poseStack.translate(0.0F, 0.0F, -grow * (1.0F + pulse * 0.06F));
             poseStack.mulPose(Axis.ZP.rotationDegrees(Mth.sin((ageInTicks + i * 7.0F) * 2.5F) * 25.0F * wobble));
             poseStack.mulPose(Axis.XP.rotationDegrees(Mth.cos((ageInTicks + i * 5.0F) * 3.1F) * 10.0F * wobble));

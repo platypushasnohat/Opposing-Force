@@ -20,6 +20,7 @@ import net.minecraft.world.entity.ai.goal.RandomLookAroundGoal;
 import net.minecraft.world.entity.ai.goal.target.HurtByTargetGoal;
 import net.minecraft.world.entity.item.ItemEntity;
 import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.item.TieredItem;
@@ -71,9 +72,14 @@ public class Ghost extends PhasingMonster {
     @Override
     public SpawnGroupData finalizeSpawn(ServerLevelAccessor level, DifficultyInstance difficulty, MobSpawnType spawnType, @Nullable SpawnGroupData spawnGroupData) {
         if (this.random.nextBoolean()) {
-            int weapon = this.random.nextInt(3);
-            this.setItemSlot(EquipmentSlot.MAINHAND, new ItemStack(weapon == 0 ? Items.IRON_SWORD : weapon == 1 ? Items.IRON_AXE : OFItems.SPECTRAL_CLEAVER.get()));
-            if (weapon < 2) {
+            int roll = this.random.nextInt(3);
+            Item weapon = switch (roll) {
+                case 0 -> Items.IRON_SWORD;
+                case 1 -> Items.IRON_AXE;
+                default -> OFItems.SPECTRAL_CLEAVER.get();
+            };
+            this.setItemSlot(EquipmentSlot.MAINHAND, new ItemStack(weapon));
+            if (roll < 2) {
                 this.enchantSpawnedWeapon(level, this.random, difficulty);
             }
             this.setDropChance(EquipmentSlot.MAINHAND, 0.5F);
@@ -114,6 +120,11 @@ public class Ghost extends PhasingMonster {
             this.spawnAtLocation(carried);
             this.setItemSlot(EquipmentSlot.OFFHAND, ItemStack.EMPTY);
         }
+    }
+
+    @Override
+    public boolean requiresCustomPersistence() {
+        return !this.getOffhandItem().isEmpty() || super.requiresCustomPersistence();
     }
 
     private void carry(ItemEntity itemEntity) {

@@ -91,7 +91,7 @@ public class Grasper extends AnimatedMonster {
         if (this.isStunned()) {
             this.stunTicks++;
             this.getNavigation().stop();
-            if (this.getAnimationState() == FLINGED_ANIMATION && this.stunTicks > 2 && this.onGround()) {
+            if (this.getAnimationState() == FLINGED_ANIMATION && this.stunTicks > 2 && (this.onGround() || this.isInWater() || this.stunTicks > 60)) {
                 this.setStun(STUN_ANIMATION);
             } else if (this.getAnimationState() == STUN_ANIMATION && this.stunTicks >= 40) {
                 this.setStun(FLIP_BACK_ANIMATION);

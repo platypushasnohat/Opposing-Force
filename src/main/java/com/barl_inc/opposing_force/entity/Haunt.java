@@ -194,6 +194,14 @@ public class Haunt extends PhasingMonster {
             }
         }
 
+        @Override
+        public void stop() {
+            if (this.attackState == 3) {
+                this.spinCooldown = 200;
+            }
+            super.stop();
+        }
+
         private void tickApproach(LivingEntity target) {
             this.lookAtTarget(target, 30.0F, 30.0F);
             this.haunt.getNavigation().stop();

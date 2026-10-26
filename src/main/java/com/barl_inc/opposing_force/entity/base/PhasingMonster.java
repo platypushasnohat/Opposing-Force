@@ -87,7 +87,12 @@ public abstract class PhasingMonster extends BasicFlyingMonster implements Spect
 
     @Override
     public boolean hurt(DamageSource source, float amount) {
-        float scale = source.is(OFDamageTypes.LASER_BOLT) ? 0.5F : source.is(SinewDamageTypes.MAGIC_DAMAGE) ? 1.25F : 1.0F;
+        float scale = 1.0F;
+        if (source.is(OFDamageTypes.LASER_BOLT)) {
+            scale = 0.5F;
+        } else if (source.is(SinewDamageTypes.MAGIC_DAMAGE)) {
+            scale = 1.25F;
+        }
         return !(source.getEntity() instanceof PhasingMonster) && super.hurt(source, amount * scale);
     }
 

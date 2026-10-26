@@ -16,6 +16,7 @@ import net.minecraft.sounds.SoundEvents;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.util.Mth;
 import net.minecraft.world.damagesource.DamageSource;
+import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.player.Player;
@@ -29,6 +30,8 @@ import javax.annotation.Nullable;
 import java.util.List;
 
 public class RingProjectile extends Projectile implements SplitMagicBonus {
+
+    public static final float DAMAGE = 3.5F;
 
     private static final EntityDataAccessor<Integer> INDEX = SynchedEntityData.defineId(RingProjectile.class, EntityDataSerializers.INT);
     private static final EntityDataAccessor<Integer> COUNT = SynchedEntityData.defineId(RingProjectile.class, EntityDataSerializers.INT);
@@ -150,7 +153,7 @@ public class RingProjectile extends Projectile implements SplitMagicBonus {
                     this.setDeltaMovement(this.getDeltaMovement().lerp(direction, 0.3D));
                     if (this.getBoundingBox().inflate(0.2D).intersects(target.getBoundingBox())) {
                         DamageSource source = OFDamageTypes.causeCursedRingDamage(this.level().registryAccess(), this, owner);
-                        target.hurt(source, EnchantmentHelper.modifyDamage((ServerLevel) this.level(), this.weapon, target, source, 2.5F));
+                        target.hurt(source, EnchantmentHelper.modifyDamage((ServerLevel) this.level(), this.weapon, target, source, DAMAGE));
                         this.level().playSound(null, this.getX(), this.getY(), this.getZ(), SoundEvents.AMETHYST_CLUSTER_BREAK, SoundSource.PLAYERS, 0.6F, SinewSoundUtils.randomizePitch(this.level()));
                         this.finish();
                     }

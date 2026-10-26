@@ -1,8 +1,8 @@
 package com.barl_inc.opposing_force.item.ranged.ammo;
 
 import com.barl_inc.opposing_force.item.base.PoweredItem;
+import com.barl_inc.opposing_force.item.utils.OFTooltips;
 import com.platypushasnohat.sinew.utils.SinewSoundUtils;
-import net.minecraft.ChatFormatting;
 import net.minecraft.network.chat.Component;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.world.entity.SlotAccess;
@@ -24,7 +24,7 @@ public class PowerCellItem extends PoweredItem {
     @Override
     public void appendHoverText(ItemStack stack, TooltipContext context, List<Component> tooltipComponents, TooltipFlag tooltipFlag) {
         super.appendHoverText(stack, context, tooltipComponents, tooltipFlag);
-        tooltipComponents.add(Component.literal("Refill using Redstone Dust").withStyle(ChatFormatting.GRAY));
+        tooltipComponents.add(OFTooltips.description("item.opposing_force.power_cell.description"));
         if (this.isDrained(stack)) {
             tooltipComponents.add(Component.translatable("item.opposing_force.powered_item.power", this.getMaxPower(stack) - this.getPower(stack), this.getMaxPower(stack)).withColor(stack.getBarColor()));
         }

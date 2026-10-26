@@ -188,7 +188,7 @@ public class Ghost extends PhasingMonster {
             if (this.timer == 1) {
                 this.ghost.setAnimationState(!this.ghost.getMainHandItem().isEmpty() || this.ghost.getRandom().nextBoolean() ? ATTACK_ANIMATION : ATTACK_2_ANIMATION);
             }
-            if (this.timer == 18) {
+            if (this.timer == 18) { //small forward movement in attack
                 this.ghost.setDeltaMovement(Vec3.directionFromRotation(0.0F, this.ghost.getYRot()).scale(Math.min(0.4D, this.ghost.getGap(target) * 0.4D)));
             } else if (this.timer > 18) {
                 this.ghost.setDeltaMovement(this.ghost.getDeltaMovement().scale(0.6D));

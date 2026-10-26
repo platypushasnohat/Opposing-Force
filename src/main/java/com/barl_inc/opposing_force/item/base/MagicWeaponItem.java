@@ -1,19 +1,23 @@
 package com.barl_inc.opposing_force.item.base;
 
+import com.barl_inc.opposing_force.item.utils.OFTooltips;
 import com.barl_inc.opposing_force.registry.OFEnchantments;
 import com.barl_inc.opposing_force.registry.datapack.tags.OFItemTags;
 import com.platypushasnohat.sinew.item.SinewItemUtils;
 import it.unimi.dsi.fastutil.objects.Object2IntMap;
 import net.minecraft.core.component.DataComponents;
+import net.minecraft.network.chat.Component;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.tags.TagKey;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.TooltipFlag;
 import net.minecraft.world.item.enchantment.EnchantmentEffectComponents;
 import net.minecraft.world.item.enchantment.EnchantmentHelper;
 import net.minecraft.world.item.enchantment.ItemEnchantments;
 
+import java.util.List;
 import java.util.Map;
 
 public abstract class MagicWeaponItem extends Item {
@@ -75,6 +79,14 @@ public abstract class MagicWeaponItem extends Item {
 
     public int getAttunement(ItemStack weapon) {
         return weapon.getOrDefault(DataComponents.ENCHANTMENTS, ItemEnchantments.EMPTY).entrySet().stream().filter(entry -> entry.getKey().is(OFEnchantments.MAGIC_ATTUNEMENT)).mapToInt(Object2IntMap.Entry::getIntValue).sum();
+    }
+
+    @Override
+    public void appendHoverText(ItemStack stack, TooltipContext context, List<Component> tooltipComponents, TooltipFlag tooltipFlag) {
+        super.appendHoverText(stack, context, tooltipComponents, tooltipFlag);
+        if (stack.is(OFItemTags.CONSUMES_BASIC_MANA)) {
+            tooltipComponents.add(OFTooltips.description("item.opposing_force.tooltip.uses_basic_mana"));
+        }
     }
 
     @Override

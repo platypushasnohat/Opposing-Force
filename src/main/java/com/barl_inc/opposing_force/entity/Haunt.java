@@ -106,7 +106,7 @@ public class Haunt extends PhasingMonster {
             boolean y = !Mth.equal(moved.y, velocity.y);
             boolean z = !Mth.equal(moved.z, velocity.z);
             this.setDeltaMovement(velocity);
-            if (x || y || z) {
+            if (x || y || z) { //bounce slop
                 Vec3 reflected = new Vec3(x ? -velocity.x : velocity.x, y ? -velocity.y : velocity.y, z ? -velocity.z : velocity.z).scale(0.97D);
                 Vec3 twisted = this.twist(reflected, 20.0F, 60.0F);
                 this.setDeltaMovement(x ? Math.copySign(twisted.x, reflected.x) : twisted.x, y ? Math.copySign(twisted.y, reflected.y) : twisted.y, z ? Math.copySign(twisted.z, reflected.z) : twisted.z);
@@ -123,6 +123,7 @@ public class Haunt extends PhasingMonster {
         return this.getAnimationState() == SPIN_ANIMATION;
     }
 
+    //change direction on bounce
     private Vec3 twist(Vec3 direction, float minAngle, float maxAngle) {
         Vec3 normal = direction.normalize();
         Vec3 side = normal.cross(new Vec3(this.random.nextGaussian(), this.random.nextGaussian(), this.random.nextGaussian())).normalize();
@@ -130,6 +131,7 @@ public class Haunt extends PhasingMonster {
         return normal.scale(Mth.cos(angle)).add(side.scale(Mth.sin(angle))).scale(direction.length());
     }
 
+    //face bounced direction
     private void faceMovement() {
         Vec3 velocity = this.getDeltaMovement();
         float yaw = (float) (Mth.atan2(velocity.z, velocity.x) * Mth.RAD_TO_DEG) - 90.0F;
@@ -217,7 +219,7 @@ public class Haunt extends PhasingMonster {
             if (this.timer == 1) {
                 this.haunt.setAnimationState(ATTACK_ANIMATION);
             }
-            if (this.timer == 14) {
+            if (this.timer == 14) { //forward movement in attack
                 this.haunt.setDeltaMovement(Vec3.directionFromRotation(0.0F, this.haunt.getYRot()).scale(Math.min(0.7D, this.haunt.getGap(target) * 0.4D)));
             } else if (this.timer > 14) {
                 this.haunt.setDeltaMovement(this.haunt.getDeltaMovement().scale(0.6D));
@@ -283,7 +285,7 @@ public class Haunt extends PhasingMonster {
                 this.haunt.bounced = false;
                 this.timer = 0;
             }
-            if (this.haunt.returning ? this.haunt.getGap(target) < 2.0D : this.bounces >= this.maxBounces && this.spinTicks >= 200) {
+            if (this.haunt.returning ? this.haunt.getGap(target) < 2.0D : this.bounces >= this.maxBounces && this.spinTicks >= 200) {//timeout is both chosen bounces and at least 10 seconds have passed
                 this.haunt.setDeltaMovement(Vec3.ZERO);
                 this.spinCooldown = 200;
                 this.finishAttack();

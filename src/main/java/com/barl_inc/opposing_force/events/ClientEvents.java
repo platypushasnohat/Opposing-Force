@@ -11,10 +11,10 @@ import com.barl_inc.opposing_force.client.render.item.OFItemExtensions;
 import com.barl_inc.opposing_force.client.render.shader.SpectralLensOverlay;
 import com.barl_inc.opposing_force.item.SpectralShieldItem;
 import com.barl_inc.opposing_force.item.base.GunItem;
-import com.barl_inc.opposing_force.registry.OFEntities;
-import com.barl_inc.opposing_force.registry.OFItems;
-import com.barl_inc.opposing_force.registry.OFModelLayers;
-import com.barl_inc.opposing_force.registry.OFParticleTypes;
+import com.barl_inc.opposing_force.item.ranged.ammo.BulletComponent;
+import com.barl_inc.opposing_force.item.utils.OFTooltips;
+import com.barl_inc.opposing_force.registry.*;
+import com.barl_inc.opposing_force.registry.datapack.tags.OFItemTags;
 import com.mojang.blaze3d.systems.RenderSystem;
 import com.mojang.blaze3d.vertex.DefaultVertexFormat;
 import com.mojang.blaze3d.vertex.PoseStack;
@@ -32,6 +32,7 @@ import net.minecraft.client.renderer.ShaderInstance;
 import net.minecraft.client.renderer.entity.NoopRenderer;
 import net.minecraft.client.renderer.entity.player.PlayerRenderer;
 import net.minecraft.client.resources.PlayerSkin;
+import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.Mth;
 import net.minecraft.world.InteractionHand;
@@ -48,8 +49,11 @@ import net.neoforged.neoforge.client.extensions.common.IClientItemExtensions;
 import net.neoforged.neoforge.client.extensions.common.RegisterClientExtensionsEvent;
 import net.neoforged.neoforge.client.gui.VanillaGuiLayers;
 import net.neoforged.neoforge.common.util.TriState;
+import net.neoforged.neoforge.event.entity.player.ItemTooltipEvent;
 
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
 
 @EventBusSubscriber(modid = OpposingForce.MOD_ID, value = Dist.CLIENT)
 public class ClientEvents {
@@ -279,5 +283,22 @@ public class ClientEvents {
         if (event.getItemStack().getItem() instanceof SpectralShieldItem && SpectralShieldLayer.isShielding(Minecraft.getInstance().player)) {
             event.setCanceled(true);
         }
+    }
+
+    @SubscribeEvent
+    public static void onItemTooltip(ItemTooltipEvent event) {
+        ItemStack stack = event.getItemStack();
+        BulletComponent bullet = stack.get(OFDataComponents.BULLET);
+        List<Component> lines = new ArrayList<>();
+        if (stack.is(OFItemTags.BASIC_MANA)) {
+            lines.add(OFTooltips.description("item.opposing_force.tooltip.basic_mana"));
+        }
+        if (bullet != null) {
+            lines.add(OFTooltips.description("item.opposing_force.tooltip.when_used_as_ammo"));
+            lines.add(OFTooltips.stat("item.opposing_force.bullet.damage", bullet.damageMultiplier()));
+            lines.add(OFTooltips.stat("item.opposing_force.bullet.spread", bullet.inaccuracyMultiplier()));
+            lines.add(OFTooltips.stat("item.opposing_force.bullet.velocity", bullet.velocityMultiplier()));
+        }
+        event.getToolTip().addAll(Math.min(1, event.getToolTip().size()), lines);
     }
 }

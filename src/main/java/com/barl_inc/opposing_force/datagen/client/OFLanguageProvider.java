@@ -81,6 +81,29 @@ public class OFLanguageProvider extends SinewLanguageProvider {
 
         this.add(OFItems.FILLET_BUCKET.get(), "Bucket of Fillet");
 
+        this.add("item.opposing_force.tooltip.damage", "%s Damage");
+        this.add("item.opposing_force.tooltip.multi_damage", "%sx%s Damage");
+        this.add("item.opposing_force.tooltip.uses_mud", "Uses Mud as ammo");
+        this.add("item.opposing_force.tooltip.requires_power_cell", "Requires a Power Cell to operate");
+        this.add("item.opposing_force.tooltip.uses_bullets", "Uses Bullets as ammo");
+        this.add("item.opposing_force.tooltip.uses_basic_mana", "Uses Basic Mana");
+        this.add("item.opposing_force.tooltip.basic_mana", "Basic Mana");
+
+        this.add("item.opposing_force.power_cell.description", "Refill with Redstone Dust");
+        this.add("item.opposing_force.laser_blade.description", "Right-click to throw");
+        this.add("item.opposing_force.spectral_shield.description", "Blocks up to six hits from any direction");
+        this.add("item.opposing_force.spectral_cleaver.description", "Summons a homing soul on hit");
+        this.add("item.opposing_force.chitin_lance.description", "Hold right-click to charge a dash");
+        this.add("item.opposing_force.buzzsaw.description", "Hold right-click to activate saw");
+        this.add("item.opposing_force.tooltip.when_fired", "When fired:");
+        this.add("item.opposing_force.tooltip.when_cast", "When cast:");
+        this.add("item.opposing_force.tooltip.when_thrown", "When thrown:");
+        this.add("item.opposing_force.tooltip.when_used_as_ammo", "When used as ammo:");
+
+        this.add("item.opposing_force.bullet.damage", "x%s Damage");
+        this.add("item.opposing_force.bullet.spread", "x%s Spread");
+        this.add("item.opposing_force.bullet.velocity", "x%s Velocity");
+
         this.add("item.opposing_force.powered_item.power", "Power: %s / %s");
 
         this.add("item.opposing_force.relic_feather.description", "+Slow Falling");

@@ -136,7 +136,7 @@ public class Parasoul extends AnimatedMonster implements SpectralEntity {
                     this.level().addParticle(ParticleTypes.HEART, this.getRandomX(0.8D), this.getRandomY() + 0.5D, this.getRandomZ(0.8D), 0.0D, 0.0D, 0.0D);
                 }
             } else {
-                this.drunkTicks = 6000;
+                this.drunkTicks = 6000; //5 mins
                 this.pacified = true;
                 this.targetSelector.getAvailableGoals().stream().filter(WrappedGoal::isRunning).forEach(WrappedGoal::stop);
                 this.setTarget(null);

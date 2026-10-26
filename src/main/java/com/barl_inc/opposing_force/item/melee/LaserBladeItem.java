@@ -1,6 +1,7 @@
 package com.barl_inc.opposing_force.item.melee;
 
 import com.barl_inc.opposing_force.entity.projectile.LaserBlade;
+import com.barl_inc.opposing_force.item.utils.OFTooltips;
 import com.barl_inc.opposing_force.registry.OFItems;
 import com.barl_inc.opposing_force.registry.OFParticleTypes;
 import com.barl_inc.opposing_force.registry.OFSoundEvents;
@@ -8,6 +9,7 @@ import com.platypushasnohat.sinew.item.CustomSweepParticle;
 import com.platypushasnohat.sinew.item.DisabledItem;
 import com.platypushasnohat.sinew.utils.SinewSoundUtils;
 import net.minecraft.core.particles.ParticleOptions;
+import net.minecraft.network.chat.Component;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.stats.Stats;
@@ -20,8 +22,11 @@ import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.SwordItem;
 import net.minecraft.world.item.Tier;
+import net.minecraft.world.item.TooltipFlag;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.phys.Vec3;
+
+import java.util.List;
 
 public class LaserBladeItem extends SwordItem implements CustomSweepParticle {
 
@@ -89,5 +94,11 @@ public class LaserBladeItem extends SwordItem implements CustomSweepParticle {
     @Override
     public ParticleOptions getSweepParticle() {
         return OFParticleTypes.LASER_SWEEP.get();
+    }
+
+    @Override
+    public void appendHoverText(ItemStack stack, TooltipContext context, List<Component> tooltipComponents, TooltipFlag tooltipFlag) {
+        super.appendHoverText(stack, context, tooltipComponents, tooltipFlag);
+        tooltipComponents.add(OFTooltips.description("item.opposing_force.laser_blade.description"));
     }
 }

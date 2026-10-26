@@ -1,9 +1,11 @@
 package com.barl_inc.opposing_force.item.melee;
 
 import com.barl_inc.opposing_force.entity.projectile.Soul;
+import com.barl_inc.opposing_force.item.utils.OFTooltips;
 import com.barl_inc.opposing_force.registry.OFParticleTypes;
 import com.platypushasnohat.sinew.item.CustomSweepParticle;
 import net.minecraft.core.particles.ParticleOptions;
+import net.minecraft.network.chat.Component;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.world.entity.LivingEntity;
@@ -13,7 +15,10 @@ import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.SwordItem;
 import net.minecraft.world.item.Tier;
+import net.minecraft.world.item.TooltipFlag;
 import net.minecraft.world.phys.Vec3;
+
+import java.util.List;
 
 public class SpectralCleaverItem extends SwordItem implements CustomSweepParticle {
 
@@ -39,5 +44,11 @@ public class SpectralCleaverItem extends SwordItem implements CustomSweepParticl
     @Override
     public ParticleOptions getSweepParticle() {
         return OFParticleTypes.SPECTRAL_SWEEP.get();
+    }
+
+    @Override
+    public void appendHoverText(ItemStack stack, TooltipContext context, List<Component> tooltipComponents, TooltipFlag tooltipFlag) {
+        super.appendHoverText(stack, context, tooltipComponents, tooltipFlag);
+        tooltipComponents.add(OFTooltips.description("item.opposing_force.spectral_cleaver.description"));
     }
 }

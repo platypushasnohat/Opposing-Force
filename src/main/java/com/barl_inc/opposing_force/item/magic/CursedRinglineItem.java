@@ -2,9 +2,11 @@ package com.barl_inc.opposing_force.item.magic;
 
 import com.barl_inc.opposing_force.entity.projectile.RingProjectile;
 import com.barl_inc.opposing_force.item.base.MagicWeaponItem;
+import com.barl_inc.opposing_force.item.utils.OFTooltips;
 import com.barl_inc.opposing_force.registry.OFItems;
 import com.platypushasnohat.sinew.item.DisabledItem;
 import com.platypushasnohat.sinew.utils.SinewSoundUtils;
+import net.minecraft.network.chat.Component;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.sounds.SoundSource;
@@ -14,7 +16,10 @@ import net.minecraft.world.InteractionResultHolder;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.TooltipFlag;
 import net.minecraft.world.level.Level;
+
+import java.util.List;
 
 public class CursedRinglineItem extends MagicWeaponItem {
 
@@ -25,6 +30,12 @@ public class CursedRinglineItem extends MagicWeaponItem {
     @Override
     public int getManaCost(ItemStack weapon) {
         return 2 + this.getAttunement(weapon);
+    }
+
+    @Override
+    public void appendHoverText(ItemStack stack, TooltipContext context, List<Component> tooltipComponents, TooltipFlag tooltipFlag) {
+        super.appendHoverText(stack, context, tooltipComponents, tooltipFlag);
+        OFTooltips.addStats(tooltipComponents, "item.opposing_force.tooltip.when_cast", OFTooltips.damage(RingProjectile.DAMAGE, 5 + this.getAttunement(stack)));
     }
 
     @Override

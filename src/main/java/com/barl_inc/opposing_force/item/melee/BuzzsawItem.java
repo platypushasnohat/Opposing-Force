@@ -1,6 +1,7 @@
 package com.barl_inc.opposing_force.item.melee;
 
 import com.barl_inc.opposing_force.OpposingForce;
+import com.barl_inc.opposing_force.item.utils.OFTooltips;
 import com.barl_inc.opposing_force.registry.OFDamageTypes;
 import com.barl_inc.opposing_force.registry.OFItems;
 import com.barl_inc.opposing_force.registry.OFSoundEvents;
@@ -11,6 +12,7 @@ import com.platypushasnohat.sinew.utils.SinewSoundUtils;
 import net.minecraft.core.component.DataComponents;
 import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.nbt.CompoundTag;
+import net.minecraft.network.chat.Component;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.util.Mth;
@@ -23,6 +25,7 @@ import net.minecraft.world.entity.ai.attributes.Attributes;
 import net.minecraft.world.entity.ai.targeting.TargetingConditions;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.TooltipFlag;
 import net.minecraft.world.item.UseAnim;
 import net.minecraft.world.item.component.CustomData;
 import net.minecraft.world.item.enchantment.EnchantmentHelper;
@@ -173,5 +176,11 @@ public class BuzzsawItem extends SinewAxeItem implements MovementModifyingItem {
         float prev = (float) compoundTag.getInt("PrevUseTime");
         float current = (float) compoundTag.getInt("UseTime");
         return prev + partialTicks * (current - prev);
+    }
+
+    @Override
+    public void appendHoverText(ItemStack stack, TooltipContext context, List<Component> tooltipComponents, TooltipFlag tooltipFlag) {
+        super.appendHoverText(stack, context, tooltipComponents, tooltipFlag);
+        tooltipComponents.add(OFTooltips.description("item.opposing_force.buzzsaw.description"));
     }
 }

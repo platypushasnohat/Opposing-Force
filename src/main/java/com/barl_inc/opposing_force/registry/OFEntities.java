@@ -2,10 +2,7 @@ package com.barl_inc.opposing_force.registry;
 
 import com.barl_inc.opposing_force.OpposingForce;
 import com.barl_inc.opposing_force.entity.*;
-import com.barl_inc.opposing_force.entity.misc.AcidCloud;
-import com.barl_inc.opposing_force.entity.misc.DicerLaser;
-import com.barl_inc.opposing_force.entity.misc.MudSplatter;
-import com.barl_inc.opposing_force.entity.misc.Shockwave;
+import com.barl_inc.opposing_force.entity.misc.*;
 import com.barl_inc.opposing_force.entity.projectile.*;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.world.entity.Entity;
@@ -56,6 +53,7 @@ public class OFEntities {
     public static final DeferredHolder<EntityType<?>, EntityType<RingProjectile>> RING_PROJECTILE = registerEntity("ring_projectile", RingProjectile::new, MobCategory.MISC, builder -> builder.sized(0.25F, 0.25F).setUpdateInterval(1).setShouldReceiveVelocityUpdates(true).clientTrackingRange(4).fireImmune());
     public static final DeferredHolder<EntityType<?>, EntityType<Soul>> SOUL = registerEntity("soul", Soul::new, MobCategory.MISC, builder -> builder.sized(0.3F, 0.3F).setUpdateInterval(1).setShouldReceiveVelocityUpdates(true).clientTrackingRange(4).fireImmune());
     public static final DeferredHolder<EntityType<?>, EntityType<Shockwave>> SHOCKWAVE = registerEntity("shockwave", Shockwave::new, MobCategory.MISC, builder -> builder.sized(0.5F, 0.5F).fireImmune().clientTrackingRange(10).setUpdateInterval(Integer.MAX_VALUE));
+    public static final DeferredHolder<EntityType<?>, EntityType<GrellClone>> GRELL_CLONE = registerEntityNoLang("grell_clone", GrellClone::new, MobCategory.MONSTER, builder -> builder.sized(1.5F, 2.0F).eyeHeight(1.4F).clientTrackingRange(10).noSave());
 
     public static <E extends Entity> DeferredHolder<EntityType<?>, EntityType<E>> registerEntity(String name, EntityType.EntityFactory<E> factory, MobCategory entityClassification, Consumer<EntityType.Builder<E>> builderConsumer) {
         DeferredHolder<EntityType<?>, EntityType<E>> entity = registerEntityNoLang(name, factory, entityClassification, builderConsumer);

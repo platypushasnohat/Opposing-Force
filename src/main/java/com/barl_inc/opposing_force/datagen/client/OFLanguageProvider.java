@@ -18,6 +18,8 @@ public class OFLanguageProvider extends SinewLanguageProvider {
         OFItems.ITEM_TRANSLATIONS.forEach(this::forItem);
         OFEntities.ENTITY_TRANSLATIONS.forEach(this::forEntity);
 
+        this.add(OFEntities.GRELL_CLONE.get(), "Grell");
+
         this.addSound(OFSoundEvents.DICER_HURT, "Dicer hurts");
         this.addSound(OFSoundEvents.DICER_DEATH, "Dicer dies");
         this.addSound(OFSoundEvents.DICER_IDLE, "Dicer gurgles");

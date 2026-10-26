@@ -4,6 +4,7 @@ import com.barl_inc.opposing_force.OpposingForce;
 import com.barl_inc.opposing_force.config.OFConfig;
 import com.barl_inc.opposing_force.entity.*;
 import com.barl_inc.opposing_force.entity.ai.goal.LightDependentTargetGoal;
+import com.barl_inc.opposing_force.entity.misc.GrellClone;
 import com.barl_inc.opposing_force.entity.misc.MudSplatter;
 import com.barl_inc.opposing_force.item.SpectralShieldItem;
 import com.barl_inc.opposing_force.item.curios.AbstractCurioItem;
@@ -85,6 +86,7 @@ public class CommonEvents {
         event.put(OFEntities.GRASPER.get(), Grasper.registerAttributes().build());
         event.put(OFEntities.PARASOUL.get(), Parasoul.registerAttributes().build());
         event.put(OFEntities.GRELL.get(), Grell.registerAttributes().build());
+        event.put(OFEntities.GRELL_CLONE.get(), GrellClone.registerAttributes().build());
     }
 
     @SubscribeEvent

@@ -90,6 +90,7 @@ public class ClientEvents {
         event.registerEntityRenderer(OFEntities.RING_PROJECTILE.get(), RingProjectileRenderer::new);
         event.registerEntityRenderer(OFEntities.SOUL.get(), SoulRenderer::new);
         event.registerEntityRenderer(OFEntities.SHOCKWAVE.get(), NoopRenderer::new);
+        event.registerEntityRenderer(OFEntities.GRELL_CLONE.get(), GrellRenderer::new);
     }
 
     @SubscribeEvent

@@ -1,5 +1,6 @@
 package com.barl_inc.opposing_force.entity;
 
+import com.barl_inc.opposing_force.entity.ai.goal.GrellConjureGoal;
 import com.barl_inc.opposing_force.entity.ai.goal.PhasingWanderGoal;
 import com.barl_inc.opposing_force.entity.base.BasicFlyingMonster;
 import com.platypushasnohat.sinew.Sinew;
@@ -48,19 +49,25 @@ import java.util.UUID;
 public class Grell extends BasicFlyingMonster implements SpectralEntity {
 
     public static final int BITE_ANIMATION = 1;
+    public static final int CONJURE_ANIMATION = 2;
+    public static final int CONJURE_TICKS = 60;
 
     private static final EntityDataAccessor<CompoundTag> REVEALED = SynchedEntityData.defineId(Grell.class, EntityDataSerializers.COMPOUND_TAG);
     private static final int MATERIALIZE_TICKS = 200;
 
     public final SmoothAnimationState chargeAnimationState = new SmoothAnimationState();
     public final SmoothAnimationState biteAnimationState = new SmoothAnimationState(1.0F);
+    public final SmoothAnimationState conjureAnimationState = new SmoothAnimationState();
     public final SmoothAnimationState brainAnimationState = new SmoothAnimationState();
 
     private final Set<UUID> revealed = new HashSet<>();
     private final Object2IntMap<UUID> stares = new Object2IntOpenHashMap<>();
     private boolean staredAt;
+    private int conjureCooldown;
     private int materialize;
     private int prevMaterialize;
+    private int conjureFade;
+    private int prevConjureFade;
 
     public Grell(EntityType<? extends Grell> entityType, Level level) {
         super(entityType, level);
@@ -81,10 +88,11 @@ public class Grell extends BasicFlyingMonster implements SpectralEntity {
     @Override
     protected void registerGoals() {
         this.goalSelector.addGoal(0, new GrellFreezeGoal(this));
-        this.goalSelector.addGoal(1, new GrellAttackGoal(this));
-        this.goalSelector.addGoal(2, new PhasingWanderGoal(this));
-        this.goalSelector.addGoal(3, new LookAtPlayerGoal(this, Player.class, 12.0F));
-        this.goalSelector.addGoal(3, new RandomLookAroundGoal(this));
+        this.goalSelector.addGoal(1, new GrellConjureGoal(this));
+        this.goalSelector.addGoal(2, new GrellAttackGoal(this));
+        this.goalSelector.addGoal(3, new PhasingWanderGoal(this));
+        this.goalSelector.addGoal(4, new LookAtPlayerGoal(this, Player.class, 12.0F));
+        this.goalSelector.addGoal(4, new RandomLookAroundGoal(this));
         this.targetSelector.addGoal(0, new HurtByTargetGoal(this));
         this.targetSelector.addGoal(1, new NearestAttackableTargetGoal<>(this, Player.class, true, player -> this.revealed.contains(player.getUUID())));
     }
@@ -149,6 +157,9 @@ public class Grell extends BasicFlyingMonster implements SpectralEntity {
     protected void customServerAiStep() {
         super.customServerAiStep();
         this.tickStares();
+        if (this.conjureCooldown > 0) {
+            this.conjureCooldown--;
+        }
     }
 
     private void tickStares() {
@@ -214,6 +225,12 @@ public class Grell extends BasicFlyingMonster implements SpectralEntity {
 
     private void tickClientMaterialize() {
         this.prevMaterialize = this.materialize;
+        this.prevConjureFade = this.conjureFade;
+        if (this.getAnimationState() == CONJURE_ANIMATION) {
+            this.conjureFade = Math.min(this.conjureFade + 1, CONJURE_TICKS);
+        } else {
+            this.conjureFade = 0;
+        }
         Player player = Sinew.PROXY.getClientSidePlayer();
         if (player != null && SpectralSight.canPerceive(player, this)) {
             this.materialize = MATERIALIZE_TICKS;
@@ -225,7 +242,20 @@ public class Grell extends BasicFlyingMonster implements SpectralEntity {
     }
 
     public float getMaterialize(float partialTicks) {
-        return Mth.lerp(partialTicks, this.prevMaterialize, this.materialize) / MATERIALIZE_TICKS;
+        float conjure = Mth.lerp(partialTicks, this.prevConjureFade, this.conjureFade) / CONJURE_TICKS;
+        return Mth.lerp(partialTicks, this.prevMaterialize, this.materialize) / MATERIALIZE_TICKS * (1.0F - conjure);
+    }
+
+    public int getConjureCooldown() {
+        return this.conjureCooldown;
+    }
+
+    public void setConjureCooldown(int conjureCooldown) {
+        this.conjureCooldown = conjureCooldown;
+    }
+
+    public boolean isConjuring() {
+        return this.getAnimationState() == CONJURE_ANIMATION;
     }
 
     @Override
@@ -241,7 +271,7 @@ public class Grell extends BasicFlyingMonster implements SpectralEntity {
 
     @Override
     public boolean hurt(DamageSource source, float amount) {
-        boolean hurt = super.hurt(source, amount);
+        boolean hurt = !this.isConjuring() && super.hurt(source, amount);
         if (hurt && source.getEntity() instanceof Player player) {
             this.stares.removeInt(player.getUUID());
             this.reveal(player);
@@ -261,10 +291,11 @@ public class Grell extends BasicFlyingMonster implements SpectralEntity {
     @Override
     public void setupAnimationStates() {
         this.idleAnimationState.animateWhen(true, this.tickCount);
-        this.walkAnimationState.animateWhen(!this.isAggressive(), this.tickCount);
-        this.chargeAnimationState.animateWhen(this.isAggressive(), this.tickCount);
+        this.walkAnimationState.animateWhen(!this.isAggressive() && !this.isConjuring(), this.tickCount);
+        this.chargeAnimationState.animateWhen(this.isAggressive() && !this.isConjuring(), this.tickCount);
         this.biteAnimationState.animateWhen(this.getAnimationState() == BITE_ANIMATION, this.tickCount);
-        this.brainAnimationState.animateWhen(this.isAlive() && this.getAnimationState() != BITE_ANIMATION, this.tickCount);
+        this.brainAnimationState.animateWhen(this.isAlive() && this.getAnimationState() == 0, this.tickCount);
+        this.conjureAnimationState.animateWhen(this.isConjuring(), this.tickCount);
     }
 
     private static class GrellFreezeGoal extends Goal {
@@ -301,10 +332,20 @@ public class Grell extends BasicFlyingMonster implements SpectralEntity {
     private static class GrellAttackGoal extends AttackGoal {
 
         private final Grell grell;
+        private int biteCooldown;
 
         public GrellAttackGoal(Grell grell) {
             super(grell);
             this.grell = grell;
+        }
+
+        @Override
+        public void stop() {
+            LivingEntity target = this.grell.getTarget();
+            super.stop();
+            if (target != null && target.isAlive() && EntitySelector.NO_CREATIVE_OR_SPECTATOR.test(target)) {
+                this.grell.setTarget(target);
+            }
         }
 
         @Override
@@ -315,6 +356,8 @@ public class Grell extends BasicFlyingMonster implements SpectralEntity {
                 this.grell.getNavigation().moveTo(target.getX(), target.getEyeY() - this.grell.getBbHeight() * 0.5D, target.getZ(), 1.6D);
                 if (this.attackState == 1) {
                     this.tickBite(target);
+                } else if (this.biteCooldown > 0) {
+                    this.biteCooldown--;
                 } else if (this.grell.distanceToSqr(target) <= this.getAttackReachSqr(target)) {
                     this.attackState = 1;
                 }
@@ -333,6 +376,7 @@ public class Grell extends BasicFlyingMonster implements SpectralEntity {
                 this.grell.setAnimationState(0);
                 this.timer = 0;
                 this.attackState = 0;
+                this.biteCooldown = 30;
             }
         }
     }

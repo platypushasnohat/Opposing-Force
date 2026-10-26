@@ -47,10 +47,13 @@ import java.util.UUID;
 
 public class Grell extends BasicFlyingMonster implements SpectralEntity {
 
+    public static final int BITE_ANIMATION = 1;
+
     private static final EntityDataAccessor<CompoundTag> REVEALED = SynchedEntityData.defineId(Grell.class, EntityDataSerializers.COMPOUND_TAG);
     private static final int MATERIALIZE_TICKS = 200;
 
     public final SmoothAnimationState chargeAnimationState = new SmoothAnimationState();
+    public final SmoothAnimationState biteAnimationState = new SmoothAnimationState(1.0F);
     public final SmoothAnimationState brainAnimationState = new SmoothAnimationState();
 
     private final Set<UUID> revealed = new HashSet<>();
@@ -257,11 +260,11 @@ public class Grell extends BasicFlyingMonster implements SpectralEntity {
 
     @Override
     public void setupAnimationStates() {
-        boolean free = this.getAnimationState() == 0;
-        this.idleAnimationState.animateWhen(free, this.tickCount);
-        this.walkAnimationState.animateWhen(free && !this.isAggressive(), this.tickCount);
-        this.chargeAnimationState.animateWhen(free && this.isAggressive(), this.tickCount);
-        this.brainAnimationState.animateWhen(this.isAlive(), this.tickCount);
+        this.idleAnimationState.animateWhen(true, this.tickCount);
+        this.walkAnimationState.animateWhen(!this.isAggressive(), this.tickCount);
+        this.chargeAnimationState.animateWhen(this.isAggressive(), this.tickCount);
+        this.biteAnimationState.animateWhen(this.getAnimationState() == BITE_ANIMATION, this.tickCount);
+        this.brainAnimationState.animateWhen(this.isAlive() && this.getAnimationState() != BITE_ANIMATION, this.tickCount);
     }
 
     private static class GrellFreezeGoal extends Goal {
@@ -309,7 +312,27 @@ public class Grell extends BasicFlyingMonster implements SpectralEntity {
             LivingEntity target = this.grell.getTarget();
             if (target != null) {
                 this.lookAtTarget(target, 30.0F, 30.0F);
-                this.grell.getNavigation().moveTo(target, 1.6D);
+                this.grell.getNavigation().moveTo(target.getX(), target.getEyeY() - this.grell.getBbHeight() * 0.5D, target.getZ(), 1.6D);
+                if (this.attackState == 1) {
+                    this.tickBite(target);
+                } else if (this.grell.distanceToSqr(target) <= this.getAttackReachSqr(target)) {
+                    this.attackState = 1;
+                }
+            }
+        }
+
+        private void tickBite(LivingEntity target) {
+            this.timer++;
+            if (this.timer == 1) {
+                this.grell.setAnimationState(BITE_ANIMATION);
+            }
+            if (this.timer == 5 && this.isInAttackRange(target, 0.7D)) {
+                this.grell.doHurtTarget(target);
+            }
+            if (this.timer >= 7) {
+                this.grell.setAnimationState(0);
+                this.timer = 0;
+                this.attackState = 0;
             }
         }
     }

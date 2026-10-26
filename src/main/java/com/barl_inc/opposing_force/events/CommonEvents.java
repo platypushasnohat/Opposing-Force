@@ -84,6 +84,7 @@ public class CommonEvents {
         event.put(OFEntities.HAUNT.get(), Haunt.registerAttributes().build());
         event.put(OFEntities.GRASPER.get(), Grasper.registerAttributes().build());
         event.put(OFEntities.PARASOUL.get(), Parasoul.registerAttributes().build());
+        event.put(OFEntities.GRELL.get(), Grell.registerAttributes().build());
     }
 
     @SubscribeEvent
@@ -104,6 +105,7 @@ public class CommonEvents {
         event.register(OFEntities.HAUNT.get(), SpawnPlacementTypes.ON_GROUND, Heightmap.Types.MOTION_BLOCKING_NO_LEAVES, Haunt::checkHauntSpawnRules, RegisterSpawnPlacementsEvent.Operation.AND);
         event.register(OFEntities.GRASPER.get(), SpawnPlacementTypes.ON_GROUND, Heightmap.Types.MOTION_BLOCKING_NO_LEAVES, Grasper::checkGrasperSpawnRules, RegisterSpawnPlacementsEvent.Operation.AND);
         event.register(OFEntities.PARASOUL.get(), SpawnPlacementTypes.ON_GROUND, Heightmap.Types.MOTION_BLOCKING_NO_LEAVES, AnimatedMonster::checkSurfaceMonsterSpawnRules, RegisterSpawnPlacementsEvent.Operation.AND);
+        event.register(OFEntities.GRELL.get(), SpawnPlacementTypes.ON_GROUND, Heightmap.Types.MOTION_BLOCKING_NO_LEAVES, Grell::checkGrellSpawnRules, RegisterSpawnPlacementsEvent.Operation.AND);
     }
 
     @SubscribeEvent

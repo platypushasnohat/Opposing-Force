@@ -42,13 +42,19 @@ public class OFEntityTypeTagsProvider extends EntityTypeTagsProvider {
 				OFEntities.SCORCHER.get(),
 				OFEntities.TARANTULA.get(),
 				OFEntities.MUSHY.get(),
-				OFEntities.TERROR.get()
+				OFEntities.TERROR.get(),
+                OFEntities.GHOST.get(),
+                OFEntities.HAUNT.get()
 		);
 
         this.tag(EntityTypeTags.UNDEAD).add(
                 OFEntities.GHOST.get(),
                 OFEntities.HAUNT.get(),
                 OFEntities.GRASPER.get()
+        );
+
+        this.tag(SinewEntityTags.POST_END_SPAWNS).add(
+                OFEntities.GRELL.get()
         );
 	}
 }

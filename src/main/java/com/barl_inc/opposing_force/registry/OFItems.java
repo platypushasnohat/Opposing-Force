@@ -78,13 +78,16 @@ public class OFItems {
     public static final DeferredItem<Item> FILLET_SPAWN_EGG = registerSpawnEggItem("fillet", OFEntities.FILLET, 0x470e2f, 0xff6e1f);
     public static final DeferredItem<Item> FILLET_BUCKET = registerItemNoLang("fillet_bucket", () -> new FilletBucketItem(new Item.Properties()));
 
+    //mageslop
     public static final DeferredItem<Item> GRASPER_SPAWN_EGG = registerSpawnEggItem("grasper", OFEntities.GRASPER, 0x293c3b, 0xac8e16);
     public static final DeferredItem<Item> CURSED_RING = registerItem("cursed_ring", () -> new CurioItem(new Item.Properties(), OFCurioDefinitions.CURSED_RING));
     public static final DeferredItem<Item> CURSED_RINGLINE = registerItem("cursed_ringline", () -> new CursedRinglineItem(new Item.Properties().stacksTo(1)));
     public static final DeferredItem<Item> DISABLED_CURSED_RINGLINE = registerItemNoLang("disabled_cursed_ringline", () -> new DisabledItem(new Item.Properties().stacksTo(1)));
 
+    public static final DeferredItem<Item> GRELL_SPAWN_EGG = registerSpawnEggItem("grell", OFEntities.GRELL, 0xe0aac4, 0x6a2d6b);
+
     //cherry grove enemy section
-    public static final DeferredItem<Item> PARASOUL_SPAWN_EGG = registerSpawnEggItem("parasoul", OFEntities.PARASOUL, 0xf08a3e, 0xde3ca5);
+    public static final DeferredItem<Item> PARASOUL_SPAWN_EGG = registerSpawnEggItem("parasoul", OFEntities.PARASOUL, 0xf4a3c8, 0x6a2d6b);
     public static final DeferredItem<Item> SAKE = registerItem("sake", () -> new SakeItem(new Item.Properties().stacksTo(16)));
 
     //materials

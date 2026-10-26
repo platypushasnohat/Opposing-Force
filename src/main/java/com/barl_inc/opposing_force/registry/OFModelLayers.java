@@ -21,6 +21,7 @@ public class OFModelLayers {
     public static final ModelLayerLocation HAUNT = register("haunt");
     public static final ModelLayerLocation GRASPER = register("grasper");
     public static final ModelLayerLocation PARASOUL = register("parasoul");
+    public static final ModelLayerLocation GRELL = register("grell");
 
     public static final ModelLayerLocation LASER_BOLT = register("laser_bolt");
 

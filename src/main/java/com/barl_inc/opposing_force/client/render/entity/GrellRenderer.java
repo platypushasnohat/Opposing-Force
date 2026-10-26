@@ -28,7 +28,7 @@ public class GrellRenderer extends MobRenderer<Grell, GrellModel> {
 
     @Override
     public void render(Grell grell, float entityYaw, float partialTicks, PoseStack poseStack, MultiBufferSource buffer, int packedLight) {
-        this.model.alpha = 1.0F;
+        this.model.alpha = grell.getMaterialize(partialTicks);
         super.render(grell, entityYaw, partialTicks, poseStack, buffer, packedLight);
     }
 

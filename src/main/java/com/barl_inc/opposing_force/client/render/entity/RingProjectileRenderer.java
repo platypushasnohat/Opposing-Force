@@ -12,6 +12,7 @@ import net.minecraft.client.renderer.entity.ItemRenderer;
 import net.minecraft.client.renderer.texture.OverlayTexture;
 import net.minecraft.client.renderer.texture.TextureAtlas;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.util.Mth;
 import net.minecraft.world.item.ItemDisplayContext;
 import net.minecraft.world.item.ItemStack;
 
@@ -32,7 +33,8 @@ public class RingProjectileRenderer extends EntityRenderer<RingProjectile> {
         poseStack.translate(0.0F, entity.getBbHeight() / 2.0F, 0.0F);
         poseStack.mulPose(Axis.YP.rotationDegrees(entity.getFacing(partialTicks)));
         poseStack.mulPose(Axis.XP.rotationDegrees(ageInTicks * 18.0F));
-        poseStack.scale(0.4F, 0.4F, 0.4F);
+        float scale = 0.4F / Mth.sqrt(entity.getSwarmScale());
+        poseStack.scale(scale, scale, scale);
         this.itemRenderer.renderStatic(this.ring, ItemDisplayContext.NONE, LightTexture.FULL_BRIGHT, OverlayTexture.NO_OVERLAY, poseStack, bufferSource, entity.level(), entity.getId());
         poseStack.popPose();
         super.render(entity, entityYaw, partialTicks, poseStack, bufferSource, packedLight);

@@ -101,6 +101,10 @@ public class RingProjectile extends Projectile implements SplitMagicBonus {
         return this.entityData.get(ORBIT_COUNT);
     }
 
+    public float getSwarmScale() {
+        return 1.0F + Mth.square(this.getOrbitCount() / 40.0F);
+    }
+
     public float getFacing(float partialTicks) {
         return Mth.rotLerp(partialTicks, this.prevFacing, this.facing);
     }
@@ -144,7 +148,7 @@ public class RingProjectile extends Projectile implements SplitMagicBonus {
                     this.launchDelay = -1;
                     this.updateOrbit(owner);
                 } else if (this.launchDelay < 0) {
-                    this.launchDelay = this.getOrbitIndex() * 3;
+                    this.launchDelay = (int) (this.getOrbitIndex() * 3.0F / this.getSwarmScale());
                 } else if (this.launchDelay > 0) {
                     this.launchDelay--;
                 }
@@ -159,7 +163,8 @@ public class RingProjectile extends Projectile implements SplitMagicBonus {
                     }
                 } else {
                     float angle = owner.tickCount * 0.08F + this.getOrbitIndex() * Mth.TWO_PI / this.getOrbitCount();
-                    Vec3 orbit = owner.position().add(Mth.cos(angle) * 1.1F, owner.getBbHeight() * 0.6F + Mth.sin(this.tickCount * 0.15F + this.getIndex()) * 0.1F, Mth.sin(angle) * 1.1F);
+                    float radius = 1.1F * Mth.sqrt(this.getSwarmScale());
+                    Vec3 orbit = owner.position().add(Mth.cos(angle) * radius, owner.getBbHeight() * 0.6F + Mth.sin(this.tickCount * 0.15F + this.getIndex()) * 0.1F, Mth.sin(angle) * radius);
                     this.setDeltaMovement(orbit.subtract(this.position()).scale(0.35D));
                 }
             } else {

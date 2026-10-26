@@ -68,6 +68,7 @@ public class GrellClone extends Grell {
         this.index = index;
         this.count = count;
         this.entityData.set(REAL, real);
+        this.setEnraged(owner.isEnraged());
     }
 
     public boolean isReal() {
@@ -147,7 +148,11 @@ public class GrellClone extends Grell {
     @Override
     public boolean isPerceivedBy(Entity viewer) {
         Grell owner = this.getOwner();
-        return owner != null && owner.isPerceivedBy(viewer);
+        return owner != null && owner.isRevealedTo(viewer);
+    }
+
+    @Override
+    protected void enrage() {
     }
 
     @Override
@@ -161,6 +166,8 @@ public class GrellClone extends Grell {
         float alpha = 0.5F;
         if (this.isReal() && player != null && SpectralSight.hasSource(player, SpectralGogglesItem.SPECTRAL_SIGHT)) {
             alpha = 1.0F;
+        } else if (this.isReal() && this.isEnraged()) {
+            alpha = 0.53F;
         } else if (this.isReal()) {
             alpha = 0.56F;
         }

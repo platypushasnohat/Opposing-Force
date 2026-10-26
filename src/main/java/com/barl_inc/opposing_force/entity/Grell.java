@@ -65,12 +65,14 @@ public class Grell extends BasicFlyingMonster implements SpectralEntity {
 
     private static final EntityDataAccessor<CompoundTag> REVEALED = SynchedEntityData.defineId(Grell.class, EntityDataSerializers.COMPOUND_TAG);
     private static final EntityDataAccessor<Boolean> HIDDEN = SynchedEntityData.defineId(Grell.class, EntityDataSerializers.BOOLEAN);
+    private static final EntityDataAccessor<Boolean> ENRAGED = SynchedEntityData.defineId(Grell.class, EntityDataSerializers.BOOLEAN);
     private static final int MATERIALIZE_TICKS = 200;
 
     public final SmoothAnimationState chargeAnimationState = new SmoothAnimationState();
     public final SmoothAnimationState biteAnimationState = new SmoothAnimationState(1.0F);
     public final SmoothAnimationState conjureAnimationState = new SmoothAnimationState();
     public final SmoothAnimationState brainAnimationState = new SmoothAnimationState();
+    public final SmoothAnimationState brainAggroAnimationState = new SmoothAnimationState();
 
     private final Set<UUID> revealed = new HashSet<>();
     private final Object2IntMap<UUID> stares = new Object2IntOpenHashMap<>();
@@ -92,8 +94,8 @@ public class Grell extends BasicFlyingMonster implements SpectralEntity {
 
     public static AttributeSupplier.Builder registerAttributes() {
         return Mob.createMobAttributes()
-                .add(Attributes.MAX_HEALTH, 100.0D)
-                .add(Attributes.ARMOR, 6.0D)
+                .add(Attributes.MAX_HEALTH, 120.0D)
+                .add(Attributes.ARMOR, 8.0D)
                 .add(Attributes.ATTACK_DAMAGE, 12.0D)
                 .add(Attributes.FLYING_SPEED, 0.35F)
                 .add(Attributes.MOVEMENT_SPEED, 0.25F)
@@ -121,6 +123,7 @@ public class Grell extends BasicFlyingMonster implements SpectralEntity {
         super.defineSynchedData(builder);
         builder.define(REVEALED, new CompoundTag());
         builder.define(HIDDEN, false);
+        builder.define(ENRAGED, false);
     }
 
     @Override
@@ -136,6 +139,7 @@ public class Grell extends BasicFlyingMonster implements SpectralEntity {
     public void addAdditionalSaveData(CompoundTag compound) {
         super.addAdditionalSaveData(compound);
         compound.put("Revealed", writeUUIDs(this.revealed));
+        compound.putBoolean("Enraged", this.isEnraged());
     }
 
     @Override
@@ -145,6 +149,7 @@ public class Grell extends BasicFlyingMonster implements SpectralEntity {
         this.revealed.clear();
         this.revealed.addAll(readUUIDs(tag));
         this.entityData.set(REVEALED, tag);
+        this.setEnraged(compound.getBoolean("Enraged"));
     }
 
     private static CompoundTag writeUUIDs(Set<UUID> uuids) {
@@ -176,7 +181,9 @@ public class Grell extends BasicFlyingMonster implements SpectralEntity {
     }
 
     protected void tickSpectral() {
-        this.tickStares();
+        if (!this.isEnraged() && !this.isInvulnerablePhase()) {
+            this.tickStares();
+        }
         if (this.conjureCooldown > 0) {
             this.conjureCooldown--;
         }
@@ -207,6 +214,9 @@ public class Grell extends BasicFlyingMonster implements SpectralEntity {
             if (stare >= this.getStareTicks(player)) {
                 this.stares.removeInt(player.getUUID());
                 this.reveal(player);
+                if (!this.hasSpectralSight(player)) {
+                    player.playNotifySound(SoundEvents.ELDER_GUARDIAN_CURSE, SoundSource.HOSTILE, 1.0F, 0.6F);
+                }
                 if (EntitySelector.NO_CREATIVE_OR_SPECTATOR.test(player) && (this.getTarget() == null || !this.getTarget().isAlive())) {
                     this.setTarget(player);
                 }
@@ -295,6 +305,30 @@ public class Grell extends BasicFlyingMonster implements SpectralEntity {
         return this.getAnimationState() == CONJURE_ANIMATION;
     }
 
+    public boolean isEnraged() {
+        return this.entityData.get(ENRAGED);
+    }
+
+    public void setEnraged(boolean enraged) {
+        this.entityData.set(ENRAGED, enraged);
+    }
+
+    protected void enrage() {
+        this.setEnraged(true);
+        this.stares.clear();
+        this.staredAt = false;
+        this.conjureCooldown = 0;
+        SpectralSight.refreshTracking(this);
+    }
+
+    public int getCloneCount() {
+        int count = 4;
+        if (this.isEnraged()) {
+            count = 8;
+        }
+        return count;
+    }
+
     public boolean isHidden() {
         return this.entityData.get(HIDDEN);
     }
@@ -311,6 +345,11 @@ public class Grell extends BasicFlyingMonster implements SpectralEntity {
         if (this.level() instanceof ServerLevel serverLevel) {
             this.entityData.set(HIDDEN, true);
             this.illusionTicks = 300;
+            if (!this.stares.isEmpty()) {
+                this.stares.clear();
+                this.staredAt = false;
+                SpectralSight.refreshTracking(this);
+            }
             this.illusionAngle = (float) Mth.atan2(this.getZ() - target.getZ(), this.getX() - target.getX());
             int real = this.random.nextInt(count);
             for (int i = 0; i < count; i++) {
@@ -340,7 +379,11 @@ public class Grell extends BasicFlyingMonster implements SpectralEntity {
             this.moveTo(clone.getX(), clone.getY(), clone.getZ(), clone.getYRot(), 0.0F);
             this.endIllusion();
             this.setAnimationState(0);
-            this.setConjureCooldown(400);
+            if (this.isEnraged()) {
+                this.setConjureCooldown(200);
+            } else {
+                this.setConjureCooldown(400);
+            }
             Entity cause = target;
             if (killer instanceof Player) {
                 cause = killer;
@@ -392,9 +435,13 @@ public class Grell extends BasicFlyingMonster implements SpectralEntity {
         super.remove(reason);
     }
 
+    public boolean isRevealedTo(Entity viewer) {
+        return this.isEnraged() || this.revealed.contains(viewer.getUUID());
+    }
+
     @Override
     public boolean isPerceivedBy(Entity viewer) {
-        return this.revealed.contains(viewer.getUUID()) || this.stares.containsKey(viewer.getUUID());
+        return this.isEnraged() || this.revealed.contains(viewer.getUUID()) || this.stares.containsKey(viewer.getUUID());
     }
 
     @Override
@@ -409,6 +456,9 @@ public class Grell extends BasicFlyingMonster implements SpectralEntity {
         if (hurt && source.getEntity() instanceof Player player) {
             this.stares.removeInt(player.getUUID());
             this.reveal(player);
+        }
+        if (hurt && !this.isEnraged() && this.getHealth() <= this.getMaxHealth() * 0.5F) {
+            this.enrage();
         }
         return hurt;
     }
@@ -428,7 +478,8 @@ public class Grell extends BasicFlyingMonster implements SpectralEntity {
         this.walkAnimationState.animateWhen(!this.isAggressive() && !this.isConjuring(), this.tickCount);
         this.chargeAnimationState.animateWhen(this.isAggressive() && !this.isConjuring(), this.tickCount);
         this.biteAnimationState.animateWhen(this.getAnimationState() == BITE_ANIMATION, this.tickCount);
-        this.brainAnimationState.animateWhen(this.isAlive() && this.getAnimationState() == 0, this.tickCount);
+        this.brainAnimationState.animateWhen(this.isAlive() && this.getAnimationState() == 0 && !this.isEnraged(), this.tickCount);
+        this.brainAggroAnimationState.animateWhen(this.isAlive() && this.getAnimationState() == 0 && this.isEnraged(), this.tickCount);
         this.conjureAnimationState.animateWhen(this.isConjuring(), this.tickCount);
     }
 
@@ -510,7 +561,11 @@ public class Grell extends BasicFlyingMonster implements SpectralEntity {
                 this.grell.setAnimationState(0);
                 this.timer = 0;
                 this.attackState = 0;
-                this.biteCooldown = 30;
+                if (this.grell.isEnraged()) {
+                    this.biteCooldown = 15;
+                } else {
+                    this.biteCooldown = 30;
+                }
             }
         }
     }

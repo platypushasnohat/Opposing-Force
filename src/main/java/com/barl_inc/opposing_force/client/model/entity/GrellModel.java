@@ -45,6 +45,7 @@ public class GrellModel extends SinewEntityModel<Grell> {
         this.animateWalkSmooth(entity.walkAnimationState, GrellAnimations.MOVING, limbSwing, limbSwingAmount, partialTicks);
         this.animateWalkSmooth(entity.chargeAnimationState, GrellAnimations.CHARGING, limbSwing, limbSwingAmount, partialTicks);
         this.animateSmooth(entity.brainAnimationState, GrellAnimations.BRAIN_BLEND, ageInTicks, partialTicks);
+        this.animateSmooth(entity.brainAggroAnimationState, GrellAnimations.BRAIN_AGGRO_BLEND, ageInTicks, partialTicks);
         this.animateSmooth(entity.biteAnimationState, GrellAnimations.BITE_BLEND, ageInTicks, partialTicks);
         this.animateSmooth(entity.conjureAnimationState, GrellAnimations.CONJURE_BLEND, ageInTicks, partialTicks);
     }

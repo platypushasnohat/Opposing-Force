@@ -60,7 +60,7 @@ public class GrellConjureGoal extends Goal {
         if (!this.isValidTarget(this.grell.getTarget())) {
             this.grell.setConjureCooldown(0);
         } else if (this.punishTimer >= 0) {
-            this.grell.setConjureCooldown(80);
+            this.grell.setConjureCooldown(40);
         }
         this.grell.endIllusion();
         this.grell.setAnimationState(0);
@@ -73,7 +73,7 @@ public class GrellConjureGoal extends Goal {
         if (target != null) {
             this.grell.getLookControl().setLookAt(target, 30.0F, 30.0F);
             if (this.timer == Grell.CONJURE_TICKS) {
-                this.grell.startIllusion(target, 4);
+                this.grell.startIllusion(target, this.grell.getCloneCount());
             }
             if (this.grell.isHidden() && this.grell.getIllusionTicks() <= 0) {
                 this.grell.failIllusion();

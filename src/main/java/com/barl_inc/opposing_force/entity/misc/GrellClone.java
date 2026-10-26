@@ -69,6 +69,9 @@ public class GrellClone extends Grell {
         this.count = count;
         this.entityData.set(REAL, real);
         this.setEnraged(owner.isEnraged());
+        if (owner.isElite()) {
+            this.makeElite();
+        }
     }
 
     public boolean isReal() {
@@ -130,7 +133,11 @@ public class GrellClone extends Grell {
             double x = this.getX();
             double y = this.getY(0.5D);
             double z = this.getZ();
-            for (int i = 0; i < 3; i++) {
+            int count = 3;
+            if (this.isEnraged()) {
+                count = 1;
+            }
+            for (int i = 0; i < count; i++) {
                 if (this.isReal()) {
                     double dx = this.random.nextGaussian() * 1.5D;
                     double dy = this.random.nextGaussian() * 1.5D;

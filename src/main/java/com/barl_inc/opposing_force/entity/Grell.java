@@ -9,6 +9,7 @@ import com.barl_inc.opposing_force.registry.OFEntities;
 import com.platypushasnohat.sinew.Sinew;
 import com.platypushasnohat.sinew.client.animation.SmoothAnimationState;
 import com.platypushasnohat.sinew.entity.ai.goal.AttackGoal;
+import com.platypushasnohat.sinew.entity.elite.EliteMob;
 import com.platypushasnohat.sinew.entity.spectral.SpectralEntity;
 import com.platypushasnohat.sinew.entity.spectral.SpectralSight;
 import com.platypushasnohat.sinew.registry.SinewAttachments;
@@ -57,7 +58,7 @@ import java.util.List;
 import java.util.Set;
 import java.util.UUID;
 
-public class Grell extends BasicFlyingMonster implements SpectralEntity {
+public class Grell extends BasicFlyingMonster implements SpectralEntity, EliteMob {
 
     public static final int BITE_ANIMATION = 1;
     public static final int CONJURE_ANIMATION = 2;
@@ -66,6 +67,7 @@ public class Grell extends BasicFlyingMonster implements SpectralEntity {
     private static final EntityDataAccessor<CompoundTag> REVEALED = SynchedEntityData.defineId(Grell.class, EntityDataSerializers.COMPOUND_TAG);
     private static final EntityDataAccessor<Boolean> HIDDEN = SynchedEntityData.defineId(Grell.class, EntityDataSerializers.BOOLEAN);
     private static final EntityDataAccessor<Boolean> ENRAGED = SynchedEntityData.defineId(Grell.class, EntityDataSerializers.BOOLEAN);
+    private static final EntityDataAccessor<Boolean> ELITE = SynchedEntityData.defineId(Grell.class, EntityDataSerializers.BOOLEAN);
     private static final int MATERIALIZE_TICKS = 200;
 
     public final SmoothAnimationState chargeAnimationState = new SmoothAnimationState();
@@ -124,6 +126,7 @@ public class Grell extends BasicFlyingMonster implements SpectralEntity {
         builder.define(REVEALED, new CompoundTag());
         builder.define(HIDDEN, false);
         builder.define(ENRAGED, false);
+        builder.define(ELITE, false);
     }
 
     @Override
@@ -140,6 +143,7 @@ public class Grell extends BasicFlyingMonster implements SpectralEntity {
         super.addAdditionalSaveData(compound);
         compound.put("Revealed", writeUUIDs(this.revealed));
         compound.putBoolean("Enraged", this.isEnraged());
+        compound.putBoolean("Elite", this.isElite());
     }
 
     @Override
@@ -150,6 +154,7 @@ public class Grell extends BasicFlyingMonster implements SpectralEntity {
         this.revealed.addAll(readUUIDs(tag));
         this.entityData.set(REVEALED, tag);
         this.setEnraged(compound.getBoolean("Enraged"));
+        this.loadElite(compound.getBoolean("Elite"));
     }
 
     private static CompoundTag writeUUIDs(Set<UUID> uuids) {
@@ -303,6 +308,16 @@ public class Grell extends BasicFlyingMonster implements SpectralEntity {
 
     public boolean isConjuring() {
         return this.getAnimationState() == CONJURE_ANIMATION;
+    }
+
+    @Override
+    public boolean isElite() {
+        return this.entityData.get(ELITE);
+    }
+
+    @Override
+    public void setElite(boolean elite) {
+        this.entityData.set(ELITE, elite);
     }
 
     public boolean isEnraged() {

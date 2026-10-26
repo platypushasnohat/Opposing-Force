@@ -15,6 +15,7 @@ import net.minecraft.resources.ResourceLocation;
 public class GrellRenderer extends MobRenderer<Grell, GrellModel> {
 
     public static final ResourceLocation TEXTURE_LOCATION = OpposingForce.location("textures/entity/grell/grell.png");
+    public static final ResourceLocation ELITE_TEXTURE_LOCATION = OpposingForce.location("textures/entity/grell/grell_elite.png");
 
     public GrellRenderer(EntityRendererProvider.Context context) {
         super(context, new GrellModel(context.bakeLayer(OFModelLayers.GRELL)), 0.0F);
@@ -23,7 +24,11 @@ public class GrellRenderer extends MobRenderer<Grell, GrellModel> {
 
     @Override
     public ResourceLocation getTextureLocation(Grell grell) {
-        return TEXTURE_LOCATION;
+        ResourceLocation texture = TEXTURE_LOCATION;
+        if (grell.isElite()) {
+            texture = ELITE_TEXTURE_LOCATION;
+        }
+        return texture;
     }
 
     @Override
@@ -35,6 +40,10 @@ public class GrellRenderer extends MobRenderer<Grell, GrellModel> {
     @Override
     protected int getBlockLightLevel(Grell grell, BlockPos pos) {
         int light = super.getBlockLightLevel(grell, pos);
-        return light + Math.round((15 - light) * 0.6F);
+        float boost = 0.6F;
+        if (grell.isElite()) {
+            boost = 0.8F;
+        }
+        return light + Math.round((15 - light) * boost);
     }
 }

@@ -15,6 +15,7 @@ import java.util.List;
 public class GrellModel extends SinewEntityModel<Grell> {
 
     private final ModelPart root;
+    private final ModelPart brain;
     private final ModelPart brainLines;
     private final List<ModelPart> brainPath;
     public float alpha = 1.0F;
@@ -26,10 +27,11 @@ public class GrellModel extends SinewEntityModel<Grell> {
         ModelPart flightControl = grell.getChild("flight_control");
         ModelPart bodyMain = flightControl.getChild("body_main");
         ModelPart body = bodyMain.getChild("body");
-        ModelPart brain = body.getChild("brain");
-        this.brainLines = brain.getChild("brain_lines");
+        this.brain = body.getChild("brain");
+        this.brain.skipDraw = true;
+        this.brainLines = this.brain.getChild("brain_lines");
         this.brainLines.visible = false;
-        this.brainPath = List.of(root, grell, flightControl, bodyMain, body, brain);
+        this.brainPath = List.of(root, grell, flightControl, bodyMain, body);
     }
 
     @Override
@@ -50,9 +52,19 @@ public class GrellModel extends SinewEntityModel<Grell> {
         super.renderToBuffer(poseStack, buffer, packedLight, packedOverlay, this.applyAlpha(color));
     }
 
+    public void renderBrain(PoseStack poseStack, VertexConsumer buffer, int packedLight, int packedOverlay, int color) {
+        poseStack.pushPose();
+        this.brainPath.forEach(part -> part.translateAndRotate(poseStack));
+        this.brain.skipDraw = false;
+        this.brain.render(poseStack, buffer, packedLight, packedOverlay, this.applyAlpha(color));
+        this.brain.skipDraw = true;
+        poseStack.popPose();
+    }
+
     public void renderBrainLines(PoseStack poseStack, VertexConsumer buffer, int packedLight, int packedOverlay, int color) {
         poseStack.pushPose();
         this.brainPath.forEach(part -> part.translateAndRotate(poseStack));
+        this.brain.translateAndRotate(poseStack);
         this.brainLines.visible = true;
         this.brainLines.render(poseStack, buffer, packedLight, packedOverlay, this.applyAlpha(color));
         this.brainLines.visible = false;

@@ -22,7 +22,9 @@ public class GrellBrainLayer extends RenderLayer<Grell, GrellModel> {
     @Override
     public void render(PoseStack poseStack, MultiBufferSource buffer, int packedLight, Grell grell, float limbSwing, float limbSwingAmount, float partialTicks, float ageInTicks, float netHeadYaw, float headPitch) {
         if (this.getParentModel().alpha > 0.0F) {
-            this.getParentModel().renderBrainLines(poseStack, buffer.getBuffer(BRAIN_LINES), LightTexture.FULL_BRIGHT, LivingEntityRenderer.getOverlayCoords(grell, 0.0F), 0xFFFFFFFF);
+            int overlay = LivingEntityRenderer.getOverlayCoords(grell, 0.0F);
+            this.getParentModel().renderBrain(poseStack, buffer.getBuffer(this.getParentModel().renderType(GrellRenderer.TEXTURE_LOCATION)), LightTexture.pack(15, LightTexture.sky(packedLight)), overlay, 0xFFFFFFFF);
+            this.getParentModel().renderBrainLines(poseStack, buffer.getBuffer(BRAIN_LINES), LightTexture.FULL_BRIGHT, overlay, 0xFFFFFFFF);
         }
     }
 }

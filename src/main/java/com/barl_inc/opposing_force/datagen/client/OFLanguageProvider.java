@@ -124,7 +124,7 @@ public class OFLanguageProvider extends SinewLanguageProvider {
         this.add("enchantment.opposing_force.mana_thrifter.desc", "Magic weapons do not consume mana, but deal 33% less damage.");
 
         this.add("enchantment.opposing_force.magic_attunement", "Magic Attunement");
-        this.add("enchantment.opposing_force.magic_attunement.desc", "Increases the number of projectiles spawned by a magic weapon.");
+        this.add("enchantment.opposing_force.magic_attunement.desc", "Increases the potential of a magic weapon.");
 
         this.add("enchantment.opposing_force.freeze", "Freeze");
         this.add("enchantment.opposing_force.freeze.desc", "Inflicts freezing on hit");

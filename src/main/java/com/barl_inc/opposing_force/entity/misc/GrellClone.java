@@ -112,12 +112,7 @@ public class GrellClone extends Grell {
     private void circle(LivingEntity target) {
         Vec3 ring = this.getRingPosition(target);
         this.setDeltaMovement(ring.subtract(this.position()).scale(0.35D));
-        Vec3 tangent = ring.subtract(target.position()).cross(new Vec3(0.0D, 1.0D, 0.0D));
-        float yaw = (float) (Mth.atan2(tangent.z, tangent.x) * Mth.RAD_TO_DEG) - 90.0F;
-        if (this.isReal()) {
-            float facing = (float) (Mth.atan2(target.getZ() - this.getZ(), target.getX() - this.getX()) * Mth.RAD_TO_DEG) - 90.0F;
-            yaw = Mth.rotLerp(0.12F, yaw, facing);
-        }
+        float yaw = (float) (Mth.atan2(target.getZ() - this.getZ(), target.getX() - this.getX()) * Mth.RAD_TO_DEG) - 90.0F;
         this.setYRot(yaw);
         this.yBodyRot = yaw;
         this.yHeadRot = yaw;
@@ -130,17 +125,21 @@ public class GrellClone extends Grell {
     }
 
     private void tickParticles() {
-        if (this.tickCount % 2 == 0 && this.level() instanceof ServerLevel serverLevel) {
+        if (this.level() instanceof ServerLevel serverLevel) {
             double x = this.getX();
             double y = this.getY(0.5D);
             double z = this.getZ();
-            if (this.isReal()) {
-                double dx = this.random.nextGaussian();
-                double dy = this.random.nextGaussian();
-                double dz = this.random.nextGaussian();
-                SpectralSight.sendParticlesToPerceivers(serverLevel, this, ParticleTypes.PORTAL, x, y, z, 0, dx, dy, dz, 1.0D);
-            } else {
-                SpectralSight.sendParticlesToPerceivers(serverLevel, this, ParticleTypes.REVERSE_PORTAL, x, y, z, 1, 0.5D, 0.6D, 0.5D, 0.02D);
+            for (int i = 0; i < 3; i++) {
+                if (this.isReal()) {
+                    double dx = this.random.nextGaussian() * 1.5D;
+                    double dy = this.random.nextGaussian() * 1.5D;
+                    double dz = this.random.nextGaussian() * 1.5D;
+                    SpectralSight.sendParticlesToPerceivers(serverLevel, this, ParticleTypes.PORTAL, x, y, z, 0, dx, dy, dz, 1.0D);
+                } else {
+                    double dx = this.random.nextGaussian() * 0.08D;
+                    double dz = this.random.nextGaussian() * 0.08D;
+                    SpectralSight.sendParticlesToPerceivers(serverLevel, this, ParticleTypes.REVERSE_PORTAL, x, y, z, 0, dx, 0.06D, dz, 1.0D);
+                }
             }
         }
     }

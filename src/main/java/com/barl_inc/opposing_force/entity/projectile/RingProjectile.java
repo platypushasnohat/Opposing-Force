@@ -31,7 +31,7 @@ import java.util.List;
 
 public class RingProjectile extends Projectile implements SplitMagicBonus {
 
-    public static final float DAMAGE = 3.5F;
+    public static final float DAMAGE = 2.5F;
 
     private static final EntityDataAccessor<Integer> INDEX = SynchedEntityData.defineId(RingProjectile.class, EntityDataSerializers.INT);
     private static final EntityDataAccessor<Integer> COUNT = SynchedEntityData.defineId(RingProjectile.class, EntityDataSerializers.INT);

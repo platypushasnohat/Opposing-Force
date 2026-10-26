@@ -178,5 +178,7 @@ public class OFLanguageProvider extends SinewLanguageProvider {
         this.add("death.attack.soul_1", "%s had their soul torn apart");
         this.add("death.attack.soul_0.entity", "%s has their soul torn apart by %s");
         this.add("death.attack.soul_1.entity", "%s was reaped %s");
+
+        this.add("death.attack.grell_bite", "%1$s was torn apart by %2$s");
     }
 }

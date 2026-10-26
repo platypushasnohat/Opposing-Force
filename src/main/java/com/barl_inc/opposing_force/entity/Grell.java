@@ -4,6 +4,7 @@ import com.barl_inc.opposing_force.entity.ai.goal.GrellConjureGoal;
 import com.barl_inc.opposing_force.entity.ai.goal.PhasingWanderGoal;
 import com.barl_inc.opposing_force.entity.base.BasicFlyingMonster;
 import com.barl_inc.opposing_force.entity.misc.GrellClone;
+import com.barl_inc.opposing_force.registry.OFDamageTypes;
 import com.barl_inc.opposing_force.registry.OFEntities;
 import com.platypushasnohat.sinew.Sinew;
 import com.platypushasnohat.sinew.client.animation.SmoothAnimationState;
@@ -15,6 +16,7 @@ import it.unimi.dsi.fastutil.objects.Object2IntMap;
 import it.unimi.dsi.fastutil.objects.Object2IntOpenHashMap;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.particles.ParticleTypes;
+import net.minecraft.core.registries.Registries;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.ListTag;
 import net.minecraft.nbt.NbtUtils;
@@ -47,6 +49,7 @@ import net.minecraft.world.level.Level;
 import net.minecraft.world.level.ServerLevelAccessor;
 import net.minecraft.world.phys.Vec3;
 
+import javax.annotation.Nullable;
 import java.util.ArrayList;
 import java.util.EnumSet;
 import java.util.HashSet;
@@ -73,6 +76,7 @@ public class Grell extends BasicFlyingMonster implements SpectralEntity {
     private final Object2IntMap<UUID> stares = new Object2IntOpenHashMap<>();
     private final List<UUID> clones = new ArrayList<>();
     private float illusionAngle;
+    private int illusionTicks;
     private boolean staredAt;
     private int conjureCooldown;
     private int materialize;
@@ -178,7 +182,18 @@ public class Grell extends BasicFlyingMonster implements SpectralEntity {
         }
         if (this.isHidden()) {
             this.illusionAngle += 0.05F;
+            this.illusionTicks = Math.max(this.illusionTicks - 1, 0);
         }
+        if (this.tickCount % 20 == 0 && this.getTarget() == null && !this.revealed.isEmpty() && !this.isRevealedPlayerNearby()) {
+            this.revealed.clear();
+            this.entityData.set(REVEALED, writeUUIDs(this.revealed));
+            SpectralSight.refreshTracking(this);
+        }
+    }
+
+    private boolean isRevealedPlayerNearby() {
+        double range = this.getAttributeValue(Attributes.FOLLOW_RANGE);
+        return !this.level().getEntitiesOfClass(Player.class, this.getBoundingBox().inflate(range), player -> this.revealed.contains(player.getUUID()) && player.isAlive() && !player.isSpectator()).isEmpty();
     }
 
     private void tickStares() {
@@ -295,6 +310,7 @@ public class Grell extends BasicFlyingMonster implements SpectralEntity {
     public void startIllusion(LivingEntity target, int count) {
         if (this.level() instanceof ServerLevel serverLevel) {
             this.entityData.set(HIDDEN, true);
+            this.illusionTicks = 300;
             this.illusionAngle = (float) Mth.atan2(this.getZ() - target.getZ(), this.getX() - target.getX());
             int real = this.random.nextInt(count);
             for (int i = 0; i < count; i++) {
@@ -312,6 +328,45 @@ public class Grell extends BasicFlyingMonster implements SpectralEntity {
                 }
             }
         }
+    }
+
+    public int getIllusionTicks() {
+        return this.illusionTicks;
+    }
+
+    public void onCloneKilled(GrellClone clone, @Nullable Entity killer) {
+        if (clone.isReal()) {
+            LivingEntity target = this.getTarget();
+            this.moveTo(clone.getX(), clone.getY(), clone.getZ(), clone.getYRot(), 0.0F);
+            this.endIllusion();
+            this.setAnimationState(0);
+            this.setConjureCooldown(400);
+            Entity cause = target;
+            if (killer instanceof Player) {
+                cause = killer;
+            }
+            if (cause != null) {
+                this.hurt(this.damageSources().indirectMagic(clone, cause), 15.0F);
+            }
+        } else {
+            this.illusionTicks = Math.max(this.illusionTicks - 100, 0);
+        }
+    }
+
+    public void failIllusion() {
+        if (this.level() instanceof ServerLevel serverLevel) {
+            for (UUID uuid : this.clones) {
+                if (serverLevel.getEntity(uuid) instanceof GrellClone clone && clone.isReal()) {
+                    this.moveTo(clone.getX(), clone.getY(), clone.getZ(), clone.getYRot(), 0.0F);
+                }
+            }
+        }
+        this.endIllusion();
+    }
+
+    public void punishBite(LivingEntity target) {
+        DamageSource source = new DamageSource(this.level().registryAccess().registryOrThrow(Registries.DAMAGE_TYPE).getHolderOrThrow(OFDamageTypes.GRELL_BITE), this);
+        target.hurt(source, (float) this.getAttributeValue(Attributes.ATTACK_DAMAGE) * 2.0F);
     }
 
     public void endIllusion() {

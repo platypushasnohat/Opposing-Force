@@ -12,6 +12,7 @@
   "death.attack.cursed_ring_0.entity": "%s was killed with cursed magic by %s",
   "death.attack.cursed_ring_1": "%s was hexed",
   "death.attack.cursed_ring_1.entity": "%s was hexed by %s",
+  "death.attack.grell_bite": "%1$s was torn apart by %2$s",
   "death.attack.laser_0": "%s was disintegrated",
   "death.attack.laser_0.entity": "%s was disintegrated by %s",
   "death.attack.laser_1": "%s was vaporized",

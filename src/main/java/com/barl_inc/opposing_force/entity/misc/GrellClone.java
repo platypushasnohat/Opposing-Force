@@ -48,8 +48,8 @@ public class GrellClone extends Grell {
 
     public static AttributeSupplier.Builder registerAttributes() {
         return Grell.registerAttributes()
-                .add(Attributes.MAX_HEALTH, 15.0D)
-                .add(Attributes.ARMOR, 0.0D);
+                .add(Attributes.MAX_HEALTH, 20.0D)
+                .add(Attributes.ARMOR, 2.0D);
     }
 
     @Override
@@ -175,6 +175,10 @@ public class GrellClone extends Grell {
             this.playSound(SoundEvents.ILLUSIONER_PREPARE_BLINDNESS, 1.5F, 1.2F);
         }
         super.die(source);
+        Grell owner = this.getOwner();
+        if (owner != null && !this.level().isClientSide) {
+            owner.onCloneKilled(this, source.getEntity());
+        }
     }
 
     @Override

@@ -1,0 +1,10 @@
+{
+  "type": "neoforge:add_spawns",
+  "biomes": "#opposing_force:has_monster/windswept",
+  "spawners": {
+    "type": "opposing_force:grasper",
+    "maxCount": 2,
+    "minCount": 1,
+    "weight": 25
+  }
+}

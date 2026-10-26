@@ -21,10 +21,15 @@ public class OFCreativeTabs {
                         output.accept(OFItems.DICER_SPAWN_EGG);
                         output.accept(OFItems.FILLET_SPAWN_EGG);
                         output.accept(OFItems.FURBALL_SPAWN_EGG);
+                        output.accept(OFItems.GHOST_SPAWN_EGG);
                         output.accept(OFItems.GNAT_SPAWN_EGG);
+                        output.accept(OFItems.GRASPER_SPAWN_EGG);
                         output.accept(OFItems.GUSHER_SPAWN_EGG);
+                        output.accept(OFItems.HAUNT_SPAWN_EGG);
                         output.accept(OFItems.MOTIF_SPAWN_EGG);
                         output.accept(OFItems.MUSHY_SPAWN_EGG);
+                        output.accept(OFItems.PARASOUL_SPAWN_EGG);
+                        output.accept(OFItems.ROAMER_SPAWN_EGG);
                         output.accept(OFItems.SCORCHER_SPAWN_EGG);
                         output.accept(OFItems.TARANTULA_SPAWN_EGG);
                         output.accept(OFItems.TERROR_SPAWN_EGG);
@@ -43,10 +48,19 @@ public class OFCreativeTabs {
 
                         output.accept(OFItems.FILLET_BUCKET);
 
+                        output.accept(OFItems.CURSED_RING);
+                        output.accept(OFItems.CURSED_RINGLINE);
+
+                        output.accept(OFItems.ECTOPLASM);
+                        output.accept(OFItems.SPECTRAL_CLEAVER);
+                        output.accept(OFItems.SPECTRAL_SHIELD);
+
                         output.accept(OFItems.ACID_CHARGE);
 
                         output.accept(OFItems.MYSTIC_POT);
                         output.accept(OFItems.LEITMOTIF);
+
+                        output.accept(OFItems.SAKE);
 
                         output.accept(OFItems.TERROR_LEG);
                         output.accept(OFItems.FRIED_TERROR_LEG);
@@ -101,6 +115,7 @@ public class OFCreativeTabs {
                         output.accept(OFItems.RELIC_FEATHER);
                         output.accept(OFItems.SHARPSHOOTER_COIN);
                         output.accept(OFItems.SLIMY_SHIELD);
+                        output.accept(OFItems.SPECTRAL_GOGGLES);
                         output.accept(OFItems.STALKER_GLOVES);
                         output.accept(OFItems.URANIUM_KNUCKLES);
 

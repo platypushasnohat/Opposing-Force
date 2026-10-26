@@ -1,0 +1,10 @@
+{
+  "type": "neoforge:add_spawns",
+  "biomes": "#opposing_force:has_monster/birch_forest",
+  "spawners": {
+    "type": "opposing_force:roamer",
+    "maxCount": 3,
+    "minCount": 1,
+    "weight": 20
+  }
+}

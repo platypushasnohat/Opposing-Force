@@ -29,6 +29,16 @@ public class ScatterBlasterItem extends BlasterItem {
     }
 
     @Override
+    public float getDamage() {
+        return 3.5F;
+    }
+
+    @Override
+    public int getShotCount() {
+        return PROJECTILE_COUNT;
+    }
+
+    @Override
     protected boolean canDualWield() {
         return false;
     }
@@ -37,7 +47,7 @@ public class ScatterBlasterItem extends BlasterItem {
     public void shoot(Level level, Player player, ItemStack stack, ItemStack ammo) {
         for (int i = 0; i < PROJECTILE_COUNT; i++) {
             LaserBolt laserBolt = new LaserBolt(player, level, stack);
-            laserBolt.setDamage(3.5F);
+            laserBolt.setDamage(this.getDamage());
             laserBolt.setProjectileCount(PROJECTILE_COUNT);
             laserBolt.shootFromRotation(player, player.getXRot(), player.getYRot(), 0, 2.5F, 10.0F);
             level.addFreshEntity(laserBolt);

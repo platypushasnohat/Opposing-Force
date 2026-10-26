@@ -47,6 +47,16 @@ public class BulletGunItem extends GunItem {
         this.shootBullet(level, player, stack, ammo);
     }
 
+    @Override
+    public float getDamage() {
+        return this.damage;
+    }
+
+    @Override
+    public String getAmmoTooltip() {
+        return "item.opposing_force.tooltip.uses_bullets";
+    }
+
     public int getProjectileCount() {
         return 1;
     }

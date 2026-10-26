@@ -16,12 +16,19 @@ public class OFModelLayers {
     public static final ModelLayerLocation MUSHY = register("mushy");
     public static final ModelLayerLocation MOTIF = register("motif");
     public static final ModelLayerLocation FILLET = register("fillet");
+    public static final ModelLayerLocation GHOST = register("ghost");
+    public static final ModelLayerLocation ROAMER = register("roamer");
+    public static final ModelLayerLocation HAUNT = register("haunt");
+    public static final ModelLayerLocation GRASPER = register("grasper");
+    public static final ModelLayerLocation PARASOUL = register("parasoul");
 
     public static final ModelLayerLocation LASER_BOLT = register("laser_bolt");
 
     public static final ModelLayerLocation ACID_CHARGE = register("acid_charge");
 
     public static final ModelLayerLocation MUDBALL = register("mudball");
+
+    public static final ModelLayerLocation SOUL = register("soul");
 
     public static final ModelLayerLocation BLASTER = register("blaster");
     public static final ModelLayerLocation TRI_BLASTER = register("tri_blaster");

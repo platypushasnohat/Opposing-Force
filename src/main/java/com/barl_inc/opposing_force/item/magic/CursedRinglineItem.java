@@ -1,0 +1,62 @@
+package com.barl_inc.opposing_force.item.magic;
+
+import com.barl_inc.opposing_force.entity.projectile.RingProjectile;
+import com.barl_inc.opposing_force.item.base.MagicWeaponItem;
+import com.barl_inc.opposing_force.item.utils.OFTooltips;
+import com.barl_inc.opposing_force.registry.OFItems;
+import com.platypushasnohat.sinew.item.DisabledItem;
+import com.platypushasnohat.sinew.utils.SinewSoundUtils;
+import net.minecraft.network.chat.Component;
+import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.sounds.SoundEvents;
+import net.minecraft.sounds.SoundSource;
+import net.minecraft.stats.Stats;
+import net.minecraft.world.InteractionHand;
+import net.minecraft.world.InteractionResultHolder;
+import net.minecraft.world.entity.player.Inventory;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.TooltipFlag;
+import net.minecraft.world.level.Level;
+
+import java.util.List;
+
+public class CursedRinglineItem extends MagicWeaponItem {
+
+    public CursedRinglineItem(Properties properties) {
+        super(properties);
+    }
+
+    @Override
+    public int getManaCost(ItemStack weapon) {
+        return 2 + this.getAttunement(weapon);
+    }
+
+    @Override
+    public void appendHoverText(ItemStack stack, TooltipContext context, List<Component> tooltipComponents, TooltipFlag tooltipFlag) {
+        super.appendHoverText(stack, context, tooltipComponents, tooltipFlag);
+        OFTooltips.addStats(tooltipComponents, "item.opposing_force.tooltip.when_cast", OFTooltips.damage(RingProjectile.DAMAGE, 5 + this.getAttunement(stack)));
+    }
+
+    @Override
+    public InteractionResultHolder<ItemStack> use(Level level, Player player, InteractionHand hand) {
+        ItemStack stack = player.getItemInHand(hand);
+        InteractionResultHolder<ItemStack> result = InteractionResultHolder.fail(stack);
+        if (this.hasMana(player, stack)) {
+            if (player instanceof ServerPlayer serverPlayer) {
+                int slot = hand == InteractionHand.OFF_HAND ? Inventory.SLOT_OFFHAND : player.getInventory().selected;
+                this.consumeMana(player, stack, 1 + player.getRandom().nextInt(this.getManaCost(stack)));
+                int count = this.getProjectileCount(player, stack, 5);
+                for (int i = 0; i < count; i++) {
+                    level.addFreshEntity(new RingProjectile(level, player, i, count, slot, stack));
+                }
+                DisabledItem.disableItem(serverPlayer, slot, OFItems.DISABLED_CURSED_RINGLINE);
+                level.playSound(null, player.getX(), player.getY(), player.getZ(), SoundEvents.EVOKER_CAST_SPELL, SoundSource.PLAYERS, 1.0F, SinewSoundUtils.randomizePitch(level));
+            }
+            player.awardStat(Stats.ITEM_USED.get(this));
+            player.getCooldowns().addCooldown(this, 200);
+            result = InteractionResultHolder.sidedSuccess(stack, level.isClientSide);
+        }
+        return result;
+    }
+}

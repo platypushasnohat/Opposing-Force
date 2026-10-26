@@ -3,7 +3,7 @@
   "render_type": "minecraft:cutout",
   "textures": {
     "0": "opposing_force:block/mystic_pot_bottom",
-    "particle": "opposing_force:block/mystic_pot_bottom"
+    "particle": "opposing_force:block/mystic_pot_particle"
   },
   "elements": [
     {

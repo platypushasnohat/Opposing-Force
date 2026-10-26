@@ -38,6 +38,16 @@ public class TriBlasterItem extends BlasterItem {
     }
 
     @Override
+    public float getDamage() {
+        return 6.5F;
+    }
+
+    @Override
+    public int getShotCount() {
+        return 3;
+    }
+
+    @Override
     protected boolean canDualWield() {
         return false;
     }
@@ -90,7 +100,7 @@ public class TriBlasterItem extends BlasterItem {
     @Override
     public void shoot(Level level, Player player, ItemStack stack, ItemStack ammo) {
         LaserBolt laserBolt = new LaserBolt(player, level, stack);
-        laserBolt.setDamage(6.5F);
+        laserBolt.setDamage(this.getDamage());
         laserBolt.shootFromRotation(player, player.getXRot(), player.getYRot(), 0, 3.25F, 0.5F);
         level.addFreshEntity(laserBolt);
         level.playSound(null, player.getX(), player.getY(), player.getZ(), OFSoundEvents.BLASTER_SHOOT.get(), SoundSource.PLAYERS, 1.0F, 0.8F * SinewSoundUtils.randomizePitch(level));

@@ -29,5 +29,25 @@ public class OFBiomeTagsProvider extends BiomeTagsProvider {
 		this.tag(OFBiomeTags.HAS_DESERT_MONSTERS).addTag(Tags.Biomes.IS_DESERT);
 
         this.tag(OFBiomeTags.HAS_MOTIF_RUIN).addTag(Tags.Biomes.IS_DESERT);
+
+        this.tag(OFBiomeTags.HAS_BIRCH_FOREST_MONSTERS).add(
+                Biomes.BIRCH_FOREST,
+                Biomes.OLD_GROWTH_BIRCH_FOREST
+        );
+        this.tag(OFBiomeTags.HAS_DARK_FOREST_MONSTERS).add(
+                Biomes.DARK_FOREST
+        );
+        this.tag(OFBiomeTags.HAS_WINDSWEPT_MONSTERS).addTag(
+                Tags.Biomes.IS_WINDSWEPT
+        );
+        this.tag(OFBiomeTags.HAS_WINDSWEPT_SAVANNA_MONSTERS).add(
+                Biomes.WINDSWEPT_SAVANNA
+        );
+        this.tag(OFBiomeTags.HAS_WOODED_BADLANDS_MONSTERS).add(
+                Biomes.WOODED_BADLANDS
+        );
+        this.tag(OFBiomeTags.HAS_CHERRY_GROVE_MONSTERS).add(
+                Biomes.CHERRY_GROVE
+        );
 	}
 }

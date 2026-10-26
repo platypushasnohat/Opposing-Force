@@ -20,6 +20,7 @@
     "opposing_force:chests/uranium_knuckles_stronghold",
     "opposing_force:chests/momentum_gauntlet",
     "opposing_force:entities/slimy_shield",
-    "opposing_force:chests/stalker_gloves"
+    "opposing_force:chests/stalker_gloves",
+    "opposing_force:chests/mana_thrifter"
   ]
 }

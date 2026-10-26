@@ -1,6 +1,6 @@
 package com.barl_inc.opposing_force.client.sound;
 
-import com.barl_inc.opposing_force.item.BuzzsawItem;
+import com.barl_inc.opposing_force.item.melee.BuzzsawItem;
 import com.barl_inc.opposing_force.registry.OFItems;
 import com.barl_inc.opposing_force.registry.OFSoundEvents;
 import com.platypushasnohat.sinew.client.sound.ItemTickableSound;

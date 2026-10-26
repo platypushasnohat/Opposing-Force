@@ -2,11 +2,13 @@ package com.barl_inc.opposing_force.datagen.server;
 
 import com.barl_inc.opposing_force.OpposingForce;
 import com.barl_inc.opposing_force.registry.OFItems;
+import com.barl_inc.opposing_force.registry.datapack.tags.OFItemTags;
 import net.minecraft.core.HolderLookup.Provider;
 import net.minecraft.data.PackOutput;
 import net.minecraft.data.tags.ItemTagsProvider;
 import net.minecraft.data.tags.TagsProvider;
 import net.minecraft.tags.ItemTags;
+import net.minecraft.world.item.Items;
 import net.minecraft.world.level.block.Block;
 import net.neoforged.neoforge.common.Tags;
 import net.neoforged.neoforge.common.data.ExistingFileHelper;
@@ -27,7 +29,8 @@ public class OFItemTagsProvider extends ItemTagsProvider {
                 OFItems.LASER_BLADE.get(),
                 OFItems.EMERALD_SWORD.get(),
                 OFItems.CHITIN_LANCE.get(),
-                OFItems.LAPIS_LAZULI_SWORD.get()
+                OFItems.LAPIS_LAZULI_SWORD.get(),
+                OFItems.SPECTRAL_CLEAVER.get()
         );
 
         this.tag(ItemTags.PICKAXES).add(
@@ -63,7 +66,9 @@ public class OFItemTagsProvider extends ItemTagsProvider {
                 OFItems.CRACKSHOT.get(),
                 OFItems.JAEGER.get(),
                 OFItems.BOOMSTICK.get(),
-                OFItems.GORLOFF.get()
+                OFItems.GORLOFF.get(),
+                OFItems.SPECTRAL_SHIELD.get(),
+                OFItems.CURSED_RINGLINE.get()
         );
 
         this.tag(ItemTags.HEAD_ARMOR).add(
@@ -95,7 +100,9 @@ public class OFItemTagsProvider extends ItemTagsProvider {
                 OFItems.MUSIC_DISC_SLAYSER.get()
         );
 
-        this.tag(CuriosTags.CHARM).add(
+        this.tag(CuriosTags.CHARM).addTag(OFItemTags.TRINKETS);
+
+        this.tag(OFItemTags.TRINKETS).add(
                 OFItems.RELIC_FEATHER.get(),
                 OFItems.BEETLE_HUSK.get(),
                 OFItems.ENCHANTED_CHISEL.get(),
@@ -113,7 +120,25 @@ public class OFItemTagsProvider extends ItemTagsProvider {
                 OFItems.SLIMY_SHIELD.get(),
                 OFItems.STALKER_GLOVES.get(),
                 OFItems.MUNITIONS_BOX.get(),
-                OFItems.MOON_SHOES.get()
+                OFItems.MOON_SHOES.get(),
+                OFItems.SPECTRAL_GOGGLES.get(),
+                OFItems.CURSED_RING.get()
+        );
+
+        this.tag(Tags.Items.TOOLS_SHIELD).add(
+                OFItems.SPECTRAL_SHIELD.get()
+        );
+
+        this.tag(OFItemTags.BASIC_MANA).add(
+                Items.LAPIS_LAZULI
+        );
+
+        this.tag(OFItemTags.CONSUMES_BASIC_MANA).add(
+                OFItems.CURSED_RINGLINE.get()
+        );
+
+        this.tag(OFItemTags.ENCHANTABLE_MAGIC).addTag(
+                OFItemTags.CONSUMES_BASIC_MANA
         );
 	}
 }

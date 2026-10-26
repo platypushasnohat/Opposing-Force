@@ -12,6 +12,7 @@ import net.minecraft.world.entity.ai.attributes.Attribute;
 import net.minecraft.world.entity.ai.attributes.AttributeModifier;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
+import top.theillusivec4.curios.api.CuriosApi;
 import top.theillusivec4.curios.api.SlotContext;
 import top.theillusivec4.curios.api.type.capability.ICurioItem;
 
@@ -52,4 +53,9 @@ public abstract class AbstractCurioItem extends Item implements ICurioItem {
 //    public boolean canEquip(SlotContext context, ItemStack stack) {
 //        return CuriosApi.getCuriosInventory(context.entity()).map(inventory -> inventory.findCurios(this).stream().allMatch(result -> result.slotContext().identifier().equals(context.identifier()) && result.slotContext().index() == context.index())).orElse(true);
 //    }
+    //attempted fix
+    @Override
+    public boolean canEquip(SlotContext context, ItemStack stack) {
+        return CuriosApi.getCuriosInventory(context.entity()).map(inventory -> inventory.findCurios(curio -> curio.is(this)).stream().allMatch(result -> result.slotContext().identifier().equals(context.identifier()) && result.slotContext().index() == context.index())).orElse(true);
+    }
 }

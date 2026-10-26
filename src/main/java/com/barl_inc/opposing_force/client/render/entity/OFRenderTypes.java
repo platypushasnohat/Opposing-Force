@@ -50,6 +50,17 @@ public class OFRenderTypes extends SinewRenderTypes {
         return create("laser_bolt", DefaultVertexFormat.NEW_ENTITY, VertexFormat.Mode.QUADS, 256, false, true, compositeState);
     });
 
+    public static RenderType getPhasingGlow(ResourceLocation resourceLocation) {
+        CompositeState compositeState = CompositeState.builder()
+                .setShaderState(RENDERTYPE_EYES_SHADER)
+                .setTextureState(new TextureStateShard(resourceLocation, false, false))
+                .setTransparencyState(ADDITIVE_TRANSPARENCY)
+                .setCullState(NO_CULL)
+                .setWriteMaskState(COLOR_WRITE)
+                .createCompositeState(false);
+        return create("phasing_glow", DefaultVertexFormat.NEW_ENTITY, VertexFormat.Mode.QUADS, 256, false, true, compositeState);
+    }
+
     public static RenderType getLaserBolt(ResourceLocation resourceLocation) {
         return LASER_BOLT.apply(resourceLocation);
     }

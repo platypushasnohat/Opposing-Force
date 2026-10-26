@@ -5,11 +5,16 @@ import com.barl_inc.opposing_force.config.OFConfig;
 import com.barl_inc.opposing_force.entity.*;
 import com.barl_inc.opposing_force.entity.ai.goal.LightDependentTargetGoal;
 import com.barl_inc.opposing_force.entity.misc.MudSplatter;
+import com.barl_inc.opposing_force.item.SpectralShieldItem;
+import com.barl_inc.opposing_force.item.curios.AbstractCurioItem;
 import com.barl_inc.opposing_force.item.curios.MomentumGauntletItem;
+import com.barl_inc.opposing_force.item.curios.SpectralGogglesItem;
 import com.barl_inc.opposing_force.registry.OFEntities;
 import com.barl_inc.opposing_force.registry.OFItems;
+import com.barl_inc.opposing_force.registry.datapack.tags.OFItemTags;
 import com.platypushasnohat.sinew.entity.base.AnimatedMonster;
 import com.platypushasnohat.sinew.entity.villager.MultipleInputsTrade;
+import com.platypushasnohat.sinew.registry.SinewDamageTypes;
 import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.network.chat.Component;
 import net.minecraft.server.level.ServerLevel;
@@ -18,6 +23,8 @@ import net.minecraft.server.packs.repository.Pack;
 import net.minecraft.server.packs.repository.PackSource;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.tags.DamageTypeTags;
+import net.minecraft.world.InteractionHand;
+import net.minecraft.world.InteractionResult;
 import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.LivingEntity;
@@ -28,11 +35,13 @@ import net.minecraft.world.entity.monster.EnderMan;
 import net.minecraft.world.entity.monster.Spider;
 import net.minecraft.world.entity.npc.VillagerTrades;
 import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.level.levelgen.Heightmap;
 import net.neoforged.bus.api.EventPriority;
 import net.neoforged.bus.api.SubscribeEvent;
 import net.neoforged.fml.common.EventBusSubscriber;
+import net.neoforged.neoforge.common.Tags;
 import net.neoforged.neoforge.event.AddPackFindersEvent;
 import net.neoforged.neoforge.event.entity.EntityAttributeCreationEvent;
 import net.neoforged.neoforge.event.entity.EntityJoinLevelEvent;
@@ -40,11 +49,19 @@ import net.neoforged.neoforge.event.entity.EntityTeleportEvent;
 import net.neoforged.neoforge.event.entity.RegisterSpawnPlacementsEvent;
 import net.neoforged.neoforge.event.entity.living.LivingDamageEvent;
 import net.neoforged.neoforge.event.entity.living.LivingIncomingDamageEvent;
+import net.neoforged.neoforge.event.entity.living.LivingShieldBlockEvent;
+import net.neoforged.neoforge.event.entity.player.PlayerInteractEvent;
 import net.neoforged.neoforge.event.level.BlockEvent;
+import net.neoforged.neoforge.event.tick.PlayerTickEvent;
 import net.neoforged.neoforge.event.village.WandererTradesEvent;
 import top.theillusivec4.curios.api.CuriosApi;
+import top.theillusivec4.curios.api.SlotContext;
+import top.theillusivec4.curios.api.type.capability.ICuriosItemHandler;
+import top.theillusivec4.curios.api.type.inventory.ICurioStacksHandler;
+import top.theillusivec4.curios.api.type.inventory.IDynamicStackHandler;
 
 import java.util.List;
+import java.util.Map;
 
 @EventBusSubscriber(modid = OpposingForce.MOD_ID)
 public class CommonEvents {
@@ -62,6 +79,11 @@ public class CommonEvents {
         event.put(OFEntities.MUSHY.get(), Mushy.registerAttributes().build());
         event.put(OFEntities.MOTIF.get(), Motif.registerAttributes().build());
         event.put(OFEntities.FILLET.get(), Fillet.registerAttributes().build());
+        event.put(OFEntities.GHOST.get(), Ghost.registerAttributes().build());
+        event.put(OFEntities.ROAMER.get(), Roamer.registerAttributes().build());
+        event.put(OFEntities.HAUNT.get(), Haunt.registerAttributes().build());
+        event.put(OFEntities.GRASPER.get(), Grasper.registerAttributes().build());
+        event.put(OFEntities.PARASOUL.get(), Parasoul.registerAttributes().build());
     }
 
     @SubscribeEvent
@@ -75,8 +97,13 @@ public class CommonEvents {
         event.register(OFEntities.TERROR.get(), SpawnPlacementTypes.IN_WATER, Heightmap.Types.MOTION_BLOCKING_NO_LEAVES, Terror::checkTerrorSpawnRules, RegisterSpawnPlacementsEvent.Operation.AND);
         event.register(OFEntities.TARANTULA.get(), SpawnPlacementTypes.ON_GROUND, Heightmap.Types.MOTION_BLOCKING_NO_LEAVES, AnimatedMonster::checkSurfaceMonsterSpawnRules, RegisterSpawnPlacementsEvent.Operation.AND);
         event.register(OFEntities.MUSHY.get(), SpawnPlacementTypes.ON_GROUND, Heightmap.Types.MOTION_BLOCKING_NO_LEAVES, Mushy::checkMushySpawnRules, RegisterSpawnPlacementsEvent.Operation.AND);
-        event.register(OFEntities.MOTIF.get(), SpawnPlacementTypes.ON_GROUND, Heightmap.Types.MOTION_BLOCKING_NO_LEAVES, Motif::checkSurfaceMonsterSpawnRules, RegisterSpawnPlacementsEvent.Operation.AND);
+        event.register(OFEntities.MOTIF.get(), SpawnPlacementTypes.ON_GROUND, Heightmap.Types.MOTION_BLOCKING_NO_LEAVES, AnimatedMonster::checkSurfaceMonsterSpawnRules, RegisterSpawnPlacementsEvent.Operation.AND);
         event.register(OFEntities.FILLET.get(), SpawnPlacementTypes.IN_WATER, Heightmap.Types.MOTION_BLOCKING_NO_LEAVES, Fillet::checkFilletSpawnRules, RegisterSpawnPlacementsEvent.Operation.AND);
+        event.register(OFEntities.GHOST.get(), SpawnPlacementTypes.ON_GROUND, Heightmap.Types.MOTION_BLOCKING_NO_LEAVES, Ghost::checkGhostSpawnRules, RegisterSpawnPlacementsEvent.Operation.AND);
+        event.register(OFEntities.ROAMER.get(), SpawnPlacementTypes.ON_GROUND, Heightmap.Types.MOTION_BLOCKING_NO_LEAVES, Roamer::checkRoamerSpawnRules, RegisterSpawnPlacementsEvent.Operation.AND);
+        event.register(OFEntities.HAUNT.get(), SpawnPlacementTypes.ON_GROUND, Heightmap.Types.MOTION_BLOCKING_NO_LEAVES, Haunt::checkHauntSpawnRules, RegisterSpawnPlacementsEvent.Operation.AND);
+        event.register(OFEntities.GRASPER.get(), SpawnPlacementTypes.ON_GROUND, Heightmap.Types.MOTION_BLOCKING_NO_LEAVES, Grasper::checkGrasperSpawnRules, RegisterSpawnPlacementsEvent.Operation.AND);
+        event.register(OFEntities.PARASOUL.get(), SpawnPlacementTypes.ON_GROUND, Heightmap.Types.MOTION_BLOCKING_NO_LEAVES, AnimatedMonster::checkSurfaceMonsterSpawnRules, RegisterSpawnPlacementsEvent.Operation.AND);
     }
 
     @SubscribeEvent
@@ -141,6 +168,22 @@ public class CommonEvents {
     }
 
     @SubscribeEvent
+    public static void onShieldBlock(LivingShieldBlockEvent event) {
+        LivingEntity entity = event.getEntity();
+        DamageSource source = event.getDamageSource();
+        boolean magic = source.is(Tags.DamageTypes.IS_MAGIC) || source.is(SinewDamageTypes.MAGIC_DAMAGE);
+        if (entity.isBlocking()
+                && entity.getUseItem().getItem() instanceof SpectralShieldItem
+                && source.getSourcePosition() != null
+                && (magic || !source.is(DamageTypeTags.BYPASSES_SHIELD))) {
+            if (entity instanceof Player player) {
+                SpectralShieldItem.onBlock(player, entity.getUseItem());
+            }
+            event.setBlocked(true);
+        }
+    }
+
+    @SubscribeEvent
     public static void onEnderTeleport(EntityTeleportEvent.EnderEntity event) {
         if (event.getEntityLiving() instanceof EnderMan enderman && !enderman.level().getEntitiesOfClass(MudSplatter.class, enderman.getBoundingBox()).isEmpty()) {
             event.setCanceled(true);
@@ -148,8 +191,51 @@ public class CommonEvents {
     }
 
     @SubscribeEvent
+    public static void onPlayerTick(PlayerTickEvent.Post event) {
+        if (!event.getEntity().level().isClientSide) {
+            SpectralGogglesItem.updateSight(event.getEntity());
+        }
+    }
+
+    @SubscribeEvent
     public static void onBlockBreak(BlockEvent.BreakEvent event) {
         MomentumGauntletItem.addMomentum(event.getPlayer());
+    }
+
+    @SubscribeEvent(priority = EventPriority.HIGH)
+    public static void onRightClickItem(PlayerInteractEvent.RightClickItem event) {
+        ItemStack stack = event.getItemStack();
+        Player player = event.getEntity();
+        if (stack.getItem() instanceof AbstractCurioItem curio && stack.is(OFItemTags.TRINKETS) && CuriosApi.getCuriosInventory(player).map(inventory -> equipTrinket(player, event.getHand(), inventory, stack, curio)).orElse(false)) {
+            event.setCancellationResult(InteractionResult.sidedSuccess(player.level().isClientSide));
+            event.setCanceled(true);
+        }
+    }
+
+    //i just wrote sum bullshiiiiiiit
+    private static boolean equipTrinket(Player player, InteractionHand hand, ICuriosItemHandler inventory, ItemStack stack, AbstractCurioItem curio) {
+        for (boolean swap : new boolean[]{false, true}) {
+            for (Map.Entry<String, ICurioStacksHandler> entry : inventory.getCurios().entrySet()) {
+                IDynamicStackHandler stacks = entry.getValue().getStacks();
+                List<Boolean> renders = entry.getValue().getRenders();
+                for (int i = 0; i < stacks.getSlots(); i++) {
+                    ItemStack present = stacks.getStackInSlot(i);
+                    SlotContext context = new SlotContext(entry.getKey(), player, i, false, renders.size() > i && renders.get(i));
+                    if (present.isEmpty() != swap && (!swap || !stacks.extractItem(i, 1, true).isEmpty()) && inventory.isSlotActive(entry.getKey(), i) && stacks.isItemValid(i, stack) && curio.canEquipFromUse(context, stack)) {
+                        stacks.setStackInSlot(i, stack.copyWithCount(1));
+                        curio.onEquipFromUse(context, stack);
+                        stack.consume(1, player);
+                        if (stack.isEmpty()) {
+                            player.setItemInHand(hand, present);
+                        } else {
+                            player.getInventory().placeItemBackInInventory(present);
+                        }
+                        return true;
+                    }
+                }
+            }
+        }
+        return false;
     }
 
     @SubscribeEvent

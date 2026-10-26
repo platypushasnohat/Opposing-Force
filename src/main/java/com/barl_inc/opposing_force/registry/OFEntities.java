@@ -5,6 +5,7 @@ import com.barl_inc.opposing_force.entity.*;
 import com.barl_inc.opposing_force.entity.misc.AcidCloud;
 import com.barl_inc.opposing_force.entity.misc.DicerLaser;
 import com.barl_inc.opposing_force.entity.misc.MudSplatter;
+import com.barl_inc.opposing_force.entity.misc.Shockwave;
 import com.barl_inc.opposing_force.entity.projectile.*;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.world.entity.Entity;
@@ -35,6 +36,11 @@ public class OFEntities {
     public static final DeferredHolder<EntityType<?>, EntityType<Mushy>> MUSHY = registerEntity("mushy", Mushy::new, MobCategory.MONSTER, builder -> builder.sized(0.69F, 1.05F).eyeHeight(0.31F).clientTrackingRange(8).setUpdateInterval(1));
     public static final DeferredHolder<EntityType<?>, EntityType<Motif>> MOTIF = registerEntity("motif", Motif::new, MobCategory.MONSTER, builder -> builder.sized(1.5F, 2.8F).eyeHeight(2.5F).clientTrackingRange(8));
     public static final DeferredHolder<EntityType<?>, EntityType<Fillet>> FILLET = registerEntity("fillet", Fillet::new, OFMobCategories.AQUIFER_MONSTER, builder -> builder.sized(0.5F, 0.5F).eyeHeight(0.25F).clientTrackingRange(8));
+    public static final DeferredHolder<EntityType<?>, EntityType<Ghost>> GHOST = registerEntity("ghost", Ghost::new, MobCategory.MONSTER, builder -> builder.sized(0.75F, 1.85F).eyeHeight(1.55F).clientTrackingRange(8));
+    public static final DeferredHolder<EntityType<?>, EntityType<Roamer>> ROAMER = registerEntity("roamer", Roamer::new, MobCategory.MONSTER, builder -> builder.sized(0.7F, 1.75F).eyeHeight(1.45F).clientTrackingRange(8));
+    public static final DeferredHolder<EntityType<?>, EntityType<Haunt>> HAUNT = registerEntity("haunt", Haunt::new, MobCategory.MONSTER, builder -> builder.sized(0.8F, 1.8F).eyeHeight(1.4F).clientTrackingRange(8).updateInterval(1));
+    public static final DeferredHolder<EntityType<?>, EntityType<Grasper>> GRASPER = registerEntity("grasper", Grasper::new, MobCategory.MONSTER, builder -> builder.sized(0.9F, 0.6F).clientTrackingRange(8));
+    public static final DeferredHolder<EntityType<?>, EntityType<Parasoul>> PARASOUL = registerEntity("parasoul", Parasoul::new, MobCategory.MONSTER, builder -> builder.sized(0.75F, 3.1F).eyeHeight(2.4F).clientTrackingRange(8));
 
     //other
     public static final DeferredHolder<EntityType<?>, EntityType<DicerLaser>> DICER_LASER = registerEntity("dicer_laser", DicerLaser::new, MobCategory.MISC, builder -> builder.sized(0.1F, 0.1F).setUpdateInterval(1).clientTrackingRange(4).fireImmune());
@@ -46,6 +52,9 @@ public class OFEntities {
     public static final DeferredHolder<EntityType<?>, EntityType<MudSplatter>> MUD_SPLATTER = registerEntity("mud_splatter", MudSplatter::new, MobCategory.MISC, builder -> builder.sized(1.3F, 0.15F).fireImmune().clientTrackingRange(10).setUpdateInterval(Integer.MAX_VALUE));
     public static final DeferredHolder<EntityType<?>, EntityType<Bullet>> BULLET = registerEntity("bullet", Bullet::new, MobCategory.MISC, builder -> builder.sized(0.25F, 0.25F).setUpdateInterval(1).setShouldReceiveVelocityUpdates(true).clientTrackingRange(4));
     public static final DeferredHolder<EntityType<?>, EntityType<Sawblade>> SAWBLADE = registerEntity("sawblade", Sawblade::new, MobCategory.MISC, builder -> builder.sized(0.5F, 0.5F).setUpdateInterval(20).clientTrackingRange(4));
+    public static final DeferredHolder<EntityType<?>, EntityType<RingProjectile>> RING_PROJECTILE = registerEntity("ring_projectile", RingProjectile::new, MobCategory.MISC, builder -> builder.sized(0.25F, 0.25F).setUpdateInterval(1).setShouldReceiveVelocityUpdates(true).clientTrackingRange(4).fireImmune());
+    public static final DeferredHolder<EntityType<?>, EntityType<Soul>> SOUL = registerEntity("soul", Soul::new, MobCategory.MISC, builder -> builder.sized(0.3F, 0.3F).setUpdateInterval(1).setShouldReceiveVelocityUpdates(true).clientTrackingRange(4).fireImmune());
+    public static final DeferredHolder<EntityType<?>, EntityType<Shockwave>> SHOCKWAVE = registerEntity("shockwave", Shockwave::new, MobCategory.MISC, builder -> builder.sized(0.5F, 0.5F).fireImmune().clientTrackingRange(10).setUpdateInterval(Integer.MAX_VALUE));
 
     public static <E extends Entity> DeferredHolder<EntityType<?>, EntityType<E>> registerEntity(String name, EntityType.EntityFactory<E> factory, MobCategory entityClassification, Consumer<EntityType.Builder<E>> builderConsumer) {
         DeferredHolder<EntityType<?>, EntityType<E>> entity = registerEntityNoLang(name, factory, entityClassification, builderConsumer);

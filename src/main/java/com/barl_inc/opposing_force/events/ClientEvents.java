@@ -6,34 +6,54 @@ import com.barl_inc.opposing_force.client.model.entity.*;
 import com.barl_inc.opposing_force.client.model.item.*;
 import com.barl_inc.opposing_force.client.particle.*;
 import com.barl_inc.opposing_force.client.render.entity.*;
+import com.barl_inc.opposing_force.client.render.entity.layer.SpectralShieldLayer;
 import com.barl_inc.opposing_force.client.render.item.OFItemExtensions;
+import com.barl_inc.opposing_force.client.render.shader.SpectralLensOverlay;
+import com.barl_inc.opposing_force.item.SpectralShieldItem;
 import com.barl_inc.opposing_force.item.base.GunItem;
-import com.barl_inc.opposing_force.registry.OFEntities;
-import com.barl_inc.opposing_force.registry.OFItems;
-import com.barl_inc.opposing_force.registry.OFModelLayers;
-import com.barl_inc.opposing_force.registry.OFParticleTypes;
+import com.barl_inc.opposing_force.item.ranged.ammo.BulletComponent;
+import com.barl_inc.opposing_force.item.utils.OFTooltips;
+import com.barl_inc.opposing_force.registry.*;
+import com.barl_inc.opposing_force.registry.datapack.tags.OFItemTags;
 import com.mojang.blaze3d.systems.RenderSystem;
+import com.mojang.blaze3d.vertex.DefaultVertexFormat;
+import com.mojang.blaze3d.vertex.PoseStack;
+import com.mojang.math.Axis;
+import com.platypushasnohat.sinew.events.custom.PlayerPoseEvent;
 import com.platypushasnohat.sinew.events.custom.PoseHandEvent;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.model.HumanoidModel;
 import net.minecraft.client.model.geom.ModelPart;
+import net.minecraft.client.particle.FlameParticle;
+import net.minecraft.client.player.LocalPlayer;
+import net.minecraft.client.renderer.LightTexture;
+import net.minecraft.client.renderer.MultiBufferSource;
+import net.minecraft.client.renderer.ShaderInstance;
 import net.minecraft.client.renderer.entity.NoopRenderer;
+import net.minecraft.client.renderer.entity.player.PlayerRenderer;
+import net.minecraft.client.resources.PlayerSkin;
+import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.util.Mth;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.entity.HumanoidArm;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.phys.Vec3;
 import net.neoforged.api.distmarker.Dist;
 import net.neoforged.bus.api.SubscribeEvent;
 import net.neoforged.fml.common.EventBusSubscriber;
-import net.neoforged.neoforge.client.event.EntityRenderersEvent;
-import net.neoforged.neoforge.client.event.RegisterGuiLayersEvent;
-import net.neoforged.neoforge.client.event.RegisterParticleProvidersEvent;
+import net.neoforged.neoforge.client.event.*;
 import net.neoforged.neoforge.client.extensions.common.IClientItemExtensions;
 import net.neoforged.neoforge.client.extensions.common.RegisterClientExtensionsEvent;
 import net.neoforged.neoforge.client.gui.VanillaGuiLayers;
 import net.neoforged.neoforge.common.util.TriState;
+import net.neoforged.neoforge.event.entity.player.ItemTooltipEvent;
+
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
 
 @EventBusSubscriber(modid = OpposingForce.MOD_ID, value = Dist.CLIENT)
 public class ClientEvents {
@@ -51,6 +71,11 @@ public class ClientEvents {
         event.registerEntityRenderer(OFEntities.MUSHY.get(), MushyRenderer::new);
         event.registerEntityRenderer(OFEntities.MOTIF.get(), MotifRenderer::new);
         event.registerEntityRenderer(OFEntities.FILLET.get(), FilletRenderer::new);
+        event.registerEntityRenderer(OFEntities.GHOST.get(), GhostRenderer::new);
+        event.registerEntityRenderer(OFEntities.ROAMER.get(), RoamerRenderer::new);
+        event.registerEntityRenderer(OFEntities.HAUNT.get(), context -> new PhasingMonsterRenderer<>(context, new HauntModel(context.bakeLayer(OFModelLayers.HAUNT)), "haunt", 1.1F));
+        event.registerEntityRenderer(OFEntities.GRASPER.get(), GrasperRenderer::new);
+        event.registerEntityRenderer(OFEntities.PARASOUL.get(), ParasoulRenderer::new);
 
         event.registerEntityRenderer(OFEntities.DICER_LASER.get(), DicerLaserRenderer::new);
         event.registerEntityRenderer(OFEntities.LASER_BOLT.get(), LaserBoltRenderer::new);
@@ -61,6 +86,9 @@ public class ClientEvents {
         event.registerEntityRenderer(OFEntities.MUD_SPLATTER.get(), MudSplatterRenderer::new);
         event.registerEntityRenderer(OFEntities.BULLET.get(), BulletRenderer::new);
         event.registerEntityRenderer(OFEntities.SAWBLADE.get(), SawbladeRenderer::new);
+        event.registerEntityRenderer(OFEntities.RING_PROJECTILE.get(), RingProjectileRenderer::new);
+        event.registerEntityRenderer(OFEntities.SOUL.get(), SoulRenderer::new);
+        event.registerEntityRenderer(OFEntities.SHOCKWAVE.get(), NoopRenderer::new);
     }
 
     @SubscribeEvent
@@ -76,10 +104,16 @@ public class ClientEvents {
         event.registerLayerDefinition(OFModelLayers.MUSHY, MushyModel::createBodyLayer);
         event.registerLayerDefinition(OFModelLayers.MOTIF, MotifModel::createBodyLayer);
         event.registerLayerDefinition(OFModelLayers.FILLET, FilletModel::createBodyLayer);
+        event.registerLayerDefinition(OFModelLayers.GHOST, GhostModel::createBodyLayer);
+        event.registerLayerDefinition(OFModelLayers.ROAMER, RoamerModel::createBodyLayer);
+        event.registerLayerDefinition(OFModelLayers.HAUNT, HauntModel::createBodyLayer);
+        event.registerLayerDefinition(OFModelLayers.GRASPER, GrasperModel::createBodyLayer);
+        event.registerLayerDefinition(OFModelLayers.PARASOUL, ParasoulModel::createBodyLayer);
 
         event.registerLayerDefinition(OFModelLayers.LASER_BOLT, LaserBoltModel::createBodyLayer);
         event.registerLayerDefinition(OFModelLayers.ACID_CHARGE, AcidChargeModel::createBodyLayer);
         event.registerLayerDefinition(OFModelLayers.MUDBALL, MudballModel::createBodyLayer);
+        event.registerLayerDefinition(OFModelLayers.SOUL, SoulModel::createBodyLayer);
 
         event.registerLayerDefinition(OFModelLayers.BLASTER, BlasterModel::createBodyLayer);
         event.registerLayerDefinition(OFModelLayers.TRI_BLASTER, TriBlasterModel::createBodyLayer);
@@ -92,6 +126,15 @@ public class ClientEvents {
     }
 
     @SubscribeEvent
+    public static void addLayers(EntityRenderersEvent.AddLayers event) {
+        for (PlayerSkin.Model skin : event.getSkins()) {
+            if (event.getSkin(skin) instanceof PlayerRenderer renderer) {
+                renderer.addLayer(new SpectralShieldLayer<>(renderer));
+            }
+        }
+    }
+
+    @SubscribeEvent
     public static void registerParticleProviders(RegisterParticleProvidersEvent event) {
         event.registerSpriteSet(OFParticleTypes.LASER_DUST.get(), LaserDustParticle.Factory::new);
         event.registerSpriteSet(OFParticleTypes.LASER_IMPACT.get(), ImpactParticle.LaserFactory::new);
@@ -101,6 +144,10 @@ public class ClientEvents {
         event.registerSpriteSet(OFParticleTypes.SPORE_CLOUD.get(), SporeCloudParticle.Factory::new);
         event.registerSpriteSet(OFParticleTypes.BULLET_TRAIL.get(), BulletTrailParticle.Factory::new);
         event.registerSpriteSet(OFParticleTypes.BULLET_IMPACT.get(), ImpactParticle.BulletFactory::new);
+        event.registerSpriteSet(OFParticleTypes.SPECTRAL_SWEEP.get(), LaserSweepParticle.Factory::new);
+        event.registerSpriteSet(OFParticleTypes.SMALL_SOUL_FIRE_FLAME.get(), FlameParticle.SmallFlameProvider::new);
+        event.registerSpriteSet(OFParticleTypes.SHOCKWAVE.get(), ShockwaveParticle.Factory::new);
+        event.registerSpriteSet(OFParticleTypes.SMALL_SHOCKWAVE.get(), ShockwaveParticle.Factory::new);
     }
 
     @SubscribeEvent
@@ -181,5 +228,77 @@ public class ClientEvents {
             RenderSystem.depthMask(true);
             RenderSystem.enableDepthTest();
         });
+        event.registerAbove(VanillaGuiLayers.CAMERA_OVERLAYS, OpposingForce.location("spectral_lens"), SpectralLensOverlay::render);
+    }
+    @SubscribeEvent
+    public static void registerShaders(RegisterShadersEvent event) throws IOException {
+        event.registerShader(new ShaderInstance(event.getResourceProvider(), OpposingForce.location("spectral_lens"), DefaultVertexFormat.POSITION), shader -> SpectralLensOverlay.shader = shader);
+    }
+
+    @SubscribeEvent
+    public static void onClientTick(ClientTickEvent.Post event) {
+        SpectralLensOverlay.tick();
+    }
+
+    //Spectral Shield BS below!!!
+
+    @SubscribeEvent
+    public static void onPlayerPose(PlayerPoseEvent event) {
+        LivingEntity entity = event.getEntity();
+        Minecraft minecraft = Minecraft.getInstance();
+        if (SpectralShieldLayer.isShielding(entity) && !(entity == minecraft.player && minecraft.options.getCameraType().isFirstPerson())) {
+            HumanoidModel<?> model = event.getHumanoidModel();
+            float swing = Mth.cos((entity.tickCount + minecraft.getTimer().getGameTimeDeltaPartialTick(true)) * 0.6662F) * 0.25F;
+            model.rightArm.xRot = swing;
+            model.leftArm.xRot = swing;
+            model.rightArm.yRot = 0.0F;
+            model.leftArm.yRot = 0.0F;
+            model.rightArm.zRot = 2.3561945F;
+            model.leftArm.zRot = -2.3561945F;
+        }
+    }
+
+    @SubscribeEvent
+    public static void onRenderLevelStage(RenderLevelStageEvent event) {
+        Minecraft minecraft = Minecraft.getInstance();
+        LocalPlayer player = minecraft.player;
+        if (event.getStage() == RenderLevelStageEvent.Stage.AFTER_ENTITIES && player != null && minecraft.options.getCameraType().isFirstPerson() && SpectralShieldLayer.isShielding(player)) {
+            float partialTicks = event.getPartialTick().getGameTimeDeltaPartialTick(false);
+            Vec3 camera = event.getCamera().getPosition();
+            PoseStack poseStack = event.getPoseStack();
+            MultiBufferSource.BufferSource buffer = minecraft.renderBuffers().bufferSource();
+            poseStack.pushPose();
+            poseStack.translate(Mth.lerp(partialTicks, player.xo, player.getX()) - camera.x, Mth.lerp(partialTicks, player.yo, player.getY()) - camera.y, Mth.lerp(partialTicks, player.zo, player.getZ()) - camera.z);
+            poseStack.mulPose(Axis.YP.rotationDegrees(180.0F - Mth.rotLerp(partialTicks, player.yBodyRotO, player.yBodyRot)));
+            poseStack.scale(-1.0F, -1.0F, 1.0F);
+            poseStack.translate(0.0F, -1.501F, 0.0F);
+            SpectralShieldLayer.renderShields(poseStack, buffer, LightTexture.FULL_BRIGHT, player, player.getUseItem(), SpectralShieldLayer.getGrow(player, partialTicks), player.tickCount + partialTicks, partialTicks);
+            poseStack.popPose();
+            buffer.endBatch();
+        }
+    }
+
+    @SubscribeEvent
+    public static void onRenderHand(RenderHandEvent event) {
+        if (event.getItemStack().getItem() instanceof SpectralShieldItem && SpectralShieldLayer.isShielding(Minecraft.getInstance().player)) {
+            event.setCanceled(true);
+        }
+    }
+
+    @SubscribeEvent
+    public static void onItemTooltip(ItemTooltipEvent event) {
+        ItemStack stack = event.getItemStack();
+        BulletComponent bullet = stack.get(OFDataComponents.BULLET);
+        List<Component> lines = new ArrayList<>();
+        if (stack.is(OFItemTags.BASIC_MANA)) {
+            lines.add(OFTooltips.description("item.opposing_force.tooltip.basic_mana"));
+        }
+        if (bullet != null) {
+            lines.add(OFTooltips.description("item.opposing_force.tooltip.when_used_as_ammo"));
+            lines.add(OFTooltips.stat("item.opposing_force.bullet.damage", bullet.damageMultiplier()));
+            lines.add(OFTooltips.stat("item.opposing_force.bullet.spread", bullet.inaccuracyMultiplier()));
+            lines.add(OFTooltips.stat("item.opposing_force.bullet.velocity", bullet.velocityMultiplier()));
+        }
+        event.getToolTip().addAll(Math.min(1, event.getToolTip().size()), lines);
     }
 }

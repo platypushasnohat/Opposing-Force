@@ -3,6 +3,7 @@
   "values": [
     "opposing_force:magic_protection",
     "opposing_force:frost_aspect",
-    "opposing_force:freeze"
+    "opposing_force:freeze",
+    "opposing_force:magic_attunement"
   ]
 }

@@ -77,8 +77,32 @@ public class OFLanguageProvider extends SinewLanguageProvider {
         this.add(OFItems.TRI_BLASTER.get(), "Tri-Blaster");
 
         this.add(OFItems.DISABLED_LASER_BLADE.get(), "Laser Blade");
+        this.add(OFItems.DISABLED_CURSED_RINGLINE.get(), "Cursed Ringline");
 
         this.add(OFItems.FILLET_BUCKET.get(), "Bucket of Fillet");
+
+        this.add("item.opposing_force.tooltip.damage", "%s Damage");
+        this.add("item.opposing_force.tooltip.multi_damage", "%sx%s Damage");
+        this.add("item.opposing_force.tooltip.uses_mud", "Uses Mud as ammo");
+        this.add("item.opposing_force.tooltip.requires_power_cell", "Requires a Power Cell to operate");
+        this.add("item.opposing_force.tooltip.uses_bullets", "Uses Bullets as ammo");
+        this.add("item.opposing_force.tooltip.uses_basic_mana", "Uses Basic Mana");
+        this.add("item.opposing_force.tooltip.basic_mana", "Basic Mana");
+
+        this.add("item.opposing_force.power_cell.description", "Refill with Redstone Dust");
+        this.add("item.opposing_force.laser_blade.description", "Right-click to throw");
+        this.add("item.opposing_force.spectral_shield.description", "Blocks up to six hits from any direction");
+        this.add("item.opposing_force.spectral_cleaver.description", "Summons a homing soul on hit");
+        this.add("item.opposing_force.chitin_lance.description", "Hold right-click to charge a dash");
+        this.add("item.opposing_force.buzzsaw.description", "Hold right-click to activate saw");
+        this.add("item.opposing_force.tooltip.when_fired", "When fired:");
+        this.add("item.opposing_force.tooltip.when_cast", "When cast:");
+        this.add("item.opposing_force.tooltip.when_thrown", "When thrown:");
+        this.add("item.opposing_force.tooltip.when_used_as_ammo", "When used as ammo:");
+
+        this.add("item.opposing_force.bullet.damage", "x%s Damage");
+        this.add("item.opposing_force.bullet.spread", "x%s Spread");
+        this.add("item.opposing_force.bullet.velocity", "x%s Velocity");
 
         this.add("item.opposing_force.powered_item.power", "Power: %s / %s");
 
@@ -87,13 +111,20 @@ public class OFLanguageProvider extends SinewLanguageProvider {
         this.add("item.opposing_force.slimy_shield.description", "+Slimy Shielding");
         this.add("item.opposing_force.stalker_gloves.description", "+30% Initial Damage");
 
-        this.add("item.opposing_force.crystalized_heart.description", "+1 Charm Slot");
+        this.add("item.opposing_force.crystallized_heart.description", "+1 Charm Slot");
+        this.add("item.opposing_force.spectral_goggles.description", "Pierce the Veil...");
 
         this.add("enchantment.opposing_force.magic_protection", "Magic Protection");
         this.add("enchantment.opposing_force.magic_protection.desc", "Reduces magic damageMultiplier taken and shortens the duration of negative effects applied to the wearer.");
 
         this.add("enchantment.opposing_force.frost_aspect", "Frost Aspect");
         this.add("enchantment.opposing_force.frost_aspect.desc", "Inflicts freezing on hit");
+
+        this.add("enchantment.opposing_force.mana_thrifter", "Mana Thrifter");
+        this.add("enchantment.opposing_force.mana_thrifter.desc", "Magic weapons do not consume mana, but deal 33% less damage.");
+
+        this.add("enchantment.opposing_force.magic_attunement", "Magic Attunement");
+        this.add("enchantment.opposing_force.magic_attunement.desc", "Increases the number of projectiles spawned by a magic weapon.");
 
         this.add("enchantment.opposing_force.freeze", "Freeze");
         this.add("enchantment.opposing_force.freeze.desc", "Inflicts freezing on hit");
@@ -135,5 +166,15 @@ public class OFLanguageProvider extends SinewLanguageProvider {
         this.add("death.attack.bullet", "%s was shot");
         this.add("death.attack.bullet.player", "%s was shot by %s");
         this.add("death.attack.bullet.item", "%s was shot by %s using %s");
+
+        this.add("death.attack.cursed_ring_0", "%s was killed with cursed magic");
+        this.add("death.attack.cursed_ring_1", "%s was hexed");
+        this.add("death.attack.cursed_ring_0.entity", "%s was killed with cursed magic by %s");
+        this.add("death.attack.cursed_ring_1.entity", "%s was hexed by %s");
+
+        this.add("death.attack.soul_0", "%s had their soul reaped");
+        this.add("death.attack.soul_1", "%s had their soul torn apart");
+        this.add("death.attack.soul_0.entity", "%s has their soul torn apart by %s");
+        this.add("death.attack.soul_1.entity", "%s was reaped %s");
     }
 }

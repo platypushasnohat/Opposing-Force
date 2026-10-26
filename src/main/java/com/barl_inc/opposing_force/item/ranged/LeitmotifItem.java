@@ -36,10 +36,20 @@ public class LeitmotifItem extends GunItem {
     }
 
     @Override
+    public float getDamage() {
+        return 3.5F;
+    }
+
+    @Override
+    public String getAmmoTooltip() {
+        return "item.opposing_force.tooltip.uses_mud";
+    }
+
+    @Override
     public void shoot(Level level, Player player, ItemStack stack, ItemStack ammo) {
         Mudball mudball = new Mudball(level, player, player.getX(), player.getY() + player.getBbHeight() * 0.8F, player.getZ());
         Vec3 look = player.getLookAngle();
-        mudball.setDamage(3.5F);
+        mudball.setDamage(this.getDamage());
         mudball.shoot(look.x, look.y, look.z, 1.5F, 2.0F);
         level.addFreshEntity(mudball);
         level.playSound(null, player.getX(), player.getY(), player.getZ(), SoundEvents.SNOW_GOLEM_SHOOT, SoundSource.PLAYERS, 1.0F, 0.6F * SinewSoundUtils.randomizePitch(level));

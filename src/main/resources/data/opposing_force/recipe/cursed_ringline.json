@@ -1,0 +1,28 @@
+{
+  "type": "minecraft:crafting_shapeless",
+  "category": "equipment",
+  "ingredients": [
+    {
+      "item": "opposing_force:cursed_ring"
+    },
+    {
+      "item": "opposing_force:cursed_ring"
+    },
+    {
+      "item": "opposing_force:cursed_ring"
+    },
+    {
+      "item": "opposing_force:cursed_ring"
+    },
+    {
+      "item": "opposing_force:cursed_ring"
+    },
+    {
+      "item": "minecraft:lapis_lazuli"
+    }
+  ],
+  "result": {
+    "count": 1,
+    "id": "opposing_force:cursed_ringline"
+  }
+}

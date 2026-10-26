@@ -31,11 +31,15 @@ public class BoomstickItem extends BulletGunItem {
     }
 
     @Override
+    public int getShotCount() {
+        return PROJECTILE_COUNT;
+    }
+
+    @Override
     public InteractionResultHolder<ItemStack> use(Level level, Player player, InteractionHand hand) {
         ItemStack stack = player.getItemInHand(hand);
         InteractionResultHolder<ItemStack> result = InteractionResultHolder.pass(stack);
         if (getShots(stack) < 2 || !this.canShoot(player, hand)) {
-            player.push(player.getLookAngle().reverse().normalize().scale(0.65F));
             result = super.use(level, player, hand);
         } else {
             ItemAnimations.start(player, stack, RELOAD_ANIMATION);
@@ -59,6 +63,7 @@ public class BoomstickItem extends BulletGunItem {
     @Override
     protected void onShot(Level level, Player player, InteractionHand hand, ItemStack stack, ItemStack ammo) {
         super.onShot(level, player, hand, stack, ammo);
+        player.push(player.getLookAngle().reverse().normalize().scale(0.65F));
         setShots(stack, getShots(stack) + 1);
     }
 

@@ -4,10 +4,14 @@
   "compatibilityLevel": "JAVA_21",
   "refmap": "opposing_force.refmap.json",
   "mixins": [
+    "CurioSlotMixin",
+    "DynamicStackHandlerMixin",
     "MobCategoryMixin",
     "ZombieMixin"
   ],
-  "client": [],
+  "client": [
+    "ItemInHandLayerMixin"
+  ],
   "injectors": {
     "defaultRequire": 1
   },

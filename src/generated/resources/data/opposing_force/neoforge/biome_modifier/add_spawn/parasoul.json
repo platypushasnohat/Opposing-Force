@@ -1,0 +1,10 @@
+{
+  "type": "neoforge:add_spawns",
+  "biomes": "#opposing_force:has_monster/cherry_grove",
+  "spawners": {
+    "type": "opposing_force:parasoul",
+    "maxCount": 1,
+    "minCount": 1,
+    "weight": 47
+  }
+}

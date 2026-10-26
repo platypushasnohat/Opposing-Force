@@ -29,7 +29,12 @@ import java.util.UUID;
 
 public class GrellClone extends Grell {
 
+    public static final int FADE_TICKS = 80;
+    public static final int TRAVEL_TICKS = 50;
+
     private static final EntityDataAccessor<Boolean> REAL = SynchedEntityData.defineId(GrellClone.class, EntityDataSerializers.BOOLEAN);
+    private static final EntityDataAccessor<Boolean> SHUFFLING = SynchedEntityData.defineId(GrellClone.class, EntityDataSerializers.BOOLEAN);
+    private static final EntityDataAccessor<Float> ROLL = SynchedEntityData.defineId(GrellClone.class, EntityDataSerializers.FLOAT);
 
     @Nullable
     private UUID ownerUUID;
@@ -37,6 +42,11 @@ public class GrellClone extends Grell {
     private Grell owner;
     private int index;
     private int count = 1;
+    private float roll;
+    private int travel;
+    @Nullable
+    private Vec3 travelStart;
+    private float prevRoll;
 
     public GrellClone(EntityType<? extends GrellClone> entityType, Level level) {
         super(entityType, level);
@@ -60,6 +70,18 @@ public class GrellClone extends Grell {
     protected void defineSynchedData(SynchedEntityData.Builder builder) {
         super.defineSynchedData(builder);
         builder.define(REAL, false);
+        builder.define(SHUFFLING, false);
+        builder.define(ROLL, 0.0F);
+    }
+
+    @Override
+    public void tick() {
+        this.noPhysics = this.isElite();
+        super.tick();
+        if (this.level().isClientSide) {
+            this.prevRoll = this.roll;
+            this.roll = this.entityData.get(ROLL);
+        }
     }
 
     public void setup(Grell owner, int index, int count, boolean real) {
@@ -76,6 +98,37 @@ public class GrellClone extends Grell {
 
     public boolean isReal() {
         return this.entityData.get(REAL);
+    }
+
+    public int getIndex() {
+        return this.index;
+    }
+
+    public boolean isShuffling() {
+        return this.entityData.get(SHUFFLING);
+    }
+
+    public void setShuffling(boolean shuffling) {
+        this.entityData.set(SHUFFLING, shuffling);
+    }
+
+    public float getRoll(float partialTicks) {
+        return Mth.rotLerp(partialTicks, this.prevRoll, this.roll);
+    }
+
+    public void moveInFormation(Vec3 pos, LivingEntity target, float roll) {
+        this.setPos(pos);
+        this.setDeltaMovement(Vec3.ZERO);
+        this.face(target);
+        this.entityData.set(ROLL, roll);
+    }
+
+    public void endShuffle(int index) {
+        this.index = index;
+        this.travel = 0;
+        this.travelStart = this.position();
+        this.setShuffling(false);
+        this.entityData.set(ROLL, 0.0F);
     }
 
     @Nullable
@@ -107,25 +160,45 @@ public class GrellClone extends Grell {
         LivingEntity target = owner != null ? owner.getTarget() : null;
         if (owner == null || !owner.isAlive() || !owner.isHidden() || target == null) {
             this.discard();
-        } else {
+        } else if (this.travelStart != null) {
+            this.travel(target);
+        } else if (!this.isShuffling()) {
             this.circle(target);
-            this.tickParticles();
+            if (!this.isElite()) {
+                this.tickParticles();
+            }
         }
     }
 
     private void circle(LivingEntity target) {
         Vec3 ring = this.getRingPosition(target);
         this.setDeltaMovement(ring.subtract(this.position()).scale(0.35D));
-        float yaw = (float) (Mth.atan2(target.getZ() - this.getZ(), target.getX() - this.getX()) * Mth.RAD_TO_DEG) - 90.0F;
-        this.setYRot(yaw);
-        this.yBodyRot = yaw;
-        this.yHeadRot = yaw;
+        this.face(target);
         double gap = target.distanceTo(this);
         if (gap < 2.5D) {
             Vec3 push = target.position().subtract(this.position()).multiply(1.0D, 0.0D, 1.0D).normalize().scale(0.04D);
             target.push(push.x, 0.0D, push.z);
             target.hurtMarked = true;
         }
+    }
+
+    private void travel(LivingEntity target) {
+        this.travel++;
+        float progress = Math.min((float) this.travel / TRAVEL_TICKS, 1.0F);
+        float eased = progress * progress * (3.0F - 2.0F * progress);
+        this.setPos(this.travelStart.lerp(this.getRingPosition(target), eased));
+        this.setDeltaMovement(Vec3.ZERO);
+        this.face(target);
+        if (progress >= 1.0F) {
+            this.travelStart = null;
+        }
+    }
+
+    private void face(LivingEntity target) {
+        float yaw = (float) (Mth.atan2(target.getZ() - this.getZ(), target.getX() - this.getX()) * Mth.RAD_TO_DEG) - 90.0F;
+        this.setYRot(yaw);
+        this.yBodyRot = yaw;
+        this.yHeadRot = yaw;
     }
 
     private void tickParticles() {
@@ -164,14 +237,22 @@ public class GrellClone extends Grell {
 
     @Override
     protected boolean isInvulnerablePhase() {
-        return false;
+        return this.isShuffling();
     }
 
     @Override
     public float getMaterialize(float partialTicks) {
         Player player = Sinew.PROXY.getClientSidePlayer();
+        boolean goggles = player != null && SpectralSight.hasSource(player, SpectralGogglesItem.SPECTRAL_SIGHT);
+        float fade = Mth.clamp((this.tickCount + partialTicks) / FADE_TICKS, 0.0F, 1.0F);
         float alpha = 0.5F;
-        if (this.isReal() && player != null && SpectralSight.hasSource(player, SpectralGogglesItem.SPECTRAL_SIGHT)) {
+        if (this.isElite() && this.isReal() && goggles && this.isShuffling()) {
+            alpha = 1.0F;
+        } else if (this.isElite() && this.isReal() && !goggles) {
+            alpha = 1.0F - fade * 0.5F;
+        } else if (this.isElite()) {
+            alpha = 0.12F + fade * 0.38F;
+        } else if (this.isReal() && goggles) {
             alpha = 1.0F;
         } else if (this.isReal() && this.isEnraged()) {
             alpha = 0.53F;

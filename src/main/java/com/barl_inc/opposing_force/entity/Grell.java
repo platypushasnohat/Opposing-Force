@@ -4,6 +4,7 @@ import com.barl_inc.opposing_force.entity.ai.goal.GrellConjureGoal;
 import com.barl_inc.opposing_force.entity.ai.goal.PhasingWanderGoal;
 import com.barl_inc.opposing_force.entity.base.BasicFlyingMonster;
 import com.barl_inc.opposing_force.entity.misc.GrellClone;
+import com.barl_inc.opposing_force.entity.misc.GrellShuffle;
 import com.barl_inc.opposing_force.registry.OFDamageTypes;
 import com.barl_inc.opposing_force.registry.OFEntities;
 import com.platypushasnohat.sinew.Sinew;
@@ -57,6 +58,7 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 import java.util.UUID;
+import java.util.function.Function;
 
 public class Grell extends BasicFlyingMonster implements SpectralEntity, EliteMob {
 
@@ -79,6 +81,8 @@ public class Grell extends BasicFlyingMonster implements SpectralEntity, EliteMo
     private final Set<UUID> revealed = new HashSet<>();
     private final Object2IntMap<UUID> stares = new Object2IntOpenHashMap<>();
     private final List<UUID> clones = new ArrayList<>();
+    @Nullable
+    private GrellShuffle shuffle;
     private float illusionAngle;
     private int illusionTicks;
     private boolean staredAt;
@@ -192,7 +196,9 @@ public class Grell extends BasicFlyingMonster implements SpectralEntity, EliteMo
         if (this.conjureCooldown > 0) {
             this.conjureCooldown--;
         }
-        if (this.isHidden()) {
+        if (this.isHidden() && this.shuffle != null) {
+            this.tickShuffle();
+        } else if (this.isHidden()) {
             this.illusionAngle += 0.05F;
             this.illusionTicks = Math.max(this.illusionTicks - 1, 0);
         }
@@ -200,6 +206,25 @@ public class Grell extends BasicFlyingMonster implements SpectralEntity, EliteMo
             this.revealed.clear();
             this.entityData.set(REVEALED, writeUUIDs(this.revealed));
             SpectralSight.refreshTracking(this);
+        }
+    }
+
+    private void tickShuffle() {
+        LivingEntity target = this.getTarget();
+        if (target != null) {
+            this.shuffle.tick(target);
+        }
+        if (target != null && this.shuffle.isDone()) {
+            Vec3 center = this.shuffle.getSlotPosition(0).add(this.shuffle.getSlotPosition(GrellShuffle.SLOTS - 1)).scale(0.5D);
+            this.illusionAngle = (float) Mth.atan2(center.z - target.getZ(), center.x - target.getX());
+            for (int slot = 0; slot < GrellShuffle.SLOTS; slot++) {
+                GrellClone clone = this.shuffle.getClone(slot);
+                if (clone != null) {
+                    clone.endShuffle(slot);
+                }
+            }
+            this.shuffle = null;
+            this.illusionTicks = 300 + GrellClone.TRAVEL_TICKS;
         }
     }
 
@@ -338,7 +363,7 @@ public class Grell extends BasicFlyingMonster implements SpectralEntity, EliteMo
 
     public int getCloneCount() {
         int count = 4;
-        if (this.isEnraged()) {
+        if (this.isEnraged() || this.isElite()) {
             count = 8;
         }
         return count;
@@ -360,28 +385,55 @@ public class Grell extends BasicFlyingMonster implements SpectralEntity, EliteMo
         if (this.level() instanceof ServerLevel serverLevel) {
             this.entityData.set(HIDDEN, true);
             this.illusionTicks = 300;
-            if (!this.stares.isEmpty()) {
-                this.stares.clear();
-                this.staredAt = false;
-                SpectralSight.refreshTracking(this);
-            }
+            this.stares.clear();
+            this.staredAt = false;
+            SpectralSight.refreshTracking(this);
             this.illusionAngle = (float) Mth.atan2(this.getZ() - target.getZ(), this.getX() - target.getX());
-            int real = this.random.nextInt(count);
-            for (int i = 0; i < count; i++) {
-                GrellClone clone = OFEntities.GRELL_CLONE.get().create(serverLevel);
-                if (clone != null) {
-                    clone.setup(this, i, count, i == real);
-                    Vec3 pos = clone.getRingPosition(target);
-                    clone.moveTo(pos.x, pos.y, pos.z, this.getYRot(), 0.0F);
-                    serverLevel.addFreshEntity(clone);
-                    SpectralSight.sendParticlesToPerceivers(serverLevel, clone, ParticleTypes.REVERSE_PORTAL, clone.getX(), clone.getY(0.5D), clone.getZ(), 40, 0.5D, 0.6D, 0.5D, 0.15D);
-                    if (i == 0) {
-                        SpectralSight.playSoundToListeners(serverLevel, clone, SoundEvents.ILLUSIONER_MIRROR_MOVE, SoundSource.HOSTILE, 1.5F, 0.8F);
-                    }
-                    this.clones.add(clone.getUUID());
+            if (this.isElite()) {
+                this.startShuffle(serverLevel, target);
+            } else {
+                int real = this.random.nextInt(count);
+                for (int i = 0; i < count; i++) {
+                    this.spawnClone(serverLevel, i, count, i == real, clone -> clone.getRingPosition(target));
                 }
             }
         }
+    }
+
+    private void startShuffle(ServerLevel serverLevel, LivingEntity target) {
+        Vec3 back = this.position().subtract(target.position()).multiply(1.0D, 0.0D, 1.0D);
+        if (back.lengthSqr() < 1.0E-4D) {
+            back = this.getLookAngle().multiply(-1.0D, 0.0D, -1.0D);
+        }
+        back = back.normalize();
+        Vec3 center = this.position().add(back.scale(3.0D)).add(0.0D, 1.2D, 0.0D);
+        GrellClone[] formation = new GrellClone[GrellShuffle.SLOTS];
+        GrellShuffle shuffle = new GrellShuffle(formation, this.random, center, back, this.isEnraged());
+        int real = this.random.nextInt(GrellShuffle.SLOTS);
+        for (int slot = 0; slot < GrellShuffle.SLOTS; slot++) {
+            formation[slot] = this.spawnClone(serverLevel, slot, GrellShuffle.SLOTS, slot == real, clone -> shuffle.getSlotPosition(clone.getIndex()));
+            if (formation[slot] != null) {
+                formation[slot].setShuffling(true);
+            }
+        }
+        this.shuffle = shuffle;
+    }
+
+    @Nullable
+    private GrellClone spawnClone(ServerLevel serverLevel, int index, int count, boolean real, Function<GrellClone, Vec3> position) {
+        GrellClone clone = OFEntities.GRELL_CLONE.get().create(serverLevel);
+        if (clone != null) {
+            clone.setup(this, index, count, real);
+            Vec3 pos = position.apply(clone);
+            clone.moveTo(pos.x, pos.y, pos.z, this.getYRot(), 0.0F);
+            serverLevel.addFreshEntity(clone);
+            SpectralSight.sendParticlesToPerceivers(serverLevel, clone, ParticleTypes.REVERSE_PORTAL, clone.getX(), clone.getY(0.5D), clone.getZ(), 40, 0.5D, 0.6D, 0.5D, 0.15D);
+            if (index == 0) {
+                SpectralSight.playSoundToListeners(serverLevel, clone, SoundEvents.ILLUSIONER_MIRROR_MOVE, SoundSource.HOSTILE, 1.5F, 0.8F);
+            }
+            this.clones.add(clone.getUUID());
+        }
+        return clone;
     }
 
     public int getIllusionTicks() {
@@ -435,7 +487,11 @@ public class Grell extends BasicFlyingMonster implements SpectralEntity, EliteMo
                 }
             }
             this.clones.clear();
-            this.entityData.set(HIDDEN, false);
+            this.shuffle = null;
+            if (this.isHidden()) {
+                this.entityData.set(HIDDEN, false);
+                SpectralSight.refreshTracking(this);
+            }
         }
     }
 
@@ -456,7 +512,7 @@ public class Grell extends BasicFlyingMonster implements SpectralEntity, EliteMo
 
     @Override
     public boolean isPerceivedBy(Entity viewer) {
-        return this.isEnraged() || this.revealed.contains(viewer.getUUID()) || this.stares.containsKey(viewer.getUUID());
+        return !this.isHidden() && (this.isEnraged() || this.revealed.contains(viewer.getUUID()) || this.stares.containsKey(viewer.getUUID()));
     }
 
     @Override

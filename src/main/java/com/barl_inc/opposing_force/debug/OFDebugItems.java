@@ -21,6 +21,7 @@ import top.theillusivec4.curios.api.CuriosApi;
 import top.theillusivec4.curios.api.type.inventory.IDynamicStackHandler;
 
 import javax.annotation.Nullable;
+import java.util.Map;
 import java.util.Set;
 import java.util.UUID;
 
@@ -37,6 +38,13 @@ public class OFDebugItems {
     public static final DeferredItem<Item> KNIGHTSOUL = DEBUG_ITEM.register("knightsoul", () -> new KnightsoulItem(new Item.Properties().rarity(OFDebugRarity.DEBUG.getValue()).fireResistant().stacksTo(1)));
     public static final DeferredItem<Item> SLIMEWARD = DEBUG_ITEM.register("slimeward", () -> new SlimewardItem(new Item.Properties().rarity(OFDebugRarity.DEBUG.getValue()).fireResistant().stacksTo(1), OFCurioDefinitions.SLIMY_SHIELD));
     public static final DeferredItem<Item> SOULCLEAVE = DEBUG_ITEM.register("soulcleave", () -> new SoulcleaveItem(OFItemTiers.SPECTRAL_CLEAVER, new Item.Properties().rarity(OFDebugRarity.DEBUG.getValue()).fireResistant().attributes(SwordItem.createAttributes(OFItemTiers.SPECTRAL_CLEAVER, 3.5F, -2.4F)).component(DataComponents.UNBREAKABLE, new Unbreakable(false))));
+
+    private static final Map<DeferredItem<Item>, DeferredItem<Item>> UPGRADES = Map.of(
+            OFItems.CURSED_RINGLINE, RINGMASTER,
+            OFItems.SPECTRAL_CLEAVER, SOULCLEAVE,
+            OFItems.SPECTRAL_SHIELD, KNIGHTSOUL,
+            OFItems.SLIMY_SHIELD, SLIMEWARD
+    );
 
     public static void register(IEventBus modEventBus) {
         DEBUG_ITEM.register(modEventBus);
@@ -87,16 +95,23 @@ public class OFDebugItems {
     }
 
     @Nullable
+    public static Item getUpgrade(Item item) {
+        Item upgrade = null;
+        for (Map.Entry<DeferredItem<Item>, DeferredItem<Item>> entry : UPGRADES.entrySet()) {
+            if (entry.getKey().get() == item) {
+                upgrade = entry.getValue().get();
+            }
+        }
+        return upgrade;
+    }
+
+    @Nullable
     private static Item getBase(Item item) {
         Item base = null;
-        if (item == RINGMASTER.get()) {
-            base = OFItems.CURSED_RINGLINE.get();
-        } else if (item == SOULCLEAVE.get()) {
-            base = OFItems.SPECTRAL_CLEAVER.get();
-        } else if (item == KNIGHTSOUL.get()) {
-            base = OFItems.SPECTRAL_SHIELD.get();
-        } else if (item == SLIMEWARD.get()) {
-            base = OFItems.SLIMY_SHIELD.get();
+        for (Map.Entry<DeferredItem<Item>, DeferredItem<Item>> entry : UPGRADES.entrySet()) {
+            if (entry.getValue().get() == item) {
+                base = entry.getKey().get();
+            }
         }
         return base;
     }

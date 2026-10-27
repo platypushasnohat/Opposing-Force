@@ -10,19 +10,17 @@ import com.barl_inc.opposing_force.item.SpectralShieldItem;
 import com.barl_inc.opposing_force.item.curios.AbstractCurioItem;
 import com.barl_inc.opposing_force.item.curios.MomentumGauntletItem;
 import com.barl_inc.opposing_force.item.curios.SpectralGogglesItem;
+import com.barl_inc.opposing_force.item.utils.SlimyShielding;
 import com.barl_inc.opposing_force.registry.OFEntities;
 import com.barl_inc.opposing_force.registry.OFItems;
 import com.barl_inc.opposing_force.registry.datapack.tags.OFItemTags;
 import com.platypushasnohat.sinew.entity.base.AnimatedMonster;
 import com.platypushasnohat.sinew.entity.villager.MultipleInputsTrade;
 import com.platypushasnohat.sinew.registry.SinewDamageTypes;
-import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.network.chat.Component;
-import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.packs.PackType;
 import net.minecraft.server.packs.repository.Pack;
 import net.minecraft.server.packs.repository.PackSource;
-import net.minecraft.sounds.SoundEvents;
 import net.minecraft.tags.DamageTypeTags;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
@@ -152,23 +150,12 @@ public class CommonEvents {
                 && CuriosApi.getCuriosInventory(attacker).map(inventory -> inventory.isEquipped(OFItems.STALKER_GLOVES.get())).orElse(false)) {
             event.setAmount(event.getAmount() * 1.3F);
         }
-        if (event.getEntity() instanceof Player player
-                && !event.getSource().is(DamageTypeTags.BYPASSES_INVULNERABILITY)
-                && CuriosApi.getCuriosInventory(player).map(inventory -> inventory.isEquipped(OFItems.SLIMY_SHIELD.get())).orElse(false)) {
-            if (!player.getCooldowns().isOnCooldown(OFItems.SLIMY_SHIELD.get()) && player.invulnerableTime <= 10 && player.level() instanceof ServerLevel serverLevel) {
-                event.setAmount(0.1F);
-                player.getCooldowns().addCooldown(OFItems.SLIMY_SHIELD.get(), 300);
-                serverLevel.sendParticles(ParticleTypes.ITEM_SLIME, player.getX(), player.getY(0.5D), player.getZ(), 20, 0.3D, 0.5D, 0.3D, 0.4D);
-                serverLevel.playSound(null, player.getX(), player.getY(), player.getZ(), SoundEvents.SLIME_ATTACK, player.getSoundSource(), 1.0F, 1.0F);
-            }
-        }
+        SlimyShielding.absorbHit(event, OFItems.SLIMY_SHIELD.get(), 300);
     }
 
     @SubscribeEvent
     public static void onLivingDamagePost(LivingDamageEvent.Post event) {
-        if (event.getEntity() instanceof Player player && event.getNewDamage() > 0.0F && player.getCooldowns().isOnCooldown(OFItems.SLIMY_SHIELD.get())) {
-            player.getCooldowns().addCooldown(OFItems.SLIMY_SHIELD.get(), 240);
-        }
+        SlimyShielding.resetOnDamage(event, OFItems.SLIMY_SHIELD.get(), 240);
     }
 
     @SubscribeEvent

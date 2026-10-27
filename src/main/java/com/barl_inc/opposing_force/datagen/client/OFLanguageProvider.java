@@ -1,6 +1,7 @@
 package com.barl_inc.opposing_force.datagen.client;
 
 import com.barl_inc.opposing_force.OpposingForce;
+import com.barl_inc.opposing_force.debug.OFDebugItems;
 import com.barl_inc.opposing_force.registry.*;
 import com.platypushasnohat.sinew.datagen.client.SinewLanguageProvider;
 import net.minecraft.data.PackOutput;
@@ -180,5 +181,9 @@ public class OFLanguageProvider extends SinewLanguageProvider {
         this.add("death.attack.soul_1.entity", "%s was reaped %s");
 
         this.add("death.attack.grell_bite", "%1$s was torn apart by %2$s");
+
+        this.add(OFDebugItems.RINGMASTER.get(), "Ringmaster");
+        this.add(OFDebugItems.SOULCLEAVE.get(), "Soulcleave");
+        this.add("item.opposing_force.tooltip.debug_item", "DEBUG ITEM");
     }
 }

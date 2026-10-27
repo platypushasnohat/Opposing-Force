@@ -6,6 +6,7 @@
   "mixins": [
     "CurioSlotMixin",
     "DynamicStackHandlerMixin",
+    "ItemParserMixin",
     "MobCategoryMixin",
     "ZombieMixin"
   ],

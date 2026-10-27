@@ -1,6 +1,7 @@
 package com.barl_inc.opposing_force.datagen.server;
 
 import com.barl_inc.opposing_force.OpposingForce;
+import com.barl_inc.opposing_force.debug.OFDebugItems;
 import com.barl_inc.opposing_force.registry.OFItems;
 import com.barl_inc.opposing_force.registry.datapack.tags.OFItemTags;
 import net.minecraft.core.HolderLookup.Provider;
@@ -139,6 +140,11 @@ public class OFItemTagsProvider extends ItemTagsProvider {
 
         this.tag(OFItemTags.ENCHANTABLE_MAGIC).addTag(
                 OFItemTags.CONSUMES_BASIC_MANA
+        );
+
+        this.tag(Tags.Items.HIDDEN_FROM_RECIPE_VIEWERS).add(
+                OFDebugItems.RINGMASTER.get(),
+                OFDebugItems.SOULCLEAVE.get()
         );
 	}
 }

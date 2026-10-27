@@ -2,7 +2,6 @@ package com.barl_inc.opposing_force.entity.projectile;
 
 import com.barl_inc.opposing_force.registry.OFDamageTypes;
 import com.barl_inc.opposing_force.registry.OFEntities;
-import com.barl_inc.opposing_force.registry.OFItems;
 import com.platypushasnohat.sinew.entity.utils.SplitMagicBonus;
 import com.platypushasnohat.sinew.item.DisabledItem;
 import com.platypushasnohat.sinew.utils.SinewSoundUtils;
@@ -16,7 +15,6 @@ import net.minecraft.sounds.SoundEvents;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.util.Mth;
 import net.minecraft.world.damagesource.DamageSource;
-import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.player.Player;
@@ -189,7 +187,7 @@ public class RingProjectile extends Projectile implements SplitMagicBonus {
     private void finish() {
         if (this.getOwner() instanceof ServerPlayer player && this.level().getEntitiesOfClass(RingProjectile.class, this.getBoundingBox().inflate(64.0D), ring -> ring != this && ring.getOwner() == player).isEmpty()) {
             DisabledItem.enableItem(player, this.slot);
-            player.getCooldowns().addCooldown(OFItems.CURSED_RINGLINE.get(), 60);
+            player.getCooldowns().addCooldown(this.weapon.getItem(), 60);
         }
         this.discard();
     }

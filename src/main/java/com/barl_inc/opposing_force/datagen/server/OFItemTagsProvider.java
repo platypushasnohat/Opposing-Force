@@ -31,7 +31,8 @@ public class OFItemTagsProvider extends ItemTagsProvider {
                 OFItems.EMERALD_SWORD.get(),
                 OFItems.CHITIN_LANCE.get(),
                 OFItems.LAPIS_LAZULI_SWORD.get(),
-                OFItems.SPECTRAL_CLEAVER.get()
+                OFItems.SPECTRAL_CLEAVER.get(),
+                OFDebugItems.SOULCLEAVE.get()
         );
 
         this.tag(ItemTags.PICKAXES).add(
@@ -69,7 +70,8 @@ public class OFItemTagsProvider extends ItemTagsProvider {
                 OFItems.BOOMSTICK.get(),
                 OFItems.GORLOFF.get(),
                 OFItems.SPECTRAL_SHIELD.get(),
-                OFItems.CURSED_RINGLINE.get()
+                OFItems.CURSED_RINGLINE.get(),
+                OFDebugItems.RINGMASTER.get()
         );
 
         this.tag(ItemTags.HEAD_ARMOR).add(
@@ -123,11 +125,13 @@ public class OFItemTagsProvider extends ItemTagsProvider {
                 OFItems.MUNITIONS_BOX.get(),
                 OFItems.MOON_SHOES.get(),
                 OFItems.SPECTRAL_GOGGLES.get(),
-                OFItems.CURSED_RING.get()
+                OFItems.CURSED_RING.get(),
+                OFDebugItems.SLIMEWARD.get()
         );
 
         this.tag(Tags.Items.TOOLS_SHIELD).add(
-                OFItems.SPECTRAL_SHIELD.get()
+                OFItems.SPECTRAL_SHIELD.get(),
+                OFDebugItems.KNIGHTSOUL.get()
         );
 
         this.tag(OFItemTags.BASIC_MANA).add(
@@ -145,7 +149,8 @@ public class OFItemTagsProvider extends ItemTagsProvider {
         this.tag(Tags.Items.HIDDEN_FROM_RECIPE_VIEWERS).add(
                 OFDebugItems.RINGMASTER.get(),
                 OFDebugItems.SOULCLEAVE.get(),
-                OFDebugItems.KNIGHTSOUL.get()
+                OFDebugItems.KNIGHTSOUL.get(),
+                OFDebugItems.SLIMEWARD.get()
         );
 	}
 }

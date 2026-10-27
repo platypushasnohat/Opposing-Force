@@ -41,13 +41,13 @@ public class GrellShuffle {
         this.back = back;
         this.right = back.cross(new Vec3(0.0D, 1.0D, 0.0D)).normalize();
         if (fast) {
-            this.moveTicks = 6;
+            this.moveTicks = 5;
             this.pauseTicks = 1;
-            this.movesLeft = 29;
+            this.movesLeft = 33;
         } else {
-            this.moveTicks = 9;
+            this.moveTicks = 8;
             this.pauseTicks = 2;
-            this.movesLeft = 18;
+            this.movesLeft = 20;
         }
         for (int slot = 0; slot < SLOTS; slot++) {
             this.moves[slot] = slot;

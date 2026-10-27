@@ -31,8 +31,7 @@ public class OFItemTagsProvider extends ItemTagsProvider {
                 OFItems.EMERALD_SWORD.get(),
                 OFItems.CHITIN_LANCE.get(),
                 OFItems.LAPIS_LAZULI_SWORD.get(),
-                OFItems.SPECTRAL_CLEAVER.get(),
-                OFDebugItems.SOULCLEAVE.get()
+                OFItems.SPECTRAL_CLEAVER.get()
         );
 
         this.tag(ItemTags.PICKAXES).add(
@@ -57,7 +56,8 @@ public class OFItemTagsProvider extends ItemTagsProvider {
         );
 
         this.tag(ItemTags.SWORD_ENCHANTABLE).add(
-                OFItems.BUZZSAW.get()
+                OFItems.BUZZSAW.get(),
+                OFDebugItems.SOULCLEAVE.get()
         );
 
         this.tag(ItemTags.DURABILITY_ENCHANTABLE).add(
@@ -70,8 +70,7 @@ public class OFItemTagsProvider extends ItemTagsProvider {
                 OFItems.BOOMSTICK.get(),
                 OFItems.GORLOFF.get(),
                 OFItems.SPECTRAL_SHIELD.get(),
-                OFItems.CURSED_RINGLINE.get(),
-                OFDebugItems.RINGMASTER.get()
+                OFItems.CURSED_RINGLINE.get()
         );
 
         this.tag(ItemTags.HEAD_ARMOR).add(

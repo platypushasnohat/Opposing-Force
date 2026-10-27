@@ -9,15 +9,22 @@ import net.minecraft.sounds.SoundEvents;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.tags.DamageTypeTags;
 import net.minecraft.world.InteractionResult;
+import net.minecraft.world.entity.item.ItemEntity;
 import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.inventory.Slot;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.block.Blocks;
+import net.neoforged.bus.api.EventPriority;
 import net.neoforged.bus.api.SubscribeEvent;
 import net.neoforged.fml.common.EventBusSubscriber;
+import net.neoforged.neoforge.event.entity.EntityJoinLevelEvent;
 import net.neoforged.neoforge.event.entity.living.LivingDamageEvent;
+import net.neoforged.neoforge.event.entity.living.LivingDeathEvent;
 import net.neoforged.neoforge.event.entity.living.LivingIncomingDamageEvent;
+import net.neoforged.neoforge.event.entity.player.PlayerContainerEvent;
 import net.neoforged.neoforge.event.entity.player.PlayerInteractEvent;
+import net.neoforged.neoforge.event.tick.PlayerTickEvent;
 import top.theillusivec4.curios.api.CuriosApi;
 
 import javax.annotation.Nullable;
@@ -48,7 +55,7 @@ public class DebugEvents {
                 && CuriosApi.getCuriosInventory(player).map(inventory -> inventory.isEquipped(OFDebugItems.SLIMEWARD.get())).orElse(false)) {
             if (!player.getCooldowns().isOnCooldown(OFDebugItems.SLIMEWARD.get()) && player.invulnerableTime <= 10 && player.level() instanceof ServerLevel serverLevel) {
                 event.setAmount(0.1F);
-                player.getCooldowns().addCooldown(OFDebugItems.SLIMEWARD.get(), 10);
+                player.getCooldowns().addCooldown(OFDebugItems.SLIMEWARD.get(), 20);
                 serverLevel.sendParticles(ParticleTypes.ITEM_SLIME, player.getX(), player.getY(0.5D), player.getZ(), 20, 0.3D, 0.5D, 0.3D, 0.4D);
                 serverLevel.playSound(null, player.getX(), player.getY(), player.getZ(), SoundEvents.SLIME_ATTACK, player.getSoundSource(), 1.0F, 1.0F);
             }
@@ -59,6 +66,46 @@ public class DebugEvents {
     public static void onLivingDamagePost(LivingDamageEvent.Post event) {
         if (event.getEntity() instanceof Player player && event.getNewDamage() > 0.0F && player.getCooldowns().isOnCooldown(OFDebugItems.SLIMEWARD.get())) {
             player.getCooldowns().addCooldown(OFDebugItems.SLIMEWARD.get(), 20);
+        }
+    }
+
+    @SubscribeEvent
+    public static void onEntityJoinLevel(EntityJoinLevelEvent event) {
+        if (!event.getLevel().isClientSide && event.getEntity() instanceof ItemEntity item) {
+            item.setItem(OFDebugItems.revert(item.getItem()));
+        }
+    }
+
+    @SubscribeEvent(priority = EventPriority.LOWEST)
+    public static void onLivingDeath(LivingDeathEvent event) {
+        if (!event.getEntity().level().isClientSide && event.getEntity() instanceof Player player) {
+            OFDebugItems.revertContainer(player.getInventory());
+            OFDebugItems.revertCurios(player);
+        }
+    }
+
+    @SubscribeEvent
+    public static void onPlayerTick(PlayerTickEvent.Post event) {
+        Player player = event.getEntity();
+        if (!player.level().isClientSide && !OFDebugItems.isDebugPlayer(player)) {
+            OFDebugItems.revertContainer(player.getInventory());
+            OFDebugItems.revertCurios(player);
+        }
+    }
+
+    @SubscribeEvent
+    public static void onContainerClose(PlayerContainerEvent.Close event) {
+        Player player = event.getEntity();
+        if (OFDebugItems.isDebugPlayer(player)) {
+            for (Slot slot : event.getContainer().slots) {
+                if (slot.container != player.getInventory() && slot.container != player.getEnderChestInventory()) {
+                    ItemStack stack = slot.getItem();
+                    ItemStack reverted = OFDebugItems.revert(stack);
+                    if (reverted != stack) {
+                        slot.set(reverted);
+                    }
+                }
+            }
         }
     }
 

@@ -24,6 +24,9 @@ import net.neoforged.neoforge.event.entity.living.LivingIncomingDamageEvent;
 import net.neoforged.neoforge.event.entity.player.PlayerContainerEvent;
 import net.neoforged.neoforge.event.entity.player.PlayerInteractEvent;
 import net.neoforged.neoforge.event.tick.PlayerTickEvent;
+import net.neoforged.neoforge.items.IItemHandler;
+import net.neoforged.neoforge.items.SlotItemHandler;
+import top.theillusivec4.curios.api.CuriosApi;
 
 @EventBusSubscriber(modid = OpposingForce.MOD_ID)
 public class DebugEvents {
@@ -83,7 +86,7 @@ public class DebugEvents {
         Player player = event.getEntity();
         if (OFDebugItems.isDebugPlayer(player)) {
             for (Slot slot : event.getContainer().slots) {
-                if (slot.container != player.getInventory() && slot.container != player.getEnderChestInventory()) {
+                if (!isCertifiedSlot(player, slot)) {
                     ItemStack stack = slot.getItem();
                     ItemStack reverted = OFDebugItems.revert(stack);
                     if (reverted != stack) {
@@ -92,5 +95,14 @@ public class DebugEvents {
                 }
             }
         }
+    }
+
+    private static boolean isCertifiedSlot(Player player, Slot slot) {
+        boolean curio = slot instanceof SlotItemHandler handlerSlot && isOwnCurioHandler(player, handlerSlot.getItemHandler());
+        return curio || slot.container == player.getInventory() || slot.container == player.getEnderChestInventory();
+    }
+
+    private static boolean isOwnCurioHandler(Player player, IItemHandler handler) {
+        return CuriosApi.getCuriosInventory(player).map(inventory -> inventory.getCurios().values().stream().anyMatch(stacks -> stacks.getStacks() == handler || stacks.getCosmeticStacks() == handler)).orElse(false);
     }
 }

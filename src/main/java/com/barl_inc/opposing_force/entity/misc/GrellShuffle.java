@@ -3,6 +3,8 @@ package com.barl_inc.opposing_force.entity.misc;
 import net.minecraft.util.Mth;
 import net.minecraft.util.RandomSource;
 import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.world.level.ClipContext;
+import net.minecraft.world.phys.HitResult;
 import net.minecraft.world.phys.Vec3;
 
 public class GrellShuffle {
@@ -22,9 +24,11 @@ public class GrellShuffle {
 
     private final GrellClone[] clones;
     private final RandomSource random;
-    private final Vec3 center;
-    private final Vec3 right;
-    private final Vec3 back;
+    private Vec3 center;
+    private Vec3 right;
+    private Vec3 back;
+    private double distance = -1.0D;
+    private double height;
     private final int moveTicks;
     private final int pauseTicks;
     private int movesLeft;
@@ -84,6 +88,7 @@ public class GrellShuffle {
     }
 
     public void tick(LivingEntity target) {
+        this.follow(target);
         if (this.move < 0 && this.timer >= this.pauseTicks && this.movesLeft > 0) {
             this.startMove();
         }
@@ -101,6 +106,27 @@ public class GrellShuffle {
         }
         if (this.move >= 0 && progress >= 1.0F) {
             this.finishMove();
+        }
+    }
+
+    private void follow(LivingEntity target) {
+        Vec3 eye = target.getEyePosition();
+        if (this.distance < 0.0D) {
+            this.distance = this.center.subtract(eye).horizontalDistance();
+            this.height = this.center.y - eye.y;
+        }
+        Vec3 look = target.getLookAngle().multiply(1.0D, 0.0D, 1.0D);
+        if (look.lengthSqr() > 1.0E-4D) {
+            Vec3 forward = this.back.lerp(look.normalize(), 0.25D).normalize();
+            Vec3 wanted = eye.add(forward.scale(this.distance)).add(0.0D, this.height, 0.0D);
+            HitResult hit = target.level().clip(new ClipContext(eye, wanted, ClipContext.Block.COLLIDER, ClipContext.Fluid.NONE, target));
+            if (hit.getType() != HitResult.Type.MISS) {
+                double reach = Math.max(hit.getLocation().distanceTo(eye) - 1.5D, 2.0D);
+                wanted = eye.add(wanted.subtract(eye).normalize().scale(reach));
+            }
+            this.back = forward;
+            this.right = forward.cross(new Vec3(0.0D, 1.0D, 0.0D)).normalize();
+            this.center = this.center.lerp(wanted, 0.25D);
         }
     }
 

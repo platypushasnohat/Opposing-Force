@@ -1,5 +1,6 @@
 package com.barl_inc.opposing_force.entity.misc;
 
+import net.minecraft.Util;
 import net.minecraft.util.Mth;
 import net.minecraft.util.RandomSource;
 import net.minecraft.world.entity.LivingEntity;
@@ -7,43 +8,40 @@ import net.minecraft.world.level.ClipContext;
 import net.minecraft.world.phys.HitResult;
 import net.minecraft.world.phys.Vec3;
 
+import javax.annotation.Nullable;
+
 public class GrellShuffle {
 
     public static final int COLUMNS = 4;
     public static final int ROWS = 2;
     public static final int SLOTS = COLUMNS * ROWS;
 
-    private static final int ROTATE = 0;
-    private static final int MESSY = 1;
-    private static final int CHAIN = 2;
-    private static final int SECTION = 3;
-    private static final int CROSS = 4;
-    private static final int FLIP = 5;
-    private static final int LINE = 6;
-    private static final int COLLAPSE = 7;
-
     private final GrellClone[] clones;
     private final RandomSource random;
+    private final double distance;
+    private final double height;
+    private final int moveTicks;
+    private final int pauseTicks;
+    private final int[] moves = new int[SLOTS];
     private Vec3 center;
     private Vec3 right;
     private Vec3 back;
-    private double distance = -1.0D;
-    private double height;
-    private final int moveTicks;
-    private final int pauseTicks;
     private int movesLeft;
-    private int[] moves = new int[SLOTS];
-    private int move = -1;
+    @Nullable
+    private Move move;
     private int timer;
     private boolean flipped;
     private boolean collapseAll;
 
-    public GrellShuffle(GrellClone[] clones, RandomSource random, Vec3 center, Vec3 back, boolean fast) {
+    public GrellShuffle(GrellClone[] clones, RandomSource random, LivingEntity target, Vec3 center, Vec3 back, boolean fast) {
+        Vec3 eye = target.getEyePosition();
         this.clones = clones;
         this.random = random;
         this.center = center;
         this.back = back;
-        this.right = back.cross(new Vec3(0.0D, 1.0D, 0.0D)).normalize();
+        this.right = rightOf(back);
+        this.distance = center.subtract(eye).horizontalDistance();
+        this.height = center.y - eye.y;
         if (fast) {
             this.moveTicks = 5;
             this.pauseTicks = 1;
@@ -57,6 +55,14 @@ public class GrellShuffle {
             this.moves[slot] = slot;
         }
         this.timer = -GrellClone.FADE_TICKS;
+    }
+
+    private static Vec3 rightOf(Vec3 back) {
+        return new Vec3(-back.z, 0.0D, back.x);
+    }
+
+    public Vec3 getCenter() {
+        return this.center;
     }
 
     public Vec3 getSlotPosition(int slot) {
@@ -84,17 +90,17 @@ public class GrellShuffle {
     }
 
     public boolean isDone() {
-        return this.movesLeft <= 0 && this.move < 0;
+        return this.movesLeft <= 0 && this.move == null;
     }
 
     public void tick(LivingEntity target) {
         this.follow(target);
-        if (this.move < 0 && this.timer >= this.pauseTicks && this.movesLeft > 0) {
+        if (this.move == null && this.timer >= this.pauseTicks && this.movesLeft > 0) {
             this.startMove();
         }
         this.timer++;
         float progress = 1.0F;
-        if (this.move >= 0) {
+        if (this.move != null) {
             progress = Math.min((float) this.timer / this.moveTicks, 1.0F);
         }
         float eased = progress * progress * (3.0F - 2.0F * progress);
@@ -104,17 +110,13 @@ public class GrellShuffle {
                 this.place(clone, slot, eased, target);
             }
         }
-        if (this.move >= 0 && progress >= 1.0F) {
+        if (this.move != null && progress >= 1.0F) {
             this.finishMove();
         }
     }
 
     private void follow(LivingEntity target) {
         Vec3 eye = target.getEyePosition();
-        if (this.distance < 0.0D) {
-            this.distance = this.center.subtract(eye).horizontalDistance();
-            this.height = this.center.y - eye.y;
-        }
         Vec3 look = target.getLookAngle().multiply(1.0D, 0.0D, 1.0D);
         if (look.lengthSqr() > 1.0E-4D) {
             Vec3 forward = this.back.lerp(look.normalize(), 0.25D).normalize();
@@ -125,7 +127,7 @@ public class GrellShuffle {
                 wanted = eye.add(wanted.subtract(eye).normalize().scale(reach));
             }
             this.back = forward;
-            this.right = forward.cross(new Vec3(0.0D, 1.0D, 0.0D)).normalize();
+            this.right = rightOf(forward);
             this.center = this.center.lerp(wanted, 0.25D);
         }
     }
@@ -137,13 +139,13 @@ public class GrellShuffle {
         if (this.flipped) {
             roll = 180.0F;
         }
-        if (this.move == FLIP) {
+        if (this.move == Move.FLIP) {
             double x = column(slot) - 1.5D;
             double y = 0.5D - row(slot);
             float angle = Mth.PI * eased;
             pos = this.center.add(this.getOffset(x * Mth.cos(angle) - y * Mth.sin(angle), x * Mth.sin(angle) + y * Mth.cos(angle), 0.0D));
             roll += 180.0F * eased;
-        } else if (this.move == COLLAPSE) {
+        } else if (this.move == Move.COLLAPSE) {
             Vec3 middle = this.getCollapseCenter(slot);
             if (eased < 0.5F) {
                 pos = this.getSlotPosition(slot).lerp(middle, eased * 2.0F);
@@ -154,7 +156,7 @@ public class GrellShuffle {
             Vec3 from = this.getSlotPosition(slot);
             Vec3 end = this.getSlotPosition(to);
             double depth = 0.0D;
-            if (this.move >= 0 && slot != to) {
+            if (this.move != null && slot != to) {
                 double side = 1.0D;
                 if ((slot + to) % 2 == 0) {
                     side = -1.0D;
@@ -183,10 +185,10 @@ public class GrellShuffle {
             this.moves[slot] = slot;
         }
         System.arraycopy(moved, 0, this.clones, 0, SLOTS);
-        if (this.move == FLIP) {
+        if (this.move == Move.FLIP) {
             this.flipped = !this.flipped;
         }
-        this.move = -1;
+        this.move = null;
         this.timer = 0;
         this.movesLeft--;
     }
@@ -194,9 +196,9 @@ public class GrellShuffle {
     private void startMove() {
         this.timer = 0;
         if (this.movesLeft == 1 && this.flipped) {
-            this.move = FLIP;
+            this.move = Move.FLIP;
         } else {
-            this.move = this.random.nextInt(8);
+            this.move = Util.getRandom(Move.values(), this.random);
         }
         boolean reverse = this.random.nextBoolean();
         switch (this.move) {
@@ -207,7 +209,7 @@ public class GrellShuffle {
             case CROSS -> this.cross();
             case FLIP -> this.flip();
             case COLLAPSE -> this.collapse();
-            default -> this.line(reverse);
+            case LINE -> this.line(reverse);
         }
     }
 
@@ -257,7 +259,7 @@ public class GrellShuffle {
     private void collapse() {
         this.collapseAll = this.random.nextInt(3) == 0;
         if (this.collapseAll) {
-            this.scramble(new int[]{0, 1, 2, 3, 4, 5, 6, 7});
+            this.scramble(new int[]{slot(0, 0), slot(1, 0), slot(2, 0), slot(3, 0), slot(0, 1), slot(1, 1), slot(2, 1), slot(3, 1)});
         } else {
             this.scramble(new int[]{slot(0, 0), slot(1, 0), slot(0, 1), slot(1, 1)});
             this.scramble(new int[]{slot(2, 0), slot(3, 0), slot(2, 1), slot(3, 1)});
@@ -285,5 +287,16 @@ public class GrellShuffle {
         for (int slot = 0; slot < SLOTS; slot++) {
             this.moves[slot] = slot((column(slot) + shift) % COLUMNS, row(slot));
         }
+    }
+
+    private enum Move {
+        ROTATE,
+        MESSY,
+        CHAIN,
+        SECTION,
+        CROSS,
+        FLIP,
+        LINE,
+        COLLAPSE
     }
 }

@@ -16,6 +16,7 @@ import com.platypushasnohat.sinew.entity.spectral.SpectralSight;
 import com.platypushasnohat.sinew.registry.SinewAttachments;
 import it.unimi.dsi.fastutil.objects.Object2IntMap;
 import it.unimi.dsi.fastutil.objects.Object2IntOpenHashMap;
+import it.unimi.dsi.fastutil.objects.ObjectIterator;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.core.registries.Registries;
@@ -215,7 +216,7 @@ public class Grell extends BasicFlyingMonster implements SpectralEntity, EliteMo
             this.shuffle.tick(target);
         }
         if (target != null && this.shuffle.isDone()) {
-            Vec3 center = this.shuffle.getSlotPosition(0).add(this.shuffle.getSlotPosition(GrellShuffle.SLOTS - 1)).scale(0.5D);
+            Vec3 center = this.shuffle.getCenter();
             this.illusionAngle = (float) Mth.atan2(center.z - target.getZ(), center.x - target.getX());
             for (int slot = 0; slot < GrellShuffle.SLOTS; slot++) {
                 GrellClone clone = this.shuffle.getClone(slot);
@@ -234,15 +235,17 @@ public class Grell extends BasicFlyingMonster implements SpectralEntity, EliteMo
     }
 
     private void tickStares() {
-        Set<UUID> before = Set.copyOf(this.stares.keySet());
         List<Player> starers = this.level().getEntitiesOfClass(Player.class, this.getBoundingBox().inflate(32.0D), this::isStaring);
         Set<UUID> staring = new HashSet<>();
+        boolean changed = false;
         this.staredAt = !starers.isEmpty();
         for (Player player : starers) {
-            staring.add(player.getUUID());
-            int stare = this.stares.getInt(player.getUUID()) + 1;
+            UUID uuid = player.getUUID();
+            int stare = this.stares.getInt(uuid) + 1;
+            staring.add(uuid);
             if (stare >= this.getStareTicks(player)) {
-                this.stares.removeInt(player.getUUID());
+                changed |= this.stares.containsKey(uuid);
+                this.stares.removeInt(uuid);
                 this.reveal(player);
                 if (!this.hasSpectralSight(player)) {
                     player.playNotifySound(SoundEvents.ELDER_GUARDIAN_CURSE, SoundSource.HOSTILE, 1.0F, 0.6F);
@@ -251,18 +254,21 @@ public class Grell extends BasicFlyingMonster implements SpectralEntity, EliteMo
                     this.setTarget(player);
                 }
             } else {
-                this.stares.put(player.getUUID(), stare);
-            }
-        }
-        for (UUID uuid : Set.copyOf(this.stares.keySet())) {
-            int stare = this.stares.getInt(uuid) - 1;
-            if (!staring.contains(uuid) && stare <= 0) {
-                this.stares.removeInt(uuid);
-            } else if (!staring.contains(uuid)) {
+                changed |= !this.stares.containsKey(uuid);
                 this.stares.put(uuid, stare);
             }
         }
-        if (!before.equals(this.stares.keySet())) {
+        ObjectIterator<Object2IntMap.Entry<UUID>> iterator = this.stares.object2IntEntrySet().iterator();
+        while (iterator.hasNext()) {
+            Object2IntMap.Entry<UUID> entry = iterator.next();
+            if (!staring.contains(entry.getKey()) && entry.getIntValue() <= 1) {
+                iterator.remove();
+                changed = true;
+            } else if (!staring.contains(entry.getKey())) {
+                entry.setValue(entry.getIntValue() - 1);
+            }
+        }
+        if (changed) {
             SpectralSight.refreshTracking(this);
         }
     }
@@ -297,7 +303,7 @@ public class Grell extends BasicFlyingMonster implements SpectralEntity, EliteMo
         return this.stares.containsKey(viewer.getUUID()) && !this.hasSpectralSight(viewer);
     }
 
-    private void tickClientMaterialize() {
+    protected void tickClientMaterialize() {
         this.prevMaterialize = this.materialize;
         this.prevConjureFade = this.conjureFade;
         if (this.getAnimationState() == CONJURE_ANIMATION) {
@@ -408,7 +414,7 @@ public class Grell extends BasicFlyingMonster implements SpectralEntity, EliteMo
         back = back.normalize();
         Vec3 center = this.position().add(back.scale(3.0D)).add(0.0D, 1.2D, 0.0D);
         GrellClone[] formation = new GrellClone[GrellShuffle.SLOTS];
-        GrellShuffle shuffle = new GrellShuffle(formation, this.random, center, back, this.isEnraged());
+        GrellShuffle shuffle = new GrellShuffle(formation, this.random, target, center, back, this.isEnraged());
         int real = this.random.nextInt(GrellShuffle.SLOTS);
         for (int slot = 0; slot < GrellShuffle.SLOTS; slot++) {
             formation[slot] = this.spawnClone(serverLevel, slot, GrellShuffle.SLOTS, slot == real, clone -> shuffle.getSlotPosition(clone.getIndex()));

@@ -170,12 +170,15 @@ public class GrellClone extends Grell {
         }
     }
 
+    @Override
+    protected void tickClientMaterialize() {
+    }
+
     private void circle(LivingEntity target) {
         Vec3 ring = this.getRingPosition(target);
         this.setDeltaMovement(ring.subtract(this.position()).scale(0.35D));
         this.face(target);
-        double gap = target.distanceTo(this);
-        if (gap < 2.5D) {
+        if (target.distanceToSqr(this) < 6.25D) {
             Vec3 push = target.position().subtract(this.position()).multiply(1.0D, 0.0D, 1.0D).normalize().scale(0.04D);
             target.push(push.x, 0.0D, push.z);
             target.hurtMarked = true;

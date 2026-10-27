@@ -87,7 +87,7 @@ public class OFItems {
     public static final DeferredItem<Item> GRELL_SPAWN_EGG = registerSpawnEggItem("grell", OFEntities.GRELL, 0xe0aac4, 0x6a2d6b);
 
     //cherry grove enemy section
-    public static final DeferredItem<Item> PARASOUL_SPAWN_EGG = registerSpawnEggItem("parasoul", OFEntities.PARASOUL, 0xf4a3c8, 0x6a2d6b);
+    public static final DeferredItem<Item> PARASOUL_SPAWN_EGG = registerSpawnEggItem("parasoul", OFEntities.PARASOUL, 0xf08a3e, 0xde3ca5);
     public static final DeferredItem<Item> SAKE = registerItem("sake", () -> new SakeItem(new Item.Properties().stacksTo(16)));
 
     //materials

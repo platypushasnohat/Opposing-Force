@@ -144,7 +144,8 @@ public class OFItemTagsProvider extends ItemTagsProvider {
 
         this.tag(Tags.Items.HIDDEN_FROM_RECIPE_VIEWERS).add(
                 OFDebugItems.RINGMASTER.get(),
-                OFDebugItems.SOULCLEAVE.get()
+                OFDebugItems.SOULCLEAVE.get(),
+                OFDebugItems.KNIGHTSOUL.get()
         );
 	}
 }

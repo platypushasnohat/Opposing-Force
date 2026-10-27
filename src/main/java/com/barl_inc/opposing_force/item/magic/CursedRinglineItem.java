@@ -4,7 +4,8 @@ import com.barl_inc.opposing_force.entity.projectile.RingProjectile;
 import com.barl_inc.opposing_force.item.base.MagicWeaponItem;
 import com.barl_inc.opposing_force.item.utils.OFTooltips;
 import com.barl_inc.opposing_force.registry.OFItems;
-import com.platypushasnohat.sinew.item.DisabledItem;
+import com.platypushasnohat.sinew.item.DisabledComponent;
+import com.platypushasnohat.sinew.registry.SinewDataComponents;
 import com.platypushasnohat.sinew.utils.SinewSoundUtils;
 import net.minecraft.network.chat.Component;
 import net.minecraft.server.level.ServerPlayer;
@@ -36,6 +37,10 @@ public class CursedRinglineItem extends MagicWeaponItem {
         return 5;
     }
 
+    public int getRingLifetime(ItemStack weapon) {
+        return 190;
+    }
+
     @Override
     public void appendHoverText(ItemStack stack, TooltipContext context, List<Component> tooltipComponents, TooltipFlag tooltipFlag) {
         super.appendHoverText(stack, context, tooltipComponents, tooltipFlag);
@@ -54,7 +59,7 @@ public class CursedRinglineItem extends MagicWeaponItem {
                 for (int i = 0; i < count; i++) {
                     level.addFreshEntity(new RingProjectile(level, player, i, count, slot, stack));
                 }
-                DisabledItem.disableItem(serverPlayer, slot, OFItems.DISABLED_CURSED_RINGLINE);
+                this.disable(serverPlayer, slot, stack);
                 level.playSound(null, player.getX(), player.getY(), player.getZ(), SoundEvents.EVOKER_CAST_SPELL, SoundSource.PLAYERS, 1.0F, SinewSoundUtils.randomizePitch(level));
             }
             player.awardStat(Stats.ITEM_USED.get(this));
@@ -62,5 +67,11 @@ public class CursedRinglineItem extends MagicWeaponItem {
             result = InteractionResultHolder.sidedSuccess(stack, level.isClientSide);
         }
         return result;
+    }
+
+    private void disable(ServerPlayer player, int slot, ItemStack stack) {
+        ItemStack disabled = OFItems.DISABLED_CURSED_RINGLINE.get().getDefaultInstance();
+        disabled.set(SinewDataComponents.DISABLED, new DisabledComponent(player.getInventory().getItem(slot), this.getRingLifetime(stack) + 10));
+        player.getInventory().setItem(slot, disabled);
     }
 }

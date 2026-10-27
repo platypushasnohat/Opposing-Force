@@ -25,7 +25,12 @@ public class RingmasterItem extends CursedRinglineItem {
 
     @Override
     public int getRingCount(ItemStack weapon) {
-        return 50;
+        return 30;
+    }
+
+    @Override
+    public int getRingLifetime(ItemStack weapon) {
+        return 400;
     }
 
     @Override

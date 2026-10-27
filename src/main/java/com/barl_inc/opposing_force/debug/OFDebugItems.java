@@ -26,6 +26,7 @@ public class OFDebugItems {
     );
 
     public static final DeferredItem<Item> RINGMASTER = DEBUG_ITEM.register("ringmaster", () -> new RingmasterItem(new Item.Properties().stacksTo(1)));
+    public static final DeferredItem<Item> KNIGHTSOUL = DEBUG_ITEM.register("knightsoul", () -> new KnightsoulItem(new Item.Properties().stacksTo(1)));
     public static final DeferredItem<Item> SOULCLEAVE = DEBUG_ITEM.register("soulcleave", () -> new SoulcleaveItem(OFItemTiers.SPECTRAL_CLEAVER, new Item.Properties().attributes(SwordItem.createAttributes(OFItemTiers.SPECTRAL_CLEAVER, 3.5F, -2.4F)).component(DataComponents.UNBREAKABLE, new Unbreakable(false))));
 
     public static void register(IEventBus modEventBus) {

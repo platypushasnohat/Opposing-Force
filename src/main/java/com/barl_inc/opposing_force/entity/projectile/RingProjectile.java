@@ -1,5 +1,6 @@
 package com.barl_inc.opposing_force.entity.projectile;
 
+import com.barl_inc.opposing_force.item.magic.CursedRinglineItem;
 import com.barl_inc.opposing_force.registry.OFDamageTypes;
 import com.barl_inc.opposing_force.registry.OFEntities;
 import com.platypushasnohat.sinew.entity.utils.SplitMagicBonus;
@@ -38,6 +39,7 @@ public class RingProjectile extends Projectile implements SplitMagicBonus {
 
     private ItemStack weapon = ItemStack.EMPTY;
     private int slot;
+    private int lifetime = 190;
     private int launchDelay = -1;
     private float facing;
     private float prevFacing;
@@ -56,6 +58,9 @@ public class RingProjectile extends Projectile implements SplitMagicBonus {
         this.entityData.set(ORBIT_COUNT, count);
         this.slot = slot;
         this.weapon = weapon.copy();
+        if (weapon.getItem() instanceof CursedRinglineItem ringline) {
+            this.lifetime = ringline.getRingLifetime(weapon);
+        }
         this.setPos(owner.getX(), owner.getY(0.5D), owner.getZ());
     }
 
@@ -73,6 +78,7 @@ public class RingProjectile extends Projectile implements SplitMagicBonus {
         compoundTag.putInt("Index", this.getIndex());
         compoundTag.putInt("Count", this.getCount());
         compoundTag.putInt("Slot", this.slot);
+        compoundTag.putInt("Lifetime", this.lifetime);
     }
 
     @Override
@@ -81,6 +87,9 @@ public class RingProjectile extends Projectile implements SplitMagicBonus {
         this.entityData.set(INDEX, compoundTag.getInt("Index"));
         this.entityData.set(COUNT, Math.max(1, compoundTag.getInt("Count")));
         this.slot = compoundTag.getInt("Slot");
+        if (compoundTag.contains("Lifetime")) {
+            this.lifetime = compoundTag.getInt("Lifetime");
+        }
     }
 
     public int getIndex() {
@@ -140,7 +149,7 @@ public class RingProjectile extends Projectile implements SplitMagicBonus {
                 this.facing = Mth.rotLerp(0.3F, this.facing, target);
             }
         } else {
-            if (this.getOwner() instanceof LivingEntity owner && owner.isAlive() && owner.level() == this.level() && this.tickCount < 190) {
+            if (this.getOwner() instanceof LivingEntity owner && owner.isAlive() && owner.level() == this.level() && this.tickCount < this.lifetime) {
                 LivingEntity target = this.getTarget(owner);
                 if (target == null) {
                     this.launchDelay = -1;

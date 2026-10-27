@@ -8,6 +8,7 @@
     "DynamicStackHandlerMixin",
     "ItemParserMixin",
     "MobCategoryMixin",
+    "PlayerMixin",
     "ZombieMixin"
   ],
   "client": [

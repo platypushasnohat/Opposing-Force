@@ -44,6 +44,8 @@ public class DebugEvents {
             upgrade = OFDebugItems.RINGMASTER.get();
         } else if (stack.is(OFItems.SPECTRAL_CLEAVER.get())) {
             upgrade = OFDebugItems.SOULCLEAVE.get();
+        } else if (stack.is(OFItems.SPECTRAL_SHIELD.get())) {
+            upgrade = OFDebugItems.KNIGHTSOUL.get();
         }
         return upgrade;
     }

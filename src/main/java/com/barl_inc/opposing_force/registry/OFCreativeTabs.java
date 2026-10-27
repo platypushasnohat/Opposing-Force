@@ -112,6 +112,7 @@ public class OFCreativeTabs {
                         // uncommon
                         output.accept(OFItems.BLACK_BELT);
                         output.accept(OFItems.ENCHANTED_CHISEL);
+                        output.accept(OFItems.FIREPROOF_SHOES);
                         output.accept(OFItems.MOMENTUM_GAUNTLET);
                         output.accept(OFItems.RELIC_FEATHER);
                         output.accept(OFItems.SHARPSHOOTER_COIN);
@@ -119,6 +120,7 @@ public class OFCreativeTabs {
                         output.accept(OFItems.SPECTRAL_GOGGLES);
                         output.accept(OFItems.STALKER_GLOVES);
                         output.accept(OFItems.URANIUM_KNUCKLES);
+                        output.accept(OFItems.WATER_WALKERS);
 
                         // rare
                         output.accept(OFItems.BEETLE_HUSK);
@@ -126,6 +128,9 @@ public class OFCreativeTabs {
                         output.accept(OFItems.POT_OF_GREEN);
                         output.accept(OFItems.TEAR_OF_AQUARIUS);
                         output.accept(OFItems.MOON_SHOES);
+
+                        //epic
+                        output.accept(OFItems.COMBO_BOOTS);
 
                         // permanent upgrades
                         output.accept(OFItems.CRYSTALLIZED_HEART);

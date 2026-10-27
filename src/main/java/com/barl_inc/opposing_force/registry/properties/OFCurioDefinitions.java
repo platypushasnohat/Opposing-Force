@@ -100,4 +100,23 @@ public class OFCurioDefinitions {
             .attribute(SinewAttributes.MAGIC_DAMAGE, 1.0F, AttributeModifier.Operation.ADD_VALUE)
             .build();
 
+    public static final CurioDefinition WATER_WALKERS = new CurioDefinition.Builder()
+            .attribute(Attributes.OXYGEN_BONUS, 0.5F, AttributeModifier.Operation.ADD_VALUE)
+            .description("item.opposing_force.water_walking.description")
+            .build();
+
+    public static final CurioDefinition FIREPROOF_SHOES = new CurioDefinition.Builder()
+            .attribute(SinewAttributes.FIRE_RESISTANCE, 0.1F, AttributeModifier.Operation.ADD_VALUE)
+            .description("item.opposing_force.lava_walking.description")
+            .build();
+
+    public static final CurioDefinition COMBO_BOOTS = new CurioDefinition.Builder()
+            .attribute(SinewAttributes.AIR_SPEED, 0.15F, AttributeModifier.Operation.ADD_VALUE)
+            .attribute(Attributes.GRAVITY, -0.4F, AttributeModifier.Operation.ADD_MULTIPLIED_TOTAL)
+            .attribute(Attributes.MOVEMENT_SPEED, 0.15F, AttributeModifier.Operation.ADD_MULTIPLIED_BASE)
+            .attribute(Attributes.JUMP_STRENGTH, 0.1F, AttributeModifier.Operation.ADD_MULTIPLIED_BASE)
+            .description("item.opposing_force.water_walking.description")
+            .description("item.opposing_force.lava_walking.description")
+            .build();
+
 }

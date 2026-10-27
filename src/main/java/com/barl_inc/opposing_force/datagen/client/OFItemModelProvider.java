@@ -56,7 +56,10 @@ public class OFItemModelProvider extends SinewItemModelProvider {
                 OFItems.SPECTRAL_GOGGLES,
                 OFItems.ECTOPLASM,
                 OFItems.CURSED_RING,
-                OFItems.SAKE
+                OFItems.SAKE,
+                OFItems.WATER_WALKERS,
+                OFItems.FIREPROOF_SHOES,
+                OFItems.COMBO_BOOTS
         );
 
         this.handheldItem(

@@ -113,6 +113,8 @@ public class OFLanguageProvider extends SinewLanguageProvider {
         this.add("item.opposing_force.momentum_gauntlet.description", "+Mining Momentum");
         this.add("item.opposing_force.slimy_shield.description", "+Slimy Shielding");
         this.add("item.opposing_force.stalker_gloves.description", "+30% Initial Damage");
+        this.add("item.opposing_force.water_walking.description", "+Water Walking");
+        this.add("item.opposing_force.lava_walking.description", "+Lava Walking");
 
         this.add("item.opposing_force.crystallized_heart.description", "+1 Charm Slot");
         this.add("item.opposing_force.spectral_goggles.description", "Pierce the Veil...");

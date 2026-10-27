@@ -2,11 +2,7 @@ package com.barl_inc.opposing_force.registry;
 
 import com.barl_inc.opposing_force.OpposingForce;
 import com.barl_inc.opposing_force.item.*;
-import com.barl_inc.opposing_force.item.curios.CurioItem;
-import com.barl_inc.opposing_force.item.curios.MomentumGauntletItem;
-import com.barl_inc.opposing_force.item.curios.MoonShoesItem;
-import com.barl_inc.opposing_force.item.curios.RelicFeatherItem;
-import com.barl_inc.opposing_force.item.curios.SpectralGogglesItem;
+import com.barl_inc.opposing_force.item.curios.*;
 import com.barl_inc.opposing_force.item.magic.CursedRinglineItem;
 import com.barl_inc.opposing_force.item.melee.BuzzsawItem;
 import com.barl_inc.opposing_force.item.melee.ChitinLanceItem;
@@ -18,6 +14,7 @@ import com.barl_inc.opposing_force.item.ranged.ammo.PowerCellItem;
 import com.barl_inc.opposing_force.registry.datapack.OFJukeboxSongs;
 import com.barl_inc.opposing_force.registry.properties.*;
 import com.platypushasnohat.sinew.item.*;
+import net.minecraft.tags.FluidTags;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.Mob;
 import net.minecraft.world.item.ArmorItem.Type;
@@ -144,6 +141,9 @@ public class OFItems {
     public static final DeferredItem<Item> STALKER_GLOVES = registerItem("stalker_gloves", () -> new CurioItem(new Item.Properties().rarity(Rarity.UNCOMMON), OFCurioDefinitions.STALKER_GLOVES));
     public static final DeferredItem<Item> MUNITIONS_BOX = registerItem("munitions_box", () -> new CurioItem(new Item.Properties(), OFCurioDefinitions.MUNITIONS_BOX));
     public static final DeferredItem<Item> MOON_SHOES = registerItem("moon_shoes", () -> new MoonShoesItem(new Item.Properties().rarity(Rarity.RARE)));
+    public static final DeferredItem<Item> WATER_WALKERS = registerItem("water_walkers", () -> new FluidWalkerItem(new Item.Properties().rarity(Rarity.UNCOMMON), OFCurioDefinitions.WATER_WALKERS, FluidTags.WATER));
+    public static final DeferredItem<Item> FIREPROOF_SHOES = registerItem("fireproof_shoes", () -> new FluidWalkerItem(new Item.Properties().rarity(Rarity.UNCOMMON).fireResistant(), OFCurioDefinitions.FIREPROOF_SHOES, FluidTags.LAVA));
+    public static final DeferredItem<Item> COMBO_BOOTS = registerItem("combo_boots", () -> new ComboBootsItem(new Item.Properties().rarity(Rarity.EPIC).fireResistant()));
 
     //Permanent Upgrades
     public static final DeferredItem<Item> CRYSTALLIZED_HEART = registerItem("crystallized_heart", () -> new CrystallizedHeartItem(new Item.Properties().stacksTo(64).rarity(Rarity.EPIC).food(OFFoodProperties.CRYSTALLIZED_HEART)));

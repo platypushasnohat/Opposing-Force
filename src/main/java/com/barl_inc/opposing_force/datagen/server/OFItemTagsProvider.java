@@ -125,7 +125,10 @@ public class OFItemTagsProvider extends ItemTagsProvider {
                 OFItems.MOON_SHOES.get(),
                 OFItems.SPECTRAL_GOGGLES.get(),
                 OFItems.CURSED_RING.get(),
-                OFDebugItems.SLIMEWARD.get()
+                OFDebugItems.SLIMEWARD.get(),
+                OFItems.WATER_WALKERS.get(),
+                OFItems.FIREPROOF_SHOES.get(),
+                OFItems.COMBO_BOOTS.get()
         );
 
         this.tag(Tags.Items.TOOLS_SHIELD).add(

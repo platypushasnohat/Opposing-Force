@@ -1,0 +1,30 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "equipment",
+  "key": {
+    "S": {
+      "item": "minecraft:shulker_shell"
+    },
+    "L": {
+      "item": "opposing_force:fireproof_shoes"
+    },
+    "N": {
+      "item": "minecraft:netherite_ingot"
+    },
+    "M": {
+      "item": "opposing_force:moon_shoes"
+    },
+    "W": {
+      "item": "opposing_force:water_walkers"
+    }
+  },
+  "pattern": [
+    "SLS",
+    "NMN",
+    "SWS"
+  ],
+  "result": {
+    "count": 1,
+    "id": "opposing_force:combo_boots"
+  }
+}

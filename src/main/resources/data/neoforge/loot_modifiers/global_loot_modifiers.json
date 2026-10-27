@@ -21,6 +21,8 @@
     "opposing_force:chests/momentum_gauntlet",
     "opposing_force:entities/slimy_shield",
     "opposing_force:chests/stalker_gloves",
-    "opposing_force:chests/mana_thrifter"
+    "opposing_force:chests/mana_thrifter",
+    "opposing_force:chests/water_walkers",
+    "opposing_force:chests/fireproof_shoes"
   ]
 }

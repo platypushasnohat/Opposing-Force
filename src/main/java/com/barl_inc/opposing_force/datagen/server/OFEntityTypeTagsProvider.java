@@ -44,7 +44,8 @@ public class OFEntityTypeTagsProvider extends EntityTypeTagsProvider {
 				OFEntities.MUSHY.get(),
 				OFEntities.TERROR.get(),
                 OFEntities.GHOST.get(),
-                OFEntities.HAUNT.get()
+                OFEntities.HAUNT.get(),
+                OFEntities.PIPSQUEAK.get()
 		);
 
         this.tag(EntityTypeTags.UNDEAD).add(

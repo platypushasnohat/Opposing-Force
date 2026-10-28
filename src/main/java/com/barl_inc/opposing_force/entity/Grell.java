@@ -110,6 +110,11 @@ public class Grell extends BasicFlyingMonster implements SpectralEntity, EliteMo
     }
 
     @Override
+    public double getEliteChance() {
+        return Math.max(0.12D, EliteMob.super.getEliteChance());
+    }
+
+    @Override
     protected void registerGoals() {
         this.goalSelector.addGoal(0, new GrellFreezeGoal(this));
         this.goalSelector.addGoal(1, new GrellConjureGoal(this));

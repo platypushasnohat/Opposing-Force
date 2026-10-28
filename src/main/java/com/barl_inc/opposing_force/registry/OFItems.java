@@ -75,6 +75,8 @@ public class OFItems {
     public static final DeferredItem<Item> FILLET_SPAWN_EGG = registerSpawnEggItem("fillet", OFEntities.FILLET, 0x470e2f, 0xff6e1f);
     public static final DeferredItem<Item> FILLET_BUCKET = registerItemNoLang("fillet_bucket", () -> new FilletBucketItem(new Item.Properties()));
 
+    public static final DeferredItem<Item> PIPSQUEAK_SPAWN_EGG = registerSpawnEggItem("pipsqueak", OFEntities.PIPSQUEAK, 0x5d3d32, 0x9a2222);
+
     //mageslop
     public static final DeferredItem<Item> GRASPER_SPAWN_EGG = registerSpawnEggItem("grasper", OFEntities.GRASPER, 0x293c3b, 0xac8e16);
     public static final DeferredItem<Item> CURSED_RING = registerItem("cursed_ring", () -> new CurioItem(new Item.Properties(), OFCurioDefinitions.CURSED_RING));

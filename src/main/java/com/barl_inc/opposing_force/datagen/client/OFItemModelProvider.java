@@ -29,7 +29,7 @@ public class OFItemModelProvider extends SinewItemModelProvider {
                 OFItems.POWER_CELL,
                 OFItems.ACID_CHARGE,
                 OFItems.RELIC_FEATHER,
-                OFItems.BEETLE_HUSK,
+                OFItems.OBSIDIAN_HUSK,
                 OFItems.POT_OF_GREEN,
                 OFItems.THORNY_BRACELET,
                 OFItems.RANGER_MANUAL,

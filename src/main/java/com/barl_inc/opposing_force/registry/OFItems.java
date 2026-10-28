@@ -124,7 +124,7 @@ public class OFItems {
 
     //trinket
     public static final DeferredItem<Item> RELIC_FEATHER = registerItem("relic_feather", () -> new RelicFeatherItem(new Item.Properties().rarity(Rarity.UNCOMMON), OFCurioDefinitions.RELIC_FEATHER));
-    public static final DeferredItem<Item> BEETLE_HUSK = registerItem("beetle_husk", () -> new CurioItem(new Item.Properties().rarity(Rarity.RARE), OFCurioDefinitions.BEETLE_HUSK));
+    public static final DeferredItem<Item> OBSIDIAN_HUSK = registerItem("obsidian_husk", () -> new CurioItem(new Item.Properties().rarity(Rarity.RARE), OFCurioDefinitions.BEETLE_HUSK));
     public static final DeferredItem<Item> ENCHANTED_CHISEL = registerItem("enchanted_chisel", () -> new CurioItem(new Item.Properties().rarity(Rarity.UNCOMMON), OFCurioDefinitions.ENCHANTED_CHISEL));
     public static final DeferredItem<Item> POT_OF_GREEN = registerItem("pot_of_green", () -> new CurioItem(new Item.Properties().rarity(Rarity.RARE), OFCurioDefinitions.POT_OF_GREEN));
     public static final DeferredItem<Item> THORNY_BRACELET = registerItem("thorny_bracelet", () -> new CurioItem(new Item.Properties(), OFCurioDefinitions.THORNY_BRACELET));

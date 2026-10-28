@@ -106,7 +106,7 @@ public class OFItemTagsProvider extends ItemTagsProvider {
 
         this.tag(OFItemTags.TRINKETS).add(
                 OFItems.RELIC_FEATHER.get(),
-                OFItems.BEETLE_HUSK.get(),
+                OFItems.OBSIDIAN_HUSK.get(),
                 OFItems.ENCHANTED_CHISEL.get(),
                 OFItems.POT_OF_GREEN.get(),
                 OFItems.THORNY_BRACELET.get(),

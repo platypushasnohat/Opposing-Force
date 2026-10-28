@@ -123,7 +123,7 @@ public class OFCreativeTabs {
                         output.accept(OFItems.WATER_WALKERS);
 
                         // rare
-                        output.accept(OFItems.BEETLE_HUSK);
+                        output.accept(OFItems.OBSIDIAN_HUSK);
                         output.accept(OFItems.BLOOD_AMULET);
                         output.accept(OFItems.POT_OF_GREEN);
                         output.accept(OFItems.TEAR_OF_AQUARIUS);

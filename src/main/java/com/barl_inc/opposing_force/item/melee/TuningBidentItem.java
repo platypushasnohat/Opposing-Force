@@ -40,13 +40,13 @@ public class TuningBidentItem extends Item {
 
     public static ItemAttributeModifiers createAttributes() {
         return ItemAttributeModifiers.builder()
-                .add(Attributes.ATTACK_DAMAGE, new AttributeModifier(BASE_ATTACK_DAMAGE_ID, 7.0D, AttributeModifier.Operation.ADD_VALUE), EquipmentSlotGroup.MAINHAND)
+                .add(Attributes.ATTACK_DAMAGE, new AttributeModifier(BASE_ATTACK_DAMAGE_ID, 6.5D, AttributeModifier.Operation.ADD_VALUE), EquipmentSlotGroup.MAINHAND)
                 .add(Attributes.ATTACK_SPEED, new AttributeModifier(BASE_ATTACK_SPEED_ID, -2.8D, AttributeModifier.Operation.ADD_VALUE), EquipmentSlotGroup.MAINHAND)
                 .build();
     }
 
     private static float getDamageBonus(Player player) {
-        return Math.max(0.0F, (float) player.getAttributeValue(Attributes.ATTACK_DAMAGE) - 8.0F) / 3.0F;
+        return Math.max(0.0F, (float) player.getAttributeValue(Attributes.ATTACK_DAMAGE) - 8.0F) / 4.0F;
     }
 
     @Override

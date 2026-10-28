@@ -86,7 +86,7 @@ public class TuningBidentItem extends Item {
 
     @Override
     public UseAnim getUseAnimation(ItemStack stack) {
-        return UseAnim.SPEAR;
+        return UseAnim.NONE;
     }
 
     @Override
@@ -112,7 +112,7 @@ public class TuningBidentItem extends Item {
                 level.addFreshEntity(new Soundwave(level, player, Soundwave.Type.BIDENT, phase, getDamageBonus(player), player.getEyePosition().add(look.scale(0.8D)), look));
                 stack.hurtAndBreak(1, player, LivingEntity.getSlotForHand(player.getUsedItemHand()));
             }
-            level.playSound(null, player.getX(), player.getY(), player.getZ(), SoundEvents.PHANTOM_AMBIENT, SoundSource.PLAYERS, 1.0F, 1.2F);
+            level.playSound(null, player.getX(), player.getY(), player.getZ(), SoundEvents.BELL_BLOCK, SoundSource.PLAYERS, 1.0F, 1.2F);
             player.getCooldowns().addCooldown(this, 60);
             player.awardStat(Stats.ITEM_USED.get(this));
         }

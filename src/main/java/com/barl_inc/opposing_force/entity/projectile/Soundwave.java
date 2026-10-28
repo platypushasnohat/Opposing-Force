@@ -1,12 +1,15 @@
 package com.barl_inc.opposing_force.entity.projectile;
 
 import com.barl_inc.opposing_force.entity.Pipsqueak;
+import com.barl_inc.opposing_force.registry.OFDamageTypes;
 import com.barl_inc.opposing_force.registry.OFEntities;
+import net.minecraft.core.registries.Registries;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.syncher.EntityDataAccessor;
 import net.minecraft.network.syncher.EntityDataSerializers;
 import net.minecraft.network.syncher.SynchedEntityData;
 import net.minecraft.server.level.ServerLevel;
+import net.minecraft.sounds.SoundEvent;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.util.Mth;
@@ -169,36 +172,16 @@ public class Soundwave extends Projectile {
         return alpha;
     }
 
-    private float getStageValue(float[] scream, float[] bident, float[] split) {
-        float[] values = scream;
-        if (this.type == Type.BIDENT) {
-            values = bident;
-        } else if (this.type == Type.SPLIT) {
-            values = split;
-        }
-        return values[Mth.clamp(this.phase, 0, values.length - 1)];
-    }
-
     private float getSpeed() {
-        return this.getStageValue(new float[]{0.45F, 0.6F, 0.75F, 0.9F, 1.05F, 1.2F}, new float[]{0.45F, 0.56F, 0.66F, 0.77F, 0.88F, 0.98F, 1.09F, 1.2F}, new float[]{0.6F});
+        return Type.stage(this.type.speeds, this.phase);
     }
 
     private float getStageSize() {
-        return this.getStageValue(new float[]{1.6F, 1.35F, 1.1F, 0.85F, 0.6F, 0.35F}, new float[]{1.6F, 1.42F, 1.24F, 1.06F, 0.88F, 0.7F, 0.52F, 0.35F}, new float[]{1.0F, 0.66F, 0.33F});
+        return Type.stage(this.type.sizes, this.phase);
     }
 
     private float getDamage() {
-        return this.getStageValue(new float[]{6.0F, 4.0F, 4.0F, 2.0F, 2.0F, 1.0F}, new float[]{6.0F, 6.0F, 4.0F, 4.0F, 2.0F, 2.0F, 1.0F, 1.0F}, new float[]{6.0F, 4.0F, 2.0F});
-    }
-
-    private int getMaxBounces() {
-        int maxBounces = 6;
-        if (this.type == Type.BIDENT) {
-            maxBounces = 8;
-        } else if (this.type == Type.SPLIT) {
-            maxBounces = 3;
-        }
-        return maxBounces;
+        return Type.stage(this.type.damages, this.phase);
     }
 
     private double getSpacing() {
@@ -240,19 +223,11 @@ public class Soundwave extends Projectile {
             if (!this.level().isClientSide) {
                 this.hitEntities();
                 this.updateSize();
-                if (this.tickCount > this.getLifetime()) {
+                if (this.tickCount > this.type.lifetime) {
                     this.entityData.set(FADING, true);
                 }
             }
         }
-    }
-
-    private int getLifetime() {
-        int lifetime = 300;
-        if (this.type == Type.SPLIT) {
-            lifetime = 100;
-        }
-        return lifetime;
     }
 
     private void steer() {
@@ -289,8 +264,8 @@ public class Soundwave extends Projectile {
             }
             this.phase++;
         }
-        this.level().playSound(null, this.getX(), this.getY(), this.getZ(), SoundEvents.PHANTOM_AMBIENT, SoundSource.HOSTILE, 0.8F * (float) Math.pow(0.7D, this.wallBounces - 1), 1.2F);
-        if (this.wallBounces >= this.getMaxBounces()) {
+        this.level().playSound(null, this.getX(), this.getY(), this.getZ(), this.type.echo, this.type.soundSource, 0.8F * (float) Math.pow(0.7D, this.wallBounces - 1), this.type.pitch);
+        if (this.wallBounces >= this.type.maxBounces) {
             this.setDeltaMovement(Vec3.ZERO);
             this.entityData.set(FADING, true);
         } else {
@@ -350,22 +325,20 @@ public class Soundwave extends Projectile {
         if (owner instanceof LivingEntity livingOwner) {
             attacker = livingOwner;
         }
-        DamageSource source = this.getMeleeSource(attacker);
-        for (Vec3 point : this.getSegmentPoints(this.position())) {
-            AABB box = new AABB(point, point).inflate(0.4D * this.getSize());
-            for (LivingEntity entity : this.level().getEntitiesOfClass(LivingEntity.class, box, entity -> isEnemy(entity, owner) && !entity.getUUID().equals(this.ignoredEntity) && !this.hitEntities.contains(entity.getUUID()))) {
-                if (!this.isRemoved()) {
-                    this.hitEntities.add(entity.getUUID());
-                    entity.hurt(source, this.getDamage() + this.damageBonus);
-                    if (entity instanceof Creeper creeper) {
-                        creeper.ignite();
+        List<Vec3> points = this.getSegmentPoints(this.position());
+        AABB box = new AABB(points.getFirst(), points.getLast()).minmax(new AABB(points.get(1), points.get(1))).inflate(0.4D * this.getSize());
+        for (LivingEntity entity : this.level().getEntitiesOfClass(LivingEntity.class, box, entity -> isEnemy(entity, owner) && !entity.getUUID().equals(this.ignoredEntity) && !this.hitEntities.contains(entity.getUUID()))) {
+            if (!this.isRemoved()) {
+                this.hitEntities.add(entity.getUUID());
+                entity.hurt(this.getMeleeSource(attacker), this.getDamage() + this.damageBonus);
+                if (entity instanceof Creeper creeper) {
+                    creeper.ignite();
+                }
+                if (this.type == Type.SPLIT) {
+                    if (this.phase < 2 && attacker != null) {
+                        releaseSplit(this.level(), attacker, entity, this.phase + 1, 2, this.damageBonus);
                     }
-                    if (this.type == Type.SPLIT) {
-                        if (this.phase < 2 && attacker != null) {
-                            releaseSplit(this.level(), attacker, entity, this.phase + 1, 2, this.damageBonus);
-                        }
-                        this.discard();
-                    }
+                    this.discard();
                 }
             }
         }
@@ -373,7 +346,9 @@ public class Soundwave extends Projectile {
 
     private DamageSource getMeleeSource(@Nullable LivingEntity attacker) {
         DamageSource source = this.damageSources().generic();
-        if (attacker instanceof Player player) {
+        if (this.type != Type.SCREAM && attacker != null) {
+            source = new DamageSource(this.level().registryAccess().registryOrThrow(Registries.DAMAGE_TYPE).getHolderOrThrow(OFDamageTypes.SOUNDWAVE), attacker, attacker, this.position());
+        } else if (attacker instanceof Player player) {
             source = new DamageSource(this.damageSources().playerAttack(player).typeHolder(), player, player, this.position());
         } else if (attacker != null) {
             source = new DamageSource(this.damageSources().mobAttack(attacker).typeHolder(), attacker, attacker, this.position());
@@ -411,8 +386,32 @@ public class Soundwave extends Projectile {
     }
 
     public enum Type {
-        SCREAM,
-        BIDENT,
-        SPLIT
+        SCREAM(new float[]{0.45F, 0.6F, 0.75F, 0.9F, 1.05F, 1.2F}, new float[]{1.6F, 1.35F, 1.1F, 0.85F, 0.6F, 0.35F}, new float[]{6.0F, 4.0F, 4.0F, 2.0F, 2.0F, 1.0F}, 6, 300, SoundEvents.PHANTOM_AMBIENT, SoundSource.HOSTILE, 1.2F),
+        BIDENT(new float[]{0.9F, 0.97F, 1.04F, 1.11F, 1.18F, 1.25F, 1.32F, 1.4F}, new float[]{1.6F, 1.42F, 1.24F, 1.06F, 0.88F, 0.7F, 0.52F, 0.35F}, new float[]{8.0F, 8.0F, 6.0F, 6.0F, 4.0F, 4.0F, 2.0F, 2.0F}, 8, 300, SoundEvents.BELL_BLOCK, SoundSource.PLAYERS, 1.6F),
+        SPLIT(new float[]{0.6F}, new float[]{1.0F, 0.66F, 0.33F}, new float[]{8.0F, 6.0F, 4.0F}, 3, 100, SoundEvents.BELL_BLOCK, SoundSource.PLAYERS, 1.6F);
+
+        private final float[] speeds;
+        private final float[] sizes;
+        private final float[] damages;
+        private final int maxBounces;
+        private final int lifetime;
+        private final SoundEvent echo;
+        private final SoundSource soundSource;
+        private final float pitch;
+
+        Type(float[] speeds, float[] sizes, float[] damages, int maxBounces, int lifetime, SoundEvent echo, SoundSource soundSource, float pitch) {
+            this.speeds = speeds;
+            this.sizes = sizes;
+            this.damages = damages;
+            this.maxBounces = maxBounces;
+            this.lifetime = lifetime;
+            this.echo = echo;
+            this.soundSource = soundSource;
+            this.pitch = pitch;
+        }
+
+        private static float stage(float[] values, int phase) {
+            return values[Mth.clamp(phase, 0, values.length - 1)];
+        }
     }
 }

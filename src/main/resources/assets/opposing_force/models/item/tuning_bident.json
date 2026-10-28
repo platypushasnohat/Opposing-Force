@@ -17,5 +17,13 @@
     "ground": {
       "parent": "opposing_force:item/tuning_bident_gui"
     }
-  }
+  },
+  "overrides": [
+    {
+      "predicate": {
+        "charging": 1
+      },
+      "model": "opposing_force:item/tuning_bident_charging"
+    }
+  ]
 }

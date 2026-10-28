@@ -32,5 +32,12 @@ public class OFClientCompat {
                 return living.isUsingItem() && living.getUseItem() == stack ? 1.0F : 0.0F;
             }
         });
+        ItemProperties.register(OFItems.TUNING_BIDENT.get(), ResourceLocation.withDefaultNamespace("charging"), (stack, level, living, j) ->  {
+            if (living == null) {
+                return 0.0F;
+            } else {
+                return living.getUseItem() == stack ? 1.0F : 0.0F;
+            }
+        });
     }
 }

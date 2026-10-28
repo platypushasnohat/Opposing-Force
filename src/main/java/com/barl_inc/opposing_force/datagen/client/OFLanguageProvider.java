@@ -186,6 +186,9 @@ public class OFLanguageProvider extends SinewLanguageProvider {
 
         this.add("death.attack.grell_bite", "%1$s was torn apart by %2$s");
 
+        this.add("death.attack.soundwave", "%s had their ears shattered");
+        this.add("death.attack.soundwave.player", "%s had their ears shattered by %s");
+
         this.add(OFDebugItems.RINGMASTER.get(), "Ringmaster");
         this.add(OFDebugItems.SOULCLEAVE.get(), "Soulcleave");
         this.add(OFDebugItems.KNIGHTSOUL.get(), "Knightsoul");

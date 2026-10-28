@@ -136,7 +136,9 @@ public class Sawblade extends Entity implements ItemSupplier {
         }
 
         Vec3 movement = new Vec3(0, 0, -0.01F * 4.0F).yRot((float) -Math.toRadians(this.getYRot()));
-        this.setDeltaMovement(this.getDeltaMovement().add(movement));
+        if (!this.horizontalCollision) {
+            this.setDeltaMovement(this.getDeltaMovement().add(movement));
+        }
         if (!this.isNoGravity()) {
             this.setDeltaMovement(this.getDeltaMovement().scale(0.9F).add(0.0D, -0.08D, 0.0D));
         }

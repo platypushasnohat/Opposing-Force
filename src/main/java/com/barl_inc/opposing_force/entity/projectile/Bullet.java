@@ -151,7 +151,7 @@ public class Bullet extends Projectile implements ItemSupplier, SplitProjectileB
             if (this.getTrailParticle() != null) {
                 this.level().addParticle(this.getTrailParticle(), nextX, nextY + height, nextZ, 0.0D, 0.0D, 0.0D);
             }
-            if (this.getRingParticle() != null && this.tickCount % 2 == 0) {
+            if (this.getRingParticle() != null && this.tickCount % 4 == 0) {
                 this.level().addParticle(this.getRingParticle(), nextX, nextY + height, nextZ, 0.0D, 0.0D, 0.0D);
             }
         }

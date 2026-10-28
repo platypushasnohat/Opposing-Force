@@ -30,6 +30,7 @@ public class OFCreativeTabs {
                         output.accept(OFItems.MOTIF_SPAWN_EGG);
                         output.accept(OFItems.MUSHY_SPAWN_EGG);
                         output.accept(OFItems.PARASOUL_SPAWN_EGG);
+                        output.accept(OFItems.PIPSQUEAK_SPAWN_EGG);
                         output.accept(OFItems.ROAMER_SPAWN_EGG);
                         output.accept(OFItems.SCORCHER_SPAWN_EGG);
                         output.accept(OFItems.TARANTULA_SPAWN_EGG);

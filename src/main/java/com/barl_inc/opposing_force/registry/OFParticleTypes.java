@@ -23,4 +23,5 @@ public class OFParticleTypes {
     public static final DeferredHolder<ParticleType<?>, SimpleParticleType> SMALL_SOUL_FIRE_FLAME = PARTICLE_TYPE.register("small_soul_fire_flame", () -> new SimpleParticleType(false));
     public static final DeferredHolder<ParticleType<?>, SimpleParticleType> SHOCKWAVE = PARTICLE_TYPE.register("shockwave", () -> new SimpleParticleType(true));
     public static final DeferredHolder<ParticleType<?>, SimpleParticleType> SMALL_SHOCKWAVE = PARTICLE_TYPE.register("small_shockwave", () -> new SimpleParticleType(true));
+    public static final DeferredHolder<ParticleType<?>, SimpleParticleType> SOUNDWAVE = PARTICLE_TYPE.register("soundwave", () -> new SimpleParticleType(false));
 }

@@ -33,6 +33,7 @@ public class PipsqueakModel extends SinewEntityModel<Pipsqueak> {
         this.animateSmooth(entity.closeMouthAnimationState, PipsqueakAnimations.CLOSE_MOUTH_BLEND, ageInTicks, partialTicks);
         this.animateSmooth(entity.biteAnimationState, PipsqueakAnimations.BITE_BLEND, ageInTicks, partialTicks);
         this.animateSmooth(entity.chokeAnimationState, PipsqueakAnimations.CHOKE_BLEND, ageInTicks, partialTicks);
+        this.animateSmooth(entity.screamAnimationState, PipsqueakAnimations.SCREAM_BLEND, ageInTicks, partialTicks);
         this.rotatePart(this.bodyMain, entity.getTilt(partialTicks) * Mth.DEG_TO_RAD, 0.0F, entity.getBank(partialTicks) * Mth.DEG_TO_RAD);
     }
 

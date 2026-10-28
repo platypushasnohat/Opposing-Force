@@ -46,6 +46,7 @@ public class Pipsqueak extends BasicFlyingMonster {
 
     public static final int BITE_ANIMATION = 1;
     public static final int CHOKE_ANIMATION = 2;
+    public static final int SCREAM_ANIMATION = 3;
 
     private static final EntityDataAccessor<Boolean> HANGING = SynchedEntityData.defineId(Pipsqueak.class, EntityDataSerializers.BOOLEAN);
 
@@ -53,6 +54,7 @@ public class Pipsqueak extends BasicFlyingMonster {
     public final SmoothAnimationState closeMouthAnimationState = new SmoothAnimationState();
     public final SmoothAnimationState biteAnimationState = new SmoothAnimationState(1.0F);
     public final SmoothAnimationState chokeAnimationState = new SmoothAnimationState();
+    public final SmoothAnimationState screamAnimationState = new SmoothAnimationState();
 
     private int hangTicks;
     private float tilt;
@@ -292,6 +294,7 @@ public class Pipsqueak extends BasicFlyingMonster {
         this.closeMouthAnimationState.animateWhen(this.getAnimationState() == 0, this.tickCount);
         this.biteAnimationState.animateWhen(this.getAnimationState() == BITE_ANIMATION, this.tickCount);
         this.chokeAnimationState.animateWhen(this.getAnimationState() == CHOKE_ANIMATION, this.tickCount);
+        this.screamAnimationState.animateWhen(this.getAnimationState() == SCREAM_ANIMATION, this.tickCount);
     }
 
     private static class PipsqueakHangGoal extends Goal {

@@ -4,10 +4,7 @@ import com.barl_inc.opposing_force.OpposingForce;
 import com.barl_inc.opposing_force.item.*;
 import com.barl_inc.opposing_force.item.curios.*;
 import com.barl_inc.opposing_force.item.magic.CursedRinglineItem;
-import com.barl_inc.opposing_force.item.melee.BuzzsawItem;
-import com.barl_inc.opposing_force.item.melee.ChitinLanceItem;
-import com.barl_inc.opposing_force.item.melee.LaserBladeItem;
-import com.barl_inc.opposing_force.item.melee.SpectralCleaverItem;
+import com.barl_inc.opposing_force.item.melee.*;
 import com.barl_inc.opposing_force.item.ranged.*;
 import com.barl_inc.opposing_force.item.ranged.ammo.BulletComponent;
 import com.barl_inc.opposing_force.item.ranged.ammo.PowerCellItem;
@@ -76,6 +73,7 @@ public class OFItems {
     public static final DeferredItem<Item> FILLET_BUCKET = registerItemNoLang("fillet_bucket", () -> new FilletBucketItem(new Item.Properties()));
 
     public static final DeferredItem<Item> PIPSQUEAK_SPAWN_EGG = registerSpawnEggItem("pipsqueak", OFEntities.PIPSQUEAK, 0x5d3d32, 0x9a2222);
+    public static final DeferredItem<Item> TUNING_BIDENT = registerItem("tuning_bident", () -> new TuningBidentItem(new Item.Properties().durability(1024).rarity(Rarity.UNCOMMON).attributes(TuningBidentItem.createAttributes())));
 
     //mageslop
     public static final DeferredItem<Item> GRASPER_SPAWN_EGG = registerSpawnEggItem("grasper", OFEntities.GRASPER, 0x293c3b, 0xac8e16);
@@ -156,8 +154,8 @@ public class OFItems {
     public static final DeferredItem<Item> ROAMER_SPAWN_EGG = registerSpawnEggItem("roamer", OFEntities.ROAMER, 0x0d0e04, 0xe44928);
     public static final DeferredItem<Item> HAUNT_SPAWN_EGG = registerSpawnEggItem("haunt", OFEntities.HAUNT, 0x90a9a1, 0x2d2e49);
     public static final DeferredItem<Item> ECTOPLASM = registerItem("ectoplasm", () -> new EctoplasmItem(new Item.Properties()));
-    public static final DeferredItem<Item> SPECTRAL_CLEAVER = registerItem("spectral_cleaver", () -> new SpectralCleaverItem(OFItemTiers.SPECTRAL_CLEAVER, new Item.Properties().attributes(SwordItem.createAttributes(OFItemTiers.SPECTRAL_CLEAVER, 3.5F, -2.4F))));
-    public static final DeferredItem<Item> SPECTRAL_SHIELD = registerItem("spectral_shield", () -> new SpectralShieldItem(new Item.Properties().durability(672)));
+    public static final DeferredItem<Item> SPECTRAL_CLEAVER = registerItem("spectral_cleaver", () -> new SpectralCleaverItem(OFItemTiers.SPECTRAL_CLEAVER, new Item.Properties().attributes(SwordItem.createAttributes(OFItemTiers.SPECTRAL_CLEAVER, 3.5F, -2.4F)).rarity(Rarity.UNCOMMON)));
+    public static final DeferredItem<Item> SPECTRAL_SHIELD = registerItem("spectral_shield", () -> new SpectralShieldItem(new Item.Properties().durability(672).rarity(Rarity.UNCOMMON)));
 
     private static <I extends Item> DeferredItem<I> registerItem(String name, Supplier<? extends I> supplier) {
         DeferredItem<I> item = ITEM.register(name, supplier);

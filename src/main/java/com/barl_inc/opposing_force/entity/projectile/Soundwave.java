@@ -6,14 +6,20 @@ import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.syncher.EntityDataAccessor;
 import net.minecraft.network.syncher.EntityDataSerializers;
 import net.minecraft.network.syncher.SynchedEntityData;
+import net.minecraft.server.level.ServerLevel;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.util.Mth;
+import net.minecraft.util.RandomSource;
 import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.entity.Entity;
+import net.minecraft.world.entity.EntitySelector;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.world.entity.OwnableEntity;
+import net.minecraft.world.entity.decoration.ArmorStand;
 import net.minecraft.world.entity.monster.Creeper;
+import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.entity.projectile.Projectile;
 import net.minecraft.world.level.ClipContext;
 import net.minecraft.world.level.Level;
@@ -22,7 +28,9 @@ import net.minecraft.world.phys.BlockHitResult;
 import net.minecraft.world.phys.HitResult;
 import net.minecraft.world.phys.Vec3;
 
+import javax.annotation.Nullable;
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -35,12 +43,19 @@ public class Soundwave extends Projectile {
 
     private final List<Vec3> trail = new ArrayList<>();
     private final Set<UUID> hitEntities = new HashSet<>();
+    private Type type = Type.SCREAM;
     private int phase;
     private float targetSize = 1.6F;
     private float shrinkSpeed = 0.04F;
     private boolean shrinkPending;
     private double distanceSinceBounce;
     private int fadeTicks;
+    private int wallBounces;
+    private float damageBonus;
+    @Nullable
+    private UUID ignoredEntity;
+    @Nullable
+    private LivingEntity homingTarget;
 
     public Soundwave(EntityType<? extends Soundwave> entityType, Level level) {
         super(entityType, level);
@@ -48,10 +63,67 @@ public class Soundwave extends Projectile {
     }
 
     public Soundwave(Level level, LivingEntity owner, Vec3 pos, Vec3 direction) {
+        this(level, owner, Type.SCREAM, 0, 0.0F, pos, direction);
+    }
+
+    public Soundwave(Level level, LivingEntity owner, Type type, int phase, float damageBonus, Vec3 pos, Vec3 direction) {
         this(OFEntities.SOUNDWAVE.get(), level);
         this.setOwner(owner);
+        this.type = type;
+        this.phase = phase;
+        this.damageBonus = damageBonus;
+        if (type != Type.SPLIT) {
+            this.wallBounces = phase;
+        }
+        this.targetSize = this.getStageSize();
+        this.entityData.set(SIZE, this.targetSize);
         this.setPos(pos);
         this.setDeltaMovement(direction.normalize().scale(this.getSpeed()));
+    }
+
+    public static void releaseSplit(Level level, LivingEntity owner, LivingEntity source, int phase, int count, float damageBonus) {
+        Vec3 center = source.getBoundingBox().getCenter();
+        Set<LivingEntity> taken = new HashSet<>();
+        taken.add(source);
+        Vec3 previousDirection = null;
+        for (int i = 0; i < count; i++) {
+            LivingEntity target = findTarget(level, owner, center, taken);
+            Vec3 direction;
+            if (target != null) {
+                taken.add(target);
+                direction = target.getBoundingBox().getCenter().subtract(center);
+                previousDirection = null;
+            } else if (previousDirection != null) {
+                direction = previousDirection.reverse();
+            } else {
+                direction = randomDirection(level.getRandom());
+                previousDirection = direction;
+            }
+            Soundwave soundwave = new Soundwave(level, owner, Type.SPLIT, phase, damageBonus, center, direction);
+            soundwave.ignoredEntity = source.getUUID();
+            soundwave.homingTarget = target;
+            level.addFreshEntity(soundwave);
+        }
+    }
+
+    @Nullable
+    public static LivingEntity findTarget(Level level, Entity owner, Vec3 from, Set<LivingEntity> excluded) {
+        return level.getEntitiesOfClass(LivingEntity.class, new AABB(from, from).inflate(16.0D), entity -> !excluded.contains(entity) && isEnemy(entity, owner) && EntitySelector.NO_CREATIVE_OR_SPECTATOR.test(entity) && level.clip(new ClipContext(from, entity.getBoundingBox().getCenter(), ClipContext.Block.COLLIDER, ClipContext.Fluid.NONE, entity)).getType() == HitResult.Type.MISS)
+                .stream().min(Comparator.comparingDouble(entity -> entity.distanceToSqr(from))).orElse(null);
+    }
+
+    public static boolean isEnemy(LivingEntity entity, @Nullable Entity owner) {
+        boolean enemy = entity.isAlive() && entity != owner && !(entity instanceof ArmorStand);
+        if (owner instanceof Pipsqueak) {
+            enemy &= !(entity instanceof Pipsqueak);
+        } else if (owner != null) {
+            enemy &= !entity.isAlliedTo(owner) && !(entity instanceof OwnableEntity ownable && ownable.getOwner() == owner);
+        }
+        return enemy;
+    }
+
+    private static Vec3 randomDirection(RandomSource random) {
+        return new Vec3(random.nextGaussian(), random.nextGaussian() * 0.5D, random.nextGaussian()).normalize();
     }
 
     @Override
@@ -63,16 +135,22 @@ public class Soundwave extends Projectile {
     @Override
     public void addAdditionalSaveData(CompoundTag compoundTag) {
         super.addAdditionalSaveData(compoundTag);
+        compoundTag.putInt("Type", this.type.ordinal());
         compoundTag.putInt("Phase", this.phase);
         compoundTag.putFloat("Size", this.getSize());
+        compoundTag.putInt("WallBounces", this.wallBounces);
+        compoundTag.putFloat("DamageBonus", this.damageBonus);
     }
 
     @Override
     public void readAdditionalSaveData(CompoundTag compoundTag) {
         super.readAdditionalSaveData(compoundTag);
+        this.type = Type.values()[Mth.clamp(compoundTag.getInt("Type"), 0, Type.values().length - 1)];
         this.phase = compoundTag.getInt("Phase");
         this.entityData.set(SIZE, compoundTag.getFloat("Size"));
         this.targetSize = this.getSize();
+        this.wallBounces = compoundTag.getInt("WallBounces");
+        this.damageBonus = compoundTag.getFloat("DamageBonus");
     }
 
     public float getSize() {
@@ -91,20 +169,36 @@ public class Soundwave extends Projectile {
         return alpha;
     }
 
-    private float getStageValue(float... values) {
+    private float getStageValue(float[] scream, float[] bident, float[] split) {
+        float[] values = scream;
+        if (this.type == Type.BIDENT) {
+            values = bident;
+        } else if (this.type == Type.SPLIT) {
+            values = split;
+        }
         return values[Mth.clamp(this.phase, 0, values.length - 1)];
     }
 
     private float getSpeed() {
-        return this.getStageValue(0.45F, 0.6F, 0.75F, 0.9F, 1.05F, 1.2F);
+        return this.getStageValue(new float[]{0.45F, 0.6F, 0.75F, 0.9F, 1.05F, 1.2F}, new float[]{0.45F, 0.56F, 0.66F, 0.77F, 0.88F, 0.98F, 1.09F, 1.2F}, new float[]{0.6F});
     }
 
     private float getStageSize() {
-        return this.getStageValue(1.6F, 1.35F, 1.1F, 0.85F, 0.6F, 0.35F);
+        return this.getStageValue(new float[]{1.6F, 1.35F, 1.1F, 0.85F, 0.6F, 0.35F}, new float[]{1.6F, 1.42F, 1.24F, 1.06F, 0.88F, 0.7F, 0.52F, 0.35F}, new float[]{1.0F, 0.66F, 0.33F});
     }
 
     private float getDamage() {
-        return this.getStageValue(6.0F, 4.0F, 4.0F, 2.0F, 2.0F, 1.0F);
+        return this.getStageValue(new float[]{6.0F, 4.0F, 4.0F, 2.0F, 2.0F, 1.0F}, new float[]{6.0F, 6.0F, 4.0F, 4.0F, 2.0F, 2.0F, 1.0F, 1.0F}, new float[]{6.0F, 4.0F, 2.0F});
+    }
+
+    private int getMaxBounces() {
+        int maxBounces = 6;
+        if (this.type == Type.BIDENT) {
+            maxBounces = 8;
+        } else if (this.type == Type.SPLIT) {
+            maxBounces = 3;
+        }
+        return maxBounces;
     }
 
     private double getSpacing() {
@@ -139,14 +233,34 @@ public class Soundwave extends Projectile {
             if (this.trail.size() > 30) {
                 this.trail.removeLast();
             }
+            if (!this.level().isClientSide) {
+                this.steer();
+            }
             this.move();
             if (!this.level().isClientSide) {
                 this.hitEntities();
                 this.updateSize();
-                if (this.tickCount > 300) {
+                if (this.tickCount > this.getLifetime()) {
                     this.entityData.set(FADING, true);
                 }
             }
+        }
+    }
+
+    private int getLifetime() {
+        int lifetime = 300;
+        if (this.type == Type.SPLIT) {
+            lifetime = 100;
+        }
+        return lifetime;
+    }
+
+    private void steer() {
+        if (this.homingTarget != null && this.homingTarget.isAlive() && this.homingTarget.level() == this.level()) {
+            Vec3 wanted = this.homingTarget.getBoundingBox().getCenter().subtract(this.position()).normalize().scale(this.getSpeed());
+            this.setDeltaMovement(this.getDeltaMovement().lerp(wanted, 0.15D).normalize().scale(this.getSpeed()));
+        } else {
+            this.homingTarget = null;
         }
     }
 
@@ -167,26 +281,46 @@ public class Soundwave extends Projectile {
     }
 
     private void bounce(Vec3 velocity, Vec3 normal) {
-        if (this.shrinkPending || this.getSize() > this.getStageSize()) {
-            this.targetSize = this.getStageSize();
-            this.shrinkSpeed = 0.2F;
+        this.wallBounces++;
+        if (this.type != Type.SPLIT) {
+            if (this.shrinkPending || this.getSize() > this.getStageSize()) {
+                this.targetSize = this.getStageSize();
+                this.shrinkSpeed = 0.2F;
+            }
+            this.phase++;
         }
-        this.phase++;
-        this.level().playSound(null, this.getX(), this.getY(), this.getZ(), SoundEvents.PHANTOM_AMBIENT, SoundSource.HOSTILE, 0.8F * (float) Math.pow(0.7D, this.phase - 1), 1.2F);
-        if (this.phase >= 6) {
+        this.level().playSound(null, this.getX(), this.getY(), this.getZ(), SoundEvents.PHANTOM_AMBIENT, SoundSource.HOSTILE, 0.8F * (float) Math.pow(0.7D, this.wallBounces - 1), 1.2F);
+        if (this.wallBounces >= this.getMaxBounces()) {
             this.setDeltaMovement(Vec3.ZERO);
             this.entityData.set(FADING, true);
         } else {
             Vec3 reflected = velocity.subtract(normal.scale(2.0D * velocity.dot(normal)));
-            Vec3 twisted = this.twist(reflected, 15.0F, 40.0F);
-            if (twisted.dot(normal) <= 0.0D) {
-                twisted = reflected;
+            Vec3 direction = this.twist(reflected, 15.0F, 40.0F);
+            if (direction.dot(normal) <= 0.0D) {
+                direction = reflected;
             }
-            this.setDeltaMovement(twisted.normalize().scale(this.getSpeed()));
-            this.hitEntities.clear();
-            this.shrinkPending = true;
-            this.distanceSinceBounce = 0.0D;
+            if (this.type == Type.SPLIT || (this.type == Type.BIDENT && this.wallBounces % 3 == 0)) {
+                LivingEntity target = findTarget(this.level(), this.getOwner(), this.position(), this.getIgnoredSet());
+                if (target != null && target.getBoundingBox().getCenter().subtract(this.position()).dot(normal) > 0.0D) {
+                    direction = target.getBoundingBox().getCenter().subtract(this.position());
+                    this.homingTarget = target;
+                }
+            }
+            this.setDeltaMovement(direction.normalize().scale(this.getSpeed()));
+            if (this.type != Type.SPLIT) {
+                this.hitEntities.clear();
+                this.shrinkPending = true;
+                this.distanceSinceBounce = 0.0D;
+            }
         }
+    }
+
+    private Set<LivingEntity> getIgnoredSet() {
+        Set<LivingEntity> ignored = new HashSet<>();
+        if (this.type == Type.SPLIT && this.ignoredEntity != null && this.level() instanceof ServerLevel serverLevel && serverLevel.getEntity(this.ignoredEntity) instanceof LivingEntity entity) {
+            ignored.add(entity);
+        }
+        return ignored;
     }
 
     private Vec3 twist(Vec3 direction, float minAngle, float maxAngle) {
@@ -216,17 +350,35 @@ public class Soundwave extends Projectile {
         if (owner instanceof LivingEntity livingOwner) {
             attacker = livingOwner;
         }
-        DamageSource source = this.damageSources().mobProjectile(this, attacker);
+        DamageSource source = this.getMeleeSource(attacker);
         for (Vec3 point : this.getSegmentPoints(this.position())) {
             AABB box = new AABB(point, point).inflate(0.4D * this.getSize());
-            for (LivingEntity entity : this.level().getEntitiesOfClass(LivingEntity.class, box, entity -> entity.isAlive() && entity != owner && !(entity instanceof Pipsqueak) && !this.hitEntities.contains(entity.getUUID()))) {
-                this.hitEntities.add(entity.getUUID());
-                entity.hurt(source, this.getDamage());
-                if (entity instanceof Creeper creeper) {
-                    creeper.ignite();
+            for (LivingEntity entity : this.level().getEntitiesOfClass(LivingEntity.class, box, entity -> isEnemy(entity, owner) && !entity.getUUID().equals(this.ignoredEntity) && !this.hitEntities.contains(entity.getUUID()))) {
+                if (!this.isRemoved()) {
+                    this.hitEntities.add(entity.getUUID());
+                    entity.hurt(source, this.getDamage() + this.damageBonus);
+                    if (entity instanceof Creeper creeper) {
+                        creeper.ignite();
+                    }
+                    if (this.type == Type.SPLIT) {
+                        if (this.phase < 2 && attacker != null) {
+                            releaseSplit(this.level(), attacker, entity, this.phase + 1, 2, this.damageBonus);
+                        }
+                        this.discard();
+                    }
                 }
             }
         }
+    }
+
+    private DamageSource getMeleeSource(@Nullable LivingEntity attacker) {
+        DamageSource source = this.damageSources().generic();
+        if (attacker instanceof Player player) {
+            source = new DamageSource(this.damageSources().playerAttack(player).typeHolder(), player, player, this.position());
+        } else if (attacker != null) {
+            source = new DamageSource(this.damageSources().mobAttack(attacker).typeHolder(), attacker, attacker, this.position());
+        }
+        return source;
     }
 
     public List<Vec3> getSegmentPoints(Vec3 head) {
@@ -256,5 +408,11 @@ public class Soundwave extends Projectile {
             back = back.normalize().scale(spacing);
         }
         return points;
+    }
+
+    public enum Type {
+        SCREAM,
+        BIDENT,
+        SPLIT
     }
 }

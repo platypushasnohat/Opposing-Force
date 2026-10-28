@@ -12,6 +12,8 @@ public class PipsqueakAttackGoal extends AttackGoal {
     private final Pipsqueak pipsqueak;
     private int attackCooldown;
     private int screamCooldown;
+    private int aimedWaves;
+    private int chaseTicks;
     private float orbitAngle;
 
     public PipsqueakAttackGoal(Pipsqueak pipsqueak) {
@@ -23,6 +25,7 @@ public class PipsqueakAttackGoal extends AttackGoal {
     public void start() {
         super.start();
         this.attackCooldown = 10;
+        this.chaseTicks = 0;
         this.orbitAngle = this.pipsqueak.getRandom().nextFloat() * Mth.TWO_PI;
     }
 
@@ -54,8 +57,10 @@ public class PipsqueakAttackGoal extends AttackGoal {
         boolean cooldownEnded = this.attackCooldown == 1;
         if (this.attackCooldown > 0) {
             this.attackCooldown--;
+        } else {
+            this.chaseTicks++;
         }
-        if (cooldownEnded && this.screamCooldown <= 0 && this.pipsqueak.hasLineOfSight(target) && this.pipsqueak.getRandom().nextBoolean()) {
+        if (this.chaseTicks >= 100 || (cooldownEnded && this.screamCooldown <= 0 && this.pipsqueak.hasLineOfSight(target) && this.pipsqueak.getRandom().nextBoolean())) {
             this.setState(3);
         } else if (!this.pipsqueak.hasLineOfSight(target)) {
             if (this.pipsqueak.getNavigation().isDone()) {
@@ -106,17 +111,25 @@ public class PipsqueakAttackGoal extends AttackGoal {
         this.lookAtTarget(target, 30.0F, 30.0F);
         if (this.timer == 1) {
             this.pipsqueak.setAnimationState(Pipsqueak.SCREAM_ANIMATION);
+            this.aimedWaves = 2 + this.pipsqueak.getRandom().nextInt(2);
             this.pipsqueak.setSwallowed(false);
             this.pipsqueak.getNavigation().stop();
             this.pipsqueak.getMoveControl().setWantedPosition(this.pipsqueak.getX(), this.pipsqueak.getY(), this.pipsqueak.getZ(), 1.0D);
         }
         if (this.timer == 12) {
             this.pipsqueak.setMouthOpen(true);
-            this.pipsqueak.playSound(SoundEvents.GHAST_SCREAM, 1.5F, 1.8F);
+            this.pipsqueak.playSound(SoundEvents.PHANTOM_AMBIENT, 1.5F, 1.2F);
+        }
+        if (this.timer >= 13 && this.timer <= 33 && (this.timer - 13) % 2 == 0) {
+            boolean aimed = this.pipsqueak.getRandom().nextInt(11 - (this.timer - 13) / 2) < this.aimedWaves;
+            if (aimed) {
+                this.aimedWaves--;
+            }
+            this.pipsqueak.releaseSoundwave(target, aimed);
         }
         if (this.timer >= 40) {
             this.pipsqueak.setMouthOpen(false);
-            this.screamCooldown = 100;
+            this.screamCooldown = 60;
             this.finishMouthAttack();
         }
     }
@@ -157,5 +170,6 @@ public class PipsqueakAttackGoal extends AttackGoal {
     private void setState(int state) {
         this.attackState = state;
         this.timer = 0;
+        this.chaseTicks = 0;
     }
 }

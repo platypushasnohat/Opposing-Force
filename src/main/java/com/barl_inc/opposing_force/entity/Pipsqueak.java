@@ -3,6 +3,8 @@ package com.barl_inc.opposing_force.entity;
 import com.barl_inc.opposing_force.entity.ai.goal.FlyingWanderGoal;
 import com.barl_inc.opposing_force.entity.ai.goal.PipsqueakAttackGoal;
 import com.barl_inc.opposing_force.entity.base.BasicFlyingMonster;
+import com.barl_inc.opposing_force.entity.projectile.Soundwave;
+import com.barl_inc.opposing_force.registry.datapack.tags.OFEntityTypeTags;
 import com.platypushasnohat.sinew.client.animation.SmoothAnimationState;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
@@ -10,14 +12,15 @@ import net.minecraft.core.particles.ItemParticleOption;
 import net.minecraft.core.particles.ParticleOptions;
 import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.nbt.CompoundTag;
+import net.minecraft.server.level.ServerLevel;
 import net.minecraft.network.syncher.EntityDataAccessor;
 import net.minecraft.network.syncher.EntityDataSerializers;
 import net.minecraft.network.syncher.SynchedEntityData;
-import net.minecraft.server.level.ServerLevel;
 import net.minecraft.util.Mth;
 import net.minecraft.util.RandomSource;
 import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.entity.EntityType;
+import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.Mob;
 import net.minecraft.world.entity.MobSpawnType;
 import net.minecraft.world.entity.ai.attributes.AttributeSupplier;
@@ -153,7 +156,7 @@ public class Pipsqueak extends BasicFlyingMonster {
     protected void customServerAiStep() {
         super.customServerAiStep();
         if (this.mouthOpen) {
-            this.level().getEntitiesOfClass(Projectile.class, this.getMouthBox(), Projectile::isAlive).forEach(this::swallow);
+            this.level().getEntitiesOfClass(Projectile.class, this.getMouthBox(), this::canSwallow).forEach(this::swallow);
         }
         if (this.isHanging()) {
             this.hangTicks--;
@@ -235,6 +238,10 @@ public class Pipsqueak extends BasicFlyingMonster {
         return offset.dot(Vec3.directionFromRotation(0.0F, this.yBodyRot)) > 0.0D;
     }
 
+    private boolean canSwallow(Projectile projectile) {
+        return projectile.isAlive() && !projectile.getType().is(OFEntityTypeTags.PIPSQUEAK_CANNOT_SWALLOW);
+    }
+
     private void swallow(Projectile projectile) {
         if (projectile instanceof ItemSupplier supplier) {
             this.swallowedItem = supplier.getItem().copy();
@@ -245,6 +252,16 @@ public class Pipsqueak extends BasicFlyingMonster {
         }
         projectile.discard();
         this.swallowed = true;
+    }
+
+    public void releaseSoundwave(LivingEntity target, boolean aimed) {
+        Vec3 center = this.getBoundingBox().getCenter();
+        Vec3 direction = new Vec3(this.random.nextGaussian(), this.random.nextGaussian(), this.random.nextGaussian()).normalize();
+        if (aimed) {
+            direction = target.getBoundingBox().getCenter().subtract(center).normalize();
+        }
+        Vec3 position = center.add(direction.scale(0.5D));
+        this.level().addFreshEntity(new Soundwave(this.level(), this, position, direction));
     }
 
     public void spitSwallowed() {
@@ -265,7 +282,7 @@ public class Pipsqueak extends BasicFlyingMonster {
     @Override
     public boolean hurt(DamageSource source, float amount) {
         boolean hurt = false;
-        if (this.mouthOpen && source.getDirectEntity() instanceof Projectile projectile && this.isInFrontOfMouth(projectile.position())) {
+        if (this.mouthOpen && source.getDirectEntity() instanceof Projectile projectile && this.canSwallow(projectile) && this.isInFrontOfMouth(projectile.position())) {
             this.swallow(projectile);
         } else {
             hurt = super.hurt(source, amount);

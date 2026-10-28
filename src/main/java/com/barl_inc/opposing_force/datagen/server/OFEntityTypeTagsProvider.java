@@ -57,5 +57,12 @@ public class OFEntityTypeTagsProvider extends EntityTypeTagsProvider {
         this.tag(SinewEntityTags.POST_END_SPAWNS).add(
                 OFEntities.GRELL.get()
         );
+
+        this.tag(OFEntityTypeTags.PIPSQUEAK_CANNOT_SWALLOW).add(
+                OFEntities.SOUNDWAVE.get(),
+                OFEntities.SOUL.get(),
+                OFEntities.DICER_LASER.get(),
+                OFEntities.LASER_BLADE.get()
+        );
 	}
 }

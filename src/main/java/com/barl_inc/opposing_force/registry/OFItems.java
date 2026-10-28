@@ -155,7 +155,7 @@ public class OFItems {
     public static final DeferredItem<Item> GHOST_SPAWN_EGG = registerSpawnEggItem("ghost", OFEntities.GHOST, 0x1f2433, 0x9ee0cf);
     public static final DeferredItem<Item> ROAMER_SPAWN_EGG = registerSpawnEggItem("roamer", OFEntities.ROAMER, 0x0d0e04, 0xe44928);
     public static final DeferredItem<Item> HAUNT_SPAWN_EGG = registerSpawnEggItem("haunt", OFEntities.HAUNT, 0x90a9a1, 0x2d2e49);
-    public static final DeferredItem<Item> ECTOPLASM = registerItem("ectoplasm", () -> new Item(new Item.Properties()));
+    public static final DeferredItem<Item> ECTOPLASM = registerItem("ectoplasm", () -> new EctoplasmItem(new Item.Properties()));
     public static final DeferredItem<Item> SPECTRAL_CLEAVER = registerItem("spectral_cleaver", () -> new SpectralCleaverItem(OFItemTiers.SPECTRAL_CLEAVER, new Item.Properties().attributes(SwordItem.createAttributes(OFItemTiers.SPECTRAL_CLEAVER, 3.5F, -2.4F))));
     public static final DeferredItem<Item> SPECTRAL_SHIELD = registerItem("spectral_shield", () -> new SpectralShieldItem(new Item.Properties().durability(672)));
 

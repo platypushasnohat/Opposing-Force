@@ -92,6 +92,7 @@ public class ClientEvents {
         event.registerEntityRenderer(OFEntities.SOUL.get(), SoulRenderer::new);
         event.registerEntityRenderer(OFEntities.SHOCKWAVE.get(), NoopRenderer::new);
         event.registerEntityRenderer(OFEntities.GRELL_CLONE.get(), GrellRenderer::new);
+        event.registerEntityRenderer(OFEntities.SOUNDWAVE.get(), SoundwaveRenderer::new);
     }
 
     @SubscribeEvent
@@ -153,7 +154,6 @@ public class ClientEvents {
         event.registerSpriteSet(OFParticleTypes.SMALL_SOUL_FIRE_FLAME.get(), FlameParticle.SmallFlameProvider::new);
         event.registerSpriteSet(OFParticleTypes.SHOCKWAVE.get(), ShockwaveParticle.Factory::new);
         event.registerSpriteSet(OFParticleTypes.SMALL_SHOCKWAVE.get(), ShockwaveParticle.Factory::new);
-        event.registerSpriteSet(OFParticleTypes.SOUNDWAVE.get(), SoundwaveParticle.Factory::new);
     }
 
     @SubscribeEvent
@@ -252,7 +252,7 @@ public class ClientEvents {
     public static void onPlayerPose(PlayerPoseEvent event) {
         LivingEntity entity = event.getEntity();
         Minecraft minecraft = Minecraft.getInstance();
-        if (SpectralShieldLayer.isShielding(entity) && !(entity == minecraft.player && minecraft.options.getCameraType().isFirstPerson())) {
+        if (SpectralShieldLayer.hasShields(entity) && !(entity == minecraft.player && minecraft.options.getCameraType().isFirstPerson())) {
             HumanoidModel<?> model = event.getHumanoidModel();
             float swing = Mth.cos((entity.tickCount + minecraft.getTimer().getGameTimeDeltaPartialTick(true)) * 0.6662F) * 0.25F;
             model.rightArm.xRot = swing;
@@ -268,7 +268,7 @@ public class ClientEvents {
     public static void onRenderLevelStage(RenderLevelStageEvent event) {
         Minecraft minecraft = Minecraft.getInstance();
         LocalPlayer player = minecraft.player;
-        if (event.getStage() == RenderLevelStageEvent.Stage.AFTER_ENTITIES && player != null && minecraft.options.getCameraType().isFirstPerson() && SpectralShieldLayer.isShielding(player)) {
+        if (event.getStage() == RenderLevelStageEvent.Stage.AFTER_ENTITIES && player != null && minecraft.options.getCameraType().isFirstPerson() && SpectralShieldLayer.hasShields(player)) {
             float partialTicks = event.getPartialTick().getGameTimeDeltaPartialTick(false);
             Vec3 camera = event.getCamera().getPosition();
             PoseStack poseStack = event.getPoseStack();
@@ -278,7 +278,7 @@ public class ClientEvents {
             poseStack.mulPose(Axis.YP.rotationDegrees(180.0F - Mth.rotLerp(partialTicks, player.yBodyRotO, player.yBodyRot)));
             poseStack.scale(-1.0F, -1.0F, 1.0F);
             poseStack.translate(0.0F, -1.501F, 0.0F);
-            SpectralShieldLayer.renderShields(poseStack, buffer, LightTexture.FULL_BRIGHT, player, player.getUseItem(), SpectralShieldLayer.getGrow(player, partialTicks), player.tickCount + partialTicks, partialTicks);
+            SpectralShieldLayer.renderAnimatedShields(poseStack, buffer, LightTexture.FULL_BRIGHT, player, player.tickCount + partialTicks, partialTicks);
             poseStack.popPose();
             buffer.endBatch();
         }
@@ -286,7 +286,7 @@ public class ClientEvents {
 
     @SubscribeEvent
     public static void onRenderHand(RenderHandEvent event) {
-        if (event.getItemStack().getItem() instanceof SpectralShieldItem && SpectralShieldLayer.isShielding(Minecraft.getInstance().player)) {
+        if (event.getItemStack().getItem() instanceof SpectralShieldItem && SpectralShieldLayer.hasShields(Minecraft.getInstance().player)) {
             event.setCanceled(true);
         }
     }

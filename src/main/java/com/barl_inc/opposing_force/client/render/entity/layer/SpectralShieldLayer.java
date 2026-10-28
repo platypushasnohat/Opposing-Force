@@ -27,8 +27,7 @@ public class SpectralShieldLayer<T extends LivingEntity, M extends EntityModel<T
 
     private static final Direction[] SIDES = {null, Direction.DOWN, Direction.UP, Direction.NORTH, Direction.SOUTH, Direction.WEST, Direction.EAST};
     private static final RandomSource RANDOM = RandomSource.create();
-
-    private final Map<LivingEntity, Retract> retracting = new WeakHashMap<>();
+    private static final Map<LivingEntity, Retract> RETRACTING = new WeakHashMap<>();
 
     public SpectralShieldLayer(RenderLayerParent<T, M> renderer) {
         super(renderer);
@@ -36,28 +35,36 @@ public class SpectralShieldLayer<T extends LivingEntity, M extends EntityModel<T
 
     @Override
     public void render(PoseStack poseStack, MultiBufferSource buffer, int packedLight, T entity, float limbSwing, float limbSwingAmount, float partialTicks, float ageInTicks, float netHeadYaw, float headPitch) {
+        renderAnimatedShields(poseStack, buffer, packedLight, entity, ageInTicks, partialTicks);
+    }
+
+    public static boolean isShielding(LivingEntity entity) {
+        return entity.isUsingItem() && entity.getUseItem().getItem() instanceof SpectralShieldItem;
+    }
+
+    public static boolean hasShields(LivingEntity entity) {
+        return isShielding(entity) || RETRACTING.containsKey(entity);
+    }
+
+    public static void renderAnimatedShields(PoseStack poseStack, MultiBufferSource buffer, int packedLight, LivingEntity entity, float ageInTicks, float partialTicks) {
         ItemStack stack = ItemStack.EMPTY;
         float grow = 0.0F;
         if (isShielding(entity)) {
             stack = entity.getUseItem();
             grow = getGrow(entity, partialTicks);
-            this.retracting.put(entity, new Retract(stack, grow, ageInTicks));
-        } else if (this.retracting.containsKey(entity)) {
-            Retract retract = this.retracting.get(entity);
+            RETRACTING.put(entity, new Retract(stack, grow, ageInTicks));
+        } else if (RETRACTING.containsKey(entity)) {
+            Retract retract = RETRACTING.get(entity);
             float progress = Mth.clamp((ageInTicks - retract.start()) / 14.0F, 0.0F, 1.0F);
             stack = retract.stack();
             grow = retract.grow() * (1.0F - progress * progress * progress);
             if (progress >= 1.0F) {
-                this.retracting.remove(entity);
+                RETRACTING.remove(entity);
             }
         }
         if (grow > 0.0F) {
             renderShields(poseStack, buffer, packedLight, entity, stack, grow, ageInTicks, partialTicks);
         }
-    }
-
-    public static boolean isShielding(LivingEntity entity) {
-        return entity.isUsingItem() && entity.getUseItem().getItem() instanceof SpectralShieldItem;
     }
 
     public static float getGrow(LivingEntity entity, float partialTicks) {
@@ -69,14 +76,14 @@ public class SpectralShieldLayer<T extends LivingEntity, M extends EntityModel<T
         BakedModel model = Minecraft.getInstance().getItemRenderer().getItemModelShaper().getItemModel(stack);
         VertexConsumer consumer = ItemRenderer.getFoilBufferDirect(buffer, Sheets.cutoutBlockSheet(), true, stack.hasFoil());
         float pulse = Mth.sin(ageInTicks * 0.15F);
-        float size = (0.3F + 0.7F * grow) * (1.0F + pulse * 0.04F);
+        float size = grow * (1.0F + pulse * 0.04F);
         float wobble = SpectralShieldItem.getWobble(entity, stack, partialTicks);
         float bodyYaw = Mth.rotLerp(partialTicks, entity.yBodyRotO, entity.yBodyRot);
         for (int i = 0; i < 4; i++) {
             poseStack.pushPose();
-            poseStack.translate(0.0F, 0.6F, 0.0F);
+            poseStack.translate(0.0F, 0.6F + Mth.sin((ageInTicks + i * 10.0F) * 0.12F) * 0.06F, 0.0F);
             poseStack.mulPose(Axis.YP.rotationDegrees(i * 90.0F + ageInTicks * 3.0F - bodyYaw));
-            poseStack.translate(0.0F, 0.0F, -grow * (1.0F + pulse * 0.06F));
+            poseStack.translate(0.0F, 0.0F, -1.0F - pulse * 0.06F);
             poseStack.mulPose(Axis.ZP.rotationDegrees(Mth.sin((ageInTicks + i * 7.0F) * 2.5F) * 25.0F * wobble));
             poseStack.mulPose(Axis.XP.rotationDegrees(Mth.cos((ageInTicks + i * 5.0F) * 3.1F) * 10.0F * wobble));
             poseStack.scale(-size, -size, size);

@@ -2,8 +2,8 @@ package com.barl_inc.opposing_force.entity.projectile;
 
 import com.barl_inc.opposing_force.registry.OFDamageTypes;
 import com.barl_inc.opposing_force.registry.OFEntities;
-import com.barl_inc.opposing_force.registry.OFParticleTypes;
 import com.platypushasnohat.sinew.utils.SinewSoundUtils;
+import com.barl_inc.opposing_force.registry.OFParticleTypes;
 import net.minecraft.network.syncher.SynchedEntityData;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.sounds.SoundSource;
@@ -29,7 +29,7 @@ public class Soul extends Projectile {
         this.noPhysics = true;
     }
 
-    public Soul(Level level, Player owner, LivingEntity target, Vec3 position, float damage, float speed) {
+    public Soul(Level level, Player owner, @Nullable LivingEntity target, Vec3 position, float damage, float speed) {
         this(OFEntities.SOUL.get(), level);
         this.setOwner(owner);
         this.target = target;
@@ -62,11 +62,22 @@ public class Soul extends Projectile {
     public void tick() {
         super.tick();
         if (!this.level().isClientSide) {
-            if (this.target != null && this.target.isAlive() && this.target.level() == this.level() && this.getOwner() instanceof LivingEntity owner && this.tickCount < 200) {
-                Vec3 direction = this.target.getBoundingBox().getCenter().subtract(this.position()).normalize().scale(this.speed);
-                this.setDeltaMovement(this.getDeltaMovement().lerp(direction, 0.15D));
-                if (this.getBoundingBox().inflate(0.2D).intersects(this.target.getBoundingBox())) {
-                    this.target.hurt(OFDamageTypes.causeSoulDamage(this.level().registryAccess(), this, owner), this.damage);
+            if (this.hasValidTarget() && this.getOwner() instanceof LivingEntity owner && this.tickCount < 200) {
+                LivingEntity hit = null;
+                if (this.target != null) {
+                    Vec3 direction = this.target.getBoundingBox().getCenter().subtract(this.position()).normalize().scale(this.speed);
+                    this.setDeltaMovement(this.getDeltaMovement().lerp(direction, 0.15D));
+                    if (this.getBoundingBox().inflate(0.2D).intersects(this.target.getBoundingBox())) {
+                        hit = this.target;
+                    }
+                } else {
+                    hit = this.level().getEntitiesOfClass(LivingEntity.class, this.getBoundingBox().inflate(0.2D), entity -> entity != owner && entity.isAlive() && !entity.isAlliedTo(owner)).stream().findFirst().orElse(null);
+                }
+                if (hit != null) {
+                    hit.hurt(OFDamageTypes.causeSoulDamage(this.level().registryAccess(), this, owner), this.damage);
+                    this.level().playSound(null, this.getX(), this.getY(), this.getZ(), SoundEvents.SOUL_SAND_BREAK, SoundSource.PLAYERS, 1.0F, SinewSoundUtils.randomizePitch(this.level()));
+                    this.discard();
+                } else if (this.target == null && !this.level().noCollision(this, this.getBoundingBox())) {
                     this.level().playSound(null, this.getX(), this.getY(), this.getZ(), SoundEvents.SOUL_SAND_BREAK, SoundSource.PLAYERS, 1.0F, SinewSoundUtils.randomizePitch(this.level()));
                     this.discard();
                 }
@@ -82,5 +93,9 @@ public class Soul extends Projectile {
         }
         this.setPos(this.position().add(this.getDeltaMovement()));
         this.updateRotation();
+    }
+
+    private boolean hasValidTarget() {
+        return this.target == null || (this.target.isAlive() && this.target.level() == this.level());
     }
 }

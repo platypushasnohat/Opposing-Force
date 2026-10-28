@@ -55,6 +55,7 @@ public class OFEntities {
     public static final DeferredHolder<EntityType<?>, EntityType<Soul>> SOUL = registerEntity("soul", Soul::new, MobCategory.MISC, builder -> builder.sized(0.3F, 0.3F).setUpdateInterval(1).setShouldReceiveVelocityUpdates(true).clientTrackingRange(4).fireImmune());
     public static final DeferredHolder<EntityType<?>, EntityType<Shockwave>> SHOCKWAVE = registerEntity("shockwave", Shockwave::new, MobCategory.MISC, builder -> builder.sized(0.5F, 0.5F).fireImmune().clientTrackingRange(10).setUpdateInterval(Integer.MAX_VALUE));
     public static final DeferredHolder<EntityType<?>, EntityType<GrellClone>> GRELL_CLONE = registerEntityNoLang("grell_clone", GrellClone::new, MobCategory.MONSTER, builder -> builder.sized(1.5F, 2.0F).eyeHeight(1.4F).clientTrackingRange(10).noSave());
+    public static final DeferredHolder<EntityType<?>, EntityType<Soundwave>> SOUNDWAVE = registerEntity("soundwave", Soundwave::new, MobCategory.MISC, builder -> builder.sized(0.5F, 0.5F).setUpdateInterval(1).setShouldReceiveVelocityUpdates(true).clientTrackingRange(4).fireImmune());
 
     public static <E extends Entity> DeferredHolder<EntityType<?>, EntityType<E>> registerEntity(String name, EntityType.EntityFactory<E> factory, MobCategory entityClassification, Consumer<EntityType.Builder<E>> builderConsumer) {
         DeferredHolder<EntityType<?>, EntityType<E>> entity = registerEntityNoLang(name, factory, entityClassification, builderConsumer);

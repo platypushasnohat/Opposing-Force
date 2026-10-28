@@ -29,6 +29,7 @@ public class OFDebugItems {
 
     public static final DeferredRegister.Items DEBUG_ITEM = DeferredRegister.createItems(OpposingForce.MOD_ID);
 
+    //todo comment out uuid before release
     private static final Set<UUID> DEBUG_PLAYERS = Set.of(
             UUID.fromString("380df991-f603-344c-a090-369bad2a924a"),
             UUID.fromString("3562ab33-f01b-4801-aab5-807f3750ded1")

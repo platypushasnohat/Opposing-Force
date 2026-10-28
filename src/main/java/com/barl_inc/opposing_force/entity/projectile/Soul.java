@@ -2,8 +2,8 @@ package com.barl_inc.opposing_force.entity.projectile;
 
 import com.barl_inc.opposing_force.registry.OFDamageTypes;
 import com.barl_inc.opposing_force.registry.OFEntities;
-import com.platypushasnohat.sinew.utils.SinewSoundUtils;
 import com.barl_inc.opposing_force.registry.OFParticleTypes;
+import com.platypushasnohat.sinew.utils.SinewSoundUtils;
 import net.minecraft.network.syncher.SynchedEntityData;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.sounds.SoundSource;

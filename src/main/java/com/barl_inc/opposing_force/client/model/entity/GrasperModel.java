@@ -5,7 +5,10 @@ import com.barl_inc.opposing_force.entity.Grasper;
 import com.platypushasnohat.sinew.client.model.entity.SinewEntityModel;
 import net.minecraft.client.model.geom.ModelPart;
 import net.minecraft.client.model.geom.PartPose;
-import net.minecraft.client.model.geom.builders.*;
+import net.minecraft.client.model.geom.builders.CubeListBuilder;
+import net.minecraft.client.model.geom.builders.LayerDefinition;
+import net.minecraft.client.model.geom.builders.MeshDefinition;
+import net.minecraft.client.model.geom.builders.PartDefinition;
 
 public class GrasperModel extends SinewEntityModel<Grasper> {
 

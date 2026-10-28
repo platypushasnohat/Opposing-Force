@@ -5,7 +5,6 @@ import com.barl_inc.opposing_force.entity.Gnat;
 import com.barl_inc.opposing_force.entity.Terror;
 import com.barl_inc.opposing_force.entity.misc.DicerLaser;
 import com.barl_inc.opposing_force.entity.projectile.LaserBlade;
-import com.barl_inc.opposing_force.entity.projectile.Soul;
 import com.platypushasnohat.sinew.mixins.client.SoundEngineAccessor;
 import com.platypushasnohat.sinew.mixins.client.SoundManagerAccessor;
 import it.unimi.dsi.fastutil.ints.Int2ObjectMap;

@@ -101,7 +101,7 @@ public class Grell extends BasicFlyingMonster implements SpectralEntity, EliteMo
 
     @Override
     public double getEliteChance() {
-        return Math.max(0.12D, EliteMob.super.getEliteChance());
+        return Math.max(0.09D, EliteMob.super.getEliteChance());
     }
 
     @Override

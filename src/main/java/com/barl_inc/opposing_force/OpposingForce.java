@@ -51,6 +51,7 @@ public class OpposingForce {
         OFSoundEvents.SOUND_EVENT.register(modEventBus);
         OFDataComponents.DATA_COMPONENTS.register(modEventBus);
         OFCreativeTabs.CREATIVE_MODE_TAB.register(modEventBus);
+        OFMobEffects.MOB_EFFECT.register(modEventBus);
         OFDebugItems.register(modEventBus);
         modEventBus.addListener(OFMobVariants::registerDatapackRegistries);
         modEventBus.addListener(this::commonSetup);

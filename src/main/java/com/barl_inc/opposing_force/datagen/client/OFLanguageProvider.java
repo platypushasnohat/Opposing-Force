@@ -20,6 +20,7 @@ public class OFLanguageProvider extends SinewLanguageProvider {
         OFEntities.ENTITY_TRANSLATIONS.forEach(this::forEntity);
 
         this.add(OFEntities.GRELL_CLONE.get(), "Grell");
+        this.add(OFMobEffects.MANIA.get(), "Mania");
 
         this.addSound(OFSoundEvents.DICER_HURT, "Dicer hurts");
         this.addSound(OFSoundEvents.DICER_DEATH, "Dicer dies");
@@ -91,6 +92,7 @@ public class OFLanguageProvider extends SinewLanguageProvider {
         this.add("item.opposing_force.tooltip.uses_bullets", "Uses Bullets as ammo");
         this.add("item.opposing_force.tooltip.uses_basic_mana", "Uses Basic Mana");
         this.add("item.opposing_force.tooltip.basic_mana", "Basic Mana");
+        this.add("item.opposing_force.tooltip.uses_ectoplasm", "Uses Ectoplasm as ammo");
 
         this.add("item.opposing_force.power_cell.description", "Refill with Redstone Dust");
         this.add("item.opposing_force.laser_blade.description", "Right-click to throw");
@@ -193,10 +195,14 @@ public class OFLanguageProvider extends SinewLanguageProvider {
         this.add("death.attack.soundwave", "%s had their ears shattered");
         this.add("death.attack.soundwave.player", "%s had their ears shattered by %s");
 
+        this.add("death.attack.mania", "%s lost their mind");
+        this.add("death.attack.mania.player", "%s lost their mind to %s");
+
         this.add(OFDebugItems.RINGMASTER.get(), "Ringmaster");
         this.add(OFDebugItems.SOULCLEAVE.get(), "Soulcleave");
         this.add(OFDebugItems.KNIGHTSOUL.get(), "Knightsoul");
         this.add(OFDebugItems.SLIMEWARD.get(), "Slimeward");
+        this.add(OFDebugItems.MINDFUCK.get(), "Mindfuck");
         this.add("item.opposing_force.tooltip.debug_item", "DEBUG ITEM");
     }
 }

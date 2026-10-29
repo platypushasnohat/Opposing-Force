@@ -2,6 +2,7 @@ package com.barl_inc.opposing_force.client.render.item;
 
 import com.barl_inc.opposing_force.OpposingForce;
 import com.barl_inc.opposing_force.client.model.item.*;
+import com.barl_inc.opposing_force.item.magic.ManiaItem;
 import com.barl_inc.opposing_force.item.ranged.*;
 import com.barl_inc.opposing_force.registry.OFItems;
 import com.barl_inc.opposing_force.registry.OFModelLayers;
@@ -111,6 +112,9 @@ public class OFItemRenderer extends BlockEntityWithoutLevelRenderer {
         }
         if (stack.is(OFItems.GORLOFF.get())) {
             GorloffModel.renderItem(player, stack, displayContext, poseStack, buffer, packedLight, packedOverlay, ageInTicks);
+        }
+        if (stack.getItem() instanceof ManiaItem) {
+            ManiaModel.renderItem(player, stack, displayContext, poseStack, buffer, packedLight, packedOverlay, ageInTicks);
         }
     }
 }

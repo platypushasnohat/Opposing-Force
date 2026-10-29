@@ -1,5 +1,6 @@
 {
   "values": [
-    "#opposing_force:consumes_basic_mana"
+    "#opposing_force:consumes_basic_mana",
+    "opposing_force:mania"
   ]
 }

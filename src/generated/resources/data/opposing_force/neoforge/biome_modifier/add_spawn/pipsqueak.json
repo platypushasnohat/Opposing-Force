@@ -3,8 +3,8 @@
   "biomes": "#opposing_force:has_monster/overworld",
   "spawners": {
     "type": "opposing_force:pipsqueak",
-    "maxCount": 2,
-    "minCount": 1,
+    "maxCount": 4,
+    "minCount": 2,
     "weight": 18
   }
 }

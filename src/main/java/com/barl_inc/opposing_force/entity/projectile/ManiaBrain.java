@@ -33,7 +33,7 @@ import java.util.Set;
 
 public class ManiaBrain extends Projectile implements SplitMagicBonus {
 
-    public static final float DAMAGE = 2.5F;
+    public static final float DAMAGE = 3.0F;
     public static final int LIFETIME = 6;
 
     private static final EntityDataAccessor<Integer> SHADE = SynchedEntityData.defineId(ManiaBrain.class, EntityDataSerializers.INT);

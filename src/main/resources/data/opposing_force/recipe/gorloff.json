@@ -1,0 +1,27 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "equipment",
+  "key": {
+    "F": {
+      "item": "opposing_force:firing_mechanism"
+    },
+    "G": {
+      "item": "opposing_force:crackshot"
+    },
+    "I": {
+      "item": "minecraft:iron_ingot"
+    },
+    "P": {
+      "tag": "minecraft:planks"
+    }
+  },
+  "pattern": [
+    "  I",
+    "GFP",
+    "GG "
+  ],
+  "result": {
+    "count": 1,
+    "id": "opposing_force:gorloff"
+  }
+}

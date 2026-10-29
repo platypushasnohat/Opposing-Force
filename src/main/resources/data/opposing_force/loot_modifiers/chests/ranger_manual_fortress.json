@@ -7,7 +7,7 @@
     },
     {
       "condition": "minecraft:random_chance",
-      "chance": 0.14
+      "chance": 0.15
     }
   ],
   "table": "opposing_force:chests/ranger_manual"

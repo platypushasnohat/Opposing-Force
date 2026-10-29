@@ -1,0 +1,21 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "equipment",
+  "key": {
+    "O": {
+      "item": "minecraft:obsidian"
+    },
+    "F": {
+      "item": "opposing_force:fiery_carapace"
+    }
+  },
+  "pattern": [
+    " O ",
+    "OFO",
+    " O "
+  ],
+  "result": {
+    "count": 1,
+    "id": "opposing_force:obsidian_husk"
+  }
+}

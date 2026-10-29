@@ -4,13 +4,17 @@
   "compatibilityLevel": "JAVA_21",
   "refmap": "opposing_force.refmap.json",
   "mixins": [
-    "EnchantmentHelperMixin",
-    "LivingEntityMixin",
+    "CurioSlotMixin",
+    "DynamicStackHandlerMixin",
+    "ItemParserMixin",
+    "LiquidBlockMixin",
     "MobCategoryMixin",
     "PlayerMixin",
     "ZombieMixin"
   ],
-  "client": [],
+  "client": [
+    "ItemInHandLayerMixin"
+  ],
   "injectors": {
     "defaultRequire": 1
   },

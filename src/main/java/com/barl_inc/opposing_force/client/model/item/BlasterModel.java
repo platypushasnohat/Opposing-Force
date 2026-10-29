@@ -1,7 +1,8 @@
 package com.barl_inc.opposing_force.client.model.item;
 
 import com.barl_inc.opposing_force.client.model.item.animation.BlasterAnimations;
-import com.barl_inc.opposing_force.item.BlasterItem;
+import com.barl_inc.opposing_force.item.base.GunItem;
+import com.barl_inc.opposing_force.item.ranged.BlasterItem;
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.VertexConsumer;
 import com.platypushasnohat.sinew.client.model.item.AnimatedItemModel;
@@ -23,7 +24,7 @@ public class BlasterModel<I extends BlasterItem> extends AnimatedItemModel<I> {
     @Override
     public void setupAnim(Entity entity, I item, ItemStack stack, ItemDisplayContext displayContext, float ageInTicks) {
         this.root().getAllParts().forEach(ModelPart::resetPose);
-        this.animate(entity, item.blastAnimationState, BlasterAnimations.BLASTER_SHOOT, ageInTicks);
+        this.animate(stack, GunItem.SHOOT_ANIMATION, BlasterAnimations.BLASTER_SHOOT);
     }
 
     public static LayerDefinition createBodyLayer() {

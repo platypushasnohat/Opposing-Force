@@ -1,0 +1,27 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "equipment",
+  "key": {
+    "W": {
+      "item": "minecraft:nether_wart_block"
+    },
+    "N": {
+      "item": "minecraft:netherite_scrap"
+    },
+    "G": {
+      "item": "minecraft:ghast_tear"
+    },
+    "B": {
+      "item": "minecraft:blaze_powder"
+    }
+  },
+  "pattern": [
+    "NGN",
+    "BWB",
+    "NGN"
+  ],
+  "result": {
+    "count": 1,
+    "id": "opposing_force:crystallized_heart"
+  }
+}

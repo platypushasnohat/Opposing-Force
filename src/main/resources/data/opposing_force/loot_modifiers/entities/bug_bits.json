@@ -1,0 +1,13 @@
+{
+  "type": "neoforge:add_table",
+  "conditions": [
+    {
+      "condition": "minecraft:entity_properties",
+      "entity": "this",
+      "predicate": {
+        "type": "#opposing_force:bugs"
+      }
+    }
+  ],
+  "table": "opposing_force:entities/bug_bits"
+}

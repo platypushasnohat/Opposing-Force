@@ -2,6 +2,7 @@ package com.barl_inc.opposing_force.entity;
 
 import com.barl_inc.opposing_force.entity.ai.goal.LightDependentTargetGoal;
 import com.barl_inc.opposing_force.entity.ai.goal.TarantulaAttackGoal;
+import com.barl_inc.opposing_force.registry.OFItems;
 import com.platypushasnohat.sinew.Sinew;
 import com.platypushasnohat.sinew.client.animation.SmoothAnimationState;
 import com.platypushasnohat.sinew.entity.ai.goal.TamedSitGoal;
@@ -100,7 +101,7 @@ public class Tarantula extends TamableMonster implements KeybindUsingMount, Play
                 return super.canContinueToUse() && Tarantula.this.getCommand() == COMMAND_FOLLOW;
             }
         });
-        this.goalSelector.addGoal(6, new TemptGoal(this, 1.2D, (stack) -> stack.is(Items.SPIDER_EYE), false) {
+        this.goalSelector.addGoal(6, new TemptGoal(this, 1.2D, (stack) -> stack.is(OFItems.BUG_BITS.get()), false) {
             @Override
             public boolean canUse() {
                 return super.canUse() && Tarantula.this.hasNoTargets();
@@ -212,8 +213,8 @@ public class Tarantula extends TamableMonster implements KeybindUsingMount, Play
             return InteractionResult.SUCCESS;
         }
         else {
-            if (!this.level().isClientSide && itemStack.is(Items.SPIDER_EYE) && this.hasNoTargets()) {
-                this.tryToTame(player, itemStack, 20, 1);
+            if (!this.level().isClientSide && itemStack.is(OFItems.BUG_BITS.get()) && this.hasNoTargets()) {
+                this.tryToTame(player, itemStack, 32, 1);
                 return InteractionResult.SUCCESS;
             }
         }
@@ -356,7 +357,7 @@ public class Tarantula extends TamableMonster implements KeybindUsingMount, Play
         return super.calculateFallDamage(fallDistance, damageMultiplier) - 6;
     }
 
-    // Override these so the rider doesn't take fall damage
+    // Override these so the rider doesn't take fall damageMultiplier
     @Override
     public boolean causeFallDamage(float fallDistance, float damageMultiplier, DamageSource damageSource) {
         float[] onLivingFall = CommonHooks.onLivingFall(this, fallDistance, damageMultiplier);

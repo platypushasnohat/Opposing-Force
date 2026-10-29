@@ -1,7 +1,8 @@
 package com.barl_inc.opposing_force.client.model.item;
 
 import com.barl_inc.opposing_force.client.model.item.animation.LeitmotifAnimations;
-import com.barl_inc.opposing_force.item.LeitmotifItem;
+import com.barl_inc.opposing_force.item.base.GunItem;
+import com.barl_inc.opposing_force.item.ranged.LeitmotifItem;
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.VertexConsumer;
 import com.platypushasnohat.sinew.client.model.item.AnimatedItemModel;
@@ -47,7 +48,7 @@ public class LeitmotifModel extends AnimatedItemModel<LeitmotifItem> {
     @Override
     public void setupAnim(Entity entity, LeitmotifItem item, ItemStack stack, ItemDisplayContext displayContext, float ageInTicks) {
         this.root().getAllParts().forEach(ModelPart::resetPose);
-        this.animate(entity, item.shootAnimationState, LeitmotifAnimations.SHOOT, ageInTicks);
+        this.animate(stack, GunItem.SHOOT_ANIMATION, LeitmotifAnimations.SHOOT);
     }
 
     @Override

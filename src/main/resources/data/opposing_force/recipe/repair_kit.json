@@ -1,0 +1,27 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "key": {
+    "B": {
+      "item": "minecraft:bone"
+    },
+    "U": {
+      "item": "minecraft:copper_ingot"
+    },
+    "F": {
+      "item": "opposing_force:fur"
+    },
+    "C": {
+      "item": "opposing_force:chitin"
+    }
+  },
+  "pattern": [
+    "B U",
+    "CFC",
+    "CCC"
+  ],
+  "result": {
+    "count": 1,
+    "id": "opposing_force:repair_kit"
+  }
+}

@@ -16,6 +16,13 @@ public class OFModelLayers {
     public static final ModelLayerLocation MUSHY = register("mushy");
     public static final ModelLayerLocation MOTIF = register("motif");
     public static final ModelLayerLocation FILLET = register("fillet");
+    public static final ModelLayerLocation GHOST = register("ghost");
+    public static final ModelLayerLocation ROAMER = register("roamer");
+    public static final ModelLayerLocation HAUNT = register("haunt");
+    public static final ModelLayerLocation GRASPER = register("grasper");
+    public static final ModelLayerLocation PARASOUL = register("parasoul");
+    public static final ModelLayerLocation GRELL = register("grell");
+    public static final ModelLayerLocation PIPSQUEAK = register("pipsqueak");
     public static final ModelLayerLocation BRICK = register("brick");
 
     public static final ModelLayerLocation LASER_BOLT = register("laser_bolt");
@@ -24,10 +31,16 @@ public class OFModelLayers {
 
     public static final ModelLayerLocation MUDBALL = register("mudball");
 
+    public static final ModelLayerLocation SOUL = register("soul");
+
     public static final ModelLayerLocation BLASTER = register("blaster");
     public static final ModelLayerLocation TRI_BLASTER = register("tri_blaster");
     public static final ModelLayerLocation SCATTER_BLASTER = register("scatter_blaster");
     public static final ModelLayerLocation LEITMOTIF = register("leitmotif");
+    public static final ModelLayerLocation CRACKSHOT = register("crackshot");
+    public static final ModelLayerLocation JAEGER = register("jaeger");
+    public static final ModelLayerLocation BOOMSTICK = register("boomstick");
+    public static final ModelLayerLocation GORLOFF = register("gorloff");
 
     private static ModelLayerLocation register(String id) {
         return new ModelLayerLocation(OpposingForce.location(id), "main");

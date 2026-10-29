@@ -29,7 +29,7 @@ public class OFItemModelProvider extends SinewItemModelProvider {
                 OFItems.POWER_CELL,
                 OFItems.ACID_CHARGE,
                 OFItems.RELIC_FEATHER,
-                OFItems.BEETLE_HUSK,
+                OFItems.OBSIDIAN_HUSK,
                 OFItems.POT_OF_GREEN,
                 OFItems.THORNY_BRACELET,
                 OFItems.RANGER_MANUAL,
@@ -41,11 +41,29 @@ public class OFItemModelProvider extends SinewItemModelProvider {
                 OFItems.FIERY_CARAPACE,
                 OFItems.URANIUM_KNUCKLES,
                 OFItems.FIRING_MECHANISM,
-                OFItems.CRYSTALIZED_HEART,
-                OFItems.MAGNETISED_ENHANCEMENTS,
+                OFItems.CRYSTALLIZED_HEART,
+                OFItems.MOMENTUM_GAUNTLET,
                 OFItems.LUCKY_TACKLEBOX,
                 OFItems.SLIMY_SHIELD,
-                OFItems.STALKERS_GLOVES
+                OFItems.STALKER_GLOVES,
+                OFItems.STONE_BULLET,
+                OFItems.IRON_BULLET,
+                OFItems.PRECISION_BULLET,
+                OFItems.SHOT_STONE_BULLET,
+                OFItems.SHOT_IRON_BULLET,
+                OFItems.SHOT_PRECISION_BULLET,
+                OFItems.MUNITIONS_BOX,
+                OFItems.SPECTRAL_GOGGLES,
+                OFItems.ECTOPLASM,
+                OFItems.CURSED_RING,
+                OFItems.SAKE,
+                OFItems.WATER_WALKERS,
+                OFItems.FIREPROOF_SHOES,
+                OFItems.COMBO_BOOTS,
+                OFItems.FUR,
+                OFItems.REPAIR_KIT,
+                OFItems.BUG_BITS,
+                OFItems.KNOCKBACK_SPORES
         );
 
         this.handheldItem(
@@ -61,7 +79,8 @@ public class OFItemModelProvider extends SinewItemModelProvider {
                 OFItems.LAPIS_LAZULI_SHOVEL,
                 OFItems.LAPIS_LAZULI_HOE,
                 OFItems.TERROR_LEG,
-                OFItems.FRIED_TERROR_LEG
+                OFItems.FRIED_TERROR_LEG,
+                OFItems.SAWBLADE
         );
 
         for (Item item : BuiltInRegistries.ITEM) {

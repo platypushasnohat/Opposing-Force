@@ -1,0 +1,39 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "equipment",
+  "key": {
+    "F": {
+      "item": "minecraft:firework_rocket"
+    },
+    "A": {
+      "item": "minecraft:arrow"
+    },
+    "P": {
+      "item": "opposing_force:power_cell"
+    },
+    "M": {
+      "item": "minecraft:mud"
+    },
+    "C": {
+      "item": "opposing_force:acid_charge"
+    },
+    "B": {
+      "item": "opposing_force:precision_bullet"
+    },
+    "S": {
+      "item": "minecraft:shulker_shell"
+    },
+    "G": {
+      "item": "minecraft:green_dye"
+    }
+  },
+  "pattern": [
+    "FAP",
+    "MCB",
+    "SGS"
+  ],
+  "result": {
+    "count": 1,
+    "id": "opposing_force:munitions_box"
+  }
+}

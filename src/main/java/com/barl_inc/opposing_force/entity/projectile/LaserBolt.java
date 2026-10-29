@@ -1,37 +1,26 @@
 package com.barl_inc.opposing_force.entity.projectile;
 
-import com.barl_inc.opposing_force.registry.OFDamageTypes;
 import com.barl_inc.opposing_force.registry.OFEntities;
 import com.barl_inc.opposing_force.registry.OFParticleTypes;
 import com.barl_inc.opposing_force.registry.OFSoundEvents;
-import com.platypushasnohat.sinew.utils.SinewSoundUtils;
-import net.minecraft.core.BlockPos;
-import net.minecraft.network.protocol.game.ClientboundAddEntityPacket;
-import net.minecraft.network.syncher.EntityDataAccessor;
-import net.minecraft.network.syncher.EntityDataSerializers;
-import net.minecraft.network.syncher.SynchedEntityData;
-import net.minecraft.sounds.SoundSource;
+import net.minecraft.core.particles.ParticleOptions;
+import net.minecraft.server.level.ServerLevel;
+import net.minecraft.sounds.SoundEvent;
 import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.LivingEntity;
-import net.minecraft.world.entity.projectile.Projectile;
 import net.minecraft.world.entity.projectile.ProjectileUtil;
-import net.minecraft.world.level.Explosion;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.enchantment.EnchantmentHelper;
 import net.minecraft.world.level.Level;
-import net.minecraft.world.phys.BlockHitResult;
 import net.minecraft.world.phys.EntityHitResult;
-import net.minecraft.world.phys.HitResult;
 import net.minecraft.world.phys.Vec3;
-import net.neoforged.neoforge.event.EventHooks;
 
+import javax.annotation.Nullable;
 import java.util.Arrays;
 
-public class LaserBolt extends Projectile {
-
-    private static final EntityDataAccessor<Float> DAMAGE = SynchedEntityData.defineId(LaserBolt.class, EntityDataSerializers.FLOAT);
-
-    private static final byte HIT_EFFECTS = 3;
+public class LaserBolt extends Bullet {
 
     private int pierceCount = 0;
 
@@ -42,99 +31,91 @@ public class LaserBolt extends Projectile {
         super(entityType, level);
     }
 
-    public LaserBolt(Level level, LivingEntity owner, double x, double y, double z) {
-        this(OFEntities.LASER_BOLT.get(), level);
+    public LaserBolt(EntityType<? extends LaserBolt> entityType, double x, double y, double z, Level level) {
+        this(entityType, level);
         this.setPos(x, y, z);
-        this.setOwner(owner);
+    }
+
+    public LaserBolt(LivingEntity shooter, Level level, ItemStack weapon) {
+        this(OFEntities.LASER_BOLT.get(), shooter.getX(), shooter.getEyeY() - 0.1F, shooter.getZ(), level);
+        this.setOwner(shooter);
+        if (weapon != null && level instanceof ServerLevel) {
+            this.firedFromWeapon = weapon.copy();
+        }
     }
 
     @Override
-    public void recreateFromPacket(ClientboundAddEntityPacket packet) {
-        super.recreateFromPacket(packet);
-        this.xRotO = this.getXRot();
-        this.yRotO = this.getYRot();
+    public boolean isNoGravity() {
+        return true;
     }
 
     @Override
-    protected void defineSynchedData(SynchedEntityData.Builder builder) {
-        builder.define(DAMAGE, 1.0F);
+    protected double getDefaultGravity() {
+        return 0.0D;
     }
 
-    public float getDamage() {
-        return this.entityData.get(DAMAGE);
+    @Nullable
+    @Override
+    protected ParticleOptions getTrailParticle() {
+        return OFParticleTypes.LASER_DUST.get();
     }
 
-    public void setDamage(float damage) {
-        this.entityData.set(DAMAGE, damage);
+    @Nullable
+    @Override
+    protected ParticleOptions getRingParticle() {
+        return null;
+    }
+
+    @Override
+    protected ParticleOptions getImpactParticle() {
+        return OFParticleTypes.LASER_IMPACT.get();
+    }
+
+    @Override
+    protected void spawnImpactParticles() {
+        super.spawnImpactParticles();
+        for (int i = 0; i < 3; i++) {
+            this.level().addParticle(OFParticleTypes.LASER_DUST.get(), this.getX(), this.getY() + 0.2F, this.getZ(), 0, 0, 0);
+        }
+    }
+
+    @Override
+    public void tickRotation() {
+        ProjectileUtil.rotateTowardsMovement(this, 1.0F);
     }
 
     @Override
     public void tick() {
         super.tick();
-        HitResult hitresult = ProjectileUtil.getHitResultOnMoveVector(this, this::canHitEntity);
-        if (hitresult.getType() != HitResult.Type.MISS && !EventHooks.onProjectileImpact(this, hitresult)) {
-            this.hitTargetOrDeflectSelf(hitresult);
-        }
-        this.checkInsideBlocks();
-
-        Vec3 deltaMovement = this.getDeltaMovement();
-        double x = this.getX() + deltaMovement.x;
-        double y = this.getY() + deltaMovement.y;
-        double z = this.getZ() + deltaMovement.z;
-        ProjectileUtil.rotateTowardsMovement(this, 1.0F);
-        this.setPos(x, y, z);
-
-        this.level().addParticle(OFParticleTypes.LASER_DUST.get(), this.getX(), this.getY() + 0.2F, this.getZ(), 0, 0, 0);
-        if (this.tickCount > 160 || this.getBlockY() > this.level().getMaxBuildHeight() + 30) {
-            if (!this.level().isClientSide) {
-                this.level().broadcastEntityEvent(this, HIT_EFFECTS);
-                this.playImpactSound(this.getX(), this.getY(), this.getZ());
-                this.discard();
-            }
-        }
         this.tickTrail();
     }
 
     @Override
     protected void onHitEntity(EntityHitResult result) {
         Entity entity = result.getEntity();
-        DamageSource damageSource = OFDamageTypes.causeLaserBoltDamage(this.level().registryAccess(), this.getOwner());
-        if (!this.level().isClientSide) {
-            if (entity.hurt(damageSource, this.getDamage())) {
+        float damage = this.getDamage();
+        DamageSource damageSource = this.getDamageSource();
+        ItemStack weapon = this.getWeaponItem();
+        if (!this.level().isClientSide && this.level() instanceof ServerLevel serverLevel) {
+            if (weapon != null) {
+                damage = EnchantmentHelper.modifyDamage(serverLevel, weapon, entity, damageSource, damage);
+            }
+            if (entity.hurt(damageSource, damage) && entity instanceof LivingEntity living) {
+                this.doKnockback(living, damageSource);
+                EnchantmentHelper.doPostAttackEffectsWithItemSource(serverLevel, living, damageSource, weapon);
                 this.pierceCount++;
                 this.setDamage(this.getDamage() * 0.66F);
-                this.playImpactSound(entity.getX(), entity.getY(), entity.getZ());
+                this.doImpactEffects(entity.getX(), entity.getY(), entity.getZ());
             }
-            this.level().broadcastEntityEvent(this, HIT_EFFECTS);
             if (this.pierceCount > 1) {
                 this.discard();
             }
         }
-        super.onHitEntity(result);
     }
 
     @Override
-    protected void onHitBlock(BlockHitResult result) {
-        super.onHitBlock(result);
-        BlockPos pos = result.getBlockPos();
-        if (!this.level().isClientSide) {
-            this.level().broadcastEntityEvent(this, HIT_EFFECTS);
-            this.playImpactSound(pos.getX(), pos.getY(), pos.getZ());
-            this.discard();
-        }
-    }
-
-    @Override
-    public void push(double x, double y, double z) {
-    }
-
-    @Override
-    public boolean ignoreExplosion(Explosion explosion) {
-        return true;
-    }
-
-    private void playImpactSound(double x, double y, double z) {
-        this.level().playSound(null, x, y, z, OFSoundEvents.LASER_BOLT_IMPACT.get(), SoundSource.NEUTRAL, 1.0F, SinewSoundUtils.randomizePitch(this.level()));
+    protected SoundEvent getImpactSound() {
+        return OFSoundEvents.LASER_BOLT_IMPACT.get();
     }
 
     private void tickTrail() {
@@ -161,15 +142,5 @@ public class LaserBolt extends Projectile {
 
     public boolean hasTrail() {
         return this.trailPointer != -1;
-    }
-
-    @Override
-    public void handleEntityEvent(byte id) {
-        if (id == HIT_EFFECTS) {
-            this.level().addParticle(OFParticleTypes.LASER_IMPACT.get(), this.getX(), this.getY() + 0.2F, this.getZ(), 0, 0, 0);
-            for (int i = 0; i < 3; i++) {
-                this.level().addParticle(OFParticleTypes.LASER_DUST.get(), this.getX(), this.getY() + 0.2F, this.getZ(), 0, 0, 0);
-            }
-        }
     }
 }

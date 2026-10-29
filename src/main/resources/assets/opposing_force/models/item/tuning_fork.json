@@ -1,0 +1,29 @@
+{
+  "parent": "item/handheld",
+  "loader": "neoforge:separate_transforms",
+  "textures": {
+    "layer0": "opposing_force:item/tuning_fork_item"
+  },
+  "base": {
+    "parent": "opposing_force:item/tuning_fork_handheld"
+  },
+  "perspectives": {
+    "gui": {
+      "parent": "opposing_force:item/tuning_fork_gui"
+    },
+    "fixed": {
+      "parent": "opposing_force:item/tuning_fork_gui"
+    },
+    "ground": {
+      "parent": "opposing_force:item/tuning_fork_gui"
+    }
+  },
+  "overrides": [
+    {
+      "predicate": {
+        "charging": 1
+      },
+      "model": "opposing_force:item/tuning_fork_charging"
+    }
+  ]
+}

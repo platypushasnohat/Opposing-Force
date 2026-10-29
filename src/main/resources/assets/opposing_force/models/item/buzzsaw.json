@@ -1,0 +1,29 @@
+{
+  "parent": "item/handheld",
+  "loader": "neoforge:separate_transforms",
+  "textures": {
+    "layer0": "opposing_force:item/buzzsaw"
+  },
+  "base": {
+    "parent": "opposing_force:item/buzzsaw_handheld"
+  },
+  "perspectives": {
+    "gui": {
+      "parent": "opposing_force:item/buzzsaw_gui"
+    },
+    "fixed": {
+      "parent": "opposing_force:item/buzzsaw_gui"
+    },
+    "ground": {
+      "parent": "opposing_force:item/buzzsaw_gui"
+    }
+  },
+  "overrides": [
+    {
+      "predicate": {
+        "active": 1
+      },
+      "model": "opposing_force:item/buzzsaw_active"
+    }
+  ]
+}

@@ -1,14 +1,8 @@
 package com.barl_inc.opposing_force.client.render.item;
 
 import com.barl_inc.opposing_force.OpposingForce;
-import com.barl_inc.opposing_force.client.model.item.BlasterModel;
-import com.barl_inc.opposing_force.client.model.item.LeitmotifModel;
-import com.barl_inc.opposing_force.client.model.item.ScatterBlasterModel;
-import com.barl_inc.opposing_force.client.model.item.TriBlasterModel;
-import com.barl_inc.opposing_force.item.BlasterItem;
-import com.barl_inc.opposing_force.item.LeitmotifItem;
-import com.barl_inc.opposing_force.item.ScatterBlasterItem;
-import com.barl_inc.opposing_force.item.TriBlasterItem;
+import com.barl_inc.opposing_force.client.model.item.*;
+import com.barl_inc.opposing_force.item.ranged.*;
 import com.barl_inc.opposing_force.registry.OFItems;
 import com.barl_inc.opposing_force.registry.OFModelLayers;
 import com.mojang.blaze3d.vertex.PoseStack;
@@ -40,6 +34,9 @@ public class OFItemRenderer extends BlockEntityWithoutLevelRenderer {
 
     public static final LeitmotifModel LEITMOTIF_MODEL = new LeitmotifModel(Minecraft.getInstance().getEntityModels().bakeLayer(OFModelLayers.LEITMOTIF));
     public static final ResourceLocation LEITMOTIF_TEXTURE = OpposingForce.location("textures/item/leitmotif.png");
+
+    public static final BoomstickModel BOOMSTICK_MODEL = new BoomstickModel(Minecraft.getInstance().getEntityModels().bakeLayer(OFModelLayers.BOOMSTICK));
+    public static final ResourceLocation BOOMSTICK_TEXTURE = OpposingForce.location("textures/item/boomstick.png");
 
     public OFItemRenderer() {
         super(Minecraft.getInstance().getBlockEntityRenderDispatcher(), Minecraft.getInstance().getEntityModels());
@@ -96,6 +93,24 @@ public class OFItemRenderer extends BlockEntityWithoutLevelRenderer {
                 LEITMOTIF_MODEL.renderToBuffer(poseStack, ItemRenderer.getFoilBuffer(buffer, RenderType.entityCutout(LEITMOTIF_TEXTURE), false, true), packedLight, packedOverlay, 0xFFFFFF);
             }
             poseStack.popPose();
+        }
+        if (stack.is(OFItems.CRACKSHOT.get())) {
+            CrackshotModel.renderItem(player, stack, displayContext, poseStack, buffer, packedLight, packedOverlay, ageInTicks);
+        }
+        if (stack.is(OFItems.JAEGER.get())) {
+            JaegerModel.renderItem(player, stack, displayContext, poseStack, buffer, packedLight, packedOverlay, ageInTicks);
+        }
+        if (stack.is(OFItems.BOOMSTICK.get())) {
+            poseStack.pushPose();
+            BOOMSTICK_MODEL.setupAnim(player, (BoomstickItem) stack.getItem(), stack, displayContext, ageInTicks);
+            BOOMSTICK_MODEL.renderToBuffer(poseStack, buffer.getBuffer(RenderType.entityCutout(BOOMSTICK_TEXTURE)), packedLight, packedOverlay, 0xFFFFFF);
+            if (stack.hasFoil()) {
+                BOOMSTICK_MODEL.renderToBuffer(poseStack, ItemRenderer.getFoilBuffer(buffer, RenderType.entityCutout(BOOMSTICK_TEXTURE), false, true), packedLight, packedOverlay, 0xFFFFFF);
+            }
+            poseStack.popPose();
+        }
+        if (stack.is(OFItems.GORLOFF.get())) {
+            GorloffModel.renderItem(player, stack, displayContext, poseStack, buffer, packedLight, packedOverlay, ageInTicks);
         }
     }
 }

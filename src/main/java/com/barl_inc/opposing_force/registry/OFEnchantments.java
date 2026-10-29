@@ -7,5 +7,5 @@ import net.minecraft.world.item.enchantment.Enchantment;
 
 public class OFEnchantments {
 
-    public static final ResourceKey<Enchantment> MAGIC_PROTECTION = ResourceKey.create(Registries.ENCHANTMENT, OpposingForce.location("magic_protection"));
+    public static final ResourceKey<Enchantment> MAGIC_ATTUNEMENT = ResourceKey.create(Registries.ENCHANTMENT, OpposingForce.location("magic_attunement"));
 }

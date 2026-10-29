@@ -2,6 +2,7 @@ package com.barl_inc.opposing_force.mixins;
 
 import com.barl_inc.opposing_force.config.OFConfig;
 import com.barl_inc.opposing_force.registry.OFSoundEvents;
+import com.platypushasnohat.sinew.tags.SinewDamageTypeTags;
 import com.platypushasnohat.sinew.utils.SinewSoundUtils;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.particles.ParticleTypes;
@@ -126,7 +127,7 @@ public abstract class ZombieMixin extends Monster {
                 if (target == null && source.getEntity() instanceof LivingEntity) {
                     target = (LivingEntity) source.getEntity();
                 }
-                if (target != null && this.opposingForce$isLeader() && (double) this.getRandom().nextFloat() < this.getAttributeValue(Attributes.SPAWN_REINFORCEMENTS_CHANCE) && this.level().getGameRules().getBoolean(GameRules.RULE_DOMOBSPAWNING)) {
+                if (!source.is(SinewDamageTypeTags.IS_LAYERED) && target != null && this.opposingForce$isLeader() && (double) this.getRandom().nextFloat() < this.getAttributeValue(Attributes.SPAWN_REINFORCEMENTS_CHANCE) && this.level().getGameRules().getBoolean(GameRules.RULE_DOMOBSPAWNING)) {
                     int xFloor = Mth.floor(this.getX());
                     int yFloor = Mth.floor(this.getY());
                     int zFloor = Mth.floor(this.getZ());

@@ -5,7 +5,11 @@ import com.barl_inc.opposing_force.datagen.client.OFItemModelProvider;
 import com.barl_inc.opposing_force.datagen.client.OFLanguageProvider;
 import com.barl_inc.opposing_force.datagen.client.OFSoundDefinitionsProvider;
 import com.barl_inc.opposing_force.datagen.server.*;
+import com.barl_inc.opposing_force.debug.OFDebugItems;
 import com.barl_inc.opposing_force.registry.*;
+import com.barl_inc.opposing_force.registry.misc.OFClientCompat;
+import com.barl_inc.opposing_force.registry.misc.OFCompat;
+import com.barl_inc.opposing_force.registry.properties.OFArmorMaterials;
 import com.barl_inc.opposing_force.utils.ClientProxy;
 import com.barl_inc.opposing_force.utils.CommonProxy;
 import com.mojang.logging.LogUtils;
@@ -46,8 +50,9 @@ public class OpposingForce {
         OFParticleTypes.PARTICLE_TYPE.register(modEventBus);
         OFSoundEvents.SOUND_EVENT.register(modEventBus);
         OFDataComponents.DATA_COMPONENTS.register(modEventBus);
-        OFLootModifiers.LOOT_MODIFIERS.register(modEventBus);
         OFCreativeTabs.CREATIVE_MODE_TAB.register(modEventBus);
+        OFDebugItems.register(modEventBus);
+        modEventBus.addListener(OFMobVariants::registerDatapackRegistries);
         modEventBus.addListener(this::commonSetup);
         modEventBus.addListener(this::clientSetup);
         modEventBus.addListener(this::dataSetup);
@@ -80,6 +85,7 @@ public class OpposingForce {
         generator.addProvider(server, new OFItemTagsProvider(output, provider, blockTags.contentsGetter(), helper));
         generator.addProvider(server, new OFBiomeTagsProvider(output, provider, helper));
         generator.addProvider(server, new OFEntityTypeTagsProvider(output, provider, helper));
+        generator.addProvider(server, new OFDataMapProvider(output, provider));
 
         generator.addProvider(client, new OFItemModelProvider(output, helper));
         generator.addProvider(client, new OFSoundDefinitionsProvider(output, helper));

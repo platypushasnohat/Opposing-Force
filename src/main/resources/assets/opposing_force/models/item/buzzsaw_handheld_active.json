@@ -1,0 +1,40 @@
+{
+	"format_version": "1.9.0",
+	"credit": "Made with Blockbench",
+	"parent": "item/handheld",
+	"textures": {
+		"layer0": "opposing_force:item/buzzsaw_huge_active",
+		"layer1": "opposing_force:item/buzzsaw_huge_glow"
+	},
+	"display": {
+		"thirdperson_righthand": {
+			"rotation": [0, 90, -30],
+			"translation": [0, 1, -10],
+			"scale": [2, 2, 0.85]
+		},
+		"thirdperson_lefthand": {
+			"rotation": [0, -90, 30],
+			"translation": [0, 1, -10],
+			"scale": [2, 2, 0.85]
+		},
+		"firstperson_righthand": {
+			"rotation": [-30, 90, 0],
+			"translation": [2, 4, -5],
+			"scale": [1.5, 1.5, 0.68]
+		},
+		"firstperson_lefthand": {
+			"rotation": [-30, -90, 0],
+			"translation": [2, 4, -5],
+			"scale": [1.5, 1.5, 0.68]
+		}
+	},
+	"loader": "neoforge:item_layers",
+	"neoforge_data": {
+		"layers": {
+			"1": {
+				"block_light": 15,
+				"sky_light": 15
+			}
+		}
+	}
+}

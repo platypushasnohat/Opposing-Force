@@ -1,0 +1,107 @@
+package com.barl_inc.opposing_force.item.base;
+
+import com.barl_inc.opposing_force.item.utils.OFTooltips;
+import com.barl_inc.opposing_force.registry.OFEnchantments;
+import com.barl_inc.opposing_force.registry.datapack.tags.OFItemTags;
+import com.platypushasnohat.sinew.item.SinewItemUtils;
+import it.unimi.dsi.fastutil.objects.Object2IntMap;
+import net.minecraft.core.component.DataComponents;
+import net.minecraft.network.chat.Component;
+import net.minecraft.server.level.ServerLevel;
+import net.minecraft.tags.TagKey;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.item.Item;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.TooltipFlag;
+import net.minecraft.world.item.enchantment.EnchantmentEffectComponents;
+import net.minecraft.world.item.enchantment.EnchantmentHelper;
+import net.minecraft.world.item.enchantment.ItemEnchantments;
+
+import java.util.List;
+import java.util.Map;
+
+public abstract class MagicWeaponItem extends Item {
+
+    private static final Map<TagKey<Item>, TagKey<Item>> MANA_TYPES = Map.of(
+            OFItemTags.CONSUMES_BASIC_MANA, OFItemTags.BASIC_MANA
+    );
+
+    public MagicWeaponItem(Properties properties) {
+        super(properties);
+    }
+
+    public int getManaCost(ItemStack weapon) {
+        return 1;
+    }
+
+    public boolean isMana(ItemStack weapon, ItemStack stack) {
+        return !stack.isEmpty() && MANA_TYPES.entrySet().stream().anyMatch(entry -> weapon.is(entry.getKey()) && stack.is(entry.getValue()));
+    }
+
+    public int countMana(Player player, ItemStack weapon) {
+        int count = 0;
+        for (int i = 0; i < player.getInventory().getContainerSize(); i++) {
+            ItemStack stack = player.getInventory().getItem(i);
+            if (this.isMana(weapon, stack)) {
+                count += stack.getCount();
+            }
+        }
+        return count;
+    }
+
+    public boolean hasMana(Player player, ItemStack weapon) {
+        return player.hasInfiniteMaterials() || this.countMana(player, weapon) >= (EnchantmentHelper.has(weapon, EnchantmentEffectComponents.AMMO_USE) ? 1 : this.getManaCost(weapon));
+    }
+
+    public void consumeMana(Player player, ItemStack weapon) {
+        this.consumeMana(player, weapon, this.getManaCost(weapon));
+    }
+
+    public void consumeMana(Player player, ItemStack weapon, int amount) {
+        if (!player.hasInfiniteMaterials() && player.level() instanceof ServerLevel serverLevel) {
+            int remaining = 0;
+            int cost = EnchantmentHelper.processAmmoUse(serverLevel, weapon, weapon, amount);
+            for (int i = 0; i < cost; i++) {
+                if (SinewItemUtils.shouldConsumeMana(player, weapon)) {
+                    remaining++;
+                }
+            }
+            remaining = this.consumeFrom(player.getOffhandItem(), weapon, remaining);
+            for (int i = 0; i < player.getInventory().getContainerSize() && remaining > 0; i++) {
+                remaining = this.consumeFrom(player.getInventory().getItem(i), weapon, remaining);
+            }
+        }
+    }
+
+    public int getProjectileCount(Player player, ItemStack weapon, int count) {
+        return player.level() instanceof ServerLevel serverLevel ? EnchantmentHelper.processProjectileCount(serverLevel, weapon, player, count) : count;
+    }
+
+    public int getAttunement(ItemStack weapon) {
+        return weapon.getOrDefault(DataComponents.ENCHANTMENTS, ItemEnchantments.EMPTY).entrySet().stream().filter(entry -> entry.getKey().is(OFEnchantments.MAGIC_ATTUNEMENT)).mapToInt(Object2IntMap.Entry::getIntValue).sum();
+    }
+
+    @Override
+    public void appendHoverText(ItemStack stack, TooltipContext context, List<Component> tooltipComponents, TooltipFlag tooltipFlag) {
+        super.appendHoverText(stack, context, tooltipComponents, tooltipFlag);
+        if (stack.is(OFItemTags.CONSUMES_BASIC_MANA)) {
+            tooltipComponents.add(OFTooltips.description("item.opposing_force.tooltip.uses_basic_mana"));
+        }
+    }
+
+    @Override
+    public boolean isEnchantable(ItemStack stack) {
+        return stack.getCount() == 1;
+    }
+
+    @Override
+    public int getEnchantmentValue() {
+        return 10;
+    }
+
+    private int consumeFrom(ItemStack stack, ItemStack weapon, int remaining) {
+        int taken = this.isMana(weapon, stack) ? Math.min(remaining, stack.getCount()) : 0;
+        stack.shrink(taken);
+        return remaining - taken;
+    }
+}

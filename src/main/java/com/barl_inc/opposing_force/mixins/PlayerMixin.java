@@ -1,27 +1,25 @@
 package com.barl_inc.opposing_force.mixins;
 
-import com.barl_inc.opposing_force.registry.OFItems;
-import com.barl_inc.opposing_force.registry.OFParticleTypes;
-import net.minecraft.server.level.ServerLevel;
-import net.minecraft.util.Mth;
+import com.barl_inc.opposing_force.debug.KnightsoulItem;
+import net.minecraft.world.entity.EntityType;
+import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.level.Level;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
 @Mixin(Player.class)
-public abstract class PlayerMixin {
+public abstract class PlayerMixin extends LivingEntity {
 
-    @Inject(method = "sweepAttack", at = @At(value = "HEAD"), cancellable = true)
-    public void opposingForce$replaceSweepParticle(CallbackInfo ci) {
-        Player player = (Player) (Object) this;
-        if (player.getMainHandItem().is(OFItems.LASER_BLADE.get())) {
-            double d0 = -Mth.sin(player.getYRot() * Mth.DEG_TO_RAD);
-            double d1 = Mth.cos(player.getYRot() * Mth.DEG_TO_RAD);
-            if (player.level() instanceof ServerLevel serverLevel) {
-                serverLevel.sendParticles(OFParticleTypes.LASER_SWEEP.get(), player.getX() + d0, player.getY(0.5F), player.getZ() + d1, 0, d0, 0.0F, d1, 0.0F);
-            }
+    protected PlayerMixin(EntityType<? extends LivingEntity> entityType, Level level) {
+        super(entityType, level);
+    }
+
+    @Inject(at = @At("HEAD"), method = "disableShield", cancellable = true)
+    private void opposingForce$disableShield(CallbackInfo ci) {
+        if (this.getUseItem().getItem() instanceof KnightsoulItem) {
             ci.cancel();
         }
     }

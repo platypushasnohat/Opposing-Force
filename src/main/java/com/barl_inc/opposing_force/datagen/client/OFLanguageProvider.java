@@ -1,6 +1,7 @@
 package com.barl_inc.opposing_force.datagen.client;
 
 import com.barl_inc.opposing_force.OpposingForce;
+import com.barl_inc.opposing_force.debug.OFDebugItems;
 import com.barl_inc.opposing_force.registry.*;
 import com.platypushasnohat.sinew.datagen.client.SinewLanguageProvider;
 import net.minecraft.data.PackOutput;
@@ -17,6 +18,8 @@ public class OFLanguageProvider extends SinewLanguageProvider {
         OFBlocks.BLOCK_TRANSLATIONS.forEach(this::forBlock);
         OFItems.ITEM_TRANSLATIONS.forEach(this::forItem);
         OFEntities.ENTITY_TRANSLATIONS.forEach(this::forEntity);
+
+        this.add(OFEntities.GRELL_CLONE.get(), "Grell");
 
         this.addSound(OFSoundEvents.DICER_HURT, "Dicer hurts");
         this.addSound(OFSoundEvents.DICER_DEATH, "Dicer dies");
@@ -63,26 +66,80 @@ public class OFLanguageProvider extends SinewLanguageProvider {
 
         this.addSound(OFSoundEvents.ZOMBIE_REINFORCEMENT, "Zombie summons reinforcement");
 
+        this.addSound(OFSoundEvents.BULLET_IMPACT, "Bullet impacts");
+
+        this.addSound(OFSoundEvents.GUN_SHOOT, "Gun fires");
+        this.addSound(OFSoundEvents.GUN_SHOOT_SHORT, "Gun fires fast");
+        this.addSound(OFSoundEvents.GUN_WIND_DOWN, "Gun winds down");
+        this.addSound(OFSoundEvents.GUN_WIND_UP, "Gun winds up");
+
+        this.addSound(OFSoundEvents.BUZZSAW_START, "Buzzsaw starts sawing");
+        this.addSound(OFSoundEvents.BUZZSAW_LOOP, "Buzzsaw saws");
+        this.addSound(OFSoundEvents.BUZZSAW_END, "Buzzsaw stops sawing");
+
         this.add(OFItems.TRI_BLASTER.get(), "Tri-Blaster");
 
         this.add(OFItems.DISABLED_LASER_BLADE.get(), "Laser Blade");
+        this.add(OFItems.DISABLED_CURSED_RINGLINE.get(), "Cursed Ringline");
 
         this.add(OFItems.FILLET_BUCKET.get(), "Bucket of Fillet");
 
-        this.add(OFItems.STALKERS_GLOVES.get(), "Stalker's Gloves");
+        this.add("item.opposing_force.tooltip.damage", "%s Damage");
+        this.add("item.opposing_force.tooltip.multi_damage", "%sx%s Damage");
+        this.add("item.opposing_force.tooltip.uses_mud", "Uses Mud as ammo");
+        this.add("item.opposing_force.tooltip.requires_power_cell", "Requires a Power Cell to operate");
+        this.add("item.opposing_force.tooltip.uses_bullets", "Uses Bullets as ammo");
+        this.add("item.opposing_force.tooltip.uses_basic_mana", "Uses Basic Mana");
+        this.add("item.opposing_force.tooltip.basic_mana", "Basic Mana");
+
+        this.add("item.opposing_force.power_cell.description", "Refill with Redstone Dust");
+        this.add("item.opposing_force.laser_blade.description", "Right-click to throw");
+        this.add("item.opposing_force.spectral_shield.description", "Blocks up to six hits from any direction");
+        this.add("item.opposing_force.spectral_cleaver.description", "Summons a homing soul on hit");
+        this.add("item.opposing_force.chitin_lance.description", "Hold right-click to charge a dash");
+        this.add("item.opposing_force.buzzsaw.description", "Hold right-click to activate saw");
+        this.add("item.opposing_force.tooltip.when_fired", "When fired:");
+        this.add("item.opposing_force.tooltip.when_cast", "When cast:");
+        this.add("item.opposing_force.tooltip.when_thrown", "When thrown:");
+        this.add("item.opposing_force.tooltip.when_used_as_ammo", "When used as ammo:");
+        this.add("item.opposing_force.tuning_fork.description", "Melee hits produce sound waves");
+        this.add("item.opposing_force.tuning_fork.description.two", "Right click to charge a sound wave");
+        this.add("item.opposing_force.acid_charge.description", "Throwable");
+        this.add("item.opposing_force.ectoplasm.description", "Throwable");
+        this.add("item.opposing_force.knockback_spores.description", "Knocks entities away");
+        this.add("item.opposing_force.repair_kit.description", "Right click to repair all items in your inventory");
+
+        this.add("item.opposing_force.bullet.damage", "x%s Damage");
+        this.add("item.opposing_force.bullet.spread", "x%s Spread");
+        this.add("item.opposing_force.bullet.velocity", "x%s Velocity");
 
         this.add("item.opposing_force.powered_item.power", "Power: %s / %s");
 
         this.add("item.opposing_force.relic_feather.description", "+Slow Falling");
-        this.add("item.opposing_force.fiery_carapace.description", "+Fire Protection I");
-        this.add("item.opposing_force.magnetised_enhancements.description", "+Mining Momentum");
-        this.add("item.opposing_force.slimy_shield.description.shielding", "+Slimy Shielding");
-        this.add("item.opposing_force.stalkers_gloves.description", "+First Hit Bonus");
+        this.add("item.opposing_force.momentum_gauntlet.description", "+Mining Momentum");
+        this.add("item.opposing_force.slimy_shield.description", "+Slimy Shielding");
+        this.add("item.opposing_force.stalker_gloves.description", "+30% Initial Damage");
+        this.add("item.opposing_force.water_walking.description", "+Water Walking");
+        this.add("item.opposing_force.lava_walking.description", "+Lava Walking");
 
-        this.add("item.opposing_force.crystalized_heart.description", "Grants +1 Charm Slots");
+        this.add("item.opposing_force.crystallized_heart.description", "+1 Charm Slot");
+        this.add("item.opposing_force.spectral_goggles.description", "Pierce the Veil...");
 
         this.add("enchantment.opposing_force.magic_protection", "Magic Protection");
-        this.add("enchantment.opposing_force.magic_protection.desc", "Reduces magic damage taken and shortens the duration of negative effects applied to the wearer.");
+        this.add("enchantment.opposing_force.magic_protection.desc", "Reduces magic damageMultiplier taken and shortens the duration of negative effects applied to the wearer.");
+
+        this.add("enchantment.opposing_force.frost_aspect", "Frost Aspect");
+        this.add("enchantment.opposing_force.frost_aspect.desc", "Inflicts freezing on hit");
+
+        this.add("enchantment.opposing_force.mana_thrifter", "Mana Thrifter");
+        this.add("enchantment.opposing_force.mana_thrifter.desc", "Magic weapons do not consume mana, but deal 33% less damage.");
+
+        this.add("enchantment.opposing_force.magic_attunement", "Magic Attunement");
+        this.add("enchantment.opposing_force.magic_attunement.desc", "Increases the potential of a magic weapon.");
+
+        this.add("enchantment.opposing_force.freeze", "Freeze");
+        this.add("enchantment.opposing_force.freeze.desc", "Inflicts freezing on hit");
+
         this.add("pack.opposing_force.protection_tweaks", "Opposing Force Protection Tweaks");
 
         this.add("jukebox_song.opposing_force.slayser", "ChipsTheCat - Slayser");
@@ -116,5 +173,30 @@ public class OFLanguageProvider extends SinewLanguageProvider {
         this.add("death.attack.saw_1", "%s was sawed into pieces");
         this.add("death.attack.saw_0.entity", "%s was sawed in half by %s");
         this.add("death.attack.saw_1.entity", "%s was sawed into pieces by %s");
+
+        this.add("death.attack.bullet", "%s was shot");
+        this.add("death.attack.bullet.player", "%s was shot by %s");
+        this.add("death.attack.bullet.item", "%s was shot by %s using %s");
+
+        this.add("death.attack.cursed_ring_0", "%s was killed with cursed magic");
+        this.add("death.attack.cursed_ring_1", "%s was hexed");
+        this.add("death.attack.cursed_ring_0.entity", "%s was killed with cursed magic by %s");
+        this.add("death.attack.cursed_ring_1.entity", "%s was hexed by %s");
+
+        this.add("death.attack.soul_0", "%s had their soul reaped");
+        this.add("death.attack.soul_1", "%s had their soul torn apart");
+        this.add("death.attack.soul_0.entity", "%s has their soul torn apart by %s");
+        this.add("death.attack.soul_1.entity", "%s was reaped %s");
+
+        this.add("death.attack.grell_bite", "%1$s was torn apart by %2$s");
+
+        this.add("death.attack.soundwave", "%s had their ears shattered");
+        this.add("death.attack.soundwave.player", "%s had their ears shattered by %s");
+
+        this.add(OFDebugItems.RINGMASTER.get(), "Ringmaster");
+        this.add(OFDebugItems.SOULCLEAVE.get(), "Soulcleave");
+        this.add(OFDebugItems.KNIGHTSOUL.get(), "Knightsoul");
+        this.add(OFDebugItems.SLIMEWARD.get(), "Slimeward");
+        this.add("item.opposing_force.tooltip.debug_item", "DEBUG ITEM");
     }
 }

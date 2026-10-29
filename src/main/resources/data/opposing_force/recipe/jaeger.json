@@ -1,0 +1,26 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "equipment",
+  "key": {
+    "F": {
+      "item": "opposing_force:firing_mechanism"
+    },
+    "C": {
+      "item": "minecraft:copper_ingot"
+    },
+    "I": {
+      "item": "minecraft:iron_ingot"
+    },
+    "G": {
+      "item": "opposing_force:crackshot"
+    }
+  },
+  "pattern": [
+    "GCC",
+    "FII"
+  ],
+  "result": {
+    "count": 1,
+    "id": "opposing_force:jaeger"
+  }
+}

@@ -107,7 +107,7 @@ public class ManiaTrip {
             double x = player.getX() + (RANDOM.nextDouble() - 0.5D) * 16.0D;
             double y = player.getY() + (RANDOM.nextDouble() - 0.5D) * 6.0D;
             double z = player.getZ() + (RANDOM.nextDouble() - 0.5D) * 16.0D;
-            minecraft.getSoundManager().play(new SimpleSoundInstance(sound, SoundSource.AMBIENT, 0.6F, 0.5F + RANDOM.nextFloat() * 1.5F, RANDOM, x, y, z));
+            minecraft.getSoundManager().play(new SimpleSoundInstance(sound, SoundSource.AMBIENT, 0.6F * getStrength(player, 0.0F), 0.5F + RANDOM.nextFloat() * 1.5F, RANDOM, x, y, z));
         }
     }
 

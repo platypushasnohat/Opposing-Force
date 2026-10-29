@@ -73,7 +73,7 @@ public class OFItems {
     public static final DeferredItem<Item> FILLET_BUCKET = registerItemNoLang("fillet_bucket", () -> new FilletBucketItem(new Item.Properties()));
 
     public static final DeferredItem<Item> PIPSQUEAK_SPAWN_EGG = registerSpawnEggItem("pipsqueak", OFEntities.PIPSQUEAK, 0x5d3d32, 0x9a2222);
-    public static final DeferredItem<Item> TUNING_BIDENT = registerItem("tuning_bident", () -> new TuningBidentItem(new Item.Properties().durability(1024).rarity(Rarity.UNCOMMON).attributes(TuningBidentItem.createAttributes())));
+    public static final DeferredItem<Item> TUNING_FORK = registerItem("tuning_fork", () -> new TuningForkItem(new Item.Properties().durability(1024).rarity(Rarity.UNCOMMON).attributes(TuningForkItem.createAttributes())));
 
     //mageslop
     public static final DeferredItem<Item> GRASPER_SPAWN_EGG = registerSpawnEggItem("grasper", OFEntities.GRASPER, 0x293c3b, 0xac8e16);

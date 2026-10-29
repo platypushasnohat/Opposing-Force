@@ -30,23 +30,23 @@ import java.util.List;
 import java.util.Map;
 import java.util.WeakHashMap;
 
-public class TuningBidentItem extends Item {
+public class TuningForkItem extends Item {
 
     private static final Map<Player, Attack> ATTACKS = new WeakHashMap<>();
 
-    public TuningBidentItem(Properties properties) {
+    public TuningForkItem(Properties properties) {
         super(properties);
     }
 
     public static ItemAttributeModifiers createAttributes() {
         return ItemAttributeModifiers.builder()
-                .add(Attributes.ATTACK_DAMAGE, new AttributeModifier(BASE_ATTACK_DAMAGE_ID, 6.5D, AttributeModifier.Operation.ADD_VALUE), EquipmentSlotGroup.MAINHAND)
+                .add(Attributes.ATTACK_DAMAGE, new AttributeModifier(BASE_ATTACK_DAMAGE_ID, 7.0D, AttributeModifier.Operation.ADD_VALUE), EquipmentSlotGroup.MAINHAND)
                 .add(Attributes.ATTACK_SPEED, new AttributeModifier(BASE_ATTACK_SPEED_ID, -2.8D, AttributeModifier.Operation.ADD_VALUE), EquipmentSlotGroup.MAINHAND)
                 .build();
     }
 
     private static float getDamageBonus(Player player) {
-        return Math.max(0.0F, (float) player.getAttributeValue(Attributes.ATTACK_DAMAGE) - 8.0F) / 4.0F;
+        return Math.max(0.0F, (float) player.getAttributeValue(Attributes.ATTACK_DAMAGE) - 8.0F) / 3.0F;
     }
 
     @Override
@@ -109,7 +109,7 @@ public class TuningBidentItem extends Item {
                     phase = 0;
                 }
                 Vec3 look = player.getLookAngle();
-                level.addFreshEntity(new Soundwave(level, player, Soundwave.Type.BIDENT, phase, getDamageBonus(player), player.getEyePosition().add(look.scale(0.8D)), look));
+                level.addFreshEntity(new Soundwave(level, player, Soundwave.Type.FORK, phase, getDamageBonus(player), player.getEyePosition().add(look.scale(0.8D)), look));
                 stack.hurtAndBreak(1, player, LivingEntity.getSlotForHand(player.getUsedItemHand()));
             }
             level.playSound(null, player.getX(), player.getY(), player.getZ(), SoundEvents.BELL_BLOCK, SoundSource.PLAYERS, 1.0F, 1.2F);
@@ -121,8 +121,8 @@ public class TuningBidentItem extends Item {
     @Override
     public void appendHoverText(ItemStack stack, TooltipContext context, List<Component> tooltipComponents, TooltipFlag tooltipFlag) {
         super.appendHoverText(stack, context, tooltipComponents, tooltipFlag);
-        tooltipComponents.add(OFTooltips.description("item.opposing_force.tuning_bident.description"));
-        tooltipComponents.add(OFTooltips.description("item.opposing_force.tuning_bident.description.two"));
+        tooltipComponents.add(OFTooltips.description("item.opposing_force.tuning_fork.description"));
+        tooltipComponents.add(OFTooltips.description("item.opposing_force.tuning_fork.description.two"));
     }
 
     private record Attack(boolean charged, boolean crit) {

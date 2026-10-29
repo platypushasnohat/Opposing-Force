@@ -1,6 +1,7 @@
 {
   "replace": false,
   "values": [
-    "opposing_force:cursed_ring"
+    "opposing_force:cursed_ring",
+    "opposing_force:mania"
   ]
 }

@@ -1,6 +1,7 @@
 {
   "replace": false,
   "values": [
-    "opposing_force:mana_thrifter"
+    "opposing_force:mana_thrifter",
+    "opposing_force:magic_attunement"
   ]
 }

@@ -12,6 +12,7 @@ import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.Rarity;
 import net.minecraft.world.item.SwordItem;
 import net.minecraft.world.item.component.Unbreakable;
 import net.neoforged.bus.api.IEventBus;
@@ -35,16 +36,18 @@ public class OFDebugItems {
             UUID.fromString("3562ab33-f01b-4801-aab5-807f3750ded1")
     );
 
-    public static final DeferredItem<Item> RINGMASTER = DEBUG_ITEM.register("ringmaster", () -> new RingmasterItem(new Item.Properties().rarity(OFDebugRarity.DEBUG.getValue()).fireResistant().stacksTo(1)));
-    public static final DeferredItem<Item> KNIGHTSOUL = DEBUG_ITEM.register("knightsoul", () -> new KnightsoulItem(new Item.Properties().rarity(OFDebugRarity.DEBUG.getValue()).fireResistant().stacksTo(1)));
+    public static final DeferredItem<Item> RINGMASTER = DEBUG_ITEM.register("ringmaster", () -> new RingmasterItem(new Item.Properties().rarity(OFDebugRarity.DEBUG.getValue()).fireResistant().stacksTo(1).fireResistant()));
+    public static final DeferredItem<Item> KNIGHTSOUL = DEBUG_ITEM.register("knightsoul", () -> new KnightsoulItem(new Item.Properties().rarity(OFDebugRarity.DEBUG.getValue()).fireResistant().stacksTo(1).fireResistant()));
     public static final DeferredItem<Item> SLIMEWARD = DEBUG_ITEM.register("slimeward", () -> new SlimewardItem(new Item.Properties().rarity(OFDebugRarity.DEBUG.getValue()).fireResistant().stacksTo(1), OFCurioDefinitions.SLIMY_SHIELD));
     public static final DeferredItem<Item> SOULCLEAVE = DEBUG_ITEM.register("soulcleave", () -> new SoulcleaveItem(OFItemTiers.SPECTRAL_CLEAVER, new Item.Properties().rarity(OFDebugRarity.DEBUG.getValue()).fireResistant().attributes(SwordItem.createAttributes(OFItemTiers.SPECTRAL_CLEAVER, 3.5F, -2.4F)).component(DataComponents.UNBREAKABLE, new Unbreakable(false))));
+    public static final DeferredItem<Item> MINDFUCK = DEBUG_ITEM.register("mindfuck", () -> new MindfuckItem(new Item.Properties().stacksTo(1).rarity(OFDebugRarity.DEBUG.getValue()).fireResistant()));
 
     private static final Map<DeferredItem<Item>, DeferredItem<Item>> UPGRADES = Map.of(
             OFItems.CURSED_RINGLINE, RINGMASTER,
             OFItems.SPECTRAL_CLEAVER, SOULCLEAVE,
             OFItems.SPECTRAL_SHIELD, KNIGHTSOUL,
-            OFItems.SLIMY_SHIELD, SLIMEWARD
+            OFItems.SLIMY_SHIELD, SLIMEWARD,
+            OFItems.MANIA, MINDFUCK
     );
 
     public static void register(IEventBus modEventBus) {

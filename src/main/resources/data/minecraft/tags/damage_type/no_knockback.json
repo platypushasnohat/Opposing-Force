@@ -5,6 +5,7 @@
     "opposing_force:laser_bolt",
     "opposing_force:acid",
     "opposing_force:bullet",
-    "opposing_force:soul"
+    "opposing_force:soul",
+    "opposing_force:mania"
   ]
 }

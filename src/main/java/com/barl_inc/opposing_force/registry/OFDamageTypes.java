@@ -9,6 +9,8 @@ import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.damagesource.DamageType;
 import net.minecraft.world.entity.Entity;
 
+import javax.annotation.Nullable;
+
 @SuppressWarnings("OptionalGetWithoutIsPresent")
 public class OFDamageTypes {
 
@@ -23,6 +25,7 @@ public class OFDamageTypes {
     public static final ResourceKey<DamageType> SOUL = ResourceKey.create(Registries.DAMAGE_TYPE, OpposingForce.location("soul"));
     public static final ResourceKey<DamageType> GRELL_BITE = ResourceKey.create(Registries.DAMAGE_TYPE, OpposingForce.location("grell_bite"));
     public static final ResourceKey<DamageType> SOUNDWAVE = ResourceKey.create(Registries.DAMAGE_TYPE, OpposingForce.location("soundwave"));
+    public static final ResourceKey<DamageType> MANIA = ResourceKey.create(Registries.DAMAGE_TYPE, OpposingForce.location("mania"));
 
     public static DamageSource causeLaserDamage(RegistryAccess registryAccess, Entity source) {
         return new RandomMessageDamageSource(registryAccess.registry(Registries.DAMAGE_TYPE).get().getHolderOrThrow(LASER), source, 1);
@@ -58,5 +61,9 @@ public class OFDamageTypes {
 
     public static DamageSource causeSoulDamage(RegistryAccess registryAccess, Entity soul, Entity source) {
         return new RandomMessageDamageSource(registryAccess.registry(Registries.DAMAGE_TYPE).get().getHolderOrThrow(SOUL), soul, source, 2);
+    }
+
+    public static DamageSource causeManiaDamage(RegistryAccess registryAccess, Entity brain, @Nullable Entity source) {
+        return new DamageSource(registryAccess.registry(Registries.DAMAGE_TYPE).get().getHolderOrThrow(MANIA), brain, source);
     }
 }

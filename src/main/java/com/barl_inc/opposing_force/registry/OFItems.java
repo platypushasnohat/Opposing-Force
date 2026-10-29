@@ -4,6 +4,7 @@ import com.barl_inc.opposing_force.OpposingForce;
 import com.barl_inc.opposing_force.item.*;
 import com.barl_inc.opposing_force.item.curios.*;
 import com.barl_inc.opposing_force.item.magic.CursedRinglineItem;
+import com.barl_inc.opposing_force.item.magic.ManiaItem;
 import com.barl_inc.opposing_force.item.melee.*;
 import com.barl_inc.opposing_force.item.ranged.*;
 import com.barl_inc.opposing_force.item.ranged.ammo.BulletComponent;
@@ -85,6 +86,7 @@ public class OFItems {
     public static final DeferredItem<Item> DISABLED_CURSED_RINGLINE = registerItemNoLang("disabled_cursed_ringline", () -> new DisabledItem(new Item.Properties().stacksTo(1)));
 
     public static final DeferredItem<Item> GRELL_SPAWN_EGG = registerSpawnEggItem("grell", OFEntities.GRELL, 0xe0aac4, 0x6a2d6b);
+    public static final DeferredItem<Item> MANIA = registerItem("mania", () -> new ManiaItem(new Item.Properties().durability(1024).rarity(Rarity.EPIC)));
 
     //cherry grove enemy section
     public static final DeferredItem<Item> PARASOUL_SPAWN_EGG = registerSpawnEggItem("parasoul", OFEntities.PARASOUL, 0xf08a3e, 0xde3ca5);

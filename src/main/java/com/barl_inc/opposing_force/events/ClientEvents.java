@@ -8,7 +8,9 @@ import com.barl_inc.opposing_force.client.particle.*;
 import com.barl_inc.opposing_force.client.render.entity.*;
 import com.barl_inc.opposing_force.client.render.entity.layer.SpectralShieldLayer;
 import com.barl_inc.opposing_force.client.render.item.OFItemExtensions;
+import com.barl_inc.opposing_force.client.render.shader.ManiaTrip;
 import com.barl_inc.opposing_force.client.render.shader.SpectralLensOverlay;
+import com.barl_inc.opposing_force.debug.OFDebugItems;
 import com.barl_inc.opposing_force.item.SpectralShieldItem;
 import com.barl_inc.opposing_force.item.base.GunItem;
 import com.barl_inc.opposing_force.item.ranged.ammo.BulletComponent;
@@ -34,6 +36,7 @@ import net.minecraft.client.renderer.entity.player.PlayerRenderer;
 import net.minecraft.client.resources.PlayerSkin;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.server.packs.resources.ResourceManagerReloadListener;
 import net.minecraft.util.Mth;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.entity.EquipmentSlot;
@@ -45,6 +48,7 @@ import net.neoforged.api.distmarker.Dist;
 import net.neoforged.bus.api.SubscribeEvent;
 import net.neoforged.fml.common.EventBusSubscriber;
 import net.neoforged.neoforge.client.event.*;
+import net.neoforged.neoforge.client.event.sound.PlaySoundEvent;
 import net.neoforged.neoforge.client.extensions.common.IClientItemExtensions;
 import net.neoforged.neoforge.client.extensions.common.RegisterClientExtensionsEvent;
 import net.neoforged.neoforge.client.gui.VanillaGuiLayers;
@@ -94,6 +98,7 @@ public class ClientEvents {
         event.registerEntityRenderer(OFEntities.SHOCKWAVE.get(), NoopRenderer::new);
         event.registerEntityRenderer(OFEntities.GRELL_CLONE.get(), GrellRenderer::new);
         event.registerEntityRenderer(OFEntities.SOUNDWAVE.get(), SoundwaveRenderer::new);
+        event.registerEntityRenderer(OFEntities.MANIA_BRAIN.get(), ManiaBrainRenderer::new);
     }
 
     @SubscribeEvent
@@ -169,6 +174,7 @@ public class ClientEvents {
         event.registerItem(OFItemExtensions.itemExtensions, OFItems.JAEGER.get());
         event.registerItem(OFItemExtensions.itemExtensions, OFItems.BOOMSTICK.get());
         event.registerItem(OFItemExtensions.itemExtensions, OFItems.GORLOFF.get());
+        event.registerItem(OFItemExtensions.itemExtensions, OFItems.MANIA.get());
 
         event.registerItem(new IClientItemExtensions() {
             @Override
@@ -247,6 +253,7 @@ public class ClientEvents {
     @SubscribeEvent
     public static void onClientTick(ClientTickEvent.Post event) {
         SpectralLensOverlay.tick();
+        ManiaTrip.tick();
     }
 
     //Spectral Shield BS below!!!
@@ -255,7 +262,7 @@ public class ClientEvents {
     public static void onPlayerPose(PlayerPoseEvent event) {
         LivingEntity entity = event.getEntity();
         Minecraft minecraft = Minecraft.getInstance();
-        if (SpectralShieldLayer.hasShields(entity) && !(entity == minecraft.player && minecraft.options.getCameraType().isFirstPerson())) {
+        if (SpectralShieldLayer.isShielding(entity) && !(entity == minecraft.player && minecraft.options.getCameraType().isFirstPerson())) {
             HumanoidModel<?> model = event.getHumanoidModel();
             float swing = Mth.cos((entity.tickCount + minecraft.getTimer().getGameTimeDeltaPartialTick(true)) * 0.6662F) * 0.25F;
             model.rightArm.xRot = swing;
@@ -309,5 +316,28 @@ public class ClientEvents {
             lines.add(OFTooltips.stat("item.opposing_force.bullet.velocity", bullet.velocityMultiplier()));
         }
         event.getToolTip().addAll(Math.min(1, event.getToolTip().size()), lines);
+    }
+
+    //mania
+    @SubscribeEvent
+    public static void onRenderGuiPre(RenderGuiEvent.Pre event) {
+        ManiaTrip.render(event.getPartialTick().getGameTimeDeltaPartialTick(false));
+    }
+
+    @SubscribeEvent
+    public static void onPlaySound(PlaySoundEvent event) {
+        if (event.getSound() != null && ManiaTrip.shouldDistort(event.getSound())) {
+            event.setSound(ManiaTrip.distort(event.getSound()));
+        }
+    }
+
+    @SubscribeEvent
+    public static void registerReloadListeners(RegisterClientReloadListenersEvent event) {
+        event.registerReloadListener((ResourceManagerReloadListener) manager -> ManiaTrip.reset());
+    }
+
+    @SubscribeEvent
+    public static void onComputeFov(ViewportEvent.ComputeFov event) {
+        event.setFOV(ManiaTrip.modifyFov(event.getFOV(), (float) event.getPartialTick()));
     }
 }

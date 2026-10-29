@@ -23,10 +23,12 @@ public class BrickModel extends SinewEntityModel<Brick> {
     @Override
     protected void setupAnimations(Brick entity, float limbSwing, float limbSwingAmount, float ageInTicks, float partialTicks, float netHeadYaw, float headPitch) {
         this.animateWalkSmooth(entity.walkAnimationState, BrickAnimations.WALK, limbSwing, limbSwingAmount, partialTicks);
+        this.animateWalkSmooth(entity.runAnimationState, BrickAnimations.RUN, limbSwing, limbSwingAmount, partialTicks);
         this.animateIdleSmooth(entity.idleAnimationState, BrickAnimations.IDLE, ageInTicks, partialTicks, limbSwingAmount);
         this.animateSmooth(entity.danceAnimationState, BrickAnimations.DANCE, ageInTicks, partialTicks);
         this.animateSmooth(entity.defendAnimationState, BrickAnimations.DEFEND, ageInTicks, partialTicks);
         this.animateSmooth(entity.meltAnimationState, BrickAnimations.MELT, ageInTicks, partialTicks);
+        this.animateSmooth(entity.hurtAnimationState, BrickAnimations.HIT_BLEND, ageInTicks, partialTicks);
     }
 
     public static LayerDefinition createBodyLayer() {

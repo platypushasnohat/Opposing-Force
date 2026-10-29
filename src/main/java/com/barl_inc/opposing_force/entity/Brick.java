@@ -1,5 +1,6 @@
 package com.barl_inc.opposing_force.entity;
 
+import com.barl_inc.opposing_force.OpposingForce;
 import com.barl_inc.opposing_force.entity.ai.goal.BrickAttackGoal;
 import com.barl_inc.opposing_force.entity.ai.goal.JukeboxDanceGoal;
 import com.barl_inc.opposing_force.registry.OFDamageTypes;
@@ -7,29 +8,37 @@ import com.barl_inc.opposing_force.registry.OFParticleTypes;
 import com.barl_inc.opposing_force.registry.OFSoundEvents;
 import com.barl_inc.opposing_force.registry.datapack.tags.OFEntityTypeTags;
 import com.platypushasnohat.sinew.client.animation.SmoothAnimationState;
+import com.platypushasnohat.sinew.entity.ai.control.UnrestrictedBodyRotationControl;
 import com.platypushasnohat.sinew.entity.base.AnimatedMonster;
 import net.minecraft.core.BlockPos;
 import net.minecraft.network.syncher.EntityDataAccessor;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.sounds.SoundEvent;
 import net.minecraft.util.Mth;
 import net.minecraft.util.RandomSource;
 import net.minecraft.world.damagesource.DamageSource;
+import net.minecraft.world.effect.MobEffectInstance;
+import net.minecraft.world.effect.MobEffects;
 import net.minecraft.world.entity.*;
+import net.minecraft.world.entity.ai.attributes.AttributeInstance;
+import net.minecraft.world.entity.ai.attributes.AttributeModifier;
 import net.minecraft.world.entity.ai.attributes.AttributeSupplier;
 import net.minecraft.world.entity.ai.attributes.Attributes;
-import net.minecraft.world.entity.ai.goal.FloatGoal;
-import net.minecraft.world.entity.ai.goal.LookAtPlayerGoal;
-import net.minecraft.world.entity.ai.goal.RandomLookAroundGoal;
-import net.minecraft.world.entity.ai.goal.WaterAvoidingRandomStrollGoal;
+import net.minecraft.world.entity.ai.control.BodyRotationControl;
+import net.minecraft.world.entity.ai.goal.*;
 import net.minecraft.world.entity.ai.goal.target.HurtByTargetGoal;
 import net.minecraft.world.entity.ai.goal.target.NearestAttackableTargetGoal;
+import net.minecraft.world.entity.ai.util.DefaultRandomPos;
+import net.minecraft.world.entity.ai.util.LandRandomPos;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.entity.projectile.Projectile;
 import net.minecraft.world.entity.projectile.ProjectileDeflection;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.ServerLevelAccessor;
 import net.minecraft.world.phys.Vec3;
+
+import java.util.List;
 
 public class Brick extends AnimatedMonster {
 
@@ -38,12 +47,16 @@ public class Brick extends AnimatedMonster {
     public static final int MELT_ANIMATION = 3;
 
     private static final EntityDimensions DEFENDING_DIMENSIONS = EntityDimensions.scalable(2.3F, 1.9F);
+    private static final ResourceLocation DEFENDING_ARMOR_MODIFIER_ID = OpposingForce.location("defending");
+    private static final AttributeModifier DEFENDING_ARMOR_MODIFIER = new AttributeModifier(DEFENDING_ARMOR_MODIFIER_ID, 8.0D, AttributeModifier.Operation.ADD_VALUE);
 
     private JukeboxDanceGoal<Brick> danceGoal;
 
+    public final SmoothAnimationState runAnimationState = new SmoothAnimationState();
     public final SmoothAnimationState danceAnimationState = new SmoothAnimationState();
     public final SmoothAnimationState defendAnimationState = new SmoothAnimationState(0.2F);
     public final SmoothAnimationState meltAnimationState = new SmoothAnimationState(1.0F);
+    public final SmoothAnimationState hurtAnimationState = new SmoothAnimationState(1.0F);
 
     public Brick(EntityType<? extends Brick> entityType, Level level) {
         super(entityType, level);
@@ -52,8 +65,8 @@ public class Brick extends AnimatedMonster {
 
     public static AttributeSupplier.Builder registerAttributes() {
         return Mob.createMobAttributes()
-                .add(Attributes.MAX_HEALTH, 90.0D)
-                .add(Attributes.ARMOR, 16.0D)
+                .add(Attributes.MAX_HEALTH, 100.0D)
+                .add(Attributes.ARMOR, 12.0D)
                 .add(Attributes.MOVEMENT_SPEED, 0.17F)
                 .add(Attributes.ATTACK_DAMAGE, 6.0D)
                 .add(Attributes.ATTACK_KNOCKBACK, 1.0D)
@@ -64,12 +77,13 @@ public class Brick extends AnimatedMonster {
     @Override
     protected void registerGoals() {
         this.goalSelector.addGoal(0, new FloatGoal(this));
-        this.goalSelector.addGoal(1, this.danceGoal = new JukeboxDanceGoal<>(this, DANCE_ANIMATION));
-        this.goalSelector.addGoal(2, new BrickAttackGoal(this));
-        this.goalSelector.addGoal(3, new WaterAvoidingRandomStrollGoal(this, 1.0D));
-        this.goalSelector.addGoal(4, new LookAtPlayerGoal(this, Player.class, 8.0F));
-        this.goalSelector.addGoal(4, new LookAtPlayerGoal(this, Mob.class, 8.0F));
-        this.goalSelector.addGoal(5, new RandomLookAroundGoal(this));
+        this.goalSelector.addGoal(1, new BrickPanicGoal(this, 1.5D));
+        this.goalSelector.addGoal(2, this.danceGoal = new JukeboxDanceGoal<>(this, DANCE_ANIMATION));
+        this.goalSelector.addGoal(3, new BrickAttackGoal(this));
+        this.goalSelector.addGoal(4, new WaterAvoidingRandomStrollGoal(this, 1.0D));
+        this.goalSelector.addGoal(5, new LookAtPlayerGoal(this, Player.class, 8.0F));
+        this.goalSelector.addGoal(5, new LookAtPlayerGoal(this, Mob.class, 8.0F));
+        this.goalSelector.addGoal(6, new RandomLookAroundGoal(this));
         this.targetSelector.addGoal(0, new NearestAttackableTargetGoal<>(this, Player.class, true));
         this.targetSelector.addGoal(1, new HurtByTargetGoal(this));
     }
@@ -102,6 +116,11 @@ public class Brick extends AnimatedMonster {
     }
 
     @Override
+    protected BodyRotationControl createBodyControl() {
+        return new UnrestrictedBodyRotationControl(this);
+    }
+
+    @Override
     public EntityDimensions getDefaultDimensions(Pose pose) {
         if (this.getAnimationState() == DEFEND_ANIMATION) {
             return DEFENDING_DIMENSIONS.scale(this.getAgeScale());
@@ -115,6 +134,20 @@ public class Brick extends AnimatedMonster {
             this.refreshDimensions();
         }
         super.onSyncedDataUpdated(key);
+    }
+
+    @Override
+    public void aiStep() {
+        super.aiStep();
+        if (!this.level().isClientSide) {
+            AttributeInstance attribute = this.getAttribute(Attributes.ARMOR);
+            if (attribute != null) {
+                attribute.removeModifier(DEFENDING_ARMOR_MODIFIER_ID);
+                if (this.getAnimationState() == DEFEND_ANIMATION) {
+                    attribute.addTransientModifier(DEFENDING_ARMOR_MODIFIER);
+                }
+            }
+        }
     }
 
     @Override
@@ -182,10 +215,12 @@ public class Brick extends AnimatedMonster {
         int state = this.getAnimationState();
         boolean outsideWater = !this.isInWaterOrBubble();
         this.idleAnimationState.animateWhen(outsideWater && state == 0, this.tickCount);
-        this.walkAnimationState.animateWhen(outsideWater && state == 0, this.tickCount);
+        this.walkAnimationState.animateWhen(outsideWater && state == 0 && !this.isSprinting(), this.tickCount);
+        this.runAnimationState.animateWhen(outsideWater && state == 0 && this.isSprinting(), this.tickCount);
         this.danceAnimationState.animateWhen(outsideWater && this.onGround() && state == DANCE_ANIMATION, this.tickCount);
         this.defendAnimationState.animateWhen(state == DEFEND_ANIMATION, this.tickCount);
         this.meltAnimationState.animateWhen(state == MELT_ANIMATION, this.tickCount);
+        this.hurtAnimationState.animateWhen(this.hurtTime > 0 && state != MELT_ANIMATION, this.tickCount);
     }
 
     @Override
@@ -213,5 +248,58 @@ public class Brick extends AnimatedMonster {
     @Override
     protected float getSoundVolume() {
         return 0.7F;
+    }
+
+    public static class BrickPanicGoal extends PanicGoal {
+
+        private final Brick brick;
+
+        public BrickPanicGoal(Brick brick, double speedModifier) {
+            super(brick, speedModifier);
+            this.brick = brick;
+        }
+
+        private List<LivingEntity> getNearbyMobs() {
+            return this.brick.level().getEntitiesOfClass(LivingEntity.class, this.brick.getBoundingBox().inflate(6.0D), entity -> entity != this.brick);
+        }
+
+        @Override
+        protected boolean shouldPanic() {
+            return this.brick.getAnimationState() != DEFEND_ANIMATION && super.shouldPanic();
+        }
+
+        @Override
+        protected boolean findRandomPosition() {
+            Vec3 vec3 = DefaultRandomPos.getPos(this.brick, 10, 4);
+            if (this.brick.getLastHurtByMob() != null) {
+                vec3 = LandRandomPos.getPosAway(this.brick, 10, 4, this.brick.getLastHurtByMob().position());
+            }
+            if (vec3 == null) {
+                return false;
+            } else {
+                this.posX = vec3.x;
+                this.posY = vec3.y;
+                this.posZ = vec3.z;
+                return true;
+            }
+        }
+
+        @Override
+        public void start() {
+            super.start();
+            for (LivingEntity entity : this.getNearbyMobs()) {
+                entity.addEffect(new MobEffectInstance(MobEffects.MOVEMENT_SLOWDOWN, 60, 1), this.brick);
+            }
+            if (!this.brick.level().isClientSide && this.brick.level() instanceof ServerLevel serverLevel) {
+                this.brick.spawnSporeParticles(serverLevel, 8);
+            }
+            this.brick.setSprinting(true);
+        }
+
+        @Override
+        public void stop() {
+            super.stop();
+            this.brick.setSprinting(false);
+        }
     }
 }

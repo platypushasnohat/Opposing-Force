@@ -79,13 +79,13 @@ public class BrickAttackGoal extends AttackGoal {
         else {
             Mob ally = this.getProtectedAlly(target);
             if (ally != null) {
-                if (this.pathCooldown <= 0) {
+                if (this.pathCooldown <= 0 && this.brick.distanceToSqr(ally) > ally.getBbWidth() * 0.5D) {
                     this.brick.getNavigation().moveTo(ally, 1.1D);
                     this.pathCooldown = 5;
                 }
             }
             else {
-                if (this.pathCooldown <= 0) {
+                if (this.pathCooldown <= 0 && distance > target.getBbWidth() * 0.5D) {
                     this.brick.getNavigation().moveTo(target, 1.1D);
                     this.pathCooldown = 5;
                 }

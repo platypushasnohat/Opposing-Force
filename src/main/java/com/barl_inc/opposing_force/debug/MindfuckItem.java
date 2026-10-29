@@ -42,13 +42,13 @@ public class MindfuckItem extends ManiaItem {
     }
 
     @Override
-    public boolean isElite(ItemStack stack) {
-        return true;
+    public String getAmmoTooltip() {
+        return "item.opposing_force.tooltip.no_ammo";
     }
 
     @Override
-    public int getShotCount() {
-        return 14;
+    public boolean isElite(ItemStack stack) {
+        return true;
     }
 
     @Override

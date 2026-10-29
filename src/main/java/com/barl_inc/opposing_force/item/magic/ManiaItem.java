@@ -2,6 +2,7 @@ package com.barl_inc.opposing_force.item.magic;
 
 import com.barl_inc.opposing_force.entity.projectile.ManiaBrain;
 import com.barl_inc.opposing_force.item.base.GunItem;
+import com.barl_inc.opposing_force.item.utils.OFTooltips;
 import com.barl_inc.opposing_force.registry.OFEnchantments;
 import com.barl_inc.opposing_force.registry.OFItems;
 import com.barl_inc.opposing_force.registry.OFSoundEvents;
@@ -11,12 +12,14 @@ import com.platypushasnohat.sinew.utils.SinewSoundUtils;
 import it.unimi.dsi.fastutil.objects.Object2IntMap;
 import net.minecraft.core.component.DataComponents;
 import net.minecraft.nbt.CompoundTag;
+import net.minecraft.network.chat.Component;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResultHolder;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.TooltipFlag;
 import net.minecraft.world.item.component.CustomData;
 import net.minecraft.world.item.enchantment.ItemEnchantments;
 import net.minecraft.world.level.Level;
@@ -107,8 +110,9 @@ public class ManiaItem extends GunItem {
     }
 
     @Override
-    public int getShotCount() {
-        return 4;
+    public void appendHoverText(ItemStack stack, TooltipContext context, List<Component> tooltipComponents, TooltipFlag tooltipFlag) {
+        tooltipComponents.add(OFTooltips.description(this.getAmmoTooltip()));
+        OFTooltips.addStats(tooltipComponents, "item.opposing_force.tooltip.when_fired", OFTooltips.damage(this.getDamage(), this.getShades(stack).size()));
     }
 
     @Override

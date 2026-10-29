@@ -18,6 +18,7 @@ public class OFCreativeTabs {
                     .displayItems((parameters, output) -> {
                         // spawn eggs
                         output.accept(OFItems.BEWILDER_SPAWN_EGG);
+                        output.accept(OFItems.BRICK_SPAWN_EGG);
                         output.accept(OFItems.DICER_SPAWN_EGG);
                         output.accept(OFItems.FILLET_SPAWN_EGG);
                         output.accept(OFItems.FURBALL_SPAWN_EGG);

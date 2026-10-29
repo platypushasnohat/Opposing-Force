@@ -23,6 +23,7 @@ public class OFModelLayers {
     public static final ModelLayerLocation PARASOUL = register("parasoul");
     public static final ModelLayerLocation GRELL = register("grell");
     public static final ModelLayerLocation PIPSQUEAK = register("pipsqueak");
+    public static final ModelLayerLocation BRICK = register("brick");
 
     public static final ModelLayerLocation LASER_BOLT = register("laser_bolt");
 

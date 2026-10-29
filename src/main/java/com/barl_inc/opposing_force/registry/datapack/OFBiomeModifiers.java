@@ -45,6 +45,7 @@ public class OFBiomeModifiers {
         addSpawn(context, "parasoul", OFBiomeTags.HAS_CHERRY_GROVE_MONSTERS, new MobSpawnSettings.SpawnerData(OFEntities.PARASOUL.get(), 47, 1, 1));
         addSpawn(context, "grell", OFBiomeTags.HAS_OVERWORLD_MONSTERS, new MobSpawnSettings.SpawnerData(OFEntities.GRELL.get(), 11, 1, 1));
         addSpawn(context, "pipsqueak", OFBiomeTags.HAS_OVERWORLD_MONSTERS, new MobSpawnSettings.SpawnerData(OFEntities.PIPSQUEAK.get(), 18, 1, 2));
+        addSpawn(context, "brick", OFBiomeTags.HAS_OVERWORLD_MONSTERS, new MobSpawnSettings.SpawnerData(OFEntities.BRICK.get(), 25, 1, 2));
     }
 
     @SafeVarargs

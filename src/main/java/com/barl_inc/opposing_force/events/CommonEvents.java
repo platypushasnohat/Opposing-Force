@@ -35,8 +35,10 @@ import net.minecraft.world.entity.monster.Spider;
 import net.minecraft.world.entity.npc.VillagerTrades;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.entity.projectile.Projectile;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.level.levelgen.Heightmap;
+import net.minecraft.world.phys.EntityHitResult;
 import net.neoforged.bus.api.EventPriority;
 import net.neoforged.bus.api.SubscribeEvent;
 import net.neoforged.fml.common.EventBusSubscriber;
@@ -46,12 +48,14 @@ import net.neoforged.neoforge.event.entity.EntityAttributeCreationEvent;
 import net.neoforged.neoforge.event.entity.EntityJoinLevelEvent;
 import net.neoforged.neoforge.event.entity.EntityTeleportEvent;
 import net.neoforged.neoforge.event.entity.RegisterSpawnPlacementsEvent;
+import net.neoforged.neoforge.event.entity.*;
 import net.neoforged.neoforge.event.entity.living.LivingDamageEvent;
 import net.neoforged.neoforge.event.entity.living.LivingIncomingDamageEvent;
 import net.neoforged.neoforge.event.entity.living.LivingShieldBlockEvent;
 import net.neoforged.neoforge.event.entity.player.PlayerInteractEvent;
 import net.neoforged.neoforge.event.level.BlockEvent;
 import net.neoforged.neoforge.event.tick.PlayerTickEvent;
+import net.neoforged.neoforge.event.entity.player.CriticalHitEvent;
 import net.neoforged.neoforge.event.village.WandererTradesEvent;
 import top.theillusivec4.curios.api.CuriosApi;
 import top.theillusivec4.curios.api.SlotContext;
@@ -86,6 +90,7 @@ public class CommonEvents {
         event.put(OFEntities.GRELL.get(), Grell.registerAttributes().build());
         event.put(OFEntities.GRELL_CLONE.get(), GrellClone.registerAttributes().build());
         event.put(OFEntities.PIPSQUEAK.get(), Pipsqueak.registerAttributes().build());
+        event.put(OFEntities.BRICK.get(), Brick.registerAttributes().build());
     }
 
     @SubscribeEvent
@@ -108,6 +113,7 @@ public class CommonEvents {
         event.register(OFEntities.PARASOUL.get(), SpawnPlacementTypes.ON_GROUND, Heightmap.Types.MOTION_BLOCKING_NO_LEAVES, AnimatedMonster::checkSurfaceMonsterSpawnRules, RegisterSpawnPlacementsEvent.Operation.AND);
         event.register(OFEntities.GRELL.get(), SpawnPlacementTypes.ON_GROUND, Heightmap.Types.MOTION_BLOCKING_NO_LEAVES, Grell::checkGrellSpawnRules, RegisterSpawnPlacementsEvent.Operation.AND);
         event.register(OFEntities.PIPSQUEAK.get(), SpawnPlacementTypes.ON_GROUND, Heightmap.Types.MOTION_BLOCKING_NO_LEAVES, Pipsqueak::checkPipsqueakSpawnRules, RegisterSpawnPlacementsEvent.Operation.AND);
+        event.register(OFEntities.BRICK.get(), SpawnPlacementTypes.ON_GROUND, Heightmap.Types.MOTION_BLOCKING_NO_LEAVES, Brick::checkBrickSpawnRules, RegisterSpawnPlacementsEvent.Operation.AND);
     }
 
     @SubscribeEvent
@@ -235,6 +241,22 @@ public class CommonEvents {
     public static void addPackFinders(AddPackFindersEvent event) {
         if (event.getPackType() == PackType.SERVER_DATA) {
             event.addPackFinders(OpposingForce.location("datapacks/enchantment_tweaks"), PackType.SERVER_DATA, Component.translatable("pack.opposing_force.protection_tweaks"), PackSource.BUILT_IN, OFConfig.PROTECTION_TWEAKS.get(), Pack.Position.TOP);
+        }
+    }
+
+    @SubscribeEvent
+    public static void onProjectileImpact(ProjectileImpactEvent event) {
+        Projectile projectile = event.getProjectile();
+        if (event.getRayTraceResult() instanceof EntityHitResult hitResult && hitResult.getEntity() instanceof Brick brick && brick.canBounce(projectile)) {
+            event.setCanceled(true);
+            brick.bounce(projectile);
+        }
+    }
+
+    @SubscribeEvent
+    public static void onCriticalHit(CriticalHitEvent event) {
+        if (event.getTarget() instanceof Brick brick) {
+            brick.setCritHit(event.isCriticalHit());
         }
     }
 }

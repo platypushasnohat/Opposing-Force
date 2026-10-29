@@ -119,7 +119,7 @@ public class OFItems {
     public static final DeferredItem<Item> LAPIS_LAZULI_SHOVEL = registerItem("lapis_lazuli_shovel", () -> new SinewShovelItem(OFToolDefinitions.LAPIS_LAZULI, 1.5F, -3.0F, new Item.Properties()));
     public static final DeferredItem<Item> LAPIS_LAZULI_HOE = registerItem("lapis_lazuli_hoe", () -> new SinewHoeItem(OFToolDefinitions.LAPIS_LAZULI, 0.0F, -1.0F, new Item.Properties()));
 
-    public static final DeferredItem<Item> REPAIR_KIT = registerItem("repair_kit", () -> new RepairKitItem(new Item.Properties().stacksTo(1)));
+    public static final DeferredItem<Item> REPAIR_KIT = registerItem("repair_kit", () -> new RepairKitItem(new Item.Properties().stacksTo(16)));
 
     //misc ammo
     public static final DeferredItem<Item> SHOT_STONE_BULLET = registerItem("shot_stone_bullet", () -> new Item(new Item.Properties()));

@@ -18,6 +18,34 @@
     ],
     "subtitle": "subtitles.opposing_force.blaster_shoot"
   },
+  "brick_death": {
+    "sounds": [
+      {
+        "name": "opposing_force:mob/mushy/hurt",
+        "pitch": 0.6
+      }
+    ],
+    "subtitle": "subtitles.opposing_force.brick_death"
+  },
+  "brick_hurt": {
+    "sounds": [
+      "opposing_force:mob/brick/hurt"
+    ],
+    "subtitle": "subtitles.opposing_force.brick_hurt"
+  },
+  "brick_idle": {
+    "sounds": [
+      {
+        "name": "opposing_force:mob/mushy/idle1",
+        "pitch": 0.8
+      },
+      {
+        "name": "opposing_force:mob/mushy/idle2",
+        "pitch": 0.8
+      }
+    ],
+    "subtitle": "subtitles.opposing_force.brick_idle"
+  },
   "bullet_impact": {
     "sounds": [
       "opposing_force:entity/bullet/impact"

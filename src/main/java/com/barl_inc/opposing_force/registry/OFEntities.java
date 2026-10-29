@@ -8,7 +8,6 @@ import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.MobCategory;
-import net.minecraft.world.level.block.Blocks;
 import net.neoforged.neoforge.registries.DeferredHolder;
 import net.neoforged.neoforge.registries.DeferredRegister;
 
@@ -41,8 +40,7 @@ public class OFEntities {
     public static final DeferredHolder<EntityType<?>, EntityType<Parasoul>> PARASOUL = registerEntity("parasoul", Parasoul::new, MobCategory.MONSTER, builder -> builder.sized(0.75F, 3.1F).eyeHeight(2.4F).clientTrackingRange(8));
     public static final DeferredHolder<EntityType<?>, EntityType<Grell>> GRELL = registerEntity("grell", Grell::new, MobCategory.MONSTER, builder -> builder.sized(1.5F, 2.0F).eyeHeight(1.4F).clientTrackingRange(10));
     public static final DeferredHolder<EntityType<?>, EntityType<Pipsqueak>> PIPSQUEAK = registerEntity("pipsqueak", Pipsqueak::new, MobCategory.MONSTER, builder -> builder.sized(0.9F, 1.0F).eyeHeight(0.4F).clientTrackingRange(8));
-    public static final DeferredHolder<EntityType<?>, EntityType<Brick>> BRICK = registerEntity("brick", Brick::new, MobCategory.MONSTER, builder -> builder.sized(2.2F, 2.37F).eyeHeight(0.63F).clientTrackingRange(8).fireImmune());
-
+    public static final DeferredHolder<EntityType<?>, EntityType<Brick>> BRICK = registerEntity("brick", Brick::new, MobCategory.MONSTER, builder -> builder.sized(2.3F, 2.5F).clientTrackingRange(8));
 
     //other
     public static final DeferredHolder<EntityType<?>, EntityType<DicerLaser>> DICER_LASER = registerEntity("dicer_laser", DicerLaser::new, MobCategory.MISC, builder -> builder.sized(0.1F, 0.1F).setUpdateInterval(1).clientTrackingRange(4).fireImmune());

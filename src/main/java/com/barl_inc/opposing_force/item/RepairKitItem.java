@@ -40,7 +40,7 @@ public class RepairKitItem extends Item {
         if (repaired) {
             level.playSound(null, player.getX(), player.getY(), player.getZ(), SoundEvents.SMITHING_TABLE_USE, SoundSource.PLAYERS, 1.0F, 1.0F);
             player.awardStat(Stats.ITEM_USED.get(this));
-            player.getCooldowns().addCooldown(this, 7200);
+            player.getCooldowns().addCooldown(this, 600);
             stack.consume(1, player);
             result = InteractionResultHolder.sidedSuccess(stack, level.isClientSide);
         }

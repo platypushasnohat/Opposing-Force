@@ -8,6 +8,7 @@ import net.minecraft.client.model.geom.PartPose;
 import net.minecraft.client.model.geom.builders.*;
 
 public class BrickModel extends SinewEntityModel<Brick> {
+
     private final ModelPart root;
 
     public BrickModel(ModelPart root) {
@@ -21,14 +22,11 @@ public class BrickModel extends SinewEntityModel<Brick> {
 
     @Override
     protected void setupAnimations(Brick entity, float limbSwing, float limbSwingAmount, float ageInTicks, float partialTicks, float netHeadYaw, float headPitch) {
-        this.animateWalkSmooth(entity.walkAnimationState, BrickAnimations.MOVE, limbSwing, limbSwingAmount, 3.0F, 2.5F, partialTicks);
-        this.animateWalkSmooth(entity.sprintAnimationState, BrickAnimations.RUN, limbSwing, limbSwingAmount, partialTicks);
+        this.animateWalkSmooth(entity.walkAnimationState, BrickAnimations.WALK, limbSwing, limbSwingAmount, partialTicks);
         this.animateIdleSmooth(entity.idleAnimationState, BrickAnimations.IDLE, ageInTicks, partialTicks, limbSwingAmount);
         this.animateSmooth(entity.danceAnimationState, BrickAnimations.DANCE, ageInTicks, partialTicks);
-        this.animateSmooth(entity.defendStartAnimationState, BrickAnimations.DEFEND_START, ageInTicks, partialTicks);
         this.animateSmooth(entity.defendAnimationState, BrickAnimations.DEFEND, ageInTicks, partialTicks);
         this.animateSmooth(entity.meltAnimationState, BrickAnimations.MELT, ageInTicks, partialTicks);
-        this.animateSmooth(entity.squishAnimationState, BrickAnimations.SQUISH_BLEND, ageInTicks, partialTicks);
     }
 
     public static LayerDefinition createBodyLayer() {

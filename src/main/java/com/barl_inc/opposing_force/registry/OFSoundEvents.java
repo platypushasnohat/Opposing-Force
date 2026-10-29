@@ -39,6 +39,10 @@ public class OFSoundEvents {
     public static final DeferredHolder<SoundEvent, SoundEvent> MUSHY_DEATH = registerSoundEvent("mushy_death");
     public static final DeferredHolder<SoundEvent, SoundEvent> MUSHY_IDLE = registerSoundEvent("mushy_idle");
 
+    public static final DeferredHolder<SoundEvent, SoundEvent> BRICK_HURT = registerSoundEvent("brick_hurt");
+    public static final DeferredHolder<SoundEvent, SoundEvent> BRICK_DEATH = registerSoundEvent("brick_death");
+    public static final DeferredHolder<SoundEvent, SoundEvent> BRICK_IDLE = registerSoundEvent("brick_idle");
+
     public static final DeferredHolder<SoundEvent, SoundEvent> LASER_BOLT_IMPACT = registerSoundEvent("laser_bolt_impact");
 
     public static final DeferredHolder<SoundEvent, SoundEvent> BLASTER_SHOOT = registerSoundEvent("blaster_shoot");

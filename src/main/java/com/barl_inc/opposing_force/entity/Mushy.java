@@ -192,7 +192,7 @@ public class Mushy extends AnimatedMonster {
 
     @Override
     protected float getSoundVolume() {
-        return 0.6F;
+        return 0.5F;
     }
 
     public static boolean checkMushySpawnRules(EntityType<Mushy> entityType, ServerLevelAccessor level, MobSpawnType spawnType, BlockPos pos, RandomSource random) {

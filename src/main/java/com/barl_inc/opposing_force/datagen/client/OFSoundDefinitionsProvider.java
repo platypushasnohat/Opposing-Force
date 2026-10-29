@@ -101,6 +101,17 @@ public class OFSoundDefinitionsProvider extends SinewSoundDefinitionsProvider {
                 sound(OpposingForce.location("mob/mushy/idle2"))
         );
 
+        this.registerSound(OFSoundEvents.BRICK_HURT,
+                sound(OpposingForce.location("mob/brick/hurt"))
+        );
+        this.registerSound(OFSoundEvents.BRICK_DEATH,
+                sound(OpposingForce.location("mob/mushy/hurt")).pitch(0.6F)
+        );
+        this.registerSound(OFSoundEvents.BRICK_IDLE,
+                sound(OpposingForce.location("mob/mushy/idle1")).pitch(0.8F),
+                sound(OpposingForce.location("mob/mushy/idle2")).pitch(0.8F)
+        );
+
         this.registerSound(OFSoundEvents.LASER_BOLT_IMPACT,
                 sound(OpposingForce.location("entity/laser_bolt/impact"))
         );

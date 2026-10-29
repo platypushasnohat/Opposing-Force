@@ -5,7 +5,7 @@ import com.barl_inc.opposing_force.entity.ai.goal.JukeboxDanceGoal;
 import com.barl_inc.opposing_force.registry.OFDamageTypes;
 import com.barl_inc.opposing_force.registry.OFParticleTypes;
 import com.barl_inc.opposing_force.registry.OFSoundEvents;
-import com.barl_inc.opposing_force.tags.OFEntityTypeTags;
+import com.barl_inc.opposing_force.registry.datapack.tags.OFEntityTypeTags;
 import com.platypushasnohat.sinew.client.animation.SmoothAnimationState;
 import com.platypushasnohat.sinew.entity.base.AnimatedMonster;
 import net.minecraft.core.BlockPos;

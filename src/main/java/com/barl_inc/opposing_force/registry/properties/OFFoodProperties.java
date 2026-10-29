@@ -25,4 +25,10 @@ public class OFFoodProperties {
             .saturationModifier(0.0F)
             .alwaysEdible()
             .build();
+
+    public static final FoodProperties BUG_BITS = new FoodProperties.Builder()
+            .nutrition(2)
+            .saturationModifier(0.1F)
+            .effect(() -> new MobEffectInstance(MobEffects.HUNGER, 600, 0), 0.8F)
+            .build();
 }

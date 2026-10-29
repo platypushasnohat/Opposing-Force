@@ -66,6 +66,7 @@ public class OFItems {
     public static final DeferredItem<Item> TARANTULA_SPAWN_EGG = registerSpawnEggItem("tarantula", OFEntities.TARANTULA, 0x4f4235, 0xedb24c);
 
     public static final DeferredItem<Item> MUSHY_SPAWN_EGG = registerSpawnEggItem("mushy", OFEntities.MUSHY, 0xe3552b, 0x110701);
+    public static final DeferredItem<Item> KNOCKBACK_SPORES = registerItem("knockback_spores", () -> new KnockbackSporesItem(new Item.Properties()));
 
     public static final DeferredItem<Item> MOTIF_SPAWN_EGG = registerSpawnEggItem("motif", OFEntities.MOTIF, 0xddd6b1, 0xc15e3e);
     public static final DeferredItem<Item> MYSTIC_POT = registerItemNoLang("mystic_pot", () -> new MysticPotItem(OFBlocks.MYSTIC_POT.get(), new Item.Properties()));
@@ -91,7 +92,7 @@ public class OFItems {
 
     //materials
     public static final DeferredItem<Item> FIRING_MECHANISM = registerItem("firing_mechanism", () -> new Item(new Item.Properties()));
-    public static final DeferredItem<Item> BUG_BITS = registerItem("bug_bits", () -> new Item(new Item.Properties()));
+    public static final DeferredItem<Item> BUG_BITS = registerItem("bug_bits", () -> new Item(new Item.Properties().food(OFFoodProperties.BUG_BITS)));
 
     //misc items
     public static final DeferredItem<Item> CRACKSHOT = registerItem("crackshot", () -> new CrackshotItem(new Item.Properties()));

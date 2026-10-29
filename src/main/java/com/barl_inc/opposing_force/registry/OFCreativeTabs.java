@@ -64,6 +64,8 @@ public class OFCreativeTabs {
                         output.accept(OFItems.MYSTIC_POT);
                         output.accept(OFItems.LEITMOTIF);
 
+                        output.accept(OFItems.KNOCKBACK_SPORES);
+
                         output.accept(OFItems.SAKE);
 
                         output.accept(OFItems.TUNING_FORK);

@@ -1,0 +1,11 @@
+{
+  "values": [
+    "minecraft:spider",
+    "minecraft:cave_spider",
+    "opposing_force:gusher",
+    "opposing_force:scorcher",
+    "opposing_force:tarantula",
+    "opposing_force:bewilder",
+    "opposing_force:gnat"
+  ]
+}

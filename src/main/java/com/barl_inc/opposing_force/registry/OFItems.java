@@ -46,6 +46,8 @@ public class OFItems {
     public static final DeferredItem<Item> CHITIN = registerItem("chitin", () -> new Item(new Item.Properties()));
     public static final DeferredItem<Item> CHITIN_LANCE = registerItem("chitin_lance", () -> new ChitinLanceItem(new Item.Properties()));
 
+    public static final DeferredItem<Item> FUR = registerItem("fur", () -> new Item(new Item.Properties()));
+
     public static final DeferredItem<Item> GUSHER_SPAWN_EGG = registerSpawnEggItem("gusher", OFEntities.GUSHER, 0x1b1d16, 0x8eeb60);
     public static final DeferredItem<Item> ACID_CHARGE = registerItem("acid_charge", () -> new AcidChargeItem(new Item.Properties()));
 
@@ -89,6 +91,7 @@ public class OFItems {
 
     //materials
     public static final DeferredItem<Item> FIRING_MECHANISM = registerItem("firing_mechanism", () -> new Item(new Item.Properties()));
+    public static final DeferredItem<Item> BUG_BITS = registerItem("bug_bits", () -> new Item(new Item.Properties()));
 
     //misc items
     public static final DeferredItem<Item> CRACKSHOT = registerItem("crackshot", () -> new CrackshotItem(new Item.Properties()));
@@ -112,6 +115,8 @@ public class OFItems {
     public static final DeferredItem<Item> LAPIS_LAZULI_AXE = registerItem("lapis_lazuli_axe", () -> new SinewAxeItem(OFToolDefinitions.LAPIS_LAZULI, 6.0F, -3.1F, new Item.Properties()));
     public static final DeferredItem<Item> LAPIS_LAZULI_SHOVEL = registerItem("lapis_lazuli_shovel", () -> new SinewShovelItem(OFToolDefinitions.LAPIS_LAZULI, 1.5F, -3.0F, new Item.Properties()));
     public static final DeferredItem<Item> LAPIS_LAZULI_HOE = registerItem("lapis_lazuli_hoe", () -> new SinewHoeItem(OFToolDefinitions.LAPIS_LAZULI, 0.0F, -1.0F, new Item.Properties()));
+
+    public static final DeferredItem<Item> REPAIR_KIT = registerItem("repair_kit", () -> new RepairKitItem(new Item.Properties().stacksTo(1)));
 
     //misc ammo
     public static final DeferredItem<Item> SHOT_STONE_BULLET = registerItem("shot_stone_bullet", () -> new Item(new Item.Properties()));

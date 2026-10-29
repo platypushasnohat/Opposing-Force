@@ -102,7 +102,7 @@ public class OFLanguageProvider extends SinewLanguageProvider {
         this.add("item.opposing_force.tooltip.when_cast", "When cast:");
         this.add("item.opposing_force.tooltip.when_thrown", "When thrown:");
         this.add("item.opposing_force.tooltip.when_used_as_ammo", "When used as ammo:");
-        this.add("item.opposing_force.tuning_fork.description", "Melee hits radiate sound waves");
+        this.add("item.opposing_force.tuning_fork.description", "Melee hits produce sound waves");
         this.add("item.opposing_force.tuning_fork.description.two", "Right click to charge a sound wave");
 
         this.add("item.opposing_force.bullet.damage", "x%s Damage");

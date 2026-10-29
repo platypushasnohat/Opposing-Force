@@ -10,6 +10,7 @@ public class OFEntityTypeTags {
 
     public static final TagKey<EntityType<?>> SLIMY = modEntityTypeTag("slimy");
     public static final TagKey<EntityType<?>> PIPSQUEAK_CANNOT_SWALLOW = modEntityTypeTag("pipsqueak_cannot_swallow");
+    public static final TagKey<EntityType<?>> BUGS = modEntityTypeTag("bugs");
 
     private static TagKey<EntityType<?>> modEntityTypeTag(String name) {
         return entityTypeTag(OpposingForce.MOD_ID, name);

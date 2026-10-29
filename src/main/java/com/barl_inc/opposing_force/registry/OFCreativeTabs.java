@@ -50,6 +50,8 @@ public class OFCreativeTabs {
 
                         output.accept(OFItems.FILLET_BUCKET);
 
+                        output.accept(OFItems.FUR);
+
                         output.accept(OFItems.CURSED_RING);
                         output.accept(OFItems.CURSED_RINGLINE);
 
@@ -101,8 +103,10 @@ public class OFCreativeTabs {
 
                         //misc mana
 
-                        // crafting materials
+                        // misc materials
+                        output.accept(OFItems.BUG_BITS);
                         output.accept(OFItems.FIRING_MECHANISM);
+                        output.accept(OFItems.REPAIR_KIT);
 
                         // trinkets
                         // common

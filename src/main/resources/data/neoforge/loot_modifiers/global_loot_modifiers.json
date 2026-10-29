@@ -23,6 +23,7 @@
     "opposing_force:chests/stalker_gloves",
     "opposing_force:chests/mana_thrifter",
     "opposing_force:chests/water_walkers",
-    "opposing_force:chests/fireproof_shoes"
+    "opposing_force:chests/fireproof_shoes",
+    "opposing_force:entities/bug_bits"
   ]
 }

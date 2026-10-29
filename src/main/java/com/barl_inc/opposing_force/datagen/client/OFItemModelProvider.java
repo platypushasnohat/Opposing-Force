@@ -59,7 +59,10 @@ public class OFItemModelProvider extends SinewItemModelProvider {
                 OFItems.SAKE,
                 OFItems.WATER_WALKERS,
                 OFItems.FIREPROOF_SHOES,
-                OFItems.COMBO_BOOTS
+                OFItems.COMBO_BOOTS,
+                OFItems.FUR,
+                OFItems.REPAIR_KIT,
+                OFItems.BUG_BITS
         );
 
         this.handheldItem(

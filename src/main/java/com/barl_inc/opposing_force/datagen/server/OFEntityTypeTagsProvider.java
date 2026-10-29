@@ -64,5 +64,15 @@ public class OFEntityTypeTagsProvider extends EntityTypeTagsProvider {
                 OFEntities.DICER_LASER.get(),
                 OFEntities.LASER_BLADE.get()
         );
+
+        this.tag(OFEntityTypeTags.BUGS).add(
+                EntityType.SPIDER,
+                EntityType.CAVE_SPIDER,
+                OFEntities.GUSHER.get(),
+                OFEntities.SCORCHER.get(),
+                OFEntities.TARANTULA.get(),
+                OFEntities.BEWILDER.get(),
+                OFEntities.GNAT.get()
+        );
 	}
 }

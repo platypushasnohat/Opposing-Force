@@ -82,6 +82,7 @@ public class ClientEvents {
         event.registerEntityRenderer(OFEntities.PARASOUL.get(), ParasoulRenderer::new);
         event.registerEntityRenderer(OFEntities.GRELL.get(), GrellRenderer::new);
         event.registerEntityRenderer(OFEntities.PIPSQUEAK.get(), PipsqueakRenderer::new);
+        event.registerEntityRenderer(OFEntities.BRICK.get(), BrickRenderer::new);
 
         event.registerEntityRenderer(OFEntities.DICER_LASER.get(), DicerLaserRenderer::new);
         event.registerEntityRenderer(OFEntities.LASER_BOLT.get(), LaserBoltRenderer::new);
@@ -120,6 +121,7 @@ public class ClientEvents {
         event.registerLayerDefinition(OFModelLayers.PARASOUL, ParasoulModel::createBodyLayer);
         event.registerLayerDefinition(OFModelLayers.GRELL, GrellModel::createBodyLayer);
         event.registerLayerDefinition(OFModelLayers.PIPSQUEAK, PipsqueakModel::createBodyLayer);
+        event.registerLayerDefinition(OFModelLayers.BRICK, BrickModel::createBodyLayer);
 
         event.registerLayerDefinition(OFModelLayers.LASER_BOLT, LaserBoltModel::createBodyLayer);
         event.registerLayerDefinition(OFModelLayers.ACID_CHARGE, AcidChargeModel::createBodyLayer);
@@ -159,6 +161,7 @@ public class ClientEvents {
         event.registerSpriteSet(OFParticleTypes.SMALL_SOUL_FIRE_FLAME.get(), FlameParticle.SmallFlameProvider::new);
         event.registerSpriteSet(OFParticleTypes.SHOCKWAVE.get(), ShockwaveParticle.Factory::new);
         event.registerSpriteSet(OFParticleTypes.SMALL_SHOCKWAVE.get(), ShockwaveParticle.Factory::new);
+        event.registerSpriteSet(OFParticleTypes.BRICK_SPORE_CLOUD.get(), SporeCloudParticle.BrickFactory::new);
     }
 
     @SubscribeEvent

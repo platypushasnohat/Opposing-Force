@@ -45,7 +45,8 @@ public class OFEntityTypeTagsProvider extends EntityTypeTagsProvider {
 				OFEntities.TERROR.get(),
                 OFEntities.GHOST.get(),
                 OFEntities.HAUNT.get(),
-                OFEntities.PIPSQUEAK.get()
+                OFEntities.PIPSQUEAK.get(),
+                OFEntities.BRICK.get()
 		);
 
         this.tag(EntityTypeTags.UNDEAD).add(
@@ -73,6 +74,10 @@ public class OFEntityTypeTagsProvider extends EntityTypeTagsProvider {
                 OFEntities.TARANTULA.get(),
                 OFEntities.BEWILDER.get(),
                 OFEntities.GNAT.get()
+        );
+
+        this.tag(OFEntityTypeTags.PROJECTILE_BYPASSES_BRICK).add(
+                OFEntities.ACID_CHARGE.get()
         );
 	}
 }

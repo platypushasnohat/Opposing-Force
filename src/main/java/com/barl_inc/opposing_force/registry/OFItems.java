@@ -102,6 +102,8 @@ public class OFItems {
     public static final DeferredItem<Item> BOOMSTICK = registerItem("boomstick", () -> new BoomstickItem(new Item.Properties()));
     public static final DeferredItem<Item> GORLOFF = registerItem("gorloff", () -> new GorloffItem(new Item.Properties()));
 
+    public static final DeferredItem<Item> BRICK_SPAWN_EGG = registerSpawnEggItem("brick", OFEntities.BRICK, 0x51a4ae, 0x040806);
+
     public static final DeferredItem<Item> EMERALD_SWORD = registerItem("emerald_sword", () -> new SinewSwordItem(OFToolDefinitions.EMERALD, 3.0F, -2.4F, new Item.Properties().rarity(Rarity.UNCOMMON)));
     public static final DeferredItem<Item> EMERALD_PICKAXE = registerItem("emerald_pickaxe", () -> new SinewPickaxeItem(OFToolDefinitions.EMERALD, 1.0F, -2.8F, new Item.Properties().rarity(Rarity.UNCOMMON)));
     public static final DeferredItem<Item> EMERALD_AXE = registerItem("emerald_axe", () -> new SinewAxeItem(OFToolDefinitions.EMERALD, 5.0F, -3.0F, new Item.Properties().rarity(Rarity.UNCOMMON)));

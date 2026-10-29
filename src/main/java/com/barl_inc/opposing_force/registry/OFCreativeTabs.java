@@ -68,6 +68,7 @@ public class OFCreativeTabs {
                         output.accept(OFItems.LEITMOTIF);
 
                         output.accept(OFItems.KNOCKBACK_SPORES);
+                        output.accept(OFItems.OXIDIZED_SPORES);
 
                         output.accept(OFItems.SAKE);
 

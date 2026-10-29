@@ -67,7 +67,9 @@ public class OFItems {
     public static final DeferredItem<Item> TARANTULA_SPAWN_EGG = registerSpawnEggItem("tarantula", OFEntities.TARANTULA, 0x4f4235, 0xedb24c);
 
     public static final DeferredItem<Item> MUSHY_SPAWN_EGG = registerSpawnEggItem("mushy", OFEntities.MUSHY, 0xe3552b, 0x110701);
-    public static final DeferredItem<Item> KNOCKBACK_SPORES = registerItem("knockback_spores", () -> new KnockbackSporesItem(new Item.Properties()));
+    public static final DeferredItem<Item> KNOCKBACK_SPORES = registerItem("knockback_spores", () -> new SporeItem(new Item.Properties(), SporeItem.Type.KNOCKBACK));
+    public static final DeferredItem<Item> BRICK_SPAWN_EGG = registerSpawnEggItem("brick", OFEntities.BRICK, 0x51a4ae, 0x040806);
+    public static final DeferredItem<Item> OXIDIZED_SPORES = registerItem("oxidized_spores", () -> new SporeItem(new Item.Properties(), SporeItem.Type.OXIDIZED));
 
     public static final DeferredItem<Item> MOTIF_SPAWN_EGG = registerSpawnEggItem("motif", OFEntities.MOTIF, 0xddd6b1, 0xc15e3e);
     public static final DeferredItem<Item> MYSTIC_POT = registerItemNoLang("mystic_pot", () -> new MysticPotItem(OFBlocks.MYSTIC_POT.get(), new Item.Properties()));
@@ -101,8 +103,6 @@ public class OFItems {
     public static final DeferredItem<Item> JAEGER = registerItem("jaeger", () -> new JaegerItem(new Item.Properties()));
     public static final DeferredItem<Item> BOOMSTICK = registerItem("boomstick", () -> new BoomstickItem(new Item.Properties()));
     public static final DeferredItem<Item> GORLOFF = registerItem("gorloff", () -> new GorloffItem(new Item.Properties()));
-
-    public static final DeferredItem<Item> BRICK_SPAWN_EGG = registerSpawnEggItem("brick", OFEntities.BRICK, 0x51a4ae, 0x040806);
 
     public static final DeferredItem<Item> EMERALD_SWORD = registerItem("emerald_sword", () -> new SinewSwordItem(OFToolDefinitions.EMERALD, 3.0F, -2.4F, new Item.Properties().rarity(Rarity.UNCOMMON)));
     public static final DeferredItem<Item> EMERALD_PICKAXE = registerItem("emerald_pickaxe", () -> new SinewPickaxeItem(OFToolDefinitions.EMERALD, 1.0F, -2.8F, new Item.Properties().rarity(Rarity.UNCOMMON)));

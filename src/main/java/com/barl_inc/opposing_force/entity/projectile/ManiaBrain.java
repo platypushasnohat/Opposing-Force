@@ -170,20 +170,20 @@ public class ManiaBrain extends Projectile implements SplitMagicBonus {
     private void applyShade(LivingEntity target) {
         Shade shade = this.getShade();
         if (shade == Shade.BLACK) {
-            target.addEffect(new MobEffectInstance(MobEffects.WEAKNESS, 100, 2), this.getOwner());
+            target.addEffect(new MobEffectInstance(MobEffects.WEAKNESS, 80, 1), this.getOwner());
         } else if (shade == Shade.CYAN) {
-            target.addEffect(new MobEffectInstance(MobEffects.MOVEMENT_SLOWDOWN, 100, 2), this.getOwner());
+            target.addEffect(new MobEffectInstance(MobEffects.MOVEMENT_SLOWDOWN, 80, 1), this.getOwner());
         } else if (shade == Shade.YELLOW) {
-            target.addEffect(new MobEffectInstance(MobEffects.BLINDNESS, 100, 0), this.getOwner());
+            target.addEffect(new MobEffectInstance(MobEffects.BLINDNESS, 80, 0), this.getOwner());
         } else if (shade == Shade.MAGENTA) {
-            target.addEffect(new MobEffectInstance(OFMobEffects.MANIA, 200, 0), this.getOwner());
+            target.addEffect(new MobEffectInstance(OFMobEffects.MANIA, 160, 0), this.getOwner());
         } else if (shade == Shade.PURPLE) {
-            target.addEffect(new MobEffectInstance(MobEffects.WITHER, 100, 1), this.getOwner());
+            target.addEffect(new MobEffectInstance(MobEffects.WITHER, 80, 1), this.getOwner());
         } else if (shade == Shade.GREEN) {
             Vec3 push = this.getDeltaMovement().multiply(1.0D, 0.0D, 1.0D).normalize();
             target.knockback(1.2D, -push.x, -push.z);
         } else if (shade == Shade.BLUE) {
-            target.addEffect(new MobEffectInstance(OFMobEffects.MANIA, 200, 1), this.getOwner());
+            target.addEffect(new MobEffectInstance(OFMobEffects.MANIA, 160, 1), this.getOwner());
         }
     }
 

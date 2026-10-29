@@ -10,7 +10,6 @@ import com.barl_inc.opposing_force.client.render.entity.layer.SpectralShieldLaye
 import com.barl_inc.opposing_force.client.render.item.OFItemExtensions;
 import com.barl_inc.opposing_force.client.render.shader.ManiaTrip;
 import com.barl_inc.opposing_force.client.render.shader.SpectralLensOverlay;
-import com.barl_inc.opposing_force.debug.OFDebugItems;
 import com.barl_inc.opposing_force.item.SpectralShieldItem;
 import com.barl_inc.opposing_force.item.base.GunItem;
 import com.barl_inc.opposing_force.item.ranged.ammo.BulletComponent;

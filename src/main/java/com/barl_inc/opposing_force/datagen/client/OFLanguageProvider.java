@@ -104,6 +104,10 @@ public class OFLanguageProvider extends SinewLanguageProvider {
         this.add("item.opposing_force.tooltip.when_used_as_ammo", "When used as ammo:");
         this.add("item.opposing_force.tuning_fork.description", "Melee hits produce sound waves");
         this.add("item.opposing_force.tuning_fork.description.two", "Right click to charge a sound wave");
+        this.add("item.opposing_force.acid_charge.description", "Throwable");
+        this.add("item.opposing_force.ectoplasm.description", "Throwable");
+        this.add("item.opposing_force.knockback_spores.description", "Knocks entities away");
+        this.add("item.opposing_force.repair_kit.description", "Right click to repair all items in your inventory");
 
         this.add("item.opposing_force.bullet.damage", "x%s Damage");
         this.add("item.opposing_force.bullet.spread", "x%s Spread");

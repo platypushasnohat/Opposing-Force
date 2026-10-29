@@ -2,8 +2,10 @@ package com.barl_inc.opposing_force.item;
 
 import com.barl_inc.opposing_force.entity.projectile.AcidCharge;
 import com.platypushasnohat.sinew.utils.SinewSoundUtils;
+import net.minecraft.ChatFormatting;
 import net.minecraft.core.Direction;
 import net.minecraft.core.Position;
+import net.minecraft.network.chat.Component;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.stats.Stats;
@@ -14,7 +16,10 @@ import net.minecraft.world.entity.projectile.Projectile;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.ProjectileItem;
+import net.minecraft.world.item.TooltipFlag;
 import net.minecraft.world.level.Level;
+
+import java.util.List;
 
 public class AcidChargeItem extends Item implements ProjectileItem {
 
@@ -43,5 +48,10 @@ public class AcidChargeItem extends Item implements ProjectileItem {
         AcidCharge acidCharge = new AcidCharge(level, pos.x(), pos.y(), pos.z());
         acidCharge.setItem(stack);
         return acidCharge;
+    }
+
+    @Override
+    public void appendHoverText(ItemStack stack, TooltipContext context, List<Component> tooltip, TooltipFlag flag) {
+        tooltip.add(Component.translatable(this.getDescriptionId() + ".description").withStyle(ChatFormatting.GRAY));
     }
 }

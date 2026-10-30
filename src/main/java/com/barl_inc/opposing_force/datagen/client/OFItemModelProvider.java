@@ -81,7 +81,8 @@ public class OFItemModelProvider extends SinewItemModelProvider {
                 OFItems.LAPIS_LAZULI_HOE,
                 OFItems.TERROR_LEG,
                 OFItems.FRIED_TERROR_LEG,
-                OFItems.SAWBLADE
+                OFItems.SAWBLADE,
+                OFItems.GNAT_STAFF
         );
 
         for (Item item : BuiltInRegistries.ITEM) {

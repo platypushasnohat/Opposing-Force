@@ -1,7 +1,7 @@
 package com.barl_inc.opposing_force.entity.ai.goal;
 
-import com.barl_inc.opposing_force.entity.base.BasicFlyingMonster;
 import net.minecraft.core.BlockPos;
+import net.minecraft.world.entity.PathfinderMob;
 import net.minecraft.world.entity.ai.goal.Goal;
 import net.minecraft.world.entity.ai.util.AirAndWaterRandomPos;
 import net.minecraft.world.entity.ai.util.HoverRandomPos;
@@ -12,9 +12,9 @@ import java.util.EnumSet;
 
 public class FlyingWanderGoal extends Goal {
 
-    private final BasicFlyingMonster monster;
+    private final PathfinderMob monster;
 
-    public FlyingWanderGoal(BasicFlyingMonster monster) {
+    public FlyingWanderGoal(PathfinderMob monster) {
         this.monster = monster;
         this.setFlags(EnumSet.of(Flag.MOVE));
     }
@@ -46,4 +46,4 @@ public class FlyingWanderGoal extends Goal {
         Vec3 hoverPos = HoverRandomPos.getPos(this.monster, 8, 7, viewVector.x, viewVector.z, (float) (Math.PI / 2), 3, 1);
         return hoverPos != null ? hoverPos : AirAndWaterRandomPos.getPos(this.monster, 8, 4, -2, viewVector.x, viewVector.z, (float) (Math.PI / 2));
     }
-}
+}

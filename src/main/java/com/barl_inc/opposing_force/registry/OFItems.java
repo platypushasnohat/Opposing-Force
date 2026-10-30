@@ -2,6 +2,7 @@ package com.barl_inc.opposing_force.registry;
 
 import com.barl_inc.opposing_force.OpposingForce;
 import com.barl_inc.opposing_force.item.*;
+import com.barl_inc.opposing_force.item.base.SummonWeaponItem;
 import com.barl_inc.opposing_force.item.curios.*;
 import com.barl_inc.opposing_force.item.magic.CursedRinglineItem;
 import com.barl_inc.opposing_force.item.magic.ManiaItem;
@@ -53,6 +54,7 @@ public class OFItems {
     public static final DeferredItem<Item> ACID_CHARGE = registerItem("acid_charge", () -> new AcidChargeItem(new Item.Properties()));
 
     public static final DeferredItem<Item> GNAT_SPAWN_EGG = registerSpawnEggItem("gnat", OFEntities.GNAT, 0x403229, 0xc6322c);
+    public static final DeferredItem<Item> GNAT_STAFF = registerItem("gnat_staff", () -> new SummonWeaponItem(new Item.Properties().durability(123), OFEntities.GNAT, 2.0D, 20.0D, 6));
 
     public static final DeferredItem<Item> SCORCHER_SPAWN_EGG = registerSpawnEggItem("scorcher", OFEntities.SCORCHER, 0x99193b, 0xeeb71c);
 

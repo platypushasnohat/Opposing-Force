@@ -60,6 +60,8 @@ public class OFCreativeTabs {
                         output.accept(OFItems.SPECTRAL_CLEAVER);
                         output.accept(OFItems.SPECTRAL_SHIELD);
 
+                        output.accept(OFItems.GNAT_STAFF);
+
                         output.accept(OFItems.MANIA);
 
                         output.accept(OFItems.ACID_CHARGE);

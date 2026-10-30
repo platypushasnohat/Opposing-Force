@@ -115,6 +115,7 @@ public class OFLanguageProvider extends SinewLanguageProvider {
         this.add("item.opposing_force.knockback_spores.description", "Knocks entities away");
         this.add("item.opposing_force.repair_kit.description", "Right click to repair all items in your inventory");
         this.add("item.opposing_force.oxidized_spores.description", "Grants nearby allies resistance");
+        this.add("item.opposing_force.gnat_staff.description", "Summons a Gnat, using 0.5 minion slots");
 
         this.add("item.opposing_force.bullet.damage", "x%s Damage");
         this.add("item.opposing_force.bullet.spread", "x%s Spread");

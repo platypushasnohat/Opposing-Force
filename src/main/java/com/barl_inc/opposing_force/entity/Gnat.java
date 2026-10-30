@@ -2,9 +2,12 @@ package com.barl_inc.opposing_force.entity;
 
 import com.barl_inc.opposing_force.OpposingForce;
 import com.barl_inc.opposing_force.entity.ai.goal.FlyingWanderGoal;
-import com.barl_inc.opposing_force.entity.base.BasicFlyingMonster;
 import com.platypushasnohat.sinew.client.animation.SmoothAnimationState;
 import com.platypushasnohat.sinew.entity.ai.goal.AttackGoal;
+import com.platypushasnohat.sinew.entity.ai.goal.TamedOwnerHurtByTargetGoal;
+import com.platypushasnohat.sinew.entity.ai.goal.TamedOwnerHurtTargetGoal;
+import com.platypushasnohat.sinew.entity.ai.navigation.SmoothFlyingNavigation;
+import com.platypushasnohat.sinew.entity.base.SummonableMonster;
 import net.minecraft.core.BlockPos;
 import net.minecraft.sounds.SoundEvent;
 import net.minecraft.sounds.SoundEvents;
@@ -16,23 +19,36 @@ import net.minecraft.world.entity.ai.attributes.AttributeSupplier;
 import net.minecraft.world.entity.ai.attributes.Attributes;
 import net.minecraft.world.entity.ai.control.FlyingMoveControl;
 import net.minecraft.world.entity.ai.goal.FloatGoal;
+import net.minecraft.world.entity.ai.goal.FollowOwnerGoal;
 import net.minecraft.world.entity.ai.goal.target.HurtByTargetGoal;
 import net.minecraft.world.entity.ai.goal.target.NearestAttackableTargetGoal;
+import net.minecraft.world.entity.ai.navigation.PathNavigation;
+import net.minecraft.world.entity.animal.FlyingAnimal;
+import net.minecraft.world.entity.monster.Enemy;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.Level;
+import net.minecraft.world.level.LevelReader;
 import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.level.pathfinder.PathType;
 import net.minecraft.world.phys.Vec3;
 
-public class Gnat extends BasicFlyingMonster {
+public class Gnat extends SummonableMonster implements FlyingAnimal {
 
     public static final int ATTACK_ANIMATION = 1;
 
+    public final SmoothAnimationState flyAnimationState = new SmoothAnimationState();
     public final SmoothAnimationState attackAnimationState = new SmoothAnimationState(1.0F);
+    public final SmoothAnimationState summonAnimationState = new SmoothAnimationState();
 
     public Gnat(EntityType<? extends Gnat> entityType, Level level) {
         super(entityType, level);
         this.xpReward = 2;
         this.moveControl = new FlyingMoveControl(this, 20, true);
+        this.setPathfindingMalus(PathType.WATER_BORDER, 16.0F);
+        this.setPathfindingMalus(PathType.DANGER_FIRE, -1.0F);
+        this.setPathfindingMalus(PathType.WATER, -1.0F);
+        this.setPathfindingMalus(PathType.COCOA, -1.0F);
+        this.setPathfindingMalus(PathType.FENCE, -1.0F);
     }
 
     public static AttributeSupplier.Builder registerAttributes() {
@@ -47,14 +63,59 @@ public class Gnat extends BasicFlyingMonster {
     protected void registerGoals() {
         this.goalSelector.addGoal(0, new FloatGoal(this));
         this.goalSelector.addGoal(1, new GnatAttackGoal(this));
-        this.goalSelector.addGoal(2, new FlyingWanderGoal(this));
-        this.targetSelector.addGoal(0, new HurtByTargetGoal(this).setAlertOthers());
-        this.targetSelector.addGoal(1, new NearestAttackableTargetGoal<>(this, Player.class, true, false));
+        this.goalSelector.addGoal(2, new FollowOwnerGoal(this, 1.2D, 6.0F, 2.0F));
+        this.goalSelector.addGoal(3, new FlyingWanderGoal(this));
+        this.targetSelector.addGoal(0, new TamedOwnerHurtByTargetGoal(this));
+        this.targetSelector.addGoal(1, new TamedOwnerHurtTargetGoal(this));
+        this.targetSelector.addGoal(2, new HurtByTargetGoal(this).setAlertOthers());
+        this.targetSelector.addGoal(3, new NearestAttackableTargetGoal<>(this, Player.class, 10, true, false, target -> !this.isTame()));
+        this.targetSelector.addGoal(4, new NearestAttackableTargetGoal<>(this, Mob.class, 10, true, false, target -> this.isTame() && target instanceof Enemy && !target.isAlliedTo(this)));
+    }
+
+    @Override
+    protected PathNavigation createNavigation(Level level) {
+        SmoothFlyingNavigation navigation = new SmoothFlyingNavigation(this, level) {
+            @Override
+            public boolean isStableDestination(BlockPos pos) {
+                return !level().getBlockState(pos.below()).isAir();
+            }
+        };
+        navigation.setCanOpenDoors(false);
+        navigation.setCanFloat(false);
+        navigation.setCanPassDoors(true);
+        return navigation;
+    }
+
+    @Override
+    public float getWalkTargetValue(BlockPos pos, LevelReader level) {
+        return level.getBlockState(pos).isAir() ? 10.0F : 0.0F;
+    }
+
+    @Override
+    public boolean causeFallDamage(float fallDistance, float multiplier, DamageSource damageSource) {
+        return false;
+    }
+
+    @Override
+    protected void checkFallDamage(double y, boolean onGround, BlockState state, BlockPos pos) {
+    }
+
+    @Override
+    public boolean isFlying() {
+        return !this.onGround();
+    }
+
+    @Override
+    public boolean onClimbable() {
+        return false;
     }
 
     @Override
     public void tick() {
         super.tick();
+        if (!this.onGround() && this.getDeltaMovement().y < 0.0D && this.getTarget() == null) {
+            this.setDeltaMovement(this.getDeltaMovement().multiply(1.0F, 0.6F, 1.0F));
+        }
         OpposingForce.PROXY.playSound(this, (byte) 2);
     }
 
@@ -65,9 +126,15 @@ public class Gnat extends BasicFlyingMonster {
     }
 
     @Override
+    public float getSummonCost() {
+        return 0.5F;
+    }
+
+    @Override
     public void setupAnimationStates() {
         this.flyAnimationState.animateWhen(this.isFlying(), this.tickCount);
         this.attackAnimationState.animateWhen(this.getAnimationState() == ATTACK_ANIMATION, this.tickCount);
+        this.summonAnimationState.animateWhen(this.isSummoned() && this.tickCount < 30, this.tickCount);
     }
 
     @Override

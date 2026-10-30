@@ -26,6 +26,7 @@ public class GnatModel extends SinewEntityModel<Gnat> {
     protected void setupAnimations(Gnat entity, float limbSwing, float limbSwingAmount, float ageInTicks, float partialTicks, float netHeadYaw, float headPitch) {
         this.animateSmooth(entity.flyAnimationState, GnatAnimations.FLY, ageInTicks, partialTicks);
         this.animateSmooth(entity.attackAnimationState, GnatAnimations.ATTACK_BLEND, ageInTicks, partialTicks);
+        this.animateSmooth(entity.summonAnimationState, GnatAnimations.SUMMON_BLEND, ageInTicks, partialTicks);
     }
 
     public static LayerDefinition createBodyLayer() {

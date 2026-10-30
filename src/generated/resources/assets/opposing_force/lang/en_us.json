@@ -134,6 +134,8 @@
   "item.opposing_force.furball_spawn_egg": "Furball Spawn Egg",
   "item.opposing_force.ghost_spawn_egg": "Ghost Spawn Egg",
   "item.opposing_force.gnat_spawn_egg": "Gnat Spawn Egg",
+  "item.opposing_force.gnat_staff": "Gnat Staff",
+  "item.opposing_force.gnat_staff.description": "Summons a Gnat, using 0.5 minion slots",
   "item.opposing_force.gorloff": "Gorloff",
   "item.opposing_force.grasper_spawn_egg": "Grasper Spawn Egg",
   "item.opposing_force.grell_spawn_egg": "Grell Spawn Egg",

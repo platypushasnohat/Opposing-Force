@@ -62,10 +62,41 @@ public class ManiaItem extends GunItem {
         return ammo.isEmpty() && player.hasInfiniteMaterials() ? new ItemStack(OFItems.ECTOPLASM.get()) : ammo;
     }
 
+    public int countAmmo(Player player) {
+        int count = 0;
+        for (int i = 0; i < player.getInventory().getContainerSize(); i++) {
+            ItemStack stack = player.getInventory().getItem(i);
+            if (this.isAmmo(stack)) {
+                count += stack.getCount();
+            }
+        }
+        return count;
+    }
+
+    @Override
+    public boolean hasAmmo(Player player) {
+        return player.hasInfiniteMaterials() || this.countAmmo(player) >= 1 + getAttunement(player.getMainHandItem());
+    }
+
     @Override
     public void consumeAmmo(Player player, ItemStack stack, ItemStack ammo) {
-        if (SinewItemUtils.shouldConsumeAmmo(player, stack)) {
-            ammo.shrink(1);
+        int remaining = 0;
+        int cost = 1 + player.getRandom().nextInt(2) + getAttunement(stack);
+        for (int i = 0; i < cost; i++) {
+            if (SinewItemUtils.shouldConsumeMana(player, stack)) {
+                remaining++;
+            }
+        }
+        int taken = Math.min(remaining, ammo.getCount());
+        ammo.shrink(taken);
+        remaining -= taken;
+        for (int i = 0; i < player.getInventory().getContainerSize() && remaining > 0; i++) {
+            ItemStack slot = player.getInventory().getItem(i);
+            if (this.isAmmo(slot)) {
+                taken = Math.min(remaining, slot.getCount());
+                slot.shrink(taken);
+                remaining -= taken;
+            }
         }
     }
 

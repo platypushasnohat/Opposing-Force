@@ -43,7 +43,7 @@ public class OFBiomeModifiers {
         addSpawn(context, "grasper_windswept_savanna", OFBiomeTags.HAS_WINDSWEPT_SAVANNA_MONSTERS, new MobSpawnSettings.SpawnerData(OFEntities.GRASPER.get(), 20, 1, 2));
         addSpawn(context, "grasper_wooded_badlands", OFBiomeTags.HAS_WOODED_BADLANDS_MONSTERS, new MobSpawnSettings.SpawnerData(OFEntities.GRASPER.get(), 8, 1, 1));
         addSpawn(context, "parasoul", OFBiomeTags.HAS_CHERRY_GROVE_MONSTERS, new MobSpawnSettings.SpawnerData(OFEntities.PARASOUL.get(), 47, 1, 1));
-        addSpawn(context, "grell", OFBiomeTags.HAS_OVERWORLD_MONSTERS, new MobSpawnSettings.SpawnerData(OFEntities.GRELL.get(), 11, 1, 1));
+        addSpawn(context, "grell", OFBiomeTags.HAS_OVERWORLD_MONSTERS, new MobSpawnSettings.SpawnerData(OFEntities.GRELL.get(), 18, 1, 1));
         addSpawn(context, "pipsqueak", OFBiomeTags.HAS_OVERWORLD_MONSTERS, new MobSpawnSettings.SpawnerData(OFEntities.PIPSQUEAK.get(), 18, 2, 4));
         addSpawn(context, "brick", OFBiomeTags.HAS_OVERWORLD_MONSTERS, new MobSpawnSettings.SpawnerData(OFEntities.BRICK.get(), 25, 1, 2));
     }

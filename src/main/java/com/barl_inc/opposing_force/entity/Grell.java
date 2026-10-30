@@ -186,7 +186,7 @@ public class Grell extends BasicFlyingMonster implements SpectralEntity, EliteMo
     }
 
     protected void tickSpectral() {
-        if (!this.isEnraged() && !this.isInvulnerablePhase()) {
+        if (!this.isEnraged() && this.notInInvulnerablePhase()) {
             this.tickStares();
         }
         if (this.conjureCooldown > 0) {
@@ -207,10 +207,10 @@ public class Grell extends BasicFlyingMonster implements SpectralEntity, EliteMo
 
     private void tickShuffle() {
         LivingEntity target = this.getTarget();
-        if (target != null) {
+        if (target != null && this.shuffle != null) {
             this.shuffle.tick(target);
         }
-        if (target != null && this.shuffle.isDone()) {
+        if (target != null && this.shuffle != null && this.shuffle.isDone()) {
             Vec3 center = this.shuffle.getCenter();
             this.illusionAngle = (float) Mth.atan2(center.z - target.getZ(), center.x - target.getX());
             for (int slot = 0; slot < GrellShuffle.SLOTS; slot++) {
@@ -374,8 +374,8 @@ public class Grell extends BasicFlyingMonster implements SpectralEntity, EliteMo
         return this.entityData.get(HIDDEN);
     }
 
-    protected boolean isInvulnerablePhase() {
-        return this.isConjuring() || this.isHidden();
+    protected boolean notInInvulnerablePhase() {
+        return !this.isConjuring() && !this.isHidden();
     }
 
     public float getIllusionAngle() {
@@ -428,7 +428,7 @@ public class Grell extends BasicFlyingMonster implements SpectralEntity, EliteMo
             Vec3 pos = position.apply(clone);
             clone.moveTo(pos.x, pos.y, pos.z, this.getYRot(), 0.0F);
             serverLevel.addFreshEntity(clone);
-            SpectralSight.sendParticlesToPerceivers(serverLevel, clone, ParticleTypes.REVERSE_PORTAL, clone.getX(), clone.getY(0.5D), clone.getZ(), 40, 0.5D, 0.6D, 0.5D, 0.15D);
+            SpectralSight.sendParticlesToPerceivers(serverLevel, clone, ParticleTypes.REVERSE_PORTAL, clone.getX(), clone.getY(0.5D), clone.getZ(), 20, 0.5D, 0.6D, 0.5D, 0.15D);
             if (index == 0) {
                 SpectralSight.playSoundToListeners(serverLevel, clone, SoundEvents.ILLUSIONER_MIRROR_MOVE, SoundSource.HOSTILE, 1.5F, 0.8F);
             }
@@ -524,7 +524,7 @@ public class Grell extends BasicFlyingMonster implements SpectralEntity, EliteMo
 
     @Override
     public boolean hurt(DamageSource source, float amount) {
-        boolean hurt = !this.isInvulnerablePhase() && super.hurt(source, amount);
+        boolean hurt = this.notInInvulnerablePhase() && super.hurt(source, amount);
         if (hurt && source.getEntity() instanceof Player player) {
             this.stares.removeInt(player.getUUID());
             this.reveal(player);

@@ -31,7 +31,6 @@ public class ManiaItem extends GunItem {
 
     public static final String RELOAD_ANIMATION = "reload";
 
-
     public ManiaItem(Properties properties) {
         super(properties);
     }

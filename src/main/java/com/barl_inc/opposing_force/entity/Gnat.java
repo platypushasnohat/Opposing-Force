@@ -134,7 +134,7 @@ public class Gnat extends SummonableMonster implements FlyingAnimal {
     public void setupAnimationStates() {
         this.flyAnimationState.animateWhen(this.isFlying(), this.tickCount);
         this.attackAnimationState.animateWhen(this.getAnimationState() == ATTACK_ANIMATION, this.tickCount);
-        this.summonAnimationState.animateWhen(this.isSummoned() && this.tickCount < 30, this.tickCount);
+        this.summonAnimationState.animateWhen(this.isSummoned() && this.tickCount < 20, this.tickCount);
     }
 
     @Override

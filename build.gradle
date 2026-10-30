@@ -27,30 +27,35 @@ neoForge {
     }
 
     runs {
-        client {
+        register("client") {
             client()
-            systemProperty 'neoforge.enabledGameTestNamespaces', project.mod_id
+            systemProperty 'neoforge.enabledGameTestNamespaces', property("mod_id").toString()
         }
 
-        server {
+        register("server") {
             server()
             programArgument '--nogui'
-            systemProperty 'neoforge.enabledGameTestNamespaces', project.mod_id
+            systemProperty 'neoforge.enabledGameTestNamespaces', property("mod_id").toString()
         }
 
-        gameTestServer {
+        register("gameTestServer") {
             type = "gameTestServer"
-            systemProperty 'neoforge.enabledGameTestNamespaces', project.mod_id
+            systemProperty 'neoforge.enabledGameTestNamespaces', property("mod_id").toString()
         }
 
-        data {
+        register("data") {
             data()
-            programArguments.addAll '--mod', project.mod_id, '--all', '--output', file('src/generated/resources/').getAbsolutePath(), '--existing', file('src/main/resources/').getAbsolutePath()
+            programArguments.addAll(
+                    '--mod',
+                    property("mod_id").toString(),
+                    '--all',
+                    '--output', file('src/generated/resources/').getAbsolutePath(),
+                    '--existing', file('src/main/resources/').getAbsolutePath()
+            )
         }
 
         configureEach {
             systemProperty 'forge.logging.markers', 'REGISTRIES'
-            logLevel = org.slf4j.event.Level.DEBUG
         }
     }
 
@@ -102,6 +107,7 @@ dependencies {
     localRuntime "maven.modrinth:appleskin:3.0.5+mc1.21"
     localRuntime "maven.modrinth:worldedit:7.3.6"
     localRuntime "maven.modrinth:cyanide:v4LiMGGH"
+    localRuntime "maven.modrinth:debugutils:1.21.1-1.0.9-neoforge"
 }
 
 tasks.withType(ProcessResources).configureEach {

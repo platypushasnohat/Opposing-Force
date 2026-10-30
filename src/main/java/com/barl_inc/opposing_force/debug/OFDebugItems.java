@@ -69,6 +69,7 @@ public class OFDebugItems {
         return Component.translatable("item.opposing_force.tooltip.debug_item").withStyle(ChatFormatting.RED);
     }
 
+    @SuppressWarnings("deprecation")
     public static ItemStack revert(ItemStack stack) {
         Item base = getBase(stack.getItem());
         ItemStack reverted = stack;

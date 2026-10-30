@@ -45,7 +45,7 @@ public class Haunt extends PhasingMonster {
     public static AttributeSupplier.Builder registerAttributes() {
         return Mob.createMobAttributes()
                 .add(Attributes.MAX_HEALTH, 40.0D)
-                .add(Attributes.ARMOR, 7.0D)
+                .add(Attributes.ARMOR, 8.0D)
                 .add(Attributes.FLYING_SPEED, 0.4F)
                 .add(Attributes.MOVEMENT_SPEED, 0.25F)
                 .add(Attributes.ATTACK_DAMAGE, 8.0D)
@@ -60,7 +60,7 @@ public class Haunt extends PhasingMonster {
         this.goalSelector.addGoal(3, new LookAtPlayerGoal(this, Player.class, 12.0F));
         this.goalSelector.addGoal(3, new RandomLookAroundGoal(this));
         this.targetSelector.addGoal(0, new HurtByTargetGoal(this));
-        this.targetSelector.addGoal(1, new SpectralStareGoal(this));
+        this.targetSelector.addGoal(1, new SpectralStareGoal(this, 60, 32.0F));
     }
 
     @Override
@@ -90,6 +90,7 @@ public class Haunt extends PhasingMonster {
         return 15.0D;
     }
 
+    @SuppressWarnings("SuspiciousNameCombination")
     @Override
     public void travel(Vec3 travelVector) {
         if (this.isSpinning()) {
@@ -102,10 +103,10 @@ public class Haunt extends PhasingMonster {
             boolean z = !Mth.equal(moved.z, velocity.z);
             this.setDeltaMovement(velocity);
             if (x || y || z) { //bounce slop
-                Vec3 reflected = new Vec3(x ? -velocity.x : velocity.x, y ? -velocity.y : velocity.y, z ? -velocity.z : velocity.z).scale(0.97D);
+                Vec3 reflected = new Vec3(x ? -velocity.x : velocity.x, y ? -velocity.y : velocity.y, z ? -velocity.z : velocity.z).scale(0.98D);
                 Vec3 twisted = this.twist(reflected, 20.0F, 60.0F);
                 this.setDeltaMovement(x ? Math.copySign(twisted.x, reflected.x) : twisted.x, y ? Math.copySign(twisted.y, reflected.y) : twisted.y, z ? Math.copySign(twisted.z, reflected.z) : twisted.z);
-                this.playSound(SoundEvents.ANVIL_LAND, 0.5F, 1.4F + this.random.nextFloat() * 0.4F);
+                this.playSound(SoundEvents.ANVIL_LAND, 0.5F, 1.4F + this.getRandom().nextFloat() * 0.4F);
                 this.bounced = true;
             }
             this.faceMovement();
@@ -119,10 +120,11 @@ public class Haunt extends PhasingMonster {
     }
 
     //change direction on bounce
+    @SuppressWarnings("SameParameterValue")
     private Vec3 twist(Vec3 direction, float minAngle, float maxAngle) {
         Vec3 normal = direction.normalize();
-        Vec3 side = normal.cross(new Vec3(this.random.nextGaussian(), this.random.nextGaussian(), this.random.nextGaussian())).normalize();
-        float angle = Mth.nextFloat(this.random, minAngle, maxAngle) * Mth.DEG_TO_RAD;
+        Vec3 side = normal.cross(new Vec3(this.getRandom().nextGaussian(), this.getRandom().nextGaussian(), this.getRandom().nextGaussian())).normalize();
+        float angle = Mth.nextFloat(this.getRandom(), minAngle, maxAngle) * Mth.DEG_TO_RAD;
         return normal.scale(Mth.cos(angle)).add(side.scale(Mth.sin(angle))).scale(direction.length());
     }
 
@@ -156,6 +158,8 @@ public class Haunt extends PhasingMonster {
     }
 
     private static class HauntAttackGoal extends AttackGoal {
+
+        private static final double BOUNCE_SPEED = 1.25D;
 
         private final Haunt haunt;
         private int attackCooldown;
@@ -231,7 +235,7 @@ public class Haunt extends PhasingMonster {
                 this.haunt.playSound(SoundEvents.PLAYER_ATTACK_SWEEP, 1.2F, 0.5F);
             }
             if (this.timer == 17 && this.haunt.getGap(target) < 1.5D && this.haunt.hasLineOfSight(target)) {
-                target.hurt(this.attackFrom(target, Vec3.directionFromRotation(0.0F, this.haunt.getYRot())), (float) this.haunt.getAttributeValue(Attributes.ATTACK_DAMAGE) * 2.0F);
+                target.hurt(this.attackFrom(target, Vec3.directionFromRotation(0.0F, this.haunt.getYRot())), (float) this.haunt.getAttributeValue(Attributes.ATTACK_DAMAGE) * 1.5F);
                 this.haunt.playSound(SoundEvents.ZOMBIE_ATTACK_IRON_DOOR, 0.6F, 1.2F);
             }
             if (this.timer >= 30) {
@@ -249,7 +253,7 @@ public class Haunt extends PhasingMonster {
             }
             if (this.timer >= 30) {
                 this.haunt.setAnimationState(SPIN_ANIMATION);
-                this.haunt.setDeltaMovement(this.haunt.twist(this.aimAt(target, 1.5D), 20.0F, 45.0F));
+                this.haunt.setDeltaMovement(this.haunt.twist(this.aimAt(target, BOUNCE_SPEED), 20.0F, 45.0F));
                 this.haunt.playSound(SoundEvents.PHANTOM_SWOOP, 1.0F, 1.2F);
                 this.haunt.bounced = false;
                 this.haunt.returning = false;
@@ -257,7 +261,7 @@ public class Haunt extends PhasingMonster {
                 this.bounces = 0;
                 this.spinTicks = 0;
                 this.touching = List.of();
-                this.maxBounces = 10 + this.haunt.getRandom().nextInt(11);
+                this.maxBounces = 5 + this.haunt.getRandom().nextInt(3);
                 this.attackState = 3;
             }
         }
@@ -276,21 +280,21 @@ public class Haunt extends PhasingMonster {
             if (this.timer > 40) {
                 this.haunt.returning = true;
             } else if (!this.haunt.returning && this.haunt.distanceTo(target) > 20.0D) {
-                this.haunt.setDeltaMovement(this.aimAt(target, 1.5D));
+                this.haunt.setDeltaMovement(this.aimAt(target, BOUNCE_SPEED));
             }
             if (this.haunt.returning) {
-                this.haunt.setDeltaMovement(this.aimAt(target, 1.5D));
+                this.haunt.setDeltaMovement(this.aimAt(target, BOUNCE_SPEED));
             } else if (this.haunt.bounced) {
                 this.bounces++;
-                if (this.haunt.getRandom().nextInt(4) == 0) {
-                    this.haunt.setDeltaMovement(this.aimAt(target, 1.5D));
+                if (this.haunt.getRandom().nextInt(3) == 0) {
+                    this.haunt.setDeltaMovement(this.aimAt(target, BOUNCE_SPEED));
                 }
                 this.haunt.bounced = false;
                 this.timer = 0;
             }
-            if (this.haunt.returning ? this.haunt.getGap(target) < 2.0D : this.bounces >= this.maxBounces && this.spinTicks >= 200) {//timeout is both chosen bounces and at least 10 seconds have passed
+            if (this.haunt.returning ? this.haunt.getGap(target) < 2.0D : this.bounces >= this.maxBounces && this.spinTicks >= 250) {//timeout is both chosen bounces and at least 10 seconds have passed
                 this.haunt.setDeltaMovement(Vec3.ZERO);
-                this.spinCooldown = 200;
+                this.spinCooldown = 100 + this.haunt.getRandom().nextInt(50);
                 this.finishAttack();
             }
         }
@@ -306,6 +310,7 @@ public class Haunt extends PhasingMonster {
             return new DamageSource(this.haunt.damageSources().mobAttack(this.haunt).typeHolder(), this.haunt, this.haunt, target.position().subtract(direction.multiply(1.0D, 0.0D, 1.0D).normalize()));
         }
 
+        @SuppressWarnings("SameParameterValue")
         private Vec3 aimAt(LivingEntity target, double speed) {
             return target.getBoundingBox().getCenter().subtract(this.haunt.getBoundingBox().getCenter()).normalize().scale(speed);
         }

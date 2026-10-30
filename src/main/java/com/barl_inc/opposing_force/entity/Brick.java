@@ -281,9 +281,9 @@ public class Brick extends SummonableMonster {
 
         @Override
         protected boolean findRandomPosition() {
-            Vec3 vec3 = DefaultRandomPos.getPos(this.brick, 10, 4);
+            Vec3 vec3 = DefaultRandomPos.getPos(this.brick, 7, 4);
             if (this.brick.getLastHurtByMob() != null) {
-                vec3 = LandRandomPos.getPosAway(this.brick, 10, 4, this.brick.getLastHurtByMob().position());
+                vec3 = LandRandomPos.getPosAway(this.brick, 7, 4, this.brick.getLastHurtByMob().position());
             }
             if (vec3 == null) {
                 return false;

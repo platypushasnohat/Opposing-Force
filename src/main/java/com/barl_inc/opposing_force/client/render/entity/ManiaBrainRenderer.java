@@ -55,11 +55,11 @@ public class ManiaBrainRenderer extends EntityRenderer<ManiaBrain> {
             float phase = 0.5F + 0.5F * Mth.sin(age * 1.7F + i * 2.1F + entity.getId());
             float alpha = 0.35F * (0.4F + 0.6F * phase);
             poseStack.pushPose();
-            poseStack.translate((jumpRandom.nextFloat() - 0.5F) * 2.6F, (jumpRandom.nextFloat() - 0.5F) * 2.1F, (jumpRandom.nextFloat() - 0.5F) * 2.1F);
+            poseStack.translate((jumpRandom.nextFloat() - 0.5F) * 0.2F, (jumpRandom.nextFloat() - 0.5F) * 0.2F, (jumpRandom.nextFloat() - 0.5F) * 0.2F);
             if (i > 0) {
                 alpha = (0.08F + random.nextFloat() * 0.2F) * phase;
-                poseStack.translate((random.nextFloat() - 0.5F) * 0.6F, (random.nextFloat() - 0.5F) * 0.6F, (random.nextFloat() - 0.5F) * 3.0F);
-                poseStack.scale(0.6F + random.nextFloat() * 1.0F, 0.6F + random.nextFloat() * 0.6F, 1.0F);
+                poseStack.translate((random.nextFloat() - 0.5F) * 0.2F, (random.nextFloat() - 0.5F) * 0.2F, (random.nextFloat() - 0.5F) * 0.2F);
+                poseStack.scale(0.6F + random.nextFloat(), 0.6F + random.nextFloat() * 0.6F, 1.0F);
             }
             poseStack.scale(0.6F * shrink, 0.6F * shrink, 0.6F * shrink);
             this.brain.render(poseStack, consumer, LightTexture.FULL_BRIGHT, OverlayTexture.NO_OVERLAY, (int) (Mth.clamp(alpha * shrink, 0.0F, 1.0F) * 255.0F) << 24 | color);

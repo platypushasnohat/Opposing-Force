@@ -59,7 +59,7 @@ public class GrellClone extends Grell {
     public static AttributeSupplier.Builder registerAttributes() {
         return Grell.registerAttributes()
                 .add(Attributes.MAX_HEALTH, 20.0D)
-                .add(Attributes.ARMOR, 2.0D);
+                .add(Attributes.ARMOR, 0.0D);
     }
 
     @Override
@@ -189,7 +189,9 @@ public class GrellClone extends Grell {
         this.travel++;
         float progress = Math.min((float) this.travel / TRAVEL_TICKS, 1.0F);
         float eased = progress * progress * (3.0F - 2.0F * progress);
-        this.setPos(this.travelStart.lerp(this.getRingPosition(target), eased));
+        if (this.travelStart != null) {
+            this.setPos(this.travelStart.lerp(this.getRingPosition(target), eased));
+        }
         this.setDeltaMovement(Vec3.ZERO);
         this.face(target);
         if (progress >= 1.0F) {
@@ -216,13 +218,13 @@ public class GrellClone extends Grell {
             for (int i = 0; i < count; i++) {
                 if (this.isReal()) {
                     double dx = this.random.nextGaussian() * 1.5D;
-                    double dy = this.random.nextGaussian() * 1.5D;
+                    double dy = this.random.nextGaussian() * 0.5D;
                     double dz = this.random.nextGaussian() * 1.5D;
-                    SpectralSight.sendParticlesToPerceivers(serverLevel, this, ParticleTypes.PORTAL, x, y, z, 0, dx, dy, dz, 1.0D);
+                    SpectralSight.sendParticlesToPerceivers(serverLevel, this, ParticleTypes.PORTAL, x, y, z, 0, dx, dy, dz, 0.5D);
                 } else {
                     double dx = this.random.nextGaussian() * 0.08D;
                     double dz = this.random.nextGaussian() * 0.08D;
-                    SpectralSight.sendParticlesToPerceivers(serverLevel, this, ParticleTypes.REVERSE_PORTAL, x, y, z, 0, dx, 0.06D, dz, 1.0D);
+                    SpectralSight.sendParticlesToPerceivers(serverLevel, this, ParticleTypes.REVERSE_PORTAL, x, y, z, 0, dx, 0.01D, dz, 0.5D);
                 }
             }
         }
@@ -239,8 +241,8 @@ public class GrellClone extends Grell {
     }
 
     @Override
-    protected boolean isInvulnerablePhase() {
-        return this.isShuffling();
+    protected boolean notInInvulnerablePhase() {
+        return !this.isShuffling();
     }
 
     @Override

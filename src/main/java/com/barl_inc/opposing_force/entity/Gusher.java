@@ -123,7 +123,7 @@ public class Gusher extends AnimatedMonster {
     }
 
     public static boolean checkGusherSpawnRules(EntityType<Gusher> entityType, ServerLevelAccessor level, MobSpawnType spawnType, BlockPos pos, RandomSource random) {
-        return pos.getY() <= 0 && checkUndergroundMonsterSpawnRules(entityType, level, spawnType, pos, random);
+        return (MobSpawnType.isSpawner(spawnType) || pos.getY() <= 0) && checkUndergroundMonsterSpawnRules(entityType, level, spawnType, pos, random);
     }
 
     private static class GusherAttackGoal extends AttackGoal {

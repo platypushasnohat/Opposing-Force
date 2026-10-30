@@ -377,6 +377,6 @@ public class Terror extends AnimatedMonster implements BodyChainMob {
 
     @SuppressWarnings("deprecation")
     public static boolean checkTerrorSpawnRules(EntityType<Terror> entityType, ServerLevelAccessor level, MobSpawnType spawnType, BlockPos pos, RandomSource random) {
-        return pos.getY() <= level.getSeaLevel() - 33 && level.getRawBrightness(pos, 0) == 0 && level.getBlockState(pos).is(Blocks.WATER);
+        return MobSpawnType.isSpawner(spawnType) || pos.getY() <= level.getSeaLevel() - 33 && level.getRawBrightness(pos, 0) == 0 && level.getBlockState(pos).is(Blocks.WATER);
     }
 }

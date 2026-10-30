@@ -117,7 +117,7 @@ public class Grell extends BasicFlyingMonster implements SpectralEntity, EliteMo
     }
 
     public static boolean checkGrellSpawnRules(EntityType<Grell> entityType, ServerLevelAccessor level, MobSpawnType spawnType, BlockPos pos, RandomSource random) {
-        return pos.getY() < 40 && checkMonsterSpawnRules(entityType, level, spawnType, pos, random);
+        return (MobSpawnType.isSpawner(spawnType) || pos.getY() < 40) && checkMonsterSpawnRules(entityType, level, spawnType, pos, random);
     }
 
     @Override

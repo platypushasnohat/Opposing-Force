@@ -72,14 +72,14 @@ public class Ghost extends PhasingMonster {
     @Override
     public SpawnGroupData finalizeSpawn(ServerLevelAccessor level, DifficultyInstance difficulty, MobSpawnType spawnType, @Nullable SpawnGroupData spawnGroupData) {
         if (this.random.nextBoolean()) {
-            int roll = this.random.nextInt(3);
+            int roll = this.random.nextInt(5);
             Item weapon = switch (roll) {
-                case 0 -> Items.IRON_SWORD;
-                case 1 -> Items.IRON_AXE;
+                case 0, 1 -> Items.IRON_SWORD;
+                case 2, 3 -> Items.IRON_AXE;
                 default -> OFItems.SPECTRAL_CLEAVER.get();
             };
             this.setItemSlot(EquipmentSlot.MAINHAND, new ItemStack(weapon));
-            if (roll < 2) {
+            if (roll < 4) {
                 this.enchantSpawnedWeapon(level, this.random, difficulty);
             }
             this.setDropChance(EquipmentSlot.MAINHAND, 0.5F);
@@ -88,7 +88,7 @@ public class Ghost extends PhasingMonster {
     }
 
     public static boolean checkGhostSpawnRules(EntityType<Ghost> entityType, ServerLevelAccessor level, MobSpawnType spawnType, BlockPos pos, RandomSource random) {
-        return (pos.getY() < 40 || level.getBiome(pos).is(Biomes.DARK_FOREST) && random.nextBoolean()) && checkMonsterSpawnRules(entityType, level, spawnType, pos, random);
+        return (MobSpawnType.isSpawner(spawnType) || (pos.getY() < 40 || level.getBiome(pos).is(Biomes.DARK_FOREST) && random.nextBoolean())) && checkMonsterSpawnRules(entityType, level, spawnType, pos, random);
     }
 
     @Override

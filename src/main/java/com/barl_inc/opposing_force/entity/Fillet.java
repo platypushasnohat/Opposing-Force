@@ -338,7 +338,7 @@ public class Fillet extends AnimatedMonster implements Bucketable {
 
     @SuppressWarnings("unused")
     public static boolean checkFilletSpawnRules(EntityType<Fillet> entityType, ServerLevelAccessor level, MobSpawnType spawnType, BlockPos pos, RandomSource random) {
-        return pos.getY() <= level.getSeaLevel() - 33 && level.getRawBrightness(pos, 0) == 0 && level.getBlockState(pos).is(Blocks.WATER);
+        return MobSpawnType.isSpawner(spawnType) || pos.getY() <= level.getSeaLevel() - 33 && level.getRawBrightness(pos, 0) == 0 && level.getBlockState(pos).is(Blocks.WATER);
     }
 
     @Nullable

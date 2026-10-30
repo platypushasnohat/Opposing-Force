@@ -89,7 +89,7 @@ public class Brick extends AnimatedMonster {
     }
 
     public static boolean checkBrickSpawnRules(EntityType<Brick> entityType, ServerLevelAccessor level, MobSpawnType spawnType, BlockPos pos, RandomSource random) {
-        return pos.getY() <= 40 && checkUndergroundMonsterSpawnRules(entityType, level, spawnType, pos, random);
+        return (MobSpawnType.isSpawner(spawnType) || pos.getY() <= 40) && checkUndergroundMonsterSpawnRules(entityType, level, spawnType, pos, random);
     }
 
     public boolean isDancing() {

@@ -77,7 +77,7 @@ public class Roamer extends AnimatedMonster implements SpectralEntity {
     }
 
     public static boolean checkRoamerSpawnRules(EntityType<Roamer> entityType, ServerLevelAccessor level, MobSpawnType spawnType, BlockPos pos, RandomSource random) {
-        return pos.getY() >= level.getHeight(Heightmap.Types.MOTION_BLOCKING_NO_LEAVES, pos.getX(), pos.getZ()) && checkSurfaceMonsterSpawnRules(entityType, level, spawnType, pos, random);
+        return (MobSpawnType.isSpawner(spawnType) || pos.getY() >= level.getHeight(Heightmap.Types.MOTION_BLOCKING_NO_LEAVES, pos.getX(), pos.getZ())) && checkSurfaceMonsterSpawnRules(entityType, level, spawnType, pos, random);
     }
 
     @Override

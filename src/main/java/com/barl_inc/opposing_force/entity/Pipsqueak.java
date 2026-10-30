@@ -96,7 +96,7 @@ public class Pipsqueak extends BasicFlyingMonster {
     }
 
     public static boolean checkPipsqueakSpawnRules(EntityType<Pipsqueak> entityType, ServerLevelAccessor level, MobSpawnType spawnType, BlockPos pos, RandomSource random) {
-        return pos.getY() < 40 && checkUndergroundMonsterSpawnRules(entityType, level, spawnType, pos, random);
+        return (MobSpawnType.isSpawner(spawnType) || pos.getY() < 40) && checkUndergroundMonsterSpawnRules(entityType, level, spawnType, pos, random);
     }
 
     @Override

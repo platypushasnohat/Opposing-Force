@@ -137,7 +137,7 @@ public class Haunt extends PhasingMonster {
     }
 
     public static boolean checkHauntSpawnRules(EntityType<Haunt> entityType, ServerLevelAccessor level, MobSpawnType spawnType, BlockPos pos, RandomSource random) {
-        return pos.getY() < 0 && checkMonsterSpawnRules(entityType, level, spawnType, pos, random);
+        return (MobSpawnType.isSpawner(spawnType) || pos.getY() < 0) && checkMonsterSpawnRules(entityType, level, spawnType, pos, random);
     }
 
     @Override

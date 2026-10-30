@@ -144,7 +144,7 @@ public class Grasper extends AnimatedMonster {
     }
 
     public static boolean checkGrasperSpawnRules(EntityType<Grasper> entityType, ServerLevelAccessor level, MobSpawnType spawnType, BlockPos pos, RandomSource random) {
-        return (!level.getBiome(pos).is(Biomes.WOODED_BADLANDS) || level.getBlockState(pos.below()).is(Blocks.GRASS_BLOCK)) && checkSurfaceMonsterSpawnRules(entityType, level, spawnType, pos, random);
+        return (MobSpawnType.isSpawner(spawnType) || (!level.getBiome(pos).is(Biomes.WOODED_BADLANDS) || level.getBlockState(pos.below()).is(Blocks.GRASS_BLOCK))) && checkSurfaceMonsterSpawnRules(entityType, level, spawnType, pos, random);
     }
 
     @Override

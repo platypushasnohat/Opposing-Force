@@ -124,7 +124,7 @@ public class Furball extends AnimatedMonster {
     }
 
     public static boolean checkFurballSpawnRules(EntityType<Furball> entityType, ServerLevelAccessor level, MobSpawnType spawnType, BlockPos pos, RandomSource random) {
-        return level.getBlockState(pos.below()).is(BlockTags.ANIMALS_SPAWNABLE_ON) && checkMonsterSpawnRules(entityType, level, spawnType, pos, random);
+        return (MobSpawnType.isSpawner(spawnType) || level.getBlockState(pos.below()).is(BlockTags.ANIMALS_SPAWNABLE_ON)) && checkMonsterSpawnRules(entityType, level, spawnType, pos, random);
     }
 
     private static class FurballAttackGoal extends AttackGoal {

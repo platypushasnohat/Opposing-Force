@@ -4,6 +4,7 @@ import com.barl_inc.opposing_force.OpposingForce;
 import com.barl_inc.opposing_force.registry.OFItems;
 import com.barl_inc.opposing_force.registry.properties.OFCurioDefinitions;
 import com.barl_inc.opposing_force.registry.properties.OFItemTiers;
+import com.platypushasnohat.sinew.debug.SinewDebugItems;
 import net.minecraft.ChatFormatting;
 import net.minecraft.core.component.DataComponents;
 import net.minecraft.network.chat.Component;
@@ -12,6 +13,7 @@ import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.Items;
 import net.minecraft.world.item.SwordItem;
 import net.minecraft.world.item.component.Unbreakable;
 import net.neoforged.bus.api.IEventBus;
@@ -24,6 +26,7 @@ import javax.annotation.Nullable;
 import java.util.Map;
 import java.util.Set;
 import java.util.UUID;
+import java.util.function.Supplier;
 
 public class OFDebugItems {
 
@@ -41,12 +44,13 @@ public class OFDebugItems {
     public static final DeferredItem<Item> SOULCLEAVE = DEBUG_ITEM.register("soulcleave", () -> new SoulcleaveItem(OFItemTiers.SPECTRAL_CLEAVER, new Item.Properties().rarity(OFDebugRarity.DEBUG.getValue()).fireResistant().attributes(SwordItem.createAttributes(OFItemTiers.SPECTRAL_CLEAVER, 3.5F, -2.4F)).component(DataComponents.UNBREAKABLE, new Unbreakable(false))));
     public static final DeferredItem<Item> MINDFUCK = DEBUG_ITEM.register("mindfuck", () -> new MindfuckItem(new Item.Properties().stacksTo(1).rarity(OFDebugRarity.DEBUG.getValue()).fireResistant()));
 
-    private static final Map<DeferredItem<Item>, DeferredItem<Item>> UPGRADES = Map.of(
+    private static final Map<Supplier<? extends Item>, Supplier<? extends Item>> UPGRADES = Map.of(
             OFItems.CURSED_RINGLINE, RINGMASTER,
             OFItems.SPECTRAL_CLEAVER, SOULCLEAVE,
             OFItems.SPECTRAL_SHIELD, KNIGHTSOUL,
             OFItems.SLIMY_SHIELD, SLIMEWARD,
-            OFItems.MANIA, MINDFUCK
+            OFItems.MANIA, MINDFUCK,
+            () -> Items.SADDLE, SinewDebugItems.DEBUG_MOUNT_SUMMONER
     );
 
     public static void register(IEventBus modEventBus) {
@@ -100,7 +104,7 @@ public class OFDebugItems {
     @Nullable
     public static Item getUpgrade(Item item) {
         Item upgrade = null;
-        for (Map.Entry<DeferredItem<Item>, DeferredItem<Item>> entry : UPGRADES.entrySet()) {
+        for (Map.Entry<Supplier<? extends Item>, Supplier<? extends Item>> entry : UPGRADES.entrySet()) {
             if (entry.getKey().get() == item) {
                 upgrade = entry.getValue().get();
             }
@@ -111,7 +115,7 @@ public class OFDebugItems {
     @Nullable
     private static Item getBase(Item item) {
         Item base = null;
-        for (Map.Entry<DeferredItem<Item>, DeferredItem<Item>> entry : UPGRADES.entrySet()) {
+        for (Map.Entry<Supplier<? extends Item>, Supplier<? extends Item>> entry : UPGRADES.entrySet()) {
             if (entry.getValue().get() == item) {
                 base = entry.getKey().get();
             }

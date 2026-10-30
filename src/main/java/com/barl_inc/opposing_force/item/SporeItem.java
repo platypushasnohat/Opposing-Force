@@ -51,7 +51,7 @@ public class SporeItem extends Item {
                 if (this.type == Type.KNOCKBACK && !ally) {
                     this.knockback(player, entity);
                 } else if (this.type == Type.OXIDIZED && ally && entity.distanceTo(player) <= 4.0F) {
-                    entity.addEffect(new MobEffectInstance(MobEffects.DAMAGE_RESISTANCE, 140, 0), player);
+                    entity.addEffect(new MobEffectInstance(MobEffects.DAMAGE_RESISTANCE, 100, 0), player);
                 }
             }
         }
@@ -81,7 +81,7 @@ public class SporeItem extends Item {
 
     public enum Type {
         KNOCKBACK(OFParticleTypes.SPORE_CLOUD, 0.8F, 20),
-        OXIDIZED(OFParticleTypes.BRICK_SPORE_CLOUD, 0.6F, 140);
+        OXIDIZED(OFParticleTypes.BRICK_SPORE_CLOUD, 0.6F, 100);
 
         private final Supplier<SimpleParticleType> particle;
         private final float pitch;

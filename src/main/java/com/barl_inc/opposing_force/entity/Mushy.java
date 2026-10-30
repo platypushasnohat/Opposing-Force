@@ -4,7 +4,9 @@ import com.barl_inc.opposing_force.entity.ai.goal.JukeboxDanceGoal;
 import com.barl_inc.opposing_force.entity.ai.goal.MushyAttackGoal;
 import com.barl_inc.opposing_force.registry.OFSoundEvents;
 import com.platypushasnohat.sinew.client.animation.SmoothAnimationState;
-import com.platypushasnohat.sinew.entity.base.AnimatedMonster;
+import com.platypushasnohat.sinew.entity.ai.goal.TamedOwnerHurtByTargetGoal;
+import com.platypushasnohat.sinew.entity.ai.goal.TamedOwnerHurtTargetGoal;
+import com.platypushasnohat.sinew.entity.base.SummonableMonster;
 import net.minecraft.core.BlockPos;
 import net.minecraft.network.syncher.EntityDataAccessor;
 import net.minecraft.network.syncher.EntityDataSerializers;
@@ -21,6 +23,7 @@ import net.minecraft.world.entity.MobSpawnType;
 import net.minecraft.world.entity.ai.attributes.AttributeSupplier;
 import net.minecraft.world.entity.ai.attributes.Attributes;
 import net.minecraft.world.entity.ai.goal.FloatGoal;
+import net.minecraft.world.entity.ai.goal.FollowOwnerGoal;
 import net.minecraft.world.entity.ai.goal.LookAtPlayerGoal;
 import net.minecraft.world.entity.ai.goal.RandomLookAroundGoal;
 import net.minecraft.world.entity.ai.goal.WaterAvoidingRandomStrollGoal;
@@ -30,7 +33,7 @@ import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.ServerLevelAccessor;
 
-public class Mushy extends AnimatedMonster {
+public class Mushy extends SummonableMonster {
 
     private static final EntityDataAccessor<Float> LAUNCH_TILT = SynchedEntityData.defineId(Mushy.class, EntityDataSerializers.FLOAT);
     private static final EntityDataAccessor<Float> LAUNCH_TILT_YAW = SynchedEntityData.defineId(Mushy.class, EntityDataSerializers.FLOAT);
@@ -51,6 +54,7 @@ public class Mushy extends AnimatedMonster {
     public final SmoothAnimationState launchAnimationState = new SmoothAnimationState();
     public final SmoothAnimationState spinAnimationState = new SmoothAnimationState(0.25F);
     public final SmoothAnimationState attackAnimationState = new SmoothAnimationState(1.0F);
+    public final SmoothAnimationState summonAnimationState = new SmoothAnimationState(1.0F);
 
     public Mushy(EntityType<? extends Mushy> entityType, Level level) {
         super(entityType, level);
@@ -70,12 +74,15 @@ public class Mushy extends AnimatedMonster {
         this.goalSelector.addGoal(0, new FloatGoal(this));
         this.goalSelector.addGoal(1, this.danceGoal = new JukeboxDanceGoal<>(this, DANCE_ANIMATION));
         this.goalSelector.addGoal(2, new MushyAttackGoal(this));
-        this.goalSelector.addGoal(3, new WaterAvoidingRandomStrollGoal(this, 1.0D));
-        this.goalSelector.addGoal(4, new LookAtPlayerGoal(this, Player.class, 8.0F));
-        this.goalSelector.addGoal(4, new LookAtPlayerGoal(this, Mob.class, 8.0F));
-        this.goalSelector.addGoal(5, new RandomLookAroundGoal(this));
-        this.targetSelector.addGoal(0, new HurtByTargetGoal(this));
-        this.targetSelector.addGoal(1, new NearestAttackableTargetGoal<>(this, Player.class, true));
+        this.goalSelector.addGoal(3, new FollowOwnerGoal(this, 1.2D, 6.0F, 2.0F));
+        this.goalSelector.addGoal(4, new WaterAvoidingRandomStrollGoal(this, 1.0D));
+        this.goalSelector.addGoal(5, new LookAtPlayerGoal(this, Player.class, 8.0F));
+        this.goalSelector.addGoal(5, new LookAtPlayerGoal(this, Mob.class, 8.0F));
+        this.goalSelector.addGoal(6, new RandomLookAroundGoal(this));
+        this.targetSelector.addGoal(0, new TamedOwnerHurtByTargetGoal(this));
+        this.targetSelector.addGoal(1, new TamedOwnerHurtTargetGoal(this));
+        this.targetSelector.addGoal(2, new HurtByTargetGoal(this));
+        this.targetSelector.addGoal(3, new NearestAttackableTargetGoal<>(this, Player.class, 10, true, false, target -> !this.isTame()));
     }
 
     @Override
@@ -166,6 +173,7 @@ public class Mushy extends AnimatedMonster {
         this.danceAnimationState.animateWhen(!this.isInWaterOrBubble() && this.onGround() && this.getAnimationState() == DANCE_ANIMATION, this.tickCount);
         this.launchAnimationState.animateWhen(!this.isInWaterOrBubble() && this.onGround() && this.getAnimationState() == JUMP_ANIMATION, this.tickCount);
         this.spinAnimationState.animateWhen(!this.isInWaterOrBubble() && this.getAnimationState() == SPIN_ANIMATION, this.tickCount);
+        this.summonAnimationState.animateWhen(this.isSummoned() && this.tickCount < 30, this.tickCount);
     }
 
     @Override

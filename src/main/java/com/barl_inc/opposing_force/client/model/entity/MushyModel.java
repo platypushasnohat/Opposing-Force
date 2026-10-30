@@ -10,13 +10,13 @@ import net.minecraft.util.Mth;
 
 public class MushyModel extends SinewEntityModel<Mushy> {
 
-	private final ModelPart root;
-	private final ModelPart body_main;
+    private final ModelPart root;
+    private final ModelPart body_main;
 
-	public MushyModel(ModelPart root) {
-		this.root = root.getChild("root");
-		this.body_main = this.root.getChild("body_main");
-	}
+    public MushyModel(ModelPart root) {
+        this.root = root.getChild("root");
+        this.body_main = this.root.getChild("body_main");
+    }
 
     @Override
     public ModelPart root() {
@@ -31,16 +31,22 @@ public class MushyModel extends SinewEntityModel<Mushy> {
         this.animateSmooth(entity.danceAnimationState, MushyAnimations.DANCE, ageInTicks, partialTicks);
         this.animateSmooth(entity.launchAnimationState, MushyAnimations.LAUNCH_START, ageInTicks, partialTicks);
         this.animateSmooth(entity.spinAnimationState, MushyAnimations.LAUNCH_LOOP, ageInTicks, partialTicks);
+        this.animateSmooth(entity.summonAnimationState, MushyAnimations.SUMMONED, ageInTicks, partialTicks);
+        if (entity.isSummoned() && entity.tickCount < 30) {
+            float center = -6.0F * this.body_main.yScale;
+            this.body_main.y += center * (1.0F - Mth.cos(this.body_main.xRot));
+            this.body_main.z -= center * Mth.sin(this.body_main.xRot);
+        }
         this.body_main.yRot += entity.getSpinAngle(partialTicks) * Mth.DEG_TO_RAD;
     }
 
-	public static LayerDefinition createBodyLayer() {
-		MeshDefinition meshdefinition = new MeshDefinition();
-		PartDefinition partdefinition = meshdefinition.getRoot();
+    public static LayerDefinition createBodyLayer() {
+        MeshDefinition meshdefinition = new MeshDefinition();
+        PartDefinition partdefinition = meshdefinition.getRoot();
 
-		PartDefinition root = partdefinition.addOrReplaceChild("root", CubeListBuilder.create(), PartPose.offset(0.0F, 24.0F, 0.0F));
+        PartDefinition root = partdefinition.addOrReplaceChild("root", CubeListBuilder.create(), PartPose.offset(0.0F, 24.0F, 0.0F));
 
-		PartDefinition body_main = root.addOrReplaceChild("body_main", CubeListBuilder.create(), PartPose.offset(0.0F, -3.0F, 0.0F));
+        PartDefinition body_main = root.addOrReplaceChild("body_main", CubeListBuilder.create(), PartPose.offset(0.0F, -3.0F, 0.0F));
 
         body_main.addOrReplaceChild("body", CubeListBuilder.create().texOffs(0, 16).addBox(4.5F, -7.0F, -3.5F, 1.0F, 3.0F, 7.0F, new CubeDeformation(0.0F))
                 .texOffs(28, 0).addBox(-2.5F, -4.0F, -2.5F, 5.0F, 4.0F, 5.0F, new CubeDeformation(0.0F))
@@ -60,5 +66,5 @@ public class MushyModel extends SinewEntityModel<Mushy> {
                 .texOffs(0, 1).mirror().addBox(-0.5F, 1.0F, -2.5F, 1.0F, 2.0F, 1.0F, new CubeDeformation(0.0F)).mirror(false), PartPose.offset(-1.0F, 0.0F, 0.0F));
 
         return LayerDefinition.create(meshdefinition, 64, 32);
-	}
+    }
 }

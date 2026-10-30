@@ -143,7 +143,7 @@ public class ManiaItem extends GunItem {
     @Override
     public void appendHoverText(ItemStack stack, TooltipContext context, List<Component> tooltipComponents, TooltipFlag tooltipFlag) {
         tooltipComponents.add(OFTooltips.description(this.getAmmoTooltip()));
-        OFTooltips.addStats(tooltipComponents, "item.opposing_force.tooltip.when_fired", OFTooltips.damage(this.getDamage(), this.getShades(stack).size()));
+        OFTooltips.addStats(tooltipComponents, "item.opposing_force.tooltip.when_fired", OFTooltips.magicDamage(this.getDamage(), this.getShades(stack).size()));
     }
 
     @Override

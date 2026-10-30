@@ -2,6 +2,7 @@ package com.barl_inc.opposing_force.entity;
 
 import com.barl_inc.opposing_force.OpposingForce;
 import com.barl_inc.opposing_force.entity.ai.goal.BrickAttackGoal;
+import com.barl_inc.opposing_force.entity.ai.goal.BrickSummonDefendGoal;
 import com.barl_inc.opposing_force.entity.ai.goal.JukeboxDanceGoal;
 import com.barl_inc.opposing_force.registry.OFDamageTypes;
 import com.barl_inc.opposing_force.registry.OFParticleTypes;
@@ -10,6 +11,7 @@ import com.barl_inc.opposing_force.registry.datapack.tags.OFEntityTypeTags;
 import com.platypushasnohat.sinew.client.animation.SmoothAnimationState;
 import com.platypushasnohat.sinew.entity.ai.control.UnrestrictedBodyRotationControl;
 import com.platypushasnohat.sinew.entity.base.AnimatedMonster;
+import com.platypushasnohat.sinew.entity.base.SummonableMonster;
 import net.minecraft.core.BlockPos;
 import net.minecraft.network.syncher.EntityDataAccessor;
 import net.minecraft.resources.ResourceLocation;
@@ -40,7 +42,7 @@ import net.minecraft.world.phys.Vec3;
 
 import java.util.List;
 
-public class Brick extends AnimatedMonster {
+public class Brick extends SummonableMonster {
 
     public static final int DEFEND_ANIMATION = 1;
     public static final int DANCE_ANIMATION = 2;
@@ -57,6 +59,7 @@ public class Brick extends AnimatedMonster {
     public final SmoothAnimationState defendAnimationState = new SmoothAnimationState(0.2F);
     public final SmoothAnimationState meltAnimationState = new SmoothAnimationState(1.0F);
     public final SmoothAnimationState hurtAnimationState = new SmoothAnimationState(1.0F);
+    public final SmoothAnimationState summonAnimationState = new SmoothAnimationState(1.0F);
 
     public Brick(EntityType<? extends Brick> entityType, Level level) {
         super(entityType, level);
@@ -79,17 +82,24 @@ public class Brick extends AnimatedMonster {
         this.goalSelector.addGoal(0, new FloatGoal(this));
         this.goalSelector.addGoal(1, new BrickPanicGoal(this, 1.5D));
         this.goalSelector.addGoal(2, this.danceGoal = new JukeboxDanceGoal<>(this, DANCE_ANIMATION));
+        this.goalSelector.addGoal(3, new BrickSummonDefendGoal(this));
         this.goalSelector.addGoal(3, new BrickAttackGoal(this));
-        this.goalSelector.addGoal(4, new WaterAvoidingRandomStrollGoal(this, 1.0D));
-        this.goalSelector.addGoal(5, new LookAtPlayerGoal(this, Player.class, 8.0F));
-        this.goalSelector.addGoal(5, new LookAtPlayerGoal(this, Mob.class, 8.0F));
-        this.goalSelector.addGoal(6, new RandomLookAroundGoal(this));
-        this.targetSelector.addGoal(0, new NearestAttackableTargetGoal<>(this, Player.class, true));
+        this.goalSelector.addGoal(4, new FollowOwnerGoal(this, 1.2D, 6.0F, 2.0F));
+        this.goalSelector.addGoal(5, new WaterAvoidingRandomStrollGoal(this, 1.0D));
+        this.goalSelector.addGoal(6, new LookAtPlayerGoal(this, Player.class, 8.0F));
+        this.goalSelector.addGoal(6, new LookAtPlayerGoal(this, Mob.class, 8.0F));
+        this.goalSelector.addGoal(7, new RandomLookAroundGoal(this));
+        this.targetSelector.addGoal(0, new NearestAttackableTargetGoal<>(this, Player.class, 10, true, false, target -> !this.isTame()));
         this.targetSelector.addGoal(1, new HurtByTargetGoal(this));
     }
 
     public static boolean checkBrickSpawnRules(EntityType<Brick> entityType, ServerLevelAccessor level, MobSpawnType spawnType, BlockPos pos, RandomSource random) {
-        return (MobSpawnType.isSpawner(spawnType) || pos.getY() <= 40) && checkUndergroundMonsterSpawnRules(entityType, level, spawnType, pos, random);
+        return (MobSpawnType.isSpawner(spawnType) || pos.getY() <= 40) && AnimatedMonster.checkUndergroundMonsterSpawnRules(entityType, level, spawnType, pos, random);
+    }
+
+    @Override
+    public float getSummonCost() {
+        return 3.0F;
     }
 
     public boolean isDancing() {
@@ -221,6 +231,7 @@ public class Brick extends AnimatedMonster {
         this.defendAnimationState.animateWhen(state == DEFEND_ANIMATION, this.tickCount);
         this.meltAnimationState.animateWhen(state == MELT_ANIMATION, this.tickCount);
         this.hurtAnimationState.animateWhen(this.hurtTime > 0 && state != MELT_ANIMATION, this.tickCount);
+        this.summonAnimationState.animateWhen(this.isSummoned() && this.tickCount < 30, this.tickCount);
     }
 
     @Override
@@ -260,7 +271,7 @@ public class Brick extends AnimatedMonster {
         }
 
         private List<LivingEntity> getNearbyMobs() {
-            return this.brick.level().getEntitiesOfClass(LivingEntity.class, this.brick.getBoundingBox().inflate(6.0D), entity -> entity != this.brick);
+            return this.brick.level().getEntitiesOfClass(LivingEntity.class, this.brick.getBoundingBox().inflate(6.0D), entity -> entity != this.brick && !this.brick.isAlliedTo(entity));
         }
 
         @Override

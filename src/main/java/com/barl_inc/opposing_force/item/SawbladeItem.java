@@ -47,9 +47,9 @@ public class SawbladeItem extends Item {
 		return InteractionResultHolder.sidedSuccess(stack, level.isClientSide);
 	}
 
-	@Override
-	public void appendHoverText(ItemStack stack, TooltipContext context, List<Component> tooltipComponents, TooltipFlag tooltipFlag) {
-		super.appendHoverText(stack, context, tooltipComponents, tooltipFlag);
-        OFTooltips.addStats(tooltipComponents, "item.opposing_force.tooltip.when_thrown", OFTooltips.damage(Sawblade.DAMAGE, 1));
-	}
+    @Override
+    public void appendHoverText(ItemStack stack, TooltipContext context, List<Component> tooltipComponents, TooltipFlag tooltipFlag) {
+        super.appendHoverText(stack, context, tooltipComponents, tooltipFlag);
+        OFTooltips.addStats(tooltipComponents, "item.opposing_force.tooltip.when_thrown", OFTooltips.rangedDamage(Sawblade.DAMAGE, 1));
+    }
 }

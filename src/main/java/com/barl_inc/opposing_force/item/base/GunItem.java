@@ -112,7 +112,7 @@ public abstract class GunItem extends ProjectileWeaponItem {
     public void appendHoverText(ItemStack stack, TooltipContext context, List<Component> tooltipComponents, TooltipFlag tooltipFlag) {
         super.appendHoverText(stack, context, tooltipComponents, tooltipFlag);
         tooltipComponents.add(OFTooltips.description(this.getAmmoTooltip()));
-        OFTooltips.addStats(tooltipComponents, "item.opposing_force.tooltip.when_fired", OFTooltips.damage(this.getDamage(), this.getShotCount()));
+        OFTooltips.addStats(tooltipComponents, "item.opposing_force.tooltip.when_fired", OFTooltips.rangedDamage(this.getDamage(), this.getShotCount()));
     }
 
     @Override

@@ -44,7 +44,7 @@ public class CursedRinglineItem extends MagicWeaponItem {
     @Override
     public void appendHoverText(ItemStack stack, TooltipContext context, List<Component> tooltipComponents, TooltipFlag tooltipFlag) {
         super.appendHoverText(stack, context, tooltipComponents, tooltipFlag);
-        OFTooltips.addStats(tooltipComponents, "item.opposing_force.tooltip.when_cast", OFTooltips.damage(RingProjectile.DAMAGE, this.getRingCount(stack) + this.getAttunement(stack)));
+        OFTooltips.addStats(tooltipComponents, "item.opposing_force.tooltip.when_cast", OFTooltips.magicDamage(RingProjectile.DAMAGE, this.getRingCount(stack) + this.getAttunement(stack)));
     }
 
     @Override

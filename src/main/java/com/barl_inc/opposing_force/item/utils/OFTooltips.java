@@ -17,11 +17,19 @@ public class OFTooltips {
         return CommonComponents.space().append(Component.translatable(key, ItemAttributeModifiers.ATTRIBUTE_MODIFIER_FORMAT.format(value))).withStyle(ChatFormatting.DARK_GREEN);
     }
 
-    public static Component damage(float damage, int count) {
+    public static Component magicDamage(float damage, int count) {
+        return damage("magic", damage, count);
+    }
+
+    public static Component rangedDamage(float damage, int count) {
+        return damage("ranged", damage, count);
+    }
+
+    private static Component damage(String type, float damage, int count) {
         if (count > 1) {
-            return CommonComponents.space().append(Component.translatable("item.opposing_force.tooltip.multi_damage", ItemAttributeModifiers.ATTRIBUTE_MODIFIER_FORMAT.format(damage), count)).withStyle(ChatFormatting.DARK_GREEN);
+            return CommonComponents.space().append(Component.translatable("item.opposing_force.tooltip." + type + "_multi_damage", ItemAttributeModifiers.ATTRIBUTE_MODIFIER_FORMAT.format(damage), count)).withStyle(ChatFormatting.DARK_GREEN);
         } else {
-            return stat("item.opposing_force.tooltip.damage", damage);
+            return stat("item.opposing_force.tooltip." + type + "_damage", damage);
         }
     }
 

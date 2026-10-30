@@ -73,7 +73,8 @@ public class OFItemTagsProvider extends ItemTagsProvider {
                 OFItems.SPECTRAL_SHIELD.get(),
                 OFItems.CURSED_RINGLINE.get(),
                 OFItems.MANIA.get(),
-                OFItems.GNAT_STAFF.get()
+                OFItems.GNAT_STAFF.get(),
+                OFItems.SHROOM_STAFF.get()
         );
 
         this.tag(ItemTags.HEAD_ARMOR).add(

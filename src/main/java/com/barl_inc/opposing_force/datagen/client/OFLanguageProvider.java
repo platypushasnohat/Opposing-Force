@@ -116,6 +116,13 @@ public class OFLanguageProvider extends SinewLanguageProvider {
         this.add("item.opposing_force.repair_kit.description", "Right click to repair all items in your inventory");
         this.add("item.opposing_force.oxidized_spores.description", "Grants nearby allies resistance");
         this.add("item.opposing_force.gnat_staff.description", "Summons a Gnat, using 0.5 minion slots");
+        this.add("item.opposing_force.shroom_staff.description", "Summons a Mushy, using 1 minion slot");
+        this.add("item.opposing_force.shroom_staff.sneak_description", "Sneak while using to summon a Brick, using 3 minion slots");
+
+        this.add("item.opposing_force.tooltip.magic_damage", "%s Magic Damage");
+        this.add("item.opposing_force.tooltip.magic_multi_damage", "%sx%s Magic Damage");
+        this.add("item.opposing_force.tooltip.ranged_damage", "%s Ranged Damage");
+        this.add("item.opposing_force.tooltip.ranged_multi_damage", "%sx%s Ranged Damage");
 
         this.add("item.opposing_force.bullet.damage", "x%s Damage");
         this.add("item.opposing_force.bullet.spread", "x%s Spread");

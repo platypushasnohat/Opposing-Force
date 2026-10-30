@@ -10,6 +10,7 @@ import com.barl_inc.opposing_force.item.melee.*;
 import com.barl_inc.opposing_force.item.ranged.*;
 import com.barl_inc.opposing_force.item.ranged.ammo.BulletComponent;
 import com.barl_inc.opposing_force.item.ranged.ammo.PowerCellItem;
+import com.barl_inc.opposing_force.item.summon.ShroomStaffItem;
 import com.barl_inc.opposing_force.registry.datapack.OFJukeboxSongs;
 import com.barl_inc.opposing_force.registry.properties.*;
 import com.platypushasnohat.sinew.item.*;
@@ -54,7 +55,7 @@ public class OFItems {
     public static final DeferredItem<Item> ACID_CHARGE = registerItem("acid_charge", () -> new AcidChargeItem(new Item.Properties()));
 
     public static final DeferredItem<Item> GNAT_SPAWN_EGG = registerSpawnEggItem("gnat", OFEntities.GNAT, 0x403229, 0xc6322c);
-    public static final DeferredItem<Item> GNAT_STAFF = registerItem("gnat_staff", () -> new SummonWeaponItem(new Item.Properties().durability(123), OFEntities.GNAT, 2.0D, 20.0D, 6));
+    public static final DeferredItem<Item> GNAT_STAFF = registerItem("gnat_staff", () -> new SummonWeaponItem(new Item.Properties().durability(200), OFEntities.GNAT, 2.0D, 20.0D, 6));
 
     public static final DeferredItem<Item> SCORCHER_SPAWN_EGG = registerSpawnEggItem("scorcher", OFEntities.SCORCHER, 0x99193b, 0xeeb71c);
 
@@ -72,6 +73,7 @@ public class OFItems {
     public static final DeferredItem<Item> KNOCKBACK_SPORES = registerItem("knockback_spores", () -> new SporeItem(new Item.Properties(), SporeItem.Type.KNOCKBACK));
     public static final DeferredItem<Item> BRICK_SPAWN_EGG = registerSpawnEggItem("brick", OFEntities.BRICK, 0x51a4ae, 0x040806);
     public static final DeferredItem<Item> OXIDIZED_SPORES = registerItem("oxidized_spores", () -> new SporeItem(new Item.Properties(), SporeItem.Type.OXIDIZED));
+    public static final DeferredItem<Item> SHROOM_STAFF = registerItem("shroom_staff", () -> new ShroomStaffItem(new Item.Properties().durability(400)));
 
     public static final DeferredItem<Item> MOTIF_SPAWN_EGG = registerSpawnEggItem("motif", OFEntities.MOTIF, 0xddd6b1, 0xc15e3e);
     public static final DeferredItem<Item> MYSTIC_POT = registerItemNoLang("mystic_pot", () -> new MysticPotItem(OFBlocks.MYSTIC_POT.get(), new Item.Properties()));

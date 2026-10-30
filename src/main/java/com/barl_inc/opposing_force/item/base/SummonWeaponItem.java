@@ -43,7 +43,7 @@ public class SummonWeaponItem extends Item {
     public InteractionResultHolder<ItemStack> use(Level level, Player player, InteractionHand hand) {
         ItemStack stack = player.getItemInHand(hand);
         if (level instanceof ServerLevel serverLevel) {
-            SummonableMonster summon = SummonableMonster.summon(this.summonType.get(), serverLevel, player, stack, hand, player.getEyePosition().add(player.getLookAngle()));
+            SummonableMonster summon = SummonableMonster.summon(this.getSummonType(player), serverLevel, player, stack, hand, player.getEyePosition().add(player.getLookAngle()));
             if (summon == null) {
                 player.displayClientMessage(Component.translatable("message.sinew.not_enough_minion_slots"), true);
             } else {
@@ -55,6 +55,10 @@ public class SummonWeaponItem extends Item {
         }
         player.getCooldowns().addCooldown(this, this.cooldown);
         return InteractionResultHolder.sidedSuccess(stack, level.isClientSide);
+    }
+
+    protected EntityType<? extends SummonableMonster> getSummonType(Player player) {
+        return this.summonType.get();
     }
 
     @Override

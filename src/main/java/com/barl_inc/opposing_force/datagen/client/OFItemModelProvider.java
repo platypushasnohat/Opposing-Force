@@ -8,6 +8,9 @@ import net.minecraft.data.PackOutput;
 import net.minecraft.world.item.Item;
 import net.neoforged.neoforge.common.DeferredSpawnEggItem;
 import net.neoforged.neoforge.common.data.ExistingFileHelper;
+import net.neoforged.neoforge.registries.DeferredItem;
+
+import java.util.List;
 
 public class OFItemModelProvider extends SinewItemModelProvider {
 
@@ -81,9 +84,12 @@ public class OFItemModelProvider extends SinewItemModelProvider {
                 OFItems.LAPIS_LAZULI_HOE,
                 OFItems.TERROR_LEG,
                 OFItems.FRIED_TERROR_LEG,
-                OFItems.SAWBLADE,
-                OFItems.GNAT_STAFF
+                OFItems.SAWBLADE
         );
+
+        for (DeferredItem<Item> staff : List.of(OFItems.GNAT_STAFF, OFItems.SHROOM_STAFF)) {
+            this.withExistingParent(name(staff.get()), this.modLoc("item/handheld_staff")).texture("layer0", itemTexture(staff.get()));
+        }
 
         for (Item item : BuiltInRegistries.ITEM) {
             if (item instanceof DeferredSpawnEggItem && BuiltInRegistries.ITEM.getKey(item).getNamespace().equals(OpposingForce.MOD_ID)) {

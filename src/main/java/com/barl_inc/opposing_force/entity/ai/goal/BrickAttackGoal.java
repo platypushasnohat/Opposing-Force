@@ -9,6 +9,7 @@ import net.minecraft.world.effect.MobEffectInstance;
 import net.minecraft.world.effect.MobEffects;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.Mob;
+import net.minecraft.world.entity.TamableAnimal;
 import net.minecraft.world.entity.ai.attributes.Attributes;
 import net.minecraft.world.entity.monster.Enemy;
 import net.minecraft.world.phys.Vec3;
@@ -25,6 +26,11 @@ public class BrickAttackGoal extends AttackGoal {
     public BrickAttackGoal(Brick brick) {
         super(brick);
         this.brick = brick;
+    }
+
+    @Override
+    public boolean canUse() {
+        return !this.brick.isTame() && super.canUse();
     }
 
     @Override
@@ -124,7 +130,7 @@ public class BrickAttackGoal extends AttackGoal {
     }
 
     private List<LivingEntity> getNearbyMonsters() {
-        return this.brick.level().getEntitiesOfClass(LivingEntity.class, this.brick.getBoundingBox().inflate(8.0D), entity -> entity.isAlive() && entity instanceof Enemy);
+        return this.brick.level().getEntitiesOfClass(LivingEntity.class, this.brick.getBoundingBox().inflate(8.0D), entity -> entity.isAlive() && entity instanceof Enemy && !(entity instanceof TamableAnimal tamable && tamable.isTame()));
     }
 
     private void tickDefend() {

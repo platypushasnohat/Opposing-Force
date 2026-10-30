@@ -6,13 +6,16 @@ import com.platypushasnohat.sinew.client.model.entity.SinewEntityModel;
 import net.minecraft.client.model.geom.ModelPart;
 import net.minecraft.client.model.geom.PartPose;
 import net.minecraft.client.model.geom.builders.*;
+import net.minecraft.util.Mth;
 
 public class BrickModel extends SinewEntityModel<Brick> {
 
     private final ModelPart root;
+    private final ModelPart body_main;
 
     public BrickModel(ModelPart root) {
         this.root = root.getChild("root");
+        this.body_main = this.root.getChild("body_main");
     }
 
     @Override
@@ -29,6 +32,12 @@ public class BrickModel extends SinewEntityModel<Brick> {
         this.animateSmooth(entity.defendAnimationState, BrickAnimations.DEFEND, ageInTicks, partialTicks);
         this.animateSmooth(entity.meltAnimationState, BrickAnimations.MELT, ageInTicks, partialTicks);
         this.animateSmooth(entity.hurtAnimationState, BrickAnimations.HIT_BLEND, ageInTicks, partialTicks);
+        this.animateSmooth(entity.summonAnimationState, BrickAnimations.SUMMONED, ageInTicks, partialTicks);
+        if (entity.isSummoned() && entity.tickCount < 30) {
+            float center = -19.0F * this.body_main.yScale;
+            this.body_main.y += center * (1.0F - Mth.cos(this.body_main.xRot));
+            this.body_main.z -= center * Mth.sin(this.body_main.xRot);
+        }
     }
 
     public static LayerDefinition createBodyLayer() {

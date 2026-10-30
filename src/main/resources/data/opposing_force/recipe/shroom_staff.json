@@ -1,0 +1,27 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "equipment",
+  "key": {
+    "K": {
+      "item": "opposing_force:knockback_spores"
+    },
+    "O": {
+      "item": "opposing_force:oxidized_spores"
+    },
+    "S": {
+      "item": "minecraft:stick"
+    },
+    "B": {
+      "item": "minecraft:bone"
+    }
+  },
+  "pattern": [
+    " KB",
+    "OSK",
+    "SO "
+  ],
+  "result": {
+    "count": 1,
+    "id": "opposing_force:shroom_staff"
+  }
+}

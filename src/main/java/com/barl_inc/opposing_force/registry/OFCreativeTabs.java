@@ -71,6 +71,7 @@ public class OFCreativeTabs {
 
                         output.accept(OFItems.KNOCKBACK_SPORES);
                         output.accept(OFItems.OXIDIZED_SPORES);
+                        output.accept(OFItems.SHROOM_STAFF);
 
                         output.accept(OFItems.SAKE);
 

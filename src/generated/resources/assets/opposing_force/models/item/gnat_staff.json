@@ -1,5 +1,5 @@
 {
-  "parent": "minecraft:item/handheld",
+  "parent": "opposing_force:item/handheld_staff",
   "textures": {
     "layer0": "opposing_force:item/gnat_staff"
   }

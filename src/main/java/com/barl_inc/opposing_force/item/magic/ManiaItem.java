@@ -134,6 +134,9 @@ public class ManiaItem extends GunItem implements MovementModifyingItem {
             int count = this.getBrainCount(stack);
             int charge = this.getUseDuration(stack, entity) - remainingUseDuration;
             int wanted = Math.min(count, 1 + charge * count / 40);
+            if (charge == 0) {
+                level.playSound(null, player.getX(), player.getY(), player.getZ(), SoundEvents.WARDEN_SONIC_CHARGE, SoundSource.PLAYERS, 0.8F, 0.8F);
+            }
             int maniaAmplifier = 0;
             if (this.isElite(stack)) {
                 maniaAmplifier = 1;

@@ -7,14 +7,17 @@ import com.platypushasnohat.sinew.entity.base.AnimatedMonster;
 import com.platypushasnohat.sinew.entity.spectral.SpectralEntity;
 import com.platypushasnohat.sinew.entity.spectral.SpectralSight;
 import net.minecraft.core.BlockPos;
+import net.minecraft.nbt.CompoundTag;
 import net.minecraft.sounds.SoundEvent;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.util.Mth;
 import net.minecraft.util.RandomSource;
+import net.minecraft.world.DifficultyInstance;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.Mob;
 import net.minecraft.world.entity.MobSpawnType;
+import net.minecraft.world.entity.SpawnGroupData;
 import net.minecraft.world.entity.ai.attributes.AttributeSupplier;
 import net.minecraft.world.entity.ai.attributes.Attributes;
 import net.minecraft.world.entity.ai.control.BodyRotationControl;
@@ -46,6 +49,7 @@ public class Roamer extends AnimatedMonster implements SpectralEntity {
     private int lookAwayTicks;
     @Nullable
     private Player starer;
+    private boolean naturallySpawned;
 
     public Roamer(EntityType<? extends Roamer> entityType, Level level) {
         super(entityType, level);
@@ -72,6 +76,24 @@ public class Roamer extends AnimatedMonster implements SpectralEntity {
     }
 
     @Override
+    public SpawnGroupData finalizeSpawn(ServerLevelAccessor level, DifficultyInstance difficulty, MobSpawnType spawnType, @Nullable SpawnGroupData spawnGroupData) {
+        this.naturallySpawned = spawnType == MobSpawnType.NATURAL;
+        return super.finalizeSpawn(level, difficulty, spawnType, spawnGroupData);
+    }
+
+    @Override
+    public void addAdditionalSaveData(CompoundTag compound) {
+        super.addAdditionalSaveData(compound);
+        compound.putBoolean("NaturallySpawned", this.naturallySpawned);
+    }
+
+    @Override
+    public void readAdditionalSaveData(CompoundTag compound) {
+        super.readAdditionalSaveData(compound);
+        this.naturallySpawned = compound.getBoolean("NaturallySpawned");
+    }
+
+    @Override
     protected BodyRotationControl createBodyControl() {
         return new UnrestrictedBodyRotationControl(this);
     }
@@ -91,7 +113,7 @@ public class Roamer extends AnimatedMonster implements SpectralEntity {
         } else if (++this.lookAwayTicks > 10) {
             this.stareTicks = 0;
         }
-        if (this.level().isDay() && !this.hasCustomName() && !this.isPersistenceRequired()) {
+        if (this.naturallySpawned && this.level().isDay() && !this.hasCustomName() && !this.isPersistenceRequired()) {
             this.discard();
         }
     }

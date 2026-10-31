@@ -18,6 +18,7 @@ import net.minecraft.network.syncher.SynchedEntityData;
 import net.minecraft.sounds.SoundEvent;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.util.Mth;
+import net.minecraft.world.DifficultyInstance;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.damagesource.DamageSource;
@@ -30,9 +31,11 @@ import net.minecraft.world.entity.ai.targeting.TargetingConditions;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
+import net.minecraft.world.level.ServerLevelAccessor;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.Vec3;
 
+import javax.annotation.Nullable;
 import java.util.EnumSet;
 
 public class Parasoul extends AnimatedMonster implements SpectralEntity {
@@ -53,6 +56,7 @@ public class Parasoul extends AnimatedMonster implements SpectralEntity {
     private float walkPhase;
     private boolean pacified;
     private boolean bounce;
+    private boolean naturallySpawned;
 
     public Parasoul(EntityType<? extends Parasoul> entityType, Level level) {
         super(entityType, level);
@@ -93,10 +97,17 @@ public class Parasoul extends AnimatedMonster implements SpectralEntity {
     }
 
     @Override
+    public SpawnGroupData finalizeSpawn(ServerLevelAccessor level, DifficultyInstance difficulty, MobSpawnType spawnType, @Nullable SpawnGroupData spawnGroupData) {
+        this.naturallySpawned = spawnType == MobSpawnType.NATURAL;
+        return super.finalizeSpawn(level, difficulty, spawnType, spawnGroupData);
+    }
+
+    @Override
     public void addAdditionalSaveData(CompoundTag compound) {
         super.addAdditionalSaveData(compound);
         compound.putInt("DrunkTicks", this.drunkTicks);
         compound.putBoolean("Pacified", this.pacified);
+        compound.putBoolean("NaturallySpawned", this.naturallySpawned);
     }
 
     @Override
@@ -104,6 +115,7 @@ public class Parasoul extends AnimatedMonster implements SpectralEntity {
         super.readAdditionalSaveData(compound);
         this.drunkTicks = compound.getInt("DrunkTicks");
         this.pacified = compound.getBoolean("Pacified");
+        this.naturallySpawned = compound.getBoolean("NaturallySpawned");
         this.entityData.set(DRUNK, this.drunkTicks > 0);
     }
 
@@ -167,7 +179,7 @@ public class Parasoul extends AnimatedMonster implements SpectralEntity {
         if (this.drunkTicks > 0 && --this.drunkTicks == 0) {
             this.setDrunk(false);
         }
-        if (this.level().isDay() && !this.isPersistenceRequired()) {
+        if (this.naturallySpawned && this.level().isDay() && !this.isPersistenceRequired()) {
             this.discard();
         }
     }

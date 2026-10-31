@@ -98,6 +98,16 @@ public class Brick extends SummonableMonster {
     }
 
     @Override
+    protected void onSummoned(Player player) {
+        super.onSummoned(player);
+        AttributeInstance attribute = this.getAttribute(Attributes.MAX_HEALTH);
+        if (attribute != null) {
+            attribute.setBaseValue(50.0D);
+            this.setHealth(50.0F);
+        }
+    }
+
+    @Override
     public float getSummonCost() {
         return 3.0F;
     }

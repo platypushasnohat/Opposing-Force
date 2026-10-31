@@ -75,15 +75,15 @@ public class BoomstickModel extends GunModel<BoomstickItem> {
                 .texOffs(0, 19).addBox(1.5F, 1.0F, 1.0F, 0.0F, 2.0F, 2.0F, new CubeDeformation(0.0F))
                 .texOffs(16, 6).addBox(0.5F, -2.0F, -1.0F, 2.0F, 3.0F, 4.0F, new CubeDeformation(0.0F)), PartPose.offset(-1.5F, -4.0F, 3.0F));
 
-        PartDefinition head = gun.addOrReplaceChild("head", CubeListBuilder.create().texOffs(0, 11).addBox(1.5F, -2.025F, -6.0F, 2.0F, 2.0F, 6.0F, new CubeDeformation(0.0F))
-                .texOffs(16, 18).addBox(0.5F, -3.025F, -0.025F, 4.0F, 4.0F, 1.0F, new CubeDeformation(0.0F))
+        PartDefinition head = gun.addOrReplaceChild("head", CubeListBuilder.create().texOffs(0, 11).addBox(2.0F, -2.0F, -6.0F, 2.0F, 2.0F, 6.0F, new CubeDeformation(0.0F))
+                .texOffs(16, 18).addBox(1.0F, -3.0F, -0.025F, 4.0F, 4.0F, 1.0F, new CubeDeformation(0.0F))
                 .texOffs(16, 0).addBox(-2.0F, -1.0F, -4.0F, 4.0F, 2.0F, 4.0F, new CubeDeformation(0.0F))
-                .texOffs(0, 11).mirror().addBox(-3.5F, -2.025F, -6.0F, 2.0F, 2.0F, 6.0F, new CubeDeformation(0.0F)).mirror(false)
-                .texOffs(16, 18).mirror().addBox(-4.5F, -3.025F, -0.025F, 4.0F, 4.0F, 1.0F, new CubeDeformation(0.0F)).mirror(false), PartPose.offset(1.5F, 0.0F, -1.0F));
+                .texOffs(0, 11).mirror().addBox(-4.0F, -2.0F, -6.0F, 2.0F, 2.0F, 6.0F, new CubeDeformation(0.0F)).mirror(false)
+                .texOffs(16, 18).mirror().addBox(-5.0F, -3.0F, -0.025F, 4.0F, 4.0F, 1.0F, new CubeDeformation(0.0F)).mirror(false), PartPose.offset(1.5F, 0.0F, -1.0F));
 
-        head.addOrReplaceChild("barrel_left", CubeListBuilder.create().texOffs(16, 13).addBox(-2.3929F, -1.85F, -0.6143F, 4.0F, 4.0F, 1.0F, new CubeDeformation(0.0F)), PartPose.offset(2.8929F, -1.15F, -6.3857F));
+        head.addOrReplaceChild("barrel_left", CubeListBuilder.create().texOffs(16, 13).addBox(-1.8929F, -1.85F, -0.6143F, 4.0F, 4.0F, 1.0F, new CubeDeformation(0.0F)), PartPose.offset(2.8929F, -1.15F, -6.3857F));
 
-        head.addOrReplaceChild("barrel_right", CubeListBuilder.create().texOffs(16, 13).mirror().addBox(-1.3929F, -1.85F, -0.6143F, 4.0F, 4.0F, 1.0F, new CubeDeformation(0.0F)).mirror(false), PartPose.offset(-3.1071F, -1.15F, -6.3857F));
+        head.addOrReplaceChild("barrel_right", CubeListBuilder.create().texOffs(16, 13).mirror().addBox(-1.8929F, -1.85F, -0.6143F, 4.0F, 4.0F, 1.0F, new CubeDeformation(0.0F)).mirror(false), PartPose.offset(-3.1071F, -1.15F, -6.3857F));
 
         root.addOrReplaceChild("particle", CubeListBuilder.create(), PartPose.offset(0.0F, -5.0F, -6.5F));
 

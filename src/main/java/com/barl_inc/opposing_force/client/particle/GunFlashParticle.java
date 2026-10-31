@@ -15,7 +15,7 @@ public class GunFlashParticle extends TextureSheetParticle {
         this.xd = xSpeed;
         this.yd = ySpeed;
         this.zd = zSpeed;
-        this.quadSize = 0.5F;
+        this.quadSize = 0.75F;
         this.lifetime = 2 + this.random.nextInt(2);
         this.roll = (float) Math.toRadians(360.0F * this.random.nextFloat());
         this.oRoll = this.roll;

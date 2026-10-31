@@ -1,5 +1,7 @@
 package com.barl_inc.opposing_force.client.particle;
 
+import com.mojang.blaze3d.vertex.VertexConsumer;
+import net.minecraft.client.Camera;
 import net.minecraft.client.multiplayer.ClientLevel;
 import net.minecraft.client.particle.*;
 import net.minecraft.client.renderer.LightTexture;
@@ -7,12 +9,12 @@ import net.minecraft.core.particles.SimpleParticleType;
 
 public class FireBreathParticle extends TextureSheetParticle {
 
-    private final SpriteSet sprites;
+    private final SpriteSet spriteSet;
     private final float spinIncrement;
 
     protected FireBreathParticle(ClientLevel world, double x, double y, double z, double xSpeed, double ySpeed, double zSpeed, SpriteSet spriteSet) {
         super(world, x, y, z, xSpeed, ySpeed, zSpeed);
-        this.sprites = spriteSet;
+        this.spriteSet = spriteSet;
         this.xd = xSpeed;
         this.yd = ySpeed;
         this.zd = zSpeed;
@@ -27,9 +29,17 @@ public class FireBreathParticle extends TextureSheetParticle {
     }
 
     @Override
+    public void render(VertexConsumer buffer, Camera camera, float partialTicks) {
+        if (this.age <= 1) {
+            return;
+        }
+        super.render(buffer, camera, partialTicks);
+    }
+
+    @Override
     public void tick() {
         super.tick();
-        this.setSpriteFromAge(this.sprites);
+        this.setSpriteFromAge(this.spriteSet);
         float ageProgress = this.age / (float) this.lifetime;
         float rollProgress = 1.0F - (ageProgress - 0.5F) * 1.3F;
         this.oRoll = this.roll;

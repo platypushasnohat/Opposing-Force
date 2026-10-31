@@ -50,7 +50,8 @@ public class ManiaBrainRenderer extends EntityRenderer<ManiaBrain> {
         poseStack.translate(0.0F, entity.getBbHeight() * 0.5F, 0.0F);
         poseStack.mulPose(Axis.YP.rotationDegrees(Mth.rotLerp(partialTicks, entity.prevFacingYaw, entity.facingYaw)));
         poseStack.mulPose(Axis.XP.rotationDegrees(Mth.lerp(partialTicks, entity.prevFacingPitch, entity.facingPitch)));
-        poseStack.scale(-entity.getBrainScale(), -entity.getBrainScale(), entity.getBrainScale());
+        float scale = entity.getBrainScale();
+        poseStack.scale(-scale, -scale, scale);
         this.brain.render(poseStack, bufferSource.getBuffer(RenderType.entityCutoutNoCull(entity.isElite() ? ELITE_TEXTURE : TEXTURE)), LightTexture.FULL_BRIGHT, OverlayTexture.NO_OVERLAY);
         if (entity.glitchTicks > 0) {
             RandomSource random = RandomSource.create(entity.glitchSeed);
@@ -58,10 +59,10 @@ public class ManiaBrainRenderer extends EntityRenderer<ManiaBrain> {
             int colors = entity.isElite() ? GLITCH_COLORS.length : 4;
             int ghosts = 2 + random.nextInt(2);
             for (int i = 0; i < ghosts; i++) {
-                float scale = 0.8F + random.nextFloat() * 0.45F;
+                float ghostScale = 0.8F + random.nextFloat() * 0.45F;
                 poseStack.pushPose();
                 poseStack.translate((random.nextFloat() - 0.5F) * 0.25F, (random.nextFloat() - 0.5F) * 0.25F, (random.nextFloat() - 0.5F) * 0.25F);
-                poseStack.scale(scale, scale, scale);
+                poseStack.scale(ghostScale, ghostScale, ghostScale);
                 this.brain.render(poseStack, consumer, LightTexture.FULL_BRIGHT, OverlayTexture.NO_OVERLAY, 0x99000000 | GLITCH_COLORS[random.nextInt(colors)]);
                 poseStack.popPose();
             }

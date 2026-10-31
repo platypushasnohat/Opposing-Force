@@ -14,7 +14,9 @@ import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.RenderType;
 import net.minecraft.client.renderer.entity.ItemRenderer;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.util.Mth;
 import net.minecraft.world.entity.Entity;
+import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemDisplayContext;
 import net.minecraft.world.item.ItemStack;
@@ -26,9 +28,11 @@ public class ManiaModel extends AnimatedItemModel<ManiaItem> {
     public static final ResourceLocation ELITE_TEXTURE = OpposingForce.location("textures/item/mania_elite.png");
 
     private final ModelPart root;
+    private final ModelPart brain_part;
 
     public ManiaModel(ModelPart root) {
         this.root = root;
+        this.brain_part = root.getChild("body").getChild("brain_part");
     }
 
     @Override
@@ -36,6 +40,13 @@ public class ManiaModel extends AnimatedItemModel<ManiaItem> {
         this.root().getAllParts().forEach(ModelPart::resetPose);
         this.animate(stack, GunItem.SHOOT_ANIMATION, ManiaAnimations.SHOOT);
         this.animate(stack, ManiaItem.RELOAD_ANIMATION, ManiaAnimations.RELOAD);
+        if (entity instanceof LivingEntity living && living.isUsingItem() && living.getUseItem().getItem() == item) {
+            float charge = Math.min(living.getTicksUsingItem() / 40.0F, 1.0F);
+            float pulse = 1.0F + (0.04F + charge * 0.08F) * Mth.sin(ageInTicks * (0.6F + charge * 0.6F));
+            this.brain_part.xScale *= pulse;
+            this.brain_part.yScale *= pulse;
+            this.brain_part.zScale *= pulse;
+        }
     }
 
     @Override
@@ -56,10 +67,7 @@ public class ManiaModel extends AnimatedItemModel<ManiaItem> {
         }
         poseStack.pushPose();
         ManiaModel.INSTANCE.setupAnim(player, item, stack, displayContext, ageInTicks);
-        ManiaModel.INSTANCE.renderToBuffer(poseStack, buffer.getBuffer(RenderType.entityCutoutNoCull(texture)), packedLight, packedOverlay, 0xFFFFFF);
-        if (stack.hasFoil()) {
-            ManiaModel.INSTANCE.renderToBuffer(poseStack, ItemRenderer.getFoilBuffer(buffer, RenderType.entityCutoutNoCull(texture), false, true), packedLight, packedOverlay, 0xFFFFFF);
-        }
+        ManiaModel.INSTANCE.renderToBuffer(poseStack, ItemRenderer.getFoilBufferDirect(buffer, RenderType.entityCutoutNoCull(texture), false, stack.hasFoil()), packedLight, packedOverlay, 0xFFFFFF);
         poseStack.popPose();
     }
 

@@ -15,7 +15,7 @@ public class MindfuckItem extends ManiaItem {
 
     @Override
     public int getBrainCount(ItemStack stack) {
-        return 24;
+        return 72;
     }
 
     @Override

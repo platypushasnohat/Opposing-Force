@@ -1,5 +1,6 @@
 package com.barl_inc.opposing_force.entity.projectile;
 
+import com.barl_inc.opposing_force.item.magic.ManiaItem;
 import com.barl_inc.opposing_force.registry.OFDamageTypes;
 import com.barl_inc.opposing_force.registry.OFEntities;
 import com.barl_inc.opposing_force.registry.OFMobEffects;
@@ -21,9 +22,10 @@ import net.minecraft.world.effect.MobEffects;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.world.entity.Mob;
+import net.minecraft.world.entity.monster.Enemy;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.entity.projectile.Projectile;
-import net.minecraft.world.entity.projectile.ProjectileUtil;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.enchantment.EnchantmentHelper;
 import net.minecraft.world.level.ClipContext;
@@ -39,18 +41,25 @@ import java.util.Set;
 public class ManiaBrain extends Projectile implements SplitMagicBonus {
 
     public static final float DAMAGE = 2.0F;
+    public static final int CHARGING = 0;
+    public static final int WILD = 1;
+    public static final int HOMING = 2;
+    public static final int SPENT = 3;
 
     private static final EntityDataAccessor<Boolean> ELITE = SynchedEntityData.defineId(ManiaBrain.class, EntityDataSerializers.BOOLEAN);
-    private static final EntityDataAccessor<Boolean> TARGETING = SynchedEntityData.defineId(ManiaBrain.class, EntityDataSerializers.BOOLEAN);
+    private static final EntityDataAccessor<Integer> STATE = SynchedEntityData.defineId(ManiaBrain.class, EntityDataSerializers.INT);
     private static final EntityDataAccessor<Integer> COUNT = SynchedEntityData.defineId(ManiaBrain.class, EntityDataSerializers.INT);
+    private static final EntityDataAccessor<Float> SIZE = SynchedEntityData.defineId(ManiaBrain.class, EntityDataSerializers.FLOAT);
     private static final EntityDataAccessor<Integer> SWAPS = SynchedEntityData.defineId(ManiaBrain.class, EntityDataSerializers.INT);
 
     private ItemStack weapon = ItemStack.EMPTY;
     private int index;
     private int maniaAmplifier;
     private float speed = 1.0F;
-    private int targetingTicks;
-    private int spentTicks;
+    private int stateTicks;
+    private int wildDuration = 15;
+    private Vec3 forward = Vec3.ZERO;
+    private Vec3 clusterOffset = Vec3.ZERO;
     @Nullable
     private LivingEntity target;
     private final Set<Integer> hitEntities = new HashSet<>();
@@ -73,20 +82,20 @@ public class ManiaBrain extends Projectile implements SplitMagicBonus {
         this.setOwner(owner);
         this.weapon = weapon.copy();
         this.index = index;
-        this.entityData.set(COUNT, count);
         this.maniaAmplifier = maniaAmplifier;
         this.speed = 0.8F + this.random.nextFloat() * 0.4F;
         this.entityData.set(ELITE, elite);
-        Vec3 look = owner.getLookAngle();
-        this.setPos(owner.getEyePosition().add(look.scale(0.6D)).subtract(0.0D, 0.15D, 0.0D));
-        this.setDeltaMovement(look.scale(1.2D * this.speed));
+        this.entityData.set(COUNT, count);
+        this.rollClusterOffset();
+        this.setPos(this.getClusterPosition(owner));
     }
 
     @Override
     protected void defineSynchedData(SynchedEntityData.Builder builder) {
         builder.define(ELITE, false);
-        builder.define(TARGETING, false);
+        builder.define(STATE, CHARGING);
         builder.define(COUNT, 6);
+        builder.define(SIZE, 0.4F);
         builder.define(SWAPS, 0);
     }
 
@@ -116,10 +125,19 @@ public class ManiaBrain extends Projectile implements SplitMagicBonus {
         this.entityData.set(COUNT, Math.max(1, compoundTag.getInt("Count")));
         this.maniaAmplifier = compoundTag.getInt("ManiaAmplifier");
         this.speed = Math.max(0.1F, compoundTag.getFloat("Speed"));
+        this.entityData.set(STATE, SPENT);
     }
 
     public boolean isElite() {
         return this.entityData.get(ELITE);
+    }
+
+    public int getState() {
+        return this.entityData.get(STATE);
+    }
+
+    public boolean isCharging() {
+        return this.getState() == CHARGING;
     }
 
     public int getCount() {
@@ -127,11 +145,7 @@ public class ManiaBrain extends Projectile implements SplitMagicBonus {
     }
 
     public float getBrainScale() {
-        return 0.8F / (1.0F + (this.getCount() - 6) * 0.04F);
-    }
-
-    public boolean isTargeting() {
-        return this.entityData.get(TARGETING);
+        return 1.2F * this.entityData.get(SIZE);
     }
 
     @Override
@@ -154,6 +168,18 @@ public class ManiaBrain extends Projectile implements SplitMagicBonus {
         return false;
     }
 
+    public void release(Player owner) {
+        this.setState(WILD);
+        this.wildDuration = 10 + this.random.nextInt(11);
+        this.forward = owner.getLookAngle();
+        this.setDeltaMovement(this.forward.scale(0.7D * this.speed).add(this.random.nextGaussian() * 0.4D, this.random.nextGaussian() * 0.3D, this.random.nextGaussian() * 0.4D));
+    }
+
+    private void setState(int state) {
+        this.entityData.set(STATE, state);
+        this.stateTicks = 0;
+    }
+
     @Override
     public void tick() {
         super.tick();
@@ -168,40 +194,60 @@ public class ManiaBrain extends Projectile implements SplitMagicBonus {
     }
 
     private void tickServer(LivingEntity owner) {
-        if (this.spentTicks > 0) {
-            this.checkHits();
-            if (++this.spentTicks > 10) {
+        this.stateTicks++;
+        int state = this.getState();
+        if (state == CHARGING) {
+            this.tickCharging(owner);
+        } else if (state == WILD) {
+            this.tickWild();
+        } else if (state == HOMING) {
+            this.tickHoming(owner);
+        } else {
+            this.checkHits(true);
+            this.entityData.set(SIZE, Mth.clamp(1.0F - this.stateTicks / 10.0F, 0.0F, 1.0F));
+            if (this.stateTicks > 10) {
+                this.discard();
+            }
+        }
+        if (!this.isRemoved() && this.random.nextFloat() < this.getSwapChance()) {
+            this.swap(owner);
+        }
+    }
+
+    private void tickCharging(LivingEntity owner) {
+        if (owner.isUsingItem() && owner.getUseItem().getItem() instanceof ManiaItem) {
+            if (this.random.nextFloat() < 0.1F) {
+                this.rollClusterOffset();
+            }
+            this.setDeltaMovement(this.getClusterPosition(owner).subtract(this.position()).scale(0.6D));
+        } else {
+            this.discard();
+        }
+    }
+
+    private void tickWild() {
+        Vec3 wander = new Vec3(this.random.nextGaussian(), this.random.nextGaussian() * 0.6D, this.random.nextGaussian()).scale(0.3D);
+        this.setDeltaMovement(this.getDeltaMovement().add(wander).add(this.forward.scale(0.12D)).normalize().scale(0.7D * this.speed));
+        this.checkHits(false);
+        this.entityData.set(SIZE, Mth.lerp(Math.min(this.stateTicks / (float) this.wildDuration, 1.0F), 0.4F, 1.0F));
+        if (this.stateTicks >= this.wildDuration) {
+            this.setState(HOMING);
+        }
+    }
+
+    private void tickHoming(LivingEntity owner) {
+        if (this.target == null || !this.isValidTarget(owner, this.target)) {
+            this.target = this.findTarget(owner);
+        }
+        if (this.target != null) {
+            Vec3 direction = this.target.getBoundingBox().getCenter().subtract(this.position()).normalize().scale(1.8D * this.speed);
+            this.setDeltaMovement(this.getDeltaMovement().lerp(direction, 0.4D));
+            this.checkHits(true);
+            if (this.stateTicks > 60) {
                 this.discard();
             }
         } else {
-            if (this.target != null && !this.isValidTarget(owner, this.target)) {
-                this.target = null;
-            }
-            if (this.target == null && this.tickCount >= 4) {
-                this.target = this.findTarget(owner);
-            }
-            this.entityData.set(TARGETING, this.target != null);
-            if (this.target != null) {
-                Vec3 direction = this.target.getBoundingBox().getCenter().subtract(this.position()).normalize().scale(1.8D * this.speed);
-                this.setDeltaMovement(this.getDeltaMovement().lerp(direction, 0.4D));
-                this.checkHits();
-                if (++this.targetingTicks > 60) {
-                    this.discard();
-                }
-            } else {
-                this.targetingTicks = 0;
-                Vec3 offset = this.getSlot(owner).subtract(this.position()).scale(0.35D * this.speed);
-                if (offset.length() > 1.2D * this.speed) {
-                    offset = offset.normalize().scale(1.2D * this.speed);
-                }
-                this.setDeltaMovement(offset);
-                if (this.tickCount > 300) {
-                    this.discard();
-                }
-            }
-        }
-        if (!this.isRemoved() && this.random.nextFloat() < (this.isTargeting() ? 0.03F : 0.01F)) {
-            this.swap(owner);
+            this.setState(SPENT);
         }
     }
 
@@ -211,7 +257,7 @@ public class ManiaBrain extends Projectile implements SplitMagicBonus {
         }
         if (this.glitchTicks > 0) {
             this.glitchTicks--;
-        } else if (this.random.nextFloat() < (this.isTargeting() ? 0.15F : 0.04F)) {
+        } else if (this.random.nextFloat() < this.getGlitchChance()) {
             this.glitchTicks = 2 + this.random.nextInt(3);
             this.glitchSeed = this.random.nextLong();
         }
@@ -224,8 +270,12 @@ public class ManiaBrain extends Projectile implements SplitMagicBonus {
         this.prevFacingPitch = this.facingPitch;
         this.facingYaw = Mth.rotLerp(0.4F, this.facingYaw, (float) (Mth.atan2(facing.x, facing.z) * Mth.RAD_TO_DEG));
         this.facingPitch = Mth.lerp(0.4F, this.facingPitch, (float) (-Mth.atan2(facing.y, facing.horizontalDistance()) * Mth.RAD_TO_DEG));
-        if (motion.lengthSqr() > 0.04D) {
-            ParticleOptions sparkle = this.isElite() ? OFParticleTypes.ELITE_MANIA_SPARKLE.get() : OFParticleTypes.MANIA_SPARKLE.get();
+        ParticleOptions sparkle = this.isElite() ? OFParticleTypes.ELITE_MANIA_SPARKLE.get() : OFParticleTypes.MANIA_SPARKLE.get();
+        if (this.isCharging() && this.random.nextFloat() < 0.3F) {
+            Vec3 spark = this.position().add(this.random.nextGaussian() * 0.1D, this.getBbHeight() * 0.5D + this.random.nextGaussian() * 0.1D, this.random.nextGaussian() * 0.1D);
+            this.level().addParticle(sparkle, spark.x, spark.y, spark.z, this.random.nextGaussian() * 0.03D, this.random.nextGaussian() * 0.03D + 0.01D, this.random.nextGaussian() * 0.03D);
+        }
+        if (!this.isCharging() && motion.lengthSqr() > 0.04D) {
             Vec3 drift = motion.scale(-0.1D);
             for (int i = 0; i < 2; i++) {
                 Vec3 trail = this.position().subtract(motion.scale(this.random.nextDouble())).add(this.random.nextGaussian() * 0.08D, this.getBbHeight() * 0.5D + this.random.nextGaussian() * 0.08D, this.random.nextGaussian() * 0.08D);
@@ -234,48 +284,72 @@ public class ManiaBrain extends Projectile implements SplitMagicBonus {
         }
     }
 
-    private Vec3 getSlot(LivingEntity owner) {
-        float yaw = owner.getYRot() * Mth.DEG_TO_RAD;
-        Vec3 right = new Vec3(-Mth.cos(yaw), 0.0D, -Mth.sin(yaw));
-        Vec3 forward = new Vec3(-Mth.sin(yaw), 0.0D, Mth.cos(yaw));
-        int side = 1;
-        if (this.index % 2 == 1) {
-            side = -1;
+    private float getGlitchChance() {
+        int state = this.getState();
+        float chance = 0.08F;
+        if (state == CHARGING || state == WILD) {
+            chance = 0.2F;
         }
-        int perSide = (this.getCount() + 1) / 2;
-        float angle = ((this.index / 2 + 0.5F) / perSide * 2.0F - 1.0F) * 1.1F;
-        double height = 0.6D + perSide * 0.08D;
-        return owner.getEyePosition().add(forward.scale(1.4D)).add(right.scale(side * (1.0D + Mth.cos(angle) * 0.5D))).add(0.0D, Mth.sin(angle) * height - 0.3D, 0.0D);
+        else if (state == HOMING) {
+            chance = 0.15F;
+        }
+        return chance;
+    }
+
+    private float getSwapChance() {
+        int state = this.getState();
+        float chance = 0.0F;
+        if (state == CHARGING) {
+            chance = 0.06F;
+        }
+        else if (state == WILD) {
+            chance = 0.04F;
+        }
+        else if (state == HOMING) {
+            chance = 0.03F;
+        }
+        return chance;
+    }
+
+    private void rollClusterOffset() {
+        this.clusterOffset = new Vec3(this.random.nextGaussian(), this.random.nextGaussian(), this.random.nextGaussian()).normalize().scale(this.random.nextDouble() * 0.08D);
+    }
+
+    private Vec3 getClusterPosition(LivingEntity owner) {
+        Vec3 look = owner.getLookAngle();
+        Vec3 right = look.cross(new Vec3(0.0D, 1.0D, 0.0D));
+        if (right.lengthSqr() < 1.0E-4D) {
+            right = new Vec3(1.0D, 0.0D, 0.0D);
+        } else {
+            right = right.normalize();
+        }
+        Vec3 up = right.cross(look);
+        float angle = Mth.TWO_PI * this.index / this.getCount() + owner.tickCount * 0.05F;
+        return owner.getEyePosition().add(look.scale(2.0D)).add(right.scale(Mth.cos(angle) * 0.55D)).add(up.scale(Mth.sin(angle) * 0.55D)).add(0.0D, -this.getBbHeight() * 0.5D, 0.0D).add(this.clusterOffset);
     }
 
     @Nullable
     private LivingEntity findTarget(LivingEntity owner) {
-        LivingEntity found = null;
-        Vec3 eye = owner.getEyePosition();
-        Vec3 end = eye.add(owner.getLookAngle().scale(8.0D));
-        BlockHitResult blockHit = this.level().clip(new ClipContext(eye, end, ClipContext.Block.COLLIDER, ClipContext.Fluid.NONE, owner));
-        if (blockHit.getType() != HitResult.Type.MISS) {
-            end = blockHit.getLocation();
-        }
-        EntityHitResult entityHit = ProjectileUtil.getEntityHitResult(owner, eye, end, new AABB(eye, end).inflate(1.0D), entity -> entity instanceof LivingEntity living && this.isValidTarget(owner, living), eye.distanceToSqr(end));
-        if (entityHit != null) {
-            found = (LivingEntity) entityHit.getEntity();
-        } else {
-            LivingEntity lastHurt = owner.getLastHurtMob();
-            if (lastHurt != null && owner.tickCount - owner.getLastHurtMobTimestamp() < 100 && this.isValidTarget(owner, lastHurt)) {
-                found = lastHurt;
+        LivingEntity nearest = null;
+        double nearestDistance = Double.MAX_VALUE;
+        for (LivingEntity entity : this.level().getEntitiesOfClass(LivingEntity.class, this.getBoundingBox().inflate(16.0D), entity -> this.isValidTarget(owner, entity))) {
+            double distance = entity.distanceToSqr(this);
+            if (distance < nearestDistance) {
+                nearest = entity;
+                nearestDistance = distance;
             }
         }
-        return found;
+        return nearest;
     }
 
     private boolean isValidTarget(LivingEntity owner, LivingEntity entity) {
-        return entity.isAlive() && entity != owner && !entity.isSpectator() && !entity.isAlliedTo(owner) && !owner.isAlliedTo(entity) && !this.hitEntities.contains(entity.getId()) && entity.distanceToSqr(this) < 48.0D * 48.0D;
+        boolean hostile = entity instanceof Enemy || entity == owner.getLastHurtMob() || entity == owner.getLastHurtByMob() || entity instanceof Mob mob && mob.getTarget() == owner;
+        return hostile && entity.isAlive() && entity != owner && !entity.isSpectator() && !entity.isAlliedTo(owner) && !owner.isAlliedTo(entity) && !this.hitEntities.contains(entity.getId()) && entity.distanceToSqr(this) < 24.0D * 24.0D;
     }
 
     private void swap(LivingEntity owner) {
-        boolean targeting = this.isTargeting();
-        List<ManiaBrain> brains = this.level().getEntitiesOfClass(ManiaBrain.class, this.getBoundingBox().inflate(8.0D), brain -> brain != this && brain.getOwner() == owner && brain.isTargeting() == targeting);
+        int state = this.getState();
+        List<ManiaBrain> brains = this.level().getEntitiesOfClass(ManiaBrain.class, this.getBoundingBox().inflate(8.0D), brain -> brain != this && brain.getOwner() == owner && brain.getState() == state);
         if (!brains.isEmpty()) {
             ManiaBrain other = brains.get(this.random.nextInt(brains.size()));
             Vec3 position = this.position();
@@ -286,11 +360,12 @@ public class ManiaBrain extends Projectile implements SplitMagicBonus {
         }
     }
 
-    private void checkHits() {
+    private void checkHits(boolean blocks) {
         Vec3 start = this.position();
         Vec3 end = start.add(this.getDeltaMovement());
         BlockHitResult blockHit = this.level().clip(new ClipContext(start, end, ClipContext.Block.COLLIDER, ClipContext.Fluid.NONE, this));
-        if (blockHit.getType() != HitResult.Type.MISS) {
+        boolean hitBlock = blocks && blockHit.getType() != HitResult.Type.MISS;
+        if (hitBlock) {
             end = blockHit.getLocation();
         }
         for (Entity entity : this.level().getEntities(this, this.getBoundingBox().expandTowards(end.subtract(start)).inflate(1.0D), this::canHitEntity)) {
@@ -299,7 +374,7 @@ public class ManiaBrain extends Projectile implements SplitMagicBonus {
                 this.onHit(new EntityHitResult(entity));
             }
         }
-        if (blockHit.getType() != HitResult.Type.MISS) {
+        if (hitBlock) {
             this.onHit(blockHit);
         }
     }
@@ -316,13 +391,14 @@ public class ManiaBrain extends Projectile implements SplitMagicBonus {
             }
             entity.hurt(source, damage);
             if (entity instanceof LivingEntity living && living.isAlive()) {
-                living.addEffect(new MobEffectInstance(MobEffects.WEAKNESS, 60, 2), this.getOwner());
-                living.addEffect(new MobEffectInstance(OFMobEffects.MANIA, 100, this.maniaAmplifier), this.getOwner());
+                living.addEffect(new MobEffectInstance(MobEffects.WEAKNESS, 140, 2), this.getOwner());
+                living.addEffect(new MobEffectInstance(MobEffects.MOVEMENT_SLOWDOWN, 140, 2), this.getOwner());
+                living.addEffect(new MobEffectInstance(OFMobEffects.MANIA, 220, this.maniaAmplifier), this.getOwner());
             }
             this.hitEntities.add(entity.getId());
             if (entity == this.target) {
                 this.target = null;
-                this.spentTicks = 1;
+                this.setState(SPENT);
             }
             this.burst(serverLevel);
         }
@@ -331,7 +407,7 @@ public class ManiaBrain extends Projectile implements SplitMagicBonus {
     @Override
     protected boolean canHitEntity(Entity entity) {
         Entity owner = this.getOwner();
-        return super.canHitEntity(entity) && entity != owner && !this.hitEntities.contains(entity.getId()) && (owner == null || !entity.isAlliedTo(owner) && !owner.isAlliedTo(entity));
+        return !this.isCharging() && super.canHitEntity(entity) && entity != owner && !this.hitEntities.contains(entity.getId()) && (owner == null || !entity.isAlliedTo(owner) && !owner.isAlliedTo(entity));
     }
 
     @Override

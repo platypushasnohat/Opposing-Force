@@ -7,6 +7,7 @@ import com.barl_inc.opposing_force.registry.OFEnchantments;
 import com.barl_inc.opposing_force.registry.OFItems;
 import com.barl_inc.opposing_force.registry.OFSoundEvents;
 import com.platypushasnohat.sinew.item.ItemAnimations;
+import com.platypushasnohat.sinew.item.MovementModifyingItem;
 import com.platypushasnohat.sinew.item.SinewItemUtils;
 import com.platypushasnohat.sinew.utils.SinewSoundUtils;
 import it.unimi.dsi.fastutil.objects.Object2IntMap;
@@ -17,6 +18,7 @@ import net.minecraft.sounds.SoundEvents;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResultHolder;
+import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.TooltipFlag;
@@ -26,7 +28,7 @@ import net.minecraft.world.level.Level;
 
 import java.util.List;
 
-public class ManiaItem extends GunItem {
+public class ManiaItem extends GunItem implements MovementModifyingItem {
 
     public static final String RELOAD_ANIMATION = "reload";
 
@@ -98,14 +100,8 @@ public class ManiaItem extends GunItem {
     @Override
     public void shoot(Level level, Player player, ItemStack stack, ItemStack ammo) {
         if (!level.isClientSide) {
-            level.getEntitiesOfClass(ManiaBrain.class, player.getBoundingBox().inflate(64.0D), brain -> brain.getOwner() == player && !brain.isTargeting()).forEach(ManiaBrain::discard);
-            int count = this.getBrainCount(stack);
-            int maniaAmplifier = 0;
-            if (this.isElite(stack)) {
-                maniaAmplifier = 1;
-            }
-            for (int i = 0; i < count; i++) {
-                level.addFreshEntity(new ManiaBrain(level, player, stack, i, count, this.isElite(stack), maniaAmplifier));
+            for (ManiaBrain brain : getChargingBrains(level, player)) {
+                brain.release(player);
             }
             setReloadPending(stack, true);
         }
@@ -117,8 +113,10 @@ public class ManiaItem extends GunItem {
     public InteractionResultHolder<ItemStack> use(Level level, Player player, InteractionHand hand) {
         ItemStack stack = player.getItemInHand(hand);
         InteractionResultHolder<ItemStack> result = InteractionResultHolder.consume(stack);
-        if (!isReloadPending(stack) || !this.canShoot(player, hand)) {
+        if (!this.canShoot(player, hand)) {
             result = super.use(level, player, hand);
+        } else if (!isReloadPending(stack)) {
+            player.startUsingItem(hand);
         } else {
             ItemAnimations.start(player, stack, RELOAD_ANIMATION);
             if (!level.isClientSide) {
@@ -128,6 +126,52 @@ public class ManiaItem extends GunItem {
             }
         }
         return result;
+    }
+
+    @Override
+    public void onUseTick(Level level, LivingEntity entity, ItemStack stack, int remainingUseDuration) {
+        if (!level.isClientSide && entity instanceof Player player) {
+            int count = this.getBrainCount(stack);
+            int charge = this.getUseDuration(stack, entity) - remainingUseDuration;
+            int wanted = Math.min(count, 1 + charge * count / 40);
+            int maniaAmplifier = 0;
+            if (this.isElite(stack)) {
+                maniaAmplifier = 1;
+            }
+            for (int i = getChargingBrains(level, player).size(); i < wanted; i++) {
+                level.addFreshEntity(new ManiaBrain(level, player, stack, i, count, this.isElite(stack), maniaAmplifier));
+                level.playSound(null, player.getX(), player.getY(), player.getZ(), SoundEvents.SLIME_SQUISH_SMALL, SoundSource.PLAYERS, 0.4F, 1.6F + level.getRandom().nextFloat() * 0.3F);
+            }
+        }
+    }
+
+    @Override
+    public void releaseUsing(ItemStack stack, Level level, LivingEntity entity, int timeLeft) {
+        if (entity instanceof Player player) {
+            ItemAnimations.start(player, stack, SHOOT_ANIMATION);
+            ItemStack ammo = this.getAmmo(player);
+            this.shoot(level, player, stack, ammo);
+            this.onShot(level, player, player.getUsedItemHand(), stack, ammo);
+        }
+    }
+
+    @Override
+    public int getUseDuration(ItemStack stack, LivingEntity entity) {
+        return 72000;
+    }
+
+    @Override
+    public float getUseMovementMultiplier() {
+        return 0.6F;
+    }
+
+    @Override
+    public boolean canSprintWhileUsing() {
+        return false;
+    }
+
+    public static List<ManiaBrain> getChargingBrains(Level level, Player player) {
+        return level.getEntitiesOfClass(ManiaBrain.class, player.getBoundingBox().inflate(8.0D), brain -> brain.getOwner() == player && brain.isCharging());
     }
 
     @Override
@@ -142,6 +186,7 @@ public class ManiaItem extends GunItem {
 
     @Override
     public void appendHoverText(ItemStack stack, TooltipContext context, List<Component> tooltipComponents, TooltipFlag tooltipFlag) {
+        tooltipComponents.add(OFTooltips.description("item.opposing_force.mania.description"));
         tooltipComponents.add(OFTooltips.description(this.getAmmoTooltip()));
         OFTooltips.addStats(tooltipComponents, "item.opposing_force.tooltip.when_fired", OFTooltips.magicDamage(this.getDamage(), this.getBrainCount(stack)));
     }

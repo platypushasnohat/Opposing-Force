@@ -118,6 +118,7 @@ public class OFLanguageProvider extends SinewLanguageProvider {
         this.add("item.opposing_force.gnat_staff.description", "Summons a Gnat, using 0.5 minion slots");
         this.add("item.opposing_force.shroom_staff.description", "Summons a Mushy, using 1 minion slot");
         this.add("item.opposing_force.shroom_staff.sneak_description", "Sneak while using to summon a Brick, using 3 minion slots");
+        this.add("item.opposing_force.mania.description", "Hold to charge blast");
 
         this.add("item.opposing_force.tooltip.magic_damage", "%s Magic Damage");
         this.add("item.opposing_force.tooltip.magic_multi_damage", "%sx%s Magic Damage");

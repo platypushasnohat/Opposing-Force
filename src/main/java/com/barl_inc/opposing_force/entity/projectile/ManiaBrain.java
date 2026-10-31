@@ -174,7 +174,7 @@ public class ManiaBrain extends Projectile implements SplitMagicBonus {
         } else if (shade == Shade.CYAN) {
             target.addEffect(new MobEffectInstance(MobEffects.MOVEMENT_SLOWDOWN, 80, 1), this.getOwner());
         } else if (shade == Shade.YELLOW) {
-            target.addEffect(new MobEffectInstance(MobEffects.BLINDNESS, 80, 0), this.getOwner());
+            target.addEffect(new MobEffectInstance(MobEffects.WITHER, 80, 0), this.getOwner());
         } else if (shade == Shade.MAGENTA) {
             target.addEffect(new MobEffectInstance(OFMobEffects.MANIA, 160, 0), this.getOwner());
         } else if (shade == Shade.PURPLE) {

@@ -6,6 +6,7 @@ import com.barl_inc.opposing_force.registry.OFItems;
 import com.platypushasnohat.sinew.item.MovementModifyingItem;
 import net.minecraft.core.component.DataComponents;
 import net.minecraft.nbt.CompoundTag;
+import net.minecraft.sounds.SoundEvents;
 import net.minecraft.network.chat.Component;
 import net.minecraft.util.Mth;
 import net.minecraft.world.entity.LivingEntity;
@@ -32,6 +33,9 @@ public class SpectralShieldItem extends ShieldItem implements MovementModifyingI
         stack.set(DataComponents.CUSTOM_DATA, CustomData.of(compoundTag));
         if (blocks >= 6) {
             player.disableShield();
+            if (!player.isUsingItem()) {
+                player.level().playSound(player, player.getX(), player.getY(), player.getZ(), SoundEvents.SHIELD_BREAK, player.getSoundSource(), 0.8F, 0.8F + player.getRandom().nextFloat() * 0.4F);
+            }
         }
     }
 

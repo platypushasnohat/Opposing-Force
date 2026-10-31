@@ -1,15 +1,11 @@
 package com.barl_inc.opposing_force.debug;
 
-import com.barl_inc.opposing_force.entity.projectile.ManiaBrain;
 import com.barl_inc.opposing_force.item.magic.ManiaItem;
 import com.barl_inc.opposing_force.registry.OFItems;
 import net.minecraft.core.Holder;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.enchantment.Enchantment;
-
-import java.util.ArrayList;
-import java.util.List;
 
 public class MindfuckItem extends ManiaItem {
 
@@ -18,13 +14,8 @@ public class MindfuckItem extends ManiaItem {
     }
 
     @Override
-    public List<ManiaBrain.Shade> getShades(ItemStack stack) {
-        List<ManiaBrain.Shade> shades = new ArrayList<>();
-        for (ManiaBrain.Shade shade : ManiaBrain.Shade.values()) {
-            shades.add(shade);
-            shades.add(shade);
-        }
-        return shades;
+    public int getBrainCount(ItemStack stack) {
+        return 24;
     }
 
     @Override

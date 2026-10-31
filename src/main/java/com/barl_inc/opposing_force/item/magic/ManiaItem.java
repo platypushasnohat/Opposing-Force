@@ -24,7 +24,6 @@ import net.minecraft.world.item.component.CustomData;
 import net.minecraft.world.item.enchantment.ItemEnchantments;
 import net.minecraft.world.level.Level;
 
-import java.util.ArrayList;
 import java.util.List;
 
 public class ManiaItem extends GunItem {
@@ -39,11 +38,8 @@ public class ManiaItem extends GunItem {
         return stack.getOrDefault(DataComponents.ENCHANTMENTS, ItemEnchantments.EMPTY).entrySet().stream().filter(entry -> entry.getKey().is(OFEnchantments.MAGIC_ATTUNEMENT)).mapToInt(Object2IntMap.Entry::getIntValue).sum();
     }
 
-    public List<ManiaBrain.Shade> getShades(ItemStack stack) {
-        List<ManiaBrain.Shade> shades = new ArrayList<>(List.of(ManiaBrain.Shade.BLACK, ManiaBrain.Shade.CYAN, ManiaBrain.Shade.MAGENTA, ManiaBrain.Shade.YELLOW));
-        List<ManiaBrain.Shade> attuned = List.of(ManiaBrain.Shade.PURPLE, ManiaBrain.Shade.GREEN, ManiaBrain.Shade.BLUE);
-        shades.addAll(attuned.subList(0, Math.min(getAttunement(stack), attuned.size())));
-        return shades;
+    public int getBrainCount(ItemStack stack) {
+        return 6 + getAttunement(stack) * 2;
     }
 
     public boolean isElite(ItemStack stack) {
@@ -102,9 +98,14 @@ public class ManiaItem extends GunItem {
     @Override
     public void shoot(Level level, Player player, ItemStack stack, ItemStack ammo) {
         if (!level.isClientSide) {
-            List<ManiaBrain.Shade> shades = this.getShades(stack);
-            for (ManiaBrain.Shade shade : shades) {
-                level.addFreshEntity(new ManiaBrain(level, player, stack, shade, shades.size()));
+            level.getEntitiesOfClass(ManiaBrain.class, player.getBoundingBox().inflate(64.0D), brain -> brain.getOwner() == player && !brain.isTargeting()).forEach(ManiaBrain::discard);
+            int count = this.getBrainCount(stack);
+            int maniaAmplifier = 0;
+            if (this.isElite(stack)) {
+                maniaAmplifier = 1;
+            }
+            for (int i = 0; i < count; i++) {
+                level.addFreshEntity(new ManiaBrain(level, player, stack, i, count, this.isElite(stack), maniaAmplifier));
             }
             setReloadPending(stack, true);
         }
@@ -142,7 +143,7 @@ public class ManiaItem extends GunItem {
     @Override
     public void appendHoverText(ItemStack stack, TooltipContext context, List<Component> tooltipComponents, TooltipFlag tooltipFlag) {
         tooltipComponents.add(OFTooltips.description(this.getAmmoTooltip()));
-        OFTooltips.addStats(tooltipComponents, "item.opposing_force.tooltip.when_fired", OFTooltips.magicDamage(this.getDamage(), this.getShades(stack).size()));
+        OFTooltips.addStats(tooltipComponents, "item.opposing_force.tooltip.when_fired", OFTooltips.magicDamage(this.getDamage(), this.getBrainCount(stack)));
     }
 
     @Override

@@ -23,6 +23,7 @@ import java.util.function.Predicate;
 public abstract class GunItem extends ProjectileWeaponItem {
 
     public static final String SHOOT_ANIMATION = "shoot";
+    public static final String GUN_FLASH = "gun_flash";
 
     public GunItem(Properties properties) {
         super(properties);
@@ -91,7 +92,7 @@ public abstract class GunItem extends ProjectileWeaponItem {
     @Override
     public InteractionResultHolder<ItemStack> use(Level level, Player player, InteractionHand hand) {
         ItemStack stack = player.getItemInHand(hand);
-        InteractionResultHolder<ItemStack> result = InteractionResultHolder.consume(stack);
+        InteractionResultHolder<ItemStack> result = InteractionResultHolder.pass(stack);
         if (!this.canShoot(player, hand)) {
             player.getCooldowns().addCooldown(this, 10);
             return InteractionResultHolder.consume(stack);

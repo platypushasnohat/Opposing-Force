@@ -3,9 +3,10 @@ package com.barl_inc.opposing_force.client.model.item;
 import com.barl_inc.opposing_force.OpposingForce;
 import com.barl_inc.opposing_force.item.base.GunItem;
 import com.barl_inc.opposing_force.item.ranged.GorloffItem;
+import com.barl_inc.opposing_force.registry.OFParticleTypes;
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.VertexConsumer;
-import com.platypushasnohat.sinew.client.model.item.AnimatedItemModel;
+import com.platypushasnohat.sinew.client.utils.ClientItemData;
 import net.minecraft.client.animation.AnimationChannel;
 import net.minecraft.client.animation.AnimationDefinition;
 import net.minecraft.client.animation.Keyframe;
@@ -21,16 +22,19 @@ import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemDisplayContext;
 import net.minecraft.world.item.ItemStack;
+import org.joml.Vector3f;
 
-public class GorloffModel extends AnimatedItemModel<GorloffItem> {
+public class GorloffModel extends GunModel<GorloffItem> {
 
     public static final GorloffModel INSTANCE = new GorloffModel(createBodyLayer().bakeRoot());
     public static final ResourceLocation TEXTURE = OpposingForce.location("textures/item/gorloff.png");
 
     private final ModelPart root;
+    private final ModelPart particle;
 
     public GorloffModel(ModelPart root) {
         this.root = root.getChild("root");
+        this.particle = this.root.getChild("particle");
     }
 
     @Override
@@ -51,10 +55,20 @@ public class GorloffModel extends AnimatedItemModel<GorloffItem> {
 
     public static void renderItem(Player player, ItemStack stack, ItemDisplayContext displayContext, PoseStack poseStack, MultiBufferSource buffer, int packedLight, int packedOverlay, float ageInTicks) {
         poseStack.pushPose();
-        GorloffModel.INSTANCE.setupAnim(player, (GorloffItem) stack.getItem(), stack, displayContext, ageInTicks);
-        GorloffModel.INSTANCE.renderToBuffer(poseStack, buffer.getBuffer(RenderType.entityCutoutNoCull(TEXTURE)), packedLight, packedOverlay, 0xFFFFFF);
+        INSTANCE.setupAnim(player, (GorloffItem) stack.getItem(), stack, displayContext, ageInTicks);
+        INSTANCE.renderToBuffer(poseStack, buffer.getBuffer(RenderType.entityCutoutNoCull(TEXTURE)), packedLight, packedOverlay, 0xFFFFFF);
         if (stack.hasFoil()) {
-            GorloffModel.INSTANCE.renderToBuffer(poseStack, ItemRenderer.getFoilBuffer(buffer, RenderType.entityCutoutNoCull(TEXTURE), false, true), packedLight, packedOverlay, 0xFFFFFF);
+            INSTANCE.renderToBuffer(poseStack, ItemRenderer.getFoilBuffer(buffer, RenderType.entityCutoutNoCull(TEXTURE), false, true), packedLight, packedOverlay, 0xFFFFFF);
+        }
+        if (player != null && ClientItemData.hasClientData(stack, GunItem.GUN_FLASH)) {
+            INSTANCE.renderGunFlashParticle(stack,
+                    player,
+                    poseStack,
+                    displayContext,
+                    OFParticleTypes.GUN_FLASH.get(),
+                    INSTANCE.particle,
+                    new Vector3f(0.0F, 1.5F, -0.5F)
+            );
         }
         poseStack.popPose();
     }
@@ -85,6 +99,8 @@ public class GorloffModel extends AnimatedItemModel<GorloffItem> {
         trigger.addOrReplaceChild("crank", CubeListBuilder.create().texOffs(36, 35).addBox(1.0F, -2.5F, -1.0F, 2.0F, 3.0F, 3.0F, new CubeDeformation(0.0F)), PartPose.offset(0.0F, 0.0F, 0.0F));
 
         trigger.addOrReplaceChild("spinner", CubeListBuilder.create().texOffs(0, 0).addBox(0.0F, -1.5F, -2.0F, 1.0F, 3.0F, 3.0F, new CubeDeformation(0.0F)), PartPose.offset(0.0F, 0.0F, 0.0F));
+
+        root.addOrReplaceChild("particle", CubeListBuilder.create(), PartPose.offset(0.5F, -4.0F, -13.5F));
 
         return LayerDefinition.create(meshdefinition, 64, 64);
     }

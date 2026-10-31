@@ -42,25 +42,34 @@ public class SummonWeaponItem extends Item {
     @Override
     public InteractionResultHolder<ItemStack> use(Level level, Player player, InteractionHand hand) {
         ItemStack stack = player.getItemInHand(hand);
+        SummonableMonster summon = null;
         if (level instanceof ServerLevel serverLevel) {
-            SummonableMonster summon = SummonableMonster.summon(this.getSummonType(player), serverLevel, player, stack, hand, player.getEyePosition().add(player.getLookAngle()));
-            if (summon == null) {
-                player.displayClientMessage(Component.translatable("message.sinew.not_enough_minion_slots"), true);
-            } else {
+            summon = SummonableMonster.summon(this.getSummonType(player), serverLevel, player, stack, hand, player.getEyePosition().add(player.getLookAngle()));
+        }
+        if (summon != null) {
+            if (!level.isClientSide) {
                 summon.shootFromRotation(player, player.getXRot(), player.getYRot(), 0.0F, 0.8F, 1.0F);
                 stack.hurtAndBreak(1, player, LivingEntity.getSlotForHand(hand));
                 player.awardStat(Stats.ITEM_USED.get(this));
                 level.playSound(null, player.getX(), player.getY(), player.getZ(), SoundEvents.EVOKER_CAST_SPELL, SoundSource.PLAYERS, 0.6F, 1.4F + level.getRandom().nextFloat() * 0.3F);
+                player.getCooldowns().addCooldown(this, this.cooldown);
             }
+            return InteractionResultHolder.success(stack);
         }
-        player.getCooldowns().addCooldown(this, this.cooldown);
-        return InteractionResultHolder.sidedSuccess(stack, level.isClientSide);
+        else {
+            if (!level.isClientSide) {
+                player.displayClientMessage(Component.translatable("message.sinew.not_enough_minion_slots"), true);
+                player.getCooldowns().addCooldown(this, 10);
+            }
+            return InteractionResultHolder.consume(stack);
+        }
     }
 
     protected EntityType<? extends SummonableMonster> getSummonType(Player player) {
         return this.summonType.get();
     }
 
+    @SuppressWarnings("deprecation")
     @Override
     public int getEnchantmentValue() {
         return 10;

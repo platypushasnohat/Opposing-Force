@@ -25,11 +25,11 @@ public class SpectralShieldItem extends ShieldItem implements MovementModifyingI
     }
 
     public static void onBlock(Player player, ItemStack stack) {
-        CompoundTag tag = stack.getOrDefault(DataComponents.CUSTOM_DATA, CustomData.EMPTY).copyTag();
-        int blocks = tag.getInt("Blocks") + 1;
-        tag.putInt("Blocks", blocks % 6);
-        tag.putLong("Wobble", player.level().getGameTime());
-        stack.set(DataComponents.CUSTOM_DATA, CustomData.of(tag));
+        CompoundTag compoundTag = stack.getOrDefault(DataComponents.CUSTOM_DATA, CustomData.EMPTY).copyTag();
+        int blocks = compoundTag.getInt("Blocks") + 1;
+        compoundTag.putInt("Blocks", blocks % 6);
+        compoundTag.putLong("Wobble", player.level().getGameTime());
+        stack.set(DataComponents.CUSTOM_DATA, CustomData.of(compoundTag));
         if (blocks >= 6) {
             player.disableShield();
         }
@@ -46,6 +46,7 @@ public class SpectralShieldItem extends ShieldItem implements MovementModifyingI
             SpectralShieldSoundInstance.play(entity);
         }
     }
+
     @Override
     public float getUseMovementMultiplier() {
         return 0.33F;

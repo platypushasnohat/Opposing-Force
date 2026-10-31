@@ -149,7 +149,9 @@ public class Bullet extends Projectile implements ItemSupplier, SplitProjectileB
         if (this.level().isClientSide) {
             float height = this.getBbHeight() / 2;
             if (this.getTrailParticle() != null) {
-                this.level().addParticle(this.getTrailParticle(), nextX, nextY + height, nextZ, 0.0D, 0.0D, 0.0D);
+                Vec3 drift = this.getDeltaMovement().scale(-0.1D);
+                Vec3 trail = this.position().subtract(this.getDeltaMovement().scale(this.getRandom().nextDouble())).add(this.getRandom().nextGaussian() * 0.1D, (this.getBbHeight() / 2) + this.getRandom().nextGaussian() * 0.1D, this.getRandom().nextGaussian() * 0.1D);
+                this.level().addParticle(this.getTrailParticle(), trail.x, trail.y, trail.z, drift.x + this.getRandom().nextGaussian() * 0.05D, drift.y + this.getRandom().nextGaussian() * 0.05D, drift.z + this.getRandom().nextGaussian() * 0.05D);
             }
             if (this.getRingParticle() != null && this.tickCount % 4 == 0) {
                 this.level().addParticle(this.getRingParticle(), nextX, nextY + height, nextZ, 0.0D, 0.0D, 0.0D);

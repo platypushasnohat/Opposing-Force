@@ -3,9 +3,9 @@ package com.barl_inc.opposing_force.client.model.item;
 import com.barl_inc.opposing_force.OpposingForce;
 import com.barl_inc.opposing_force.item.base.GunItem;
 import com.barl_inc.opposing_force.item.ranged.CrackshotItem;
+import com.barl_inc.opposing_force.registry.OFParticleTypes;
 import com.mojang.blaze3d.vertex.PoseStack;
-import com.mojang.blaze3d.vertex.VertexConsumer;
-import com.platypushasnohat.sinew.client.model.item.AnimatedItemModel;
+import com.platypushasnohat.sinew.client.utils.ClientItemData;
 import net.minecraft.client.animation.AnimationChannel;
 import net.minecraft.client.animation.AnimationDefinition;
 import net.minecraft.client.animation.Keyframe;
@@ -21,16 +21,19 @@ import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemDisplayContext;
 import net.minecraft.world.item.ItemStack;
+import org.joml.Vector3f;
 
-public class CrackshotModel extends AnimatedItemModel<CrackshotItem> {
+public class CrackshotModel extends GunModel<CrackshotItem> {
 
     public static final CrackshotModel INSTANCE = new CrackshotModel(createBodyLayer().bakeRoot());
     public static final ResourceLocation TEXTURE = OpposingForce.location("textures/item/crackshot.png");
 
     private final ModelPart root;
+    private final ModelPart particle;
 
     public CrackshotModel(ModelPart root) {
         this.root = root.getChild("root");
+        this.particle = this.root.getChild("particle");
     }
 
     @Override
@@ -40,21 +43,26 @@ public class CrackshotModel extends AnimatedItemModel<CrackshotItem> {
     }
 
     @Override
-    public void renderToBuffer(PoseStack poseStack, VertexConsumer buffer, int packedLight, int packedOverlay, int color) {
-        this.root().render(poseStack, buffer, packedLight, packedOverlay);
-    }
-
-    @Override
     public ModelPart root() {
         return this.root;
     }
 
     public static void renderItem(Player player, ItemStack stack, ItemDisplayContext displayContext, PoseStack poseStack, MultiBufferSource buffer, int packedLight, int packedOverlay, float ageInTicks) {
         poseStack.pushPose();
-        CrackshotModel.INSTANCE.setupAnim(player, (CrackshotItem) stack.getItem(), stack, displayContext, ageInTicks);
-        CrackshotModel.INSTANCE.renderToBuffer(poseStack, buffer.getBuffer(RenderType.entityCutout(TEXTURE)), packedLight, packedOverlay, 0xFFFFFF);
+        INSTANCE.setupAnim(player, (CrackshotItem) stack.getItem(), stack, displayContext, ageInTicks);
+        INSTANCE.renderToBuffer(poseStack, buffer.getBuffer(RenderType.entityCutout(TEXTURE)), packedLight, packedOverlay, 0xFFFFFF);
         if (stack.hasFoil()) {
-            CrackshotModel.INSTANCE.renderToBuffer(poseStack, ItemRenderer.getFoilBuffer(buffer, RenderType.entityCutout(TEXTURE), false, true), packedLight, packedOverlay, 0xFFFFFF);
+            INSTANCE.renderToBuffer(poseStack, ItemRenderer.getFoilBuffer(buffer, RenderType.entityCutout(TEXTURE), false, true), packedLight, packedOverlay, 0xFFFFFF);
+        }
+        if (player != null && ClientItemData.hasClientData(stack, GunItem.GUN_FLASH)) {
+            INSTANCE.renderGunFlashParticle(stack,
+                    player,
+                    poseStack,
+                    displayContext,
+                    OFParticleTypes.GUN_FLASH.get(),
+                    INSTANCE.particle,
+                    new Vector3f(0.0F, 1.25F, -0.5F)
+            );
         }
         poseStack.popPose();
     }
@@ -73,6 +81,8 @@ public class CrackshotModel extends AnimatedItemModel<CrackshotItem> {
         gun.addOrReplaceChild("stock", CubeListBuilder.create().texOffs(0, 11).addBox(-1.5F, -1.0F, -3.5F, 3.0F, 2.0F, 7.0F, new CubeDeformation(0.0F)), PartPose.offset(1.0F, 0.0F, -3.5F));
 
         gun.addOrReplaceChild("barrel", CubeListBuilder.create().texOffs(0, 20).addBox(-2.0F, -2.0F, -0.5F, 4.0F, 4.0F, 1.0F, new CubeDeformation(0.0F)), PartPose.offset(1.0F, -2.0F, -7.5F));
+
+        root.addOrReplaceChild("particle", CubeListBuilder.create(), PartPose.offset(0.0F, -5.0F, -6.5F));
 
         return LayerDefinition.create(meshdefinition, 32, 32);
     }

@@ -2,6 +2,9 @@ package com.barl_inc.opposing_force.item.ranged;
 
 import com.barl_inc.opposing_force.item.base.BulletGunItem;
 import com.barl_inc.opposing_force.registry.OFSoundEvents;
+import com.platypushasnohat.sinew.Sinew;
+import com.platypushasnohat.sinew.client.utils.ClientItemData;
+import com.platypushasnohat.sinew.events.custom.ScreenShakeEvent;
 import com.platypushasnohat.sinew.item.ItemAnimations;
 import com.platypushasnohat.sinew.utils.SinewSoundUtils;
 import net.minecraft.core.component.DataComponents;
@@ -54,6 +57,10 @@ public class BoomstickItem extends BulletGunItem {
 
     @Override
     public void shoot(Level level, Player player, ItemStack stack, ItemStack ammo) {
+        if (level.isClientSide) {
+            ClientItemData.getOrCreateClientData(stack).put(GUN_FLASH, true);
+            Sinew.PROXY.screenShake(new ScreenShakeEvent(player.position(), 10, 2.0F, 5, false));
+        }
         for (int i = 0; i < PROJECTILE_COUNT; i++) {
             super.shoot(level, player, stack, ammo);
         }

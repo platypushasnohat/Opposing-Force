@@ -5,6 +5,9 @@ import com.barl_inc.opposing_force.item.base.GunItem;
 import com.barl_inc.opposing_force.item.base.PoweredItem;
 import com.barl_inc.opposing_force.registry.OFItems;
 import com.barl_inc.opposing_force.registry.OFSoundEvents;
+import com.platypushasnohat.sinew.Sinew;
+import com.platypushasnohat.sinew.client.utils.ClientItemData;
+import com.platypushasnohat.sinew.events.custom.ScreenShakeEvent;
 import com.platypushasnohat.sinew.item.SinewItemUtils;
 import com.platypushasnohat.sinew.utils.SinewSoundUtils;
 import net.minecraft.sounds.SoundSource;
@@ -75,6 +78,10 @@ public class BlasterItem extends GunItem {
 
     @Override
     public void shoot(Level level, Player player, ItemStack stack, ItemStack ammo) {
+        if (level.isClientSide) {
+            ClientItemData.getOrCreateClientData(stack).put(GUN_FLASH, true);
+            Sinew.PROXY.screenShake(new ScreenShakeEvent(player.position(), 5, 1.0F, 4, false));
+        }
         LaserBolt laserBolt = new LaserBolt(player, level, stack);
         laserBolt.setDamage(this.getDamage());
         Vec3 look = player.getLookAngle();

@@ -4,9 +4,9 @@ import com.barl_inc.opposing_force.OpposingForce;
 import com.barl_inc.opposing_force.client.model.item.animation.BoomstickAnimations;
 import com.barl_inc.opposing_force.item.base.GunItem;
 import com.barl_inc.opposing_force.item.ranged.BoomstickItem;
+import com.barl_inc.opposing_force.registry.OFParticleTypes;
 import com.mojang.blaze3d.vertex.PoseStack;
-import com.mojang.blaze3d.vertex.VertexConsumer;
-import com.platypushasnohat.sinew.client.model.item.AnimatedItemModel;
+import com.platypushasnohat.sinew.client.utils.ClientItemData;
 import net.minecraft.client.model.geom.ModelPart;
 import net.minecraft.client.model.geom.PartPose;
 import net.minecraft.client.model.geom.builders.*;
@@ -18,16 +18,19 @@ import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemDisplayContext;
 import net.minecraft.world.item.ItemStack;
+import org.joml.Vector3f;
 
-public class BoomstickModel extends AnimatedItemModel<BoomstickItem> {
+public class BoomstickModel extends GunModel<BoomstickItem> {
 
     public static final BoomstickModel INSTANCE = new BoomstickModel(createBodyLayer().bakeRoot());
     public static final ResourceLocation TEXTURE = OpposingForce.location("textures/item/boomstick.png");
 
     private final ModelPart root;
+    private final ModelPart particle;
 
     public BoomstickModel(ModelPart root) {
         this.root = root.getChild("root");
+        this.particle = this.root.getChild("particle");
     }
 
     @Override
@@ -38,21 +41,26 @@ public class BoomstickModel extends AnimatedItemModel<BoomstickItem> {
     }
 
     @Override
-    public void renderToBuffer(PoseStack poseStack, VertexConsumer buffer, int packedLight, int packedOverlay, int color) {
-        this.root().render(poseStack, buffer, packedLight, packedOverlay);
-    }
-
-    @Override
     public ModelPart root() {
         return this.root;
     }
 
     public static void renderItem(Player player, ItemStack stack, ItemDisplayContext displayContext, PoseStack poseStack, MultiBufferSource buffer, int packedLight, int packedOverlay, float ageInTicks) {
         poseStack.pushPose();
-        BoomstickModel.INSTANCE.setupAnim(player, (BoomstickItem) stack.getItem(), stack, displayContext, ageInTicks);
-        BoomstickModel.INSTANCE.renderToBuffer(poseStack, buffer.getBuffer(RenderType.entityCutout(TEXTURE)), packedLight, packedOverlay, 0xFFFFFF);
+        INSTANCE.setupAnim(player, (BoomstickItem) stack.getItem(), stack, displayContext, ageInTicks);
+        INSTANCE.renderToBuffer(poseStack, buffer.getBuffer(RenderType.entityCutout(TEXTURE)), packedLight, packedOverlay, 0xFFFFFF);
         if (stack.hasFoil()) {
-            BoomstickModel.INSTANCE.renderToBuffer(poseStack, ItemRenderer.getFoilBuffer(buffer, RenderType.entityCutout(TEXTURE), false, true), packedLight, packedOverlay, 0xFFFFFF);
+            INSTANCE.renderToBuffer(poseStack, ItemRenderer.getFoilBuffer(buffer, RenderType.entityCutout(TEXTURE), false, true), packedLight, packedOverlay, 0xFFFFFF);
+        }
+        if (player != null && ClientItemData.hasClientData(stack, GunItem.GUN_FLASH)) {
+            INSTANCE.renderGunFlashParticle(stack,
+                    player,
+                    poseStack,
+                    displayContext,
+                    OFParticleTypes.GUN_FLASH.get(),
+                    INSTANCE.particle,
+                    new Vector3f(0.0F, 1.0F, 0.0F)
+            );
         }
         poseStack.popPose();
     }
@@ -76,6 +84,8 @@ public class BoomstickModel extends AnimatedItemModel<BoomstickItem> {
         head.addOrReplaceChild("barrel_left", CubeListBuilder.create().texOffs(16, 13).addBox(-2.3929F, -1.85F, -0.6143F, 4.0F, 4.0F, 1.0F, new CubeDeformation(0.0F)), PartPose.offset(2.8929F, -1.15F, -6.3857F));
 
         head.addOrReplaceChild("barrel_right", CubeListBuilder.create().texOffs(16, 13).mirror().addBox(-1.3929F, -1.85F, -0.6143F, 4.0F, 4.0F, 1.0F, new CubeDeformation(0.0F)).mirror(false), PartPose.offset(-3.1071F, -1.15F, -6.3857F));
+
+        root.addOrReplaceChild("particle", CubeListBuilder.create(), PartPose.offset(0.0F, -5.0F, -6.5F));
 
         return LayerDefinition.create(meshdefinition, 32, 32);
     }

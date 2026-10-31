@@ -2,6 +2,9 @@ package com.barl_inc.opposing_force.item.ranged;
 
 import com.barl_inc.opposing_force.item.base.BulletGunItem;
 import com.barl_inc.opposing_force.registry.OFSoundEvents;
+import com.platypushasnohat.sinew.Sinew;
+import com.platypushasnohat.sinew.client.utils.ClientItemData;
+import com.platypushasnohat.sinew.events.custom.ScreenShakeEvent;
 import com.platypushasnohat.sinew.item.ItemAnimations;
 import com.platypushasnohat.sinew.utils.SinewSoundUtils;
 import net.minecraft.core.component.DataComponents;
@@ -59,13 +62,21 @@ public class GorloffItem extends BulletGunItem {
             int shots = getShots(stack);
             if (!this.hasAmmo(player)) {
                 player.releaseUsingItem();
-            } else if (!level.isClientSide && shots < (this.getUseDuration(stack, player) - remainingUseDuration) * 2 / 5 + 1) {
-                ItemStack ammo = this.getAmmo(player);
-                if (entity.tickCount % 4 == 0) {
-                    this.shoot(level, player, stack, ammo);
-                    setShots(stack, shots + 1);
-                    if ((shots + 1) % 4 == 0) {
-                        this.useBullet(player, stack, ammo);
+            }
+            else if (shots < (this.getUseDuration(stack, player) - remainingUseDuration) * 2 / 5 + 1) {
+                if (level.isClientSide) {
+                    if (entity.tickCount % 4 == 0) {
+                        ClientItemData.getOrCreateClientData(stack).put(GUN_FLASH, true);
+                        Sinew.PROXY.screenShake(new ScreenShakeEvent(player.position(), 4, 1.0F, 4, false));
+                    }
+                } else {
+                    ItemStack ammo = this.getAmmo(player);
+                    if (entity.tickCount % 4 == 0) {
+                        this.shoot(level, player, stack, ammo);
+                        setShots(stack, shots + 1);
+                        if ((shots + 1) % 4 == 0) {
+                            this.useBullet(player, stack, ammo);
+                        }
                     }
                 }
             }

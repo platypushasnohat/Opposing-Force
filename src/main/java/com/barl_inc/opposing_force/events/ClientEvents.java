@@ -161,6 +161,8 @@ public class ClientEvents {
         event.registerSpriteSet(OFParticleTypes.SHOCKWAVE.get(), ShockwaveParticle.Factory::new);
         event.registerSpriteSet(OFParticleTypes.SMALL_SHOCKWAVE.get(), ShockwaveParticle.Factory::new);
         event.registerSpriteSet(OFParticleTypes.BRICK_SPORE_CLOUD.get(), SporeCloudParticle.BrickFactory::new);
+        event.registerSpriteSet(OFParticleTypes.GUN_FLASH.get(), GunFlashParticle.Factory::new);
+        event.registerSpriteSet(OFParticleTypes.LASER_FLASH.get(), GunFlashParticle.Factory::new);
     }
 
     @SubscribeEvent

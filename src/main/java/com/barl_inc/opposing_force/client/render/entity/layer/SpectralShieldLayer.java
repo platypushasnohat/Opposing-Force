@@ -72,6 +72,7 @@ public class SpectralShieldLayer<T extends LivingEntity, M extends EntityModel<T
         return 1.0F - progress * progress * progress;
     }
 
+    @SuppressWarnings("deprecation")
     public static void renderShields(PoseStack poseStack, MultiBufferSource buffer, int packedLight, LivingEntity entity, ItemStack stack, float grow, float ageInTicks, float partialTicks) {
         BakedModel model = Minecraft.getInstance().getItemRenderer().getItemModelShaper().getItemModel(stack);
         VertexConsumer consumer = ItemRenderer.getFoilBufferDirect(buffer, Sheets.cutoutBlockSheet(), true, stack.hasFoil());

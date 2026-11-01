@@ -215,8 +215,8 @@ public class ManiaBrain extends Projectile implements SplitMagicBonus {
             this.target = this.findTarget(owner);
         }
         if (this.target != null) {
-            Vec3 direction = this.target.getBoundingBox().getCenter().subtract(this.position()).normalize().scale(1.8D * this.speed);
-            this.setDeltaMovement(this.getDeltaMovement().lerp(direction, 0.4D));
+            Vec3 direction = this.target.getBoundingBox().getCenter().subtract(this.position()).normalize().scale(2.2D * this.speed);
+            this.setDeltaMovement(this.getDeltaMovement().lerp(direction, 0.8D));
             this.checkHits(true);
             if (this.stateTicks > 120) {
                 this.discard();

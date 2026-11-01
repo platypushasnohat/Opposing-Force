@@ -98,7 +98,7 @@ public class OFItems {
 
     //cherry grove enemy section
     public static final DeferredItem<Item> PARASOUL_SPAWN_EGG = registerSpawnEggItem("parasoul", OFEntities.PARASOUL, 0xf08a3e, 0xde3ca5);
-    public static final DeferredItem<Item> SAKE = registerItem("sake", () -> new SakeItem(new Item.Properties().rarity(OFEnumProxy.RARITY_SPECTRAL.getValue())));
+    public static final DeferredItem<Item> SAKE = registerItem("sake", () -> new SakeItem(new Item.Properties()));
 
     //materials
     public static final DeferredItem<Item> FIRING_MECHANISM = registerItem("firing_mechanism", () -> new Item(new Item.Properties()));

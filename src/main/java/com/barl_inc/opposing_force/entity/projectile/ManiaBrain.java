@@ -46,6 +46,8 @@ public class ManiaBrain extends Projectile implements SplitMagicBonus {
     public static final int HOMING = 2;
     public static final int SPENT = 3;
 
+    public static final double HELD_DISTANCE = 1.25D;
+
     private static final EntityDataAccessor<Boolean> ELITE = SynchedEntityData.defineId(ManiaBrain.class, EntityDataSerializers.BOOLEAN);
     private static final EntityDataAccessor<Integer> STATE = SynchedEntityData.defineId(ManiaBrain.class, EntityDataSerializers.INT);
     private static final EntityDataAccessor<Integer> COUNT = SynchedEntityData.defineId(ManiaBrain.class, EntityDataSerializers.INT);
@@ -147,9 +149,9 @@ public class ManiaBrain extends Projectile implements SplitMagicBonus {
 
     public void release(Player owner) {
         this.setState(WILD);
-        this.wildDuration = 10 + this.random.nextInt(11);
+        this.wildDuration = 10 + this.random.nextInt(10);
         this.forward = owner.getLookAngle();
-        this.setDeltaMovement(this.forward.scale(0.7D * this.speed).add(this.random.nextGaussian() * 0.4D, this.random.nextGaussian() * 0.3D, this.random.nextGaussian() * 0.4D));
+        this.setDeltaMovement(this.forward.scale(0.75D * this.speed).add(this.random.nextGaussian() * 0.25D, this.random.nextGaussian() * 0.25D, this.random.nextGaussian() * 0.25D));
     }
 
     private void setState(int state) {
@@ -199,7 +201,7 @@ public class ManiaBrain extends Projectile implements SplitMagicBonus {
     }
 
     private void tickWild() {
-        Vec3 wander = new Vec3(this.random.nextGaussian(), this.random.nextGaussian() * 0.6D, this.random.nextGaussian()).scale(0.3D);
+        Vec3 wander = new Vec3(this.random.nextGaussian() * 0.5D, this.random.nextGaussian() * 0.5D, this.random.nextGaussian()).scale(0.25D);
         this.setDeltaMovement(this.getDeltaMovement().add(wander).add(this.forward.scale(0.12D)).normalize().scale(0.7D * this.speed));
         this.checkHits(false);
         this.entityData.set(SIZE, Mth.lerp(Math.min(this.stateTicks / (float) this.wildDuration, 1.0F), 0.4F, 1.0F));
@@ -216,7 +218,7 @@ public class ManiaBrain extends Projectile implements SplitMagicBonus {
             Vec3 direction = this.target.getBoundingBox().getCenter().subtract(this.position()).normalize().scale(1.8D * this.speed);
             this.setDeltaMovement(this.getDeltaMovement().lerp(direction, 0.4D));
             this.checkHits(true);
-            if (this.stateTicks > 60) {
+            if (this.stateTicks > 120) {
                 this.discard();
             }
         } else {
@@ -232,6 +234,7 @@ public class ManiaBrain extends Projectile implements SplitMagicBonus {
         }
     }
 
+    @SuppressWarnings({"ReassignedVariable", "SuspiciousNameCombination"})
     private void tickClient() {
         if (this.snapTicks > 0) {
             this.snapTicks--;
@@ -287,7 +290,7 @@ public class ManiaBrain extends Projectile implements SplitMagicBonus {
         }
         Vec3 up = right.cross(look);
         float angle = Mth.TWO_PI * this.index / this.getCount() + owner.tickCount * 0.05F;
-        return owner.getEyePosition().add(look.scale(2.0D)).add(right.scale(Mth.cos(angle) * 0.55D)).add(up.scale(Mth.sin(angle) * 0.55D)).add(0.0D, -this.getBbHeight() * 0.5D, 0.0D).add(this.clusterOffset);
+        return owner.getEyePosition().add(look.scale(HELD_DISTANCE)).add(right.scale(Mth.cos(angle) * 0.55D)).add(up.scale(Mth.sin(angle) * 0.55D)).add(0.0D, -this.getBbHeight() * 0.5D, 0.0D).add(this.clusterOffset);
     }
 
     @Nullable
@@ -306,11 +309,11 @@ public class ManiaBrain extends Projectile implements SplitMagicBonus {
 
     private boolean isValidTarget(LivingEntity owner, LivingEntity entity) {
         boolean hostile = entity instanceof Enemy || entity == owner.getLastHurtMob() || entity == owner.getLastHurtByMob() || entity instanceof Mob mob && mob.getTarget() == owner;
-        return hostile && entity.isAlive() && !entity.isSpectator() && !this.isAlly(owner, entity) && !this.hitEntities.contains(entity.getId()) && entity.distanceToSqr(this) < 24.0D * 24.0D;
+        return hostile && entity.isAlive() && !entity.isSpectator() && this.notAlly(owner, entity) && !this.hitEntities.contains(entity.getId()) && entity.distanceToSqr(this) < 24.0D * 24.0D;
     }
 
-    private boolean isAlly(Entity owner, Entity entity) {
-        return entity == owner || entity.isAlliedTo(owner) || owner.isAlliedTo(entity);
+    private boolean notAlly(Entity owner, Entity entity) {
+        return entity != owner && !entity.isAlliedTo(owner) && !owner.isAlliedTo(entity);
     }
 
     private void swap(LivingEntity owner) {
@@ -354,8 +357,12 @@ public class ManiaBrain extends Projectile implements SplitMagicBonus {
             DamageSource source = OFDamageTypes.causeManiaDamage(serverLevel.registryAccess(), this, this.getOwner());
             entity.hurt(source, EnchantmentHelper.modifyDamage(serverLevel, this.weapon, entity, source, DAMAGE));
             if (entity instanceof LivingEntity living && living.isAlive()) {
-                living.addEffect(new MobEffectInstance(MobEffects.WEAKNESS, 140, 2), this.getOwner());
-                living.addEffect(new MobEffectInstance(MobEffects.MOVEMENT_SLOWDOWN, 140, 2), this.getOwner());
+                if (this.random.nextInt(5) == 0) {
+                    living.addEffect(new MobEffectInstance(MobEffects.WEAKNESS, 140, 0), this.getOwner());
+                }
+                if (this.random.nextInt(5) == 0) {
+                    living.addEffect(new MobEffectInstance(MobEffects.MOVEMENT_SLOWDOWN, 140, 1), this.getOwner());
+                }
                 living.addEffect(new MobEffectInstance(OFMobEffects.MANIA, 220, this.maniaAmplifier), this.getOwner());
             }
             this.hitEntities.add(entity.getId());
@@ -370,7 +377,7 @@ public class ManiaBrain extends Projectile implements SplitMagicBonus {
     @Override
     protected boolean canHitEntity(Entity entity) {
         Entity owner = this.getOwner();
-        return !this.isCharging() && super.canHitEntity(entity) && !this.hitEntities.contains(entity.getId()) && (owner == null || !this.isAlly(owner, entity));
+        return !this.isCharging() && super.canHitEntity(entity) && !this.hitEntities.contains(entity.getId()) && (owner == null || this.notAlly(owner, entity));
     }
 
     @Override

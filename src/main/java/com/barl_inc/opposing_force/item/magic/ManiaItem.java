@@ -165,7 +165,7 @@ public class ManiaItem extends GunItem implements MovementModifyingItem {
 
     @Override
     public float getUseMovementMultiplier() {
-        return 0.6F;
+        return 0.5F;
     }
 
     @Override

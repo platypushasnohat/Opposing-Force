@@ -67,7 +67,7 @@ public class GorloffModel extends GunModel<GorloffItem> {
                     displayContext,
                     OFParticleTypes.GUN_FLASH.get(),
                     INSTANCE.particle,
-                    new Vector3f(0.0F, 1.5F, -0.5F)
+                    new Vector3f(0.0F, 1.5F, -0.75F)
             );
         }
         poseStack.popPose();

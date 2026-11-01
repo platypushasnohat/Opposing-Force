@@ -67,7 +67,10 @@ public class OFItemModelProvider extends SinewItemModelProvider {
                 OFItems.REPAIR_KIT,
                 OFItems.BUG_BITS,
                 OFItems.KNOCKBACK_SPORES,
-                OFItems.OXIDIZED_SPORES
+                OFItems.OXIDIZED_SPORES,
+                OFItems.IRIDESCENT_ESSENCE,
+                OFItems.BOTTOMLESS_LAVA_BUCKET,
+                OFItems.BOTTOMLESS_WATER_BUCKET
         );
 
         this.handheldItem(

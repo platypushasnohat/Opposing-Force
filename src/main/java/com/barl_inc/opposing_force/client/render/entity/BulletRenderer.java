@@ -29,7 +29,7 @@ public class BulletRenderer extends EntityRenderer<Bullet> {
     }
 
     public BulletRenderer(EntityRendererProvider.Context context) {
-        this(context, 1.0F, false);
+        this(context, 1.5F, false);
     }
 
     @Override

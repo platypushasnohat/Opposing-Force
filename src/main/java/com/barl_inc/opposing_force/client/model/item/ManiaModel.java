@@ -40,7 +40,7 @@ public class ManiaModel extends GunModel<ManiaItem> {
     public void setupAnim(Entity entity, ManiaItem item, ItemStack stack, ItemDisplayContext displayContext, float ageInTicks) {
         this.root().getAllParts().forEach(ModelPart::resetPose);
         this.animate(stack, GunItem.SHOOT_ANIMATION, SHOOT);
-        if (entity instanceof LivingEntity living && living.isUsingItem() && living.getUseItem().getItem() == item) {
+        if (entity instanceof LivingEntity living && living.isUsingItem() && living.getUseItem() == stack) {
             float charge = Math.min(living.getTicksUsingItem() / 40.0F, 1.0F);
             float pulse = 1.0F + (0.04F + charge * 0.08F) * Mth.sin(ageInTicks * (0.6F + charge * 0.6F));
             this.brain_part.xScale *= pulse;

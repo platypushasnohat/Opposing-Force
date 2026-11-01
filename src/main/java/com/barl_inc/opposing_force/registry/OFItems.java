@@ -12,6 +12,7 @@ import com.barl_inc.opposing_force.item.ranged.ammo.BulletComponent;
 import com.barl_inc.opposing_force.item.ranged.ammo.PowerCellItem;
 import com.barl_inc.opposing_force.item.summon.ShroomStaffItem;
 import com.barl_inc.opposing_force.registry.datapack.OFJukeboxSongs;
+import com.barl_inc.opposing_force.registry.misc.OFEnumProxy;
 import com.barl_inc.opposing_force.registry.properties.*;
 import com.platypushasnohat.sinew.item.*;
 import net.minecraft.tags.FluidTags;
@@ -21,6 +22,7 @@ import net.minecraft.world.item.ArmorItem.Type;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.Rarity;
 import net.minecraft.world.item.SwordItem;
+import net.minecraft.world.level.material.Fluids;
 import net.neoforged.neoforge.common.DeferredSpawnEggItem;
 import net.neoforged.neoforge.registries.DeferredItem;
 import net.neoforged.neoforge.registries.DeferredRegister;
@@ -88,15 +90,15 @@ public class OFItems {
     //mageslop
     public static final DeferredItem<Item> GRASPER_SPAWN_EGG = registerSpawnEggItem("grasper", OFEntities.GRASPER, 0x293c3b, 0xac8e16);
     public static final DeferredItem<Item> CURSED_RING = registerItem("cursed_ring", () -> new CurioItem(new Item.Properties(), OFCurioDefinitions.CURSED_RING));
-    public static final DeferredItem<Item> CURSED_RINGLINE = registerItem("cursed_ringline", () -> new CursedRinglineItem(new Item.Properties().stacksTo(1)));
+    public static final DeferredItem<Item> CURSED_RINGLINE = registerItem("cursed_ringline", () -> new CursedRinglineItem(new Item.Properties().stacksTo(1).rarity(OFEnumProxy.RARITY_SPECTRAL.getValue())));
     public static final DeferredItem<Item> DISABLED_CURSED_RINGLINE = registerItemNoLang("disabled_cursed_ringline", () -> new DisabledItem(new Item.Properties().stacksTo(1)));
 
     public static final DeferredItem<Item> GRELL_SPAWN_EGG = registerSpawnEggItem("grell", OFEntities.GRELL, 0xe0aac4, 0x6a2d6b);
-    public static final DeferredItem<Item> MANIA = registerItem("mania", () -> new ManiaItem(new Item.Properties().durability(1024).rarity(Rarity.EPIC)));
+    public static final DeferredItem<Item> MANIA = registerItem("mania", () -> new ManiaItem(new Item.Properties().durability(1024).rarity(OFEnumProxy.RARITY_SPECTRAL.getValue())));
 
     //cherry grove enemy section
     public static final DeferredItem<Item> PARASOUL_SPAWN_EGG = registerSpawnEggItem("parasoul", OFEntities.PARASOUL, 0xf08a3e, 0xde3ca5);
-    public static final DeferredItem<Item> SAKE = registerItem("sake", () -> new SakeItem(new Item.Properties().stacksTo(16)));
+    public static final DeferredItem<Item> SAKE = registerItem("sake", () -> new SakeItem(new Item.Properties().rarity(OFEnumProxy.RARITY_SPECTRAL.getValue())));
 
     //materials
     public static final DeferredItem<Item> FIRING_MECHANISM = registerItem("firing_mechanism", () -> new Item(new Item.Properties()));
@@ -167,9 +169,13 @@ public class OFItems {
     public static final DeferredItem<Item> GHOST_SPAWN_EGG = registerSpawnEggItem("ghost", OFEntities.GHOST, 0x1f2433, 0x9ee0cf);
     public static final DeferredItem<Item> ROAMER_SPAWN_EGG = registerSpawnEggItem("roamer", OFEntities.ROAMER, 0x0d0e04, 0xe44928);
     public static final DeferredItem<Item> HAUNT_SPAWN_EGG = registerSpawnEggItem("haunt", OFEntities.HAUNT, 0x90a9a1, 0x2d2e49);
-    public static final DeferredItem<Item> ECTOPLASM = registerItem("ectoplasm", () -> new EctoplasmItem(new Item.Properties()));
-    public static final DeferredItem<Item> SPECTRAL_CLEAVER = registerItem("spectral_cleaver", () -> new SpectralCleaverItem(OFItemTiers.SPECTRAL_CLEAVER, new Item.Properties().attributes(SwordItem.createAttributes(OFItemTiers.SPECTRAL_CLEAVER, 3.5F, -2.4F)).rarity(Rarity.UNCOMMON)));
-    public static final DeferredItem<Item> SPECTRAL_SHIELD = registerItem("spectral_shield", () -> new SpectralShieldItem(new Item.Properties().durability(672).rarity(Rarity.UNCOMMON)));
+    public static final DeferredItem<Item> ECTOPLASM = registerItem("ectoplasm", () -> new EctoplasmItem(new Item.Properties().rarity(OFEnumProxy.RARITY_SPECTRAL.getValue())));
+    public static final DeferredItem<Item> SPECTRAL_CLEAVER = registerItem("spectral_cleaver", () -> new SpectralCleaverItem(OFItemTiers.SPECTRAL_CLEAVER, new Item.Properties().attributes(SwordItem.createAttributes(OFItemTiers.SPECTRAL_CLEAVER, 3.5F, -2.4F)).rarity(OFEnumProxy.RARITY_SPECTRAL.getValue())));
+    public static final DeferredItem<Item> SPECTRAL_SHIELD = registerItem("spectral_shield", () -> new SpectralShieldItem(new Item.Properties().durability(672).rarity(OFEnumProxy.RARITY_SPECTRAL.getValue())));
+
+    public static final DeferredItem<Item> IRIDESCENT_ESSENCE = registerItem("iridescent_essence", () -> new Item(new Item.Properties().rarity(OFEnumProxy.RARITY_IRIDESCENT.getValue())));
+    public static final DeferredItem<Item> BOTTOMLESS_WATER_BUCKET = registerItem("bottomless_water_bucket", () -> new BottomlessBucketItem(Fluids.WATER, new Item.Properties().rarity(OFEnumProxy.RARITY_IRIDESCENT.getValue())));
+    public static final DeferredItem<Item> BOTTOMLESS_LAVA_BUCKET = registerItem("bottomless_lava_bucket", () -> new BottomlessBucketItem(Fluids.LAVA, new Item.Properties().rarity(OFEnumProxy.RARITY_IRIDESCENT.getValue())));
 
     private static <I extends Item> DeferredItem<I> registerItem(String name, Supplier<? extends I> supplier) {
         DeferredItem<I> item = ITEM.register(name, supplier);

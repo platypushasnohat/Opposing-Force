@@ -37,52 +37,66 @@ public class OFCreativeTabs {
                         output.accept(OFItems.TARANTULA_SPAWN_EGG);
                         output.accept(OFItems.TERROR_SPAWN_EGG);
 
-                        // mob items
+                        // materials
+                        output.accept(OFItems.BUG_BITS);
                         output.accept(OFItems.CHITIN);
+                        output.accept(OFItems.FUR);
+                        output.accept(OFItems.ECTOPLASM);
+                        output.accept(OFItems.KNOCKBACK_SPORES);
+                        output.accept(OFItems.OXIDIZED_SPORES);
+                        output.accept(OFItems.ACID_CHARGE);
+                        output.accept(OFItems.TERROR_LEG);
+                        output.accept(OFItems.FRIED_TERROR_LEG);
+                        output.accept(OFItems.SAWBLADE);
+                        output.accept(OFItems.LASER_FOCUS);
+                        output.accept(OFItems.FIRING_MECHANISM);
+                        output.accept(OFItems.IRIDESCENT_ESSENCE);
+
+                        // misc items
+                        output.accept(OFItems.FILLET_BUCKET);
+                        output.accept(OFItems.MYSTIC_POT);
+                        output.accept(OFItems.REPAIR_KIT);
+                        output.accept(OFItems.SAKE);
+                        output.accept(OFItems.MUSIC_DISC_SLAYSER);
+                        output.accept(OFItems.BOTTOMLESS_WATER_BUCKET);
+                        output.accept(OFItems.BOTTOMLESS_LAVA_BUCKET);
+
+                        // ammo
+                        output.accept(OFItems.STONE_BULLET);
+                        output.accept(OFItems.IRON_BULLET);
+                        output.accept(OFItems.PRECISION_BULLET);
+                        output.accept(OFItems.POWER_CELL);
+
+                        // weapons
                         output.accept(OFItems.CHITIN_LANCE);
 
-                        output.accept(OFItems.LASER_FOCUS);
-                        output.accept(OFItems.POWER_CELL);
+                        output.accept(OFItems.GNAT_STAFF);
+
+                        output.accept(OFItems.TUNING_FORK);
+
+                        output.accept(OFItems.LEITMOTIF);
+
+                        output.accept(OFItems.CRACKSHOT);
+                        output.accept(OFItems.JAEGER);
+                        output.accept(OFItems.BOOMSTICK);
+                        output.accept(OFItems.GORLOFF);
+
                         output.accept(OFItems.BLASTER);
                         output.accept(OFItems.TRI_BLASTER);
                         output.accept(OFItems.SCATTER_BLASTER);
                         output.accept(OFItems.LASER_BLADE);
-                        output.accept(OFItems.MUSIC_DISC_SLAYSER);
 
-                        output.accept(OFItems.FILLET_BUCKET);
+                        output.accept(OFItems.SHROOM_STAFF);
 
-                        output.accept(OFItems.FUR);
+                        output.accept(OFItems.BUZZSAW);
 
-                        output.accept(OFItems.CURSED_RING);
                         output.accept(OFItems.CURSED_RINGLINE);
 
-                        output.accept(OFItems.ECTOPLASM);
                         output.accept(OFItems.SPECTRAL_CLEAVER);
                         output.accept(OFItems.SPECTRAL_SHIELD);
 
-                        output.accept(OFItems.GNAT_STAFF);
-
                         output.accept(OFItems.MANIA);
 
-                        output.accept(OFItems.ACID_CHARGE);
-
-                        output.accept(OFItems.MYSTIC_POT);
-                        output.accept(OFItems.LEITMOTIF);
-
-                        output.accept(OFItems.KNOCKBACK_SPORES);
-                        output.accept(OFItems.OXIDIZED_SPORES);
-                        output.accept(OFItems.SHROOM_STAFF);
-
-                        output.accept(OFItems.SAKE);
-
-                        output.accept(OFItems.TUNING_FORK);
-
-                        output.accept(OFItems.TERROR_LEG);
-                        output.accept(OFItems.FRIED_TERROR_LEG);
-                        output.accept(OFItems.SAWBLADE);
-                        output.accept(OFItems.BUZZSAW);
-
-                        // misc tools and armor (non-individual weapons)
                         output.accept(OFItems.EMERALD_SWORD);
                         output.accept(OFItems.EMERALD_SHOVEL);
                         output.accept(OFItems.EMERALD_PICKAXE);
@@ -99,24 +113,6 @@ public class OFCreativeTabs {
                         output.accept(OFItems.LAPIS_LAZULI_AXE);
                         output.accept(OFItems.LAPIS_LAZULI_HOE);
 
-                        //misc weapons
-                        output.accept(OFItems.CRACKSHOT);
-                        output.accept(OFItems.JAEGER);
-                        output.accept(OFItems.BOOMSTICK);
-                        output.accept(OFItems.GORLOFF);
-
-                        //misc bullets
-                        output.accept(OFItems.STONE_BULLET);
-                        output.accept(OFItems.IRON_BULLET);
-                        output.accept(OFItems.PRECISION_BULLET);
-
-                        //misc mana
-
-                        // misc materials
-                        output.accept(OFItems.BUG_BITS);
-                        output.accept(OFItems.FIRING_MECHANISM);
-                        output.accept(OFItems.REPAIR_KIT);
-
                         // trinkets
                         // common
                         output.accept(OFItems.FIERY_CARAPACE);
@@ -124,6 +120,7 @@ public class OFCreativeTabs {
                         output.accept(OFItems.MUNITIONS_BOX);
                         output.accept(OFItems.RANGER_MANUAL);
                         output.accept(OFItems.THORNY_BRACELET);
+                        output.accept(OFItems.CURSED_RING);
 
                         // uncommon
                         output.accept(OFItems.BLACK_BELT);

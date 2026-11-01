@@ -8,6 +8,26 @@
         "class": "com/barl_inc/opposing_force/debug/OFDebugRarity",
         "field": "DEBUG"
       }
+    },
+
+    {
+      "enum": "net/minecraft/world/item/Rarity",
+      "name": "OPPOSING_FORCE_RARITY_IRIDESCENT",
+      "constructor": "(ILjava/lang/String;Ljava/util/function/UnaryOperator;)V",
+      "parameters": {
+        "class": "com/barl_inc/opposing_force/registry/misc/OFEnumProxy",
+        "field": "RARITY_IRIDESCENT"
+      }
+    },
+
+    {
+      "enum": "net/minecraft/world/item/Rarity",
+      "name": "OPPOSING_FORCE_RARITY_SPECTRAL",
+      "constructor": "(ILjava/lang/String;Ljava/util/function/UnaryOperator;)V",
+      "parameters": {
+        "class": "com/barl_inc/opposing_force/registry/misc/OFEnumProxy",
+        "field": "RARITY_SPECTRAL"
+      }
     }
   ]
 }

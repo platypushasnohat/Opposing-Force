@@ -64,7 +64,7 @@ public class BoomstickItem extends BulletGunItem {
         for (int i = 0; i < PROJECTILE_COUNT; i++) {
             super.shoot(level, player, stack, ammo);
         }
-        level.playSound(null, player.getX(), player.getY(), player.getZ(), OFSoundEvents.GUN_SHOOT, SoundSource.PLAYERS, 2.0F, 0.8F * SinewSoundUtils.randomizePitch(player));
+        level.playSound(null, player.getX(), player.getY(), player.getZ(), OFSoundEvents.GUN_SHOOT, SoundSource.PLAYERS, 2.0F, 0.7F * SinewSoundUtils.randomizePitch(player));
     }
 
     @Override

@@ -109,7 +109,7 @@ public class GorloffItem extends BulletGunItem {
     @Override
     public void shoot(Level level, Player player, ItemStack stack, ItemStack ammo) {
         super.shoot(level, player, stack, ammo);
-        level.playSound(null, player.getX(), player.getY(), player.getZ(), OFSoundEvents.GUN_SHOOT_SHORT, SoundSource.PLAYERS, 1.0F, SinewSoundUtils.randomizePitch(player));
+        level.playSound(null, player.getX(), player.getY(), player.getZ(), OFSoundEvents.GUN_SHOOT_SHORT, SoundSource.PLAYERS, 1.0F, 1.1F * SinewSoundUtils.randomizePitch(player));
     }
 
     public static int getShots(ItemStack stack) {

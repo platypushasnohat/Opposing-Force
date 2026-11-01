@@ -50,7 +50,7 @@ public class JaegerItem extends BulletGunItem {
             Sinew.PROXY.screenShake(new ScreenShakeEvent(player.position(), 6, 1.0F, 4, false));
         }
         super.shoot(level, player, stack, ammo);
-        level.playSound(null, player.getX(), player.getY(), player.getZ(), OFSoundEvents.GUN_SHOOT, SoundSource.PLAYERS, 1.5F, 0.9F * SinewSoundUtils.randomizePitch(player));
+        level.playSound(null, player.getX(), player.getY(), player.getZ(), OFSoundEvents.GUN_SHOOT, SoundSource.PLAYERS, 1.5F, 0.85F * SinewSoundUtils.randomizePitch(player));
     }
 
     @Override

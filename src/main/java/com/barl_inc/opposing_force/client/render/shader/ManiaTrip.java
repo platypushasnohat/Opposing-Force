@@ -36,9 +36,9 @@ public class ManiaTrip {
         MobEffectInstance effect = entity.getEffect(OFMobEffects.MANIA);
         float strength = 0.0F;
         if (effect != null) {
-            strength = 1.0F;
+            strength = 0.6F;
             if (!effect.isInfiniteDuration()) {
-                strength = Mth.clamp((effect.getDuration() - partialTicks) / 40.0F, 0.0F, 1.0F);
+                strength = Mth.clamp((effect.getDuration() - partialTicks) / 40.0F, 0.0F, 0.6F);
             }
         }
         return strength;

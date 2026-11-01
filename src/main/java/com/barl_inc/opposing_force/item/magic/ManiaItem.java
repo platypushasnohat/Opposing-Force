@@ -12,7 +12,6 @@ import com.platypushasnohat.sinew.item.SinewItemUtils;
 import com.platypushasnohat.sinew.utils.SinewSoundUtils;
 import it.unimi.dsi.fastutil.objects.Object2IntMap;
 import net.minecraft.core.component.DataComponents;
-import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.sounds.SoundSource;
@@ -22,15 +21,12 @@ import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.TooltipFlag;
-import net.minecraft.world.item.component.CustomData;
 import net.minecraft.world.item.enchantment.ItemEnchantments;
 import net.minecraft.world.level.Level;
 
 import java.util.List;
 
 public class ManiaItem extends GunItem implements MovementModifyingItem {
-
-    public static final String RELOAD_ANIMATION = "reload";
 
     public ManiaItem(Properties properties) {
         super(properties);
@@ -103,7 +99,6 @@ public class ManiaItem extends GunItem implements MovementModifyingItem {
             for (ManiaBrain brain : getChargingBrains(level, player)) {
                 brain.release(player);
             }
-            setReloadPending(stack, true);
         }
         level.playSound(null, player.getX(), player.getY(), player.getZ(), OFSoundEvents.GUN_SHOOT, SoundSource.PLAYERS, 1.5F, 1.3F * SinewSoundUtils.randomizePitch(player));
         level.playSound(null, player.getX(), player.getY(), player.getZ(), SoundEvents.EVOKER_CAST_SPELL, SoundSource.PLAYERS, 1.0F, 1.6F * SinewSoundUtils.randomizePitch(player));
@@ -115,15 +110,8 @@ public class ManiaItem extends GunItem implements MovementModifyingItem {
         InteractionResultHolder<ItemStack> result = InteractionResultHolder.consume(stack);
         if (!this.canShoot(player, hand)) {
             result = super.use(level, player, hand);
-        } else if (!isReloadPending(stack)) {
-            player.startUsingItem(hand);
         } else {
-            ItemAnimations.start(player, stack, RELOAD_ANIMATION);
-            if (!level.isClientSide) {
-                setReloadPending(stack, false);
-                player.getCooldowns().addCooldown(this, 20);
-                level.playSound(null, player.getX(), player.getY(), player.getZ(), SoundEvents.SLIME_SQUISH, SoundSource.PLAYERS, 1.0F, 0.7F * SinewSoundUtils.randomizePitch(player));
-            }
+            player.startUsingItem(hand);
         }
         return result;
     }
@@ -134,16 +122,16 @@ public class ManiaItem extends GunItem implements MovementModifyingItem {
             int count = this.getBrainCount(stack);
             int charge = this.getUseDuration(stack, entity) - remainingUseDuration;
             int wanted = Math.min(count, 1 + charge * count / 40);
-            if (charge == 0) {
-                level.playSound(null, player.getX(), player.getY(), player.getZ(), SoundEvents.WARDEN_SONIC_CHARGE, SoundSource.PLAYERS, 0.8F, 0.8F); //this does not play correctly and i dont want to fucking fix it rn
-            }
+//            if (charge == 0) {
+//                level.playSound(null, player.getX(), player.getY(), player.getZ(), OFSoundEvents.MANIA_CHARGED, SoundSource.PLAYERS, 0.7F, SinewSoundUtils.randomizePitch(entity));
+//            }
             int maniaAmplifier = 0;
             if (this.isElite(stack)) {
                 maniaAmplifier = 1;
             }
             for (int i = getChargingBrains(level, player).size(); i < wanted; i++) {
                 level.addFreshEntity(new ManiaBrain(level, player, stack, i, count, this.isElite(stack), maniaAmplifier));
-                level.playSound(null, player.getX(), player.getY(), player.getZ(), SoundEvents.SLIME_SQUISH_SMALL, SoundSource.PLAYERS, 0.4F, 1.6F + level.getRandom().nextFloat() * 0.3F);
+                level.playSound(null, player.getX(), player.getY(), player.getZ(), SoundEvents.SLIME_ATTACK, SoundSource.PLAYERS, 0.4F, 1.6F + level.getRandom().nextFloat() * 0.3F);
             }
         }
     }
@@ -179,7 +167,7 @@ public class ManiaItem extends GunItem implements MovementModifyingItem {
 
     @Override
     public int getCooldown(ItemStack stack, ItemStack ammo) {
-        return 10;
+        return 30;
     }
 
     @Override
@@ -207,15 +195,5 @@ public class ManiaItem extends GunItem implements MovementModifyingItem {
     @Override
     public int getEnchantmentValue() {
         return 10;
-    }
-
-    public static boolean isReloadPending(ItemStack stack) {
-        return stack.getOrDefault(DataComponents.CUSTOM_DATA, CustomData.EMPTY).copyTag().getBoolean("ReloadPending");
-    }
-
-    public static void setReloadPending(ItemStack stack, boolean pending) {
-        CompoundTag compoundtag = stack.getOrDefault(DataComponents.CUSTOM_DATA, CustomData.EMPTY).copyTag();
-        compoundtag.putBoolean("ReloadPending", pending);
-        stack.set(DataComponents.CUSTOM_DATA, CustomData.of(compoundtag));
     }
 }

@@ -1,12 +1,13 @@
 package com.barl_inc.opposing_force.client.model.item;
 
 import com.barl_inc.opposing_force.OpposingForce;
-import com.barl_inc.opposing_force.client.model.item.animation.ManiaAnimations;
 import com.barl_inc.opposing_force.item.base.GunItem;
 import com.barl_inc.opposing_force.item.magic.ManiaItem;
 import com.mojang.blaze3d.vertex.PoseStack;
-import com.mojang.blaze3d.vertex.VertexConsumer;
-import com.platypushasnohat.sinew.client.model.item.AnimatedItemModel;
+import net.minecraft.client.animation.AnimationChannel;
+import net.minecraft.client.animation.AnimationDefinition;
+import net.minecraft.client.animation.Keyframe;
+import net.minecraft.client.animation.KeyframeAnimations;
 import net.minecraft.client.model.geom.ModelPart;
 import net.minecraft.client.model.geom.PartPose;
 import net.minecraft.client.model.geom.builders.*;
@@ -21,7 +22,7 @@ import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemDisplayContext;
 import net.minecraft.world.item.ItemStack;
 
-public class ManiaModel extends AnimatedItemModel<ManiaItem> {
+public class ManiaModel extends GunModel<ManiaItem> {
 
     public static final ManiaModel INSTANCE = new ManiaModel(createBodyLayer().bakeRoot());
     public static final ResourceLocation TEXTURE = OpposingForce.location("textures/item/mania.png");
@@ -38,8 +39,7 @@ public class ManiaModel extends AnimatedItemModel<ManiaItem> {
     @Override
     public void setupAnim(Entity entity, ManiaItem item, ItemStack stack, ItemDisplayContext displayContext, float ageInTicks) {
         this.root().getAllParts().forEach(ModelPart::resetPose);
-        this.animate(stack, GunItem.SHOOT_ANIMATION, ManiaAnimations.SHOOT);
-        this.animate(stack, ManiaItem.RELOAD_ANIMATION, ManiaAnimations.RELOAD);
+        this.animate(stack, GunItem.SHOOT_ANIMATION, SHOOT);
         if (entity instanceof LivingEntity living && living.isUsingItem() && living.getUseItem().getItem() == item) {
             float charge = Math.min(living.getTicksUsingItem() / 40.0F, 1.0F);
             float pulse = 1.0F + (0.04F + charge * 0.08F) * Mth.sin(ageInTicks * (0.6F + charge * 0.6F));
@@ -47,11 +47,6 @@ public class ManiaModel extends AnimatedItemModel<ManiaItem> {
             this.brain_part.yScale *= pulse;
             this.brain_part.zScale *= pulse;
         }
-    }
-
-    @Override
-    public void renderToBuffer(PoseStack poseStack, VertexConsumer buffer, int packedLight, int packedOverlay, int color) {
-        this.root().render(poseStack, buffer, packedLight, packedOverlay);
     }
 
     @Override
@@ -66,8 +61,8 @@ public class ManiaModel extends AnimatedItemModel<ManiaItem> {
             texture = ELITE_TEXTURE;
         }
         poseStack.pushPose();
-        ManiaModel.INSTANCE.setupAnim(player, item, stack, displayContext, ageInTicks);
-        ManiaModel.INSTANCE.renderToBuffer(poseStack, ItemRenderer.getFoilBufferDirect(buffer, RenderType.entityCutoutNoCull(texture), false, stack.hasFoil()), packedLight, packedOverlay, 0xFFFFFF);
+        INSTANCE.setupAnim(player, item, stack, displayContext, ageInTicks);
+        INSTANCE.renderToBuffer(poseStack, ItemRenderer.getFoilBufferDirect(buffer, RenderType.entityCutoutNoCull(texture), false, stack.hasFoil()), packedLight, packedOverlay, 0xFFFFFF);
         poseStack.popPose();
     }
 
@@ -88,4 +83,45 @@ public class ManiaModel extends AnimatedItemModel<ManiaItem> {
 
         return LayerDefinition.create(meshdefinition, 128, 128);
     }
+
+    public static final AnimationDefinition SHOOT = AnimationDefinition.Builder.withLength(0.5F)
+            .addAnimation("body", new AnimationChannel(AnimationChannel.Targets.ROTATION,
+                    new Keyframe(0.0417F, KeyframeAnimations.degreeVec(0.0F, 0.0F, 0.0F), AnimationChannel.Interpolations.CATMULLROM),
+                    new Keyframe(0.0833F, KeyframeAnimations.degreeVec(-35.0F, 0.0F, 0.0F), AnimationChannel.Interpolations.CATMULLROM),
+                    new Keyframe(0.4167F, KeyframeAnimations.degreeVec(-35.0F, 0.0F, 0.0F), AnimationChannel.Interpolations.CATMULLROM),
+                    new Keyframe(0.5F, KeyframeAnimations.degreeVec(0.0F, 0.0F, 0.0F), AnimationChannel.Interpolations.CATMULLROM)
+            ))
+            .addAnimation("body", new AnimationChannel(AnimationChannel.Targets.POSITION,
+                    new Keyframe(0.0F, KeyframeAnimations.posVec(0.0F, 0.0F, 0.0F), AnimationChannel.Interpolations.CATMULLROM),
+                    new Keyframe(0.0833F, KeyframeAnimations.posVec(0.0F, 0.0F, 7.0F), AnimationChannel.Interpolations.CATMULLROM),
+                    new Keyframe(0.4167F, KeyframeAnimations.posVec(0.0F, 0.0F, 7.0F), AnimationChannel.Interpolations.CATMULLROM),
+                    new Keyframe(0.5F, KeyframeAnimations.posVec(0.0F, 0.0F, 0.0F), AnimationChannel.Interpolations.CATMULLROM)
+            ))
+            .addAnimation("body", new AnimationChannel(AnimationChannel.Targets.SCALE,
+                    new Keyframe(0.0F, KeyframeAnimations.scaleVec(1.0F, 1.0F, 1.0F), AnimationChannel.Interpolations.LINEAR),
+                    new Keyframe(0.0833F, KeyframeAnimations.scaleVec(1.0F, 1.0F, 1.0F), AnimationChannel.Interpolations.LINEAR),
+                    new Keyframe(0.125F, KeyframeAnimations.scaleVec(1.25F, 1.25F, 1.0F), AnimationChannel.Interpolations.LINEAR),
+                    new Keyframe(0.1667F, KeyframeAnimations.scaleVec(1.0F, 1.0F, 1.0F), AnimationChannel.Interpolations.LINEAR),
+                    new Keyframe(0.2083F, KeyframeAnimations.scaleVec(1.25F, 1.25F, 1.0F), AnimationChannel.Interpolations.LINEAR),
+                    new Keyframe(0.25F, KeyframeAnimations.scaleVec(1.0F, 1.0F, 1.0F), AnimationChannel.Interpolations.LINEAR)
+            ))
+            .addAnimation("barrel", new AnimationChannel(AnimationChannel.Targets.SCALE,
+                    new Keyframe(0.0F, KeyframeAnimations.scaleVec(1.0F, 1.0F, 1.0F), AnimationChannel.Interpolations.LINEAR),
+                    new Keyframe(0.0417F, KeyframeAnimations.scaleVec(1.5F, 1.5F, 1.0F), AnimationChannel.Interpolations.LINEAR),
+                    new Keyframe(0.2917F, KeyframeAnimations.scaleVec(1.5F, 1.5F, 1.0F), AnimationChannel.Interpolations.LINEAR),
+                    new Keyframe(0.3333F, KeyframeAnimations.scaleVec(1.0F, 1.0F, 1.0F), AnimationChannel.Interpolations.LINEAR)
+            ))
+            .addAnimation("brain_part", new AnimationChannel(AnimationChannel.Targets.ROTATION,
+                    new Keyframe(0.0F, KeyframeAnimations.degreeVec(0.0F, 0.0F, 0.0F), AnimationChannel.Interpolations.CATMULLROM),
+                    new Keyframe(0.1667F, KeyframeAnimations.degreeVec(0.0F, 0.0F, 360.0F), AnimationChannel.Interpolations.CATMULLROM),
+                    new Keyframe(0.3333F, KeyframeAnimations.degreeVec(0.0F, 0.0F, 360.0F), AnimationChannel.Interpolations.CATMULLROM),
+                    new Keyframe(0.5F, KeyframeAnimations.degreeVec(0.0F, 0.0F, 0.0F), AnimationChannel.Interpolations.CATMULLROM)
+            ))
+            .addAnimation("brain_part", new AnimationChannel(AnimationChannel.Targets.SCALE,
+                    new Keyframe(0.0F, KeyframeAnimations.scaleVec(1.0F, 1.0F, 1.0F), AnimationChannel.Interpolations.CATMULLROM),
+                    new Keyframe(0.1667F, KeyframeAnimations.scaleVec(1.0F, 1.0F, 1.5F), AnimationChannel.Interpolations.CATMULLROM),
+                    new Keyframe(0.3333F, KeyframeAnimations.scaleVec(1.0F, 1.0F, 1.5F), AnimationChannel.Interpolations.CATMULLROM),
+                    new Keyframe(0.5F, KeyframeAnimations.scaleVec(1.0F, 1.0F, 1.0F), AnimationChannel.Interpolations.CATMULLROM)
+            ))
+            .build();
 }

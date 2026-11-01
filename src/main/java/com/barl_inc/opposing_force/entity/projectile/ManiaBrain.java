@@ -18,7 +18,6 @@ import net.minecraft.sounds.SoundSource;
 import net.minecraft.util.Mth;
 import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.effect.MobEffectInstance;
-import net.minecraft.world.effect.MobEffects;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.LivingEntity;
@@ -40,13 +39,13 @@ import java.util.Set;
 
 public class ManiaBrain extends Projectile implements SplitMagicBonus {
 
-    public static final float DAMAGE = 2.0F;
+    public static final float DAMAGE = 2.5F;
     public static final int CHARGING = 0;
     public static final int WILD = 1;
     public static final int HOMING = 2;
     public static final int SPENT = 3;
 
-    public static final double HELD_DISTANCE = 1.25D;
+    public static final double HELD_DISTANCE = 1.75D;
 
     private static final EntityDataAccessor<Boolean> ELITE = SynchedEntityData.defineId(ManiaBrain.class, EntityDataSerializers.BOOLEAN);
     private static final EntityDataAccessor<Integer> STATE = SynchedEntityData.defineId(ManiaBrain.class, EntityDataSerializers.INT);
@@ -57,9 +56,9 @@ public class ManiaBrain extends Projectile implements SplitMagicBonus {
     private ItemStack weapon = ItemStack.EMPTY;
     private int index;
     private int maniaAmplifier;
-    private float speed = 1.0F;
+    private float speed = 0.9F;
     private int stateTicks;
-    private int wildDuration = 15;
+    private int wildDuration = 10;
     private Vec3 forward = Vec3.ZERO;
     private Vec3 clusterOffset = Vec3.ZERO;
     @Nullable
@@ -149,7 +148,7 @@ public class ManiaBrain extends Projectile implements SplitMagicBonus {
 
     public void release(Player owner) {
         this.setState(WILD);
-        this.wildDuration = 10 + this.random.nextInt(10);
+        this.wildDuration = 7 + this.random.nextInt(7);
         this.forward = owner.getLookAngle();
         this.setDeltaMovement(this.forward.scale(0.75D * this.speed).add(this.random.nextGaussian() * 0.25D, this.random.nextGaussian() * 0.25D, this.random.nextGaussian() * 0.25D));
     }
@@ -215,8 +214,8 @@ public class ManiaBrain extends Projectile implements SplitMagicBonus {
             this.target = this.findTarget(owner);
         }
         if (this.target != null) {
-            Vec3 direction = this.target.getBoundingBox().getCenter().subtract(this.position()).normalize().scale(2.2D * this.speed);
-            this.setDeltaMovement(this.getDeltaMovement().lerp(direction, 0.8D));
+            Vec3 direction = this.target.getBoundingBox().getCenter().subtract(this.position()).normalize().scale(0.98D * this.speed);
+            this.setDeltaMovement(this.getDeltaMovement().lerp(direction, 0.7D));
             this.checkHits(true);
             if (this.stateTicks > 120) {
                 this.discard();
@@ -229,7 +228,7 @@ public class ManiaBrain extends Projectile implements SplitMagicBonus {
     private void tickSpent() {
         this.checkHits(true);
         this.entityData.set(SIZE, Mth.clamp(1.0F - this.stateTicks / 10.0F, 0.0F, 1.0F));
-        if (this.stateTicks > 10) {
+        if (this.stateTicks > 20) {
             this.discard();
         }
     }
@@ -357,13 +356,7 @@ public class ManiaBrain extends Projectile implements SplitMagicBonus {
             DamageSource source = OFDamageTypes.causeManiaDamage(serverLevel.registryAccess(), this, this.getOwner());
             entity.hurt(source, EnchantmentHelper.modifyDamage(serverLevel, this.weapon, entity, source, DAMAGE));
             if (entity instanceof LivingEntity living && living.isAlive()) {
-                if (this.random.nextInt(5) == 0) {
-                    living.addEffect(new MobEffectInstance(MobEffects.WEAKNESS, 140, 0), this.getOwner());
-                }
-                if (this.random.nextInt(5) == 0) {
-                    living.addEffect(new MobEffectInstance(MobEffects.MOVEMENT_SLOWDOWN, 140, 1), this.getOwner());
-                }
-                living.addEffect(new MobEffectInstance(OFMobEffects.MANIA, 220, this.maniaAmplifier), this.getOwner());
+                living.addEffect(new MobEffectInstance(OFMobEffects.MANIA, 200, this.maniaAmplifier), this.getOwner());
             }
             this.hitEntities.add(entity.getId());
             if (entity == this.target) {

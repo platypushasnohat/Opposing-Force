@@ -3,37 +3,29 @@
   "gui_light": "front",
   "display": {
     "thirdperson_righthand": {
-      "translation": [-0.5, 9, -9.5]
+      "translation": [-0.5, 9, -7]
     },
     "thirdperson_lefthand": {
-      "translation": [0.5, 9, -9.5]
+      "translation": [0.5, 9, -7]
     },
     "firstperson_righthand": {
-      "rotation": [3, -1, 0],
-      "translation": [-0.25, 10.5, -2.25]
+      "translation": [0, 9, -8]
     },
     "firstperson_lefthand": {
-      "rotation": [3, -2, 0],
-      "translation": [-0.25, 10.5, -2.25]
+      "translation": [0, 9, -8]
     },
     "ground": {
-      "translation": [-0.125, 2, -1.5],
-      "scale": [0.25, 0.25, 0.25]
+      "translation": [0, 4.25, 0],
+      "scale": [0.5, 0.5, 0.5]
     },
     "gui": {
       "rotation": [30, -135, 0],
-      "translation": [1.75, 2, 0],
-      "scale": [0.55, 0.55, 0.55]
+      "translation": [2.75, 2.5, 0],
+      "scale": [0.625, 0.625, 0.625]
     },
     "fixed": {
-      "rotation": [0, 90, 0],
-      "translation": [-3, 4, 0.25],
-      "scale": [0.5, 0.5, 0.5]
-    },
-    "head": {
       "rotation": [0, -90, 0],
-      "translation": [6, 6, -0.5],
-      "scale": [0.6, 0.6, 0.6]
+      "translation": [7, 6.75, -1.5]
     }
   }
 }

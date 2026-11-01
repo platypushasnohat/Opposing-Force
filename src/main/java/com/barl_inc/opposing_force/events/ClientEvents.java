@@ -249,6 +249,7 @@ public class ClientEvents {
         });
         event.registerAbove(VanillaGuiLayers.CAMERA_OVERLAYS, OpposingForce.location("spectral_lens"), SpectralLensOverlay::render);
     }
+
     @SubscribeEvent
     public static void registerShaders(RegisterShadersEvent event) throws IOException {
         event.registerShader(new ShaderInstance(event.getResourceProvider(), OpposingForce.location("spectral_lens"), DefaultVertexFormat.POSITION), shader -> SpectralLensOverlay.shader = shader);

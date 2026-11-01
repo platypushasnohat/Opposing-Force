@@ -34,6 +34,7 @@ public class ManiaBrainRenderer extends EntityRenderer<ManiaBrain> {
         this.brain = createLayer().bakeRoot().getChild("brain");
     }
 
+    //idk why i did it in here you can make it a model class if you want
     public static LayerDefinition createLayer() {
         MeshDefinition meshdefinition = new MeshDefinition();
         meshdefinition.getRoot().addOrReplaceChild("brain", CubeListBuilder.create().texOffs(0, 0).addBox(-2.0F, -7.0F, -4.0F, 5.0F, 7.0F, 7.0F)

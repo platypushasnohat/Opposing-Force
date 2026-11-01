@@ -135,7 +135,7 @@ public class ManiaItem extends GunItem implements MovementModifyingItem {
             int charge = this.getUseDuration(stack, entity) - remainingUseDuration;
             int wanted = Math.min(count, 1 + charge * count / 40);
             if (charge == 0) {
-                level.playSound(null, player.getX(), player.getY(), player.getZ(), SoundEvents.WARDEN_SONIC_CHARGE, SoundSource.PLAYERS, 0.8F, 0.8F);
+                level.playSound(null, player.getX(), player.getY(), player.getZ(), SoundEvents.WARDEN_SONIC_CHARGE, SoundSource.PLAYERS, 0.8F, 0.8F); //this does not play correctly and i dont want to fucking fix it rn
             }
             int maniaAmplifier = 0;
             if (this.isElite(stack)) {

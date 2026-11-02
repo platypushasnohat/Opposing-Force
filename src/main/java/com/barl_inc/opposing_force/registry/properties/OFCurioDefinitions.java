@@ -106,15 +106,15 @@ public class OFCurioDefinitions {
             .build();
 
     public static final CurioDefinition FIREPROOF_SHOES = new CurioDefinition.Builder()
-            .attribute(SinewAttributes.FIRE_RESISTANCE, 0.1F, AttributeModifier.Operation.ADD_VALUE)
             .description("item.opposing_force.lava_walking.description")
+            .attribute(SinewAttributes.FIRE_RESISTANCE, 0.1F, AttributeModifier.Operation.ADD_VALUE)
             .build();
 
     public static final CurioDefinition COMBO_BOOTS = new CurioDefinition.Builder()
-            .attribute(SinewAttributes.AIR_SPEED, 0.15F, AttributeModifier.Operation.ADD_VALUE)
-            .attribute(Attributes.GRAVITY, -0.4F, AttributeModifier.Operation.ADD_MULTIPLIED_TOTAL)
-            .attribute(Attributes.MOVEMENT_SPEED, 0.15F, AttributeModifier.Operation.ADD_MULTIPLIED_BASE)
-            .attribute(Attributes.JUMP_STRENGTH, 0.1F, AttributeModifier.Operation.ADD_MULTIPLIED_BASE)
+            .attribute(SinewAttributes.AIR_SPEED, 0.1F, AttributeModifier.Operation.ADD_VALUE)
+            .attribute(Attributes.MOVEMENT_SPEED, 0.1F, AttributeModifier.Operation.ADD_MULTIPLIED_TOTAL)
+            .attribute(Attributes.JUMP_STRENGTH, 0.2F, AttributeModifier.Operation.ADD_MULTIPLIED_TOTAL)
+            .attribute(Attributes.GRAVITY, -0.3F, AttributeModifier.Operation.ADD_MULTIPLIED_TOTAL)
             .description("item.opposing_force.water_walking.description")
             .description("item.opposing_force.lava_walking.description")
             .build();

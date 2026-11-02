@@ -125,7 +125,7 @@ public class PipsqueakAttackGoal extends AttackGoal {
             if (aimed) {
                 this.aimedWaves--;
             }
-            this.pipsqueak.releaseSoundwave(target, aimed);
+            this.pipsqueak.releaseSoundWave(target, aimed);
         }
         if (this.timer >= 40) {
             this.pipsqueak.setMouthOpen(false);

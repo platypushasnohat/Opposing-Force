@@ -76,8 +76,8 @@ public class Pipsqueak extends BasicFlyingMonster {
 
     public static AttributeSupplier.Builder registerAttributes() {
         return Mob.createMobAttributes()
-                .add(Attributes.MAX_HEALTH, 25.0D)
-                .add(Attributes.ATTACK_DAMAGE, 6.0D)
+                .add(Attributes.MAX_HEALTH, 14.0D)
+                .add(Attributes.ATTACK_DAMAGE, 5.0D)
                 .add(Attributes.FLYING_SPEED, 0.4F)
                 .add(Attributes.MOVEMENT_SPEED, 0.25F)
                 .add(Attributes.FOLLOW_RANGE, 24.0D);
@@ -254,7 +254,7 @@ public class Pipsqueak extends BasicFlyingMonster {
         this.swallowed = true;
     }
 
-    public void releaseSoundwave(LivingEntity target, boolean aimed) {
+    public void releaseSoundWave(LivingEntity target, boolean aimed) {
         Vec3 center = this.getBoundingBox().getCenter();
         Vec3 direction = new Vec3(this.random.nextGaussian(), this.random.nextGaussian(), this.random.nextGaussian()).normalize();
         if (aimed) {

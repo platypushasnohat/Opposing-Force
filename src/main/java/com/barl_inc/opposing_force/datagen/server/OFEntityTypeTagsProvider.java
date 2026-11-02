@@ -45,7 +45,6 @@ public class OFEntityTypeTagsProvider extends EntityTypeTagsProvider {
 				OFEntities.TERROR.get(),
                 OFEntities.GHOST.get(),
                 OFEntities.HAUNT.get(),
-                OFEntities.PIPSQUEAK.get(),
                 OFEntities.BRICK.get()
 		);
 

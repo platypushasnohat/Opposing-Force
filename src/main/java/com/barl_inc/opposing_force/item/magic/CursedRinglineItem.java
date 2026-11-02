@@ -30,11 +30,23 @@ public class CursedRinglineItem extends MagicWeaponItem {
 
     @Override
     public int getManaCost(ItemStack weapon) {
-        return 2 + this.getAttunement(weapon);
+        int cost = 2;
+        if (this.isAttuned(weapon)) {
+            cost = 5;
+        }
+        return cost;
     }
 
     public int getRingCount(ItemStack weapon) {
         return 5;
+    }
+
+    public int getTotalRingCount(ItemStack weapon) {
+        int count = this.getRingCount(weapon);
+        if (this.isAttuned(weapon)) {
+            count += 3;
+        }
+        return count;
     }
 
     public int getRingLifetime(ItemStack weapon) {
@@ -44,7 +56,7 @@ public class CursedRinglineItem extends MagicWeaponItem {
     @Override
     public void appendHoverText(ItemStack stack, TooltipContext context, List<Component> tooltipComponents, TooltipFlag tooltipFlag) {
         super.appendHoverText(stack, context, tooltipComponents, tooltipFlag);
-        OFTooltips.addStats(tooltipComponents, "item.opposing_force.tooltip.when_cast", OFTooltips.magicDamage(RingProjectile.DAMAGE, this.getRingCount(stack) + this.getAttunement(stack)));
+        OFTooltips.addStats(tooltipComponents, "item.opposing_force.tooltip.when_cast", OFTooltips.magicDamage(RingProjectile.DAMAGE, this.getTotalRingCount(stack)));
     }
 
     @Override
@@ -55,7 +67,7 @@ public class CursedRinglineItem extends MagicWeaponItem {
             if (player instanceof ServerPlayer serverPlayer) {
                 int slot = hand == InteractionHand.OFF_HAND ? Inventory.SLOT_OFFHAND : player.getInventory().selected;
                 this.consumeMana(player, stack, 1 + player.getRandom().nextInt(this.getManaCost(stack)));
-                int count = this.getProjectileCount(player, stack, this.getRingCount(stack));
+                int count = this.getTotalRingCount(stack);
                 for (int i = 0; i < count; i++) {
                     level.addFreshEntity(new RingProjectile(level, player, i, count, slot, stack));
                 }

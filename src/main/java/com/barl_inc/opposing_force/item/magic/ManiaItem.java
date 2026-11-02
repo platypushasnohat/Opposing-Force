@@ -10,7 +10,6 @@ import com.platypushasnohat.sinew.item.ItemAnimations;
 import com.platypushasnohat.sinew.item.MovementModifyingItem;
 import com.platypushasnohat.sinew.item.SinewItemUtils;
 import com.platypushasnohat.sinew.utils.SinewSoundUtils;
-import it.unimi.dsi.fastutil.objects.Object2IntMap;
 import net.minecraft.core.component.DataComponents;
 import net.minecraft.network.chat.Component;
 import net.minecraft.sounds.SoundEvents;
@@ -32,16 +31,28 @@ public class ManiaItem extends GunItem implements MovementModifyingItem {
         super(properties);
     }
 
-    public static int getAttunement(ItemStack stack) {
-        return stack.getOrDefault(DataComponents.ENCHANTMENTS, ItemEnchantments.EMPTY).entrySet().stream().filter(entry -> entry.getKey().is(OFEnchantments.MAGIC_ATTUNEMENT)).mapToInt(Object2IntMap.Entry::getIntValue).sum();
+    public static boolean isAttuned(ItemStack stack) {
+        return stack.getOrDefault(DataComponents.ENCHANTMENTS, ItemEnchantments.EMPTY).keySet().stream().anyMatch(enchantment -> enchantment.is(OFEnchantments.MAGIC_ATTUNEMENT));
+    }
+
+    public static int getAttunedAmmoCost(ItemStack stack) {
+        int cost = 0;
+        if (isAttuned(stack)) {
+            cost = 3;
+        }
+        return cost;
     }
 
     public int getBrainCount(ItemStack stack) {
-        return 6 + getAttunement(stack) * 2;
+        int count = 6;
+        if (isAttuned(stack)) {
+            count = 12;
+        }
+        return count;
     }
 
     public boolean isElite(ItemStack stack) {
-        return getAttunement(stack) >= 3;
+        return isAttuned(stack);
     }
 
     @Override
@@ -68,13 +79,13 @@ public class ManiaItem extends GunItem implements MovementModifyingItem {
 
     @Override
     public boolean hasAmmo(Player player) {
-        return player.hasInfiniteMaterials() || this.countAmmo(player) >= 1 + getAttunement(player.getMainHandItem());
+        return player.hasInfiniteMaterials() || this.countAmmo(player) >= 1 + getAttunedAmmoCost(player.getMainHandItem());
     }
 
     @Override
     public void consumeAmmo(Player player, ItemStack stack, ItemStack ammo) {
         int remaining = 0;
-        int cost = 1 + player.getRandom().nextInt(2) + getAttunement(stack);
+        int cost = 1 + player.getRandom().nextInt(2) + getAttunedAmmoCost(stack);
         for (int i = 0; i < cost; i++) {
             if (SinewItemUtils.shouldConsumeMana(player, stack)) {
                 remaining++;

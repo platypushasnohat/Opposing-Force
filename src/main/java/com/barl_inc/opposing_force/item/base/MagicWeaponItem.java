@@ -4,7 +4,6 @@ import com.barl_inc.opposing_force.item.utils.OFTooltips;
 import com.barl_inc.opposing_force.registry.OFEnchantments;
 import com.barl_inc.opposing_force.registry.datapack.tags.OFItemTags;
 import com.platypushasnohat.sinew.item.SinewItemUtils;
-import it.unimi.dsi.fastutil.objects.Object2IntMap;
 import net.minecraft.core.component.DataComponents;
 import net.minecraft.network.chat.Component;
 import net.minecraft.server.level.ServerLevel;
@@ -77,8 +76,8 @@ public abstract class MagicWeaponItem extends Item {
         return player.level() instanceof ServerLevel serverLevel ? EnchantmentHelper.processProjectileCount(serverLevel, weapon, player, count) : count;
     }
 
-    public int getAttunement(ItemStack weapon) {
-        return weapon.getOrDefault(DataComponents.ENCHANTMENTS, ItemEnchantments.EMPTY).entrySet().stream().filter(entry -> entry.getKey().is(OFEnchantments.MAGIC_ATTUNEMENT)).mapToInt(Object2IntMap.Entry::getIntValue).sum();
+    public boolean isAttuned(ItemStack weapon) {
+        return weapon.getOrDefault(DataComponents.ENCHANTMENTS, ItemEnchantments.EMPTY).keySet().stream().anyMatch(enchantment -> enchantment.is(OFEnchantments.MAGIC_ATTUNEMENT));
     }
 
     @Override

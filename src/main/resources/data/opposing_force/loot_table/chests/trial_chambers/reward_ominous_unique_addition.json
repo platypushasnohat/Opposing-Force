@@ -23,7 +23,7 @@
           "functions": [
             {
               "enchantments": {
-                "opposing_force:magic_attunement": 3.0
+                "opposing_force:magic_attunement": 1.0
               },
               "function": "minecraft:set_enchantments"
             }

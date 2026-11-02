@@ -5,6 +5,7 @@ import com.barl_inc.opposing_force.entity.base.PhasingMonster;
 import com.platypushasnohat.sinew.client.animation.SmoothAnimationState;
 import com.platypushasnohat.sinew.entity.ai.goal.AttackGoal;
 import com.platypushasnohat.sinew.entity.ai.goal.SpectralStareGoal;
+import com.platypushasnohat.sinew.utils.SinewParticleUtils;
 import net.minecraft.core.BlockPos;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.util.Mth;
@@ -69,8 +70,11 @@ public class Haunt extends PhasingMonster {
         if (this.level().isClientSide) {
             if (this.headSpinTicks > 0) {
                 this.headSpinTicks--;
-            } else if (this.getAnimationState() == 0 && this.position().distanceToSqr(this.xo, this.yo, this.zo) < 1.0E-4D && this.random.nextInt(1500) == 0) {
+            } else if (this.getAnimationState() == 0 && this.position().distanceToSqr(this.xo, this.yo, this.zo) < 1.0E-4D && this.getRandom().nextInt(1500) == 0) {
                 this.headSpinTicks = 65;
+            }
+            if (this.isAlive() && this.isSpinning()) {
+                SinewParticleUtils.createAfterImage(this, Vec3.directionFromRotation(0.0F, this.yHeadRot), 20 + this.getRandom().nextInt(20), 0x50d9e5, 0.25F);
             }
         }
     }

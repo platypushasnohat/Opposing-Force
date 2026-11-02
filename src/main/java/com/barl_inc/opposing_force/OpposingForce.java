@@ -5,7 +5,6 @@ import com.barl_inc.opposing_force.datagen.client.OFItemModelProvider;
 import com.barl_inc.opposing_force.datagen.client.OFLanguageProvider;
 import com.barl_inc.opposing_force.datagen.client.OFSoundDefinitionsProvider;
 import com.barl_inc.opposing_force.datagen.server.*;
-import com.barl_inc.opposing_force.debug.OFDebugItems;
 import com.barl_inc.opposing_force.registry.*;
 import com.barl_inc.opposing_force.registry.misc.OFClientCompat;
 import com.barl_inc.opposing_force.registry.misc.OFCompat;
@@ -52,7 +51,6 @@ public class OpposingForce {
         OFDataComponents.DATA_COMPONENTS.register(modEventBus);
         OFCreativeTabs.CREATIVE_MODE_TAB.register(modEventBus);
         OFMobEffects.MOB_EFFECT.register(modEventBus);
-        OFDebugItems.register(modEventBus);
         modEventBus.addListener(OFMobVariants::registerDatapackRegistries);
         modEventBus.addListener(this::commonSetup);
         modEventBus.addListener(this::clientSetup);

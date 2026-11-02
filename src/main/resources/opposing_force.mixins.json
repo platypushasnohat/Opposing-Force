@@ -6,10 +6,8 @@
   "mixins": [
     "CurioSlotMixin",
     "DynamicStackHandlerMixin",
-    "ItemParserMixin",
     "LiquidBlockMixin",
     "MobCategoryMixin",
-    "PlayerMixin",
     "ZombieMixin"
   ],
   "client": [

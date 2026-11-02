@@ -1,7 +1,6 @@
 package com.barl_inc.opposing_force.datagen.server;
 
 import com.barl_inc.opposing_force.OpposingForce;
-import com.barl_inc.opposing_force.debug.OFDebugItems;
 import com.barl_inc.opposing_force.registry.OFItems;
 import com.barl_inc.opposing_force.registry.datapack.tags.OFItemTags;
 import net.minecraft.core.HolderLookup.Provider;
@@ -57,8 +56,7 @@ public class OFItemTagsProvider extends ItemTagsProvider {
         );
 
         this.tag(ItemTags.SWORD_ENCHANTABLE).add(
-                OFItems.BUZZSAW.get(),
-                OFDebugItems.SOULCLEAVE.get()
+                OFItems.BUZZSAW.get()
         );
 
         this.tag(ItemTags.DURABILITY_ENCHANTABLE).add(
@@ -129,15 +127,13 @@ public class OFItemTagsProvider extends ItemTagsProvider {
                 OFItems.MOON_SHOES.get(),
                 OFItems.SPECTRAL_GOGGLES.get(),
                 OFItems.CURSED_RING.get(),
-                OFDebugItems.SLIMEWARD.get(),
                 OFItems.WATER_WALKERS.get(),
                 OFItems.FIREPROOF_SHOES.get(),
                 OFItems.COMBO_BOOTS.get()
         );
 
         this.tag(Tags.Items.TOOLS_SHIELD).add(
-                OFItems.SPECTRAL_SHIELD.get(),
-                OFDebugItems.KNIGHTSOUL.get()
+                OFItems.SPECTRAL_SHIELD.get()
         );
 
         this.tag(OFItemTags.BASIC_MANA).add(
@@ -152,13 +148,6 @@ public class OFItemTagsProvider extends ItemTagsProvider {
                 OFItemTags.CONSUMES_BASIC_MANA
         ).add(
                 OFItems.MANIA.get()
-        );
-
-        this.tag(Tags.Items.HIDDEN_FROM_RECIPE_VIEWERS).add(
-                OFDebugItems.RINGMASTER.get(),
-                OFDebugItems.SOULCLEAVE.get(),
-                OFDebugItems.KNIGHTSOUL.get(),
-                OFDebugItems.SLIMEWARD.get()
         );
 	}
 }

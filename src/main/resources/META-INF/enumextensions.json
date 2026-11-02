@@ -2,16 +2,6 @@
   "entries": [
     {
       "enum": "net/minecraft/world/item/Rarity",
-      "name": "OPPOSING_FORCE_DEBUG",
-      "constructor": "(ILjava/lang/String;Ljava/util/function/UnaryOperator;)V",
-      "parameters": {
-        "class": "com/barl_inc/opposing_force/debug/OFDebugRarity",
-        "field": "DEBUG"
-      }
-    },
-
-    {
-      "enum": "net/minecraft/world/item/Rarity",
       "name": "OPPOSING_FORCE_RARITY_IRIDESCENT",
       "constructor": "(ILjava/lang/String;Ljava/util/function/UnaryOperator;)V",
       "parameters": {

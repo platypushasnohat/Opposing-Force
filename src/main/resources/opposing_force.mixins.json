@@ -7,10 +7,12 @@
     "CurioSlotMixin",
     "DynamicStackHandlerMixin",
     "LiquidBlockMixin",
+    "LivingEntityMixin",
     "MobCategoryMixin",
     "ZombieMixin"
   ],
   "client": [
+    "HumanoidModelMixin",
     "ItemInHandLayerMixin"
   ],
   "injectors": {

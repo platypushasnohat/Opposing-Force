@@ -8,6 +8,7 @@ import com.barl_inc.opposing_force.client.particle.*;
 import com.barl_inc.opposing_force.client.render.entity.*;
 import com.barl_inc.opposing_force.client.render.entity.layer.SpectralShieldLayer;
 import com.barl_inc.opposing_force.client.render.item.OFItemExtensions;
+import com.barl_inc.opposing_force.client.render.item.SpearAnimations;
 import com.barl_inc.opposing_force.client.render.shader.ManiaTrip;
 import com.barl_inc.opposing_force.client.render.shader.SpectralLensOverlay;
 import com.barl_inc.opposing_force.item.SpectralShieldItem;
@@ -179,7 +180,7 @@ public class ClientEvents {
         event.registerItem(OFItemExtensions.itemExtensions, OFItems.BOOMSTICK.get());
         event.registerItem(OFItemExtensions.itemExtensions, OFItems.GORLOFF.get());
         event.registerItem(OFItemExtensions.itemExtensions, OFItems.MANIA.get());
-
+        event.registerItem(SpearAnimations.EXTENSIONS, OFItems.TUNING_FORK.get(), OFItems.CHITIN_LANCE.get());
         event.registerItem(new IClientItemExtensions() {
             @Override
             public HumanoidModel<?> getHumanoidArmorModel(LivingEntity entity, ItemStack stack, EquipmentSlot slot, HumanoidModel<?> properties) {
@@ -202,6 +203,9 @@ public class ClientEvents {
             ModelPart arm = left ? humanoidModel.rightArm : humanoidModel.leftArm;
             arm.xRot = arm.xRot * 0.5F - (float) Math.PI / 10.0F;
             arm.yRot = 0.0F;
+        }
+        if (SpearAnimations.poseArm(player, humanoidModel, left)) {
+            event.setResult(TriState.TRUE);
         }
     }
 

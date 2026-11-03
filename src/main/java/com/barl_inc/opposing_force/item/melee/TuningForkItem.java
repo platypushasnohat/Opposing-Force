@@ -1,6 +1,7 @@
 package com.barl_inc.opposing_force.item.melee;
 
 import com.barl_inc.opposing_force.entity.projectile.Soundwave;
+import com.barl_inc.opposing_force.item.base.SpearAnimatedItem;
 import com.barl_inc.opposing_force.item.utils.OFTooltips;
 import net.minecraft.core.BlockPos;
 import net.minecraft.network.chat.Component;
@@ -30,7 +31,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.WeakHashMap;
 
-public class TuningForkItem extends Item {
+public class TuningForkItem extends Item implements SpearAnimatedItem {
 
     private static final Map<Player, Attack> ATTACKS = new WeakHashMap<>();
 
@@ -85,6 +86,16 @@ public class TuningForkItem extends Item {
     }
 
     @Override
+    public int getChargeTime() {
+        return 16;
+    }
+
+    @Override
+    public int getStabDuration() {
+        return 16;
+    }
+
+    @Override
     public UseAnim getUseAnimation(ItemStack stack) {
         return UseAnim.NONE;
     }
@@ -97,6 +108,7 @@ public class TuningForkItem extends Item {
     @Override
     public InteractionResultHolder<ItemStack> use(Level level, Player player, InteractionHand hand) {
         player.startUsingItem(hand);
+        level.playSound(null, player.getX(), player.getY(), player.getZ(), SoundEvents.AMETHYST_BLOCK_RESONATE, SoundSource.PLAYERS, 1.0F, 0.8F);
         return InteractionResultHolder.consume(player.getItemInHand(hand));
     }
 
@@ -105,7 +117,7 @@ public class TuningForkItem extends Item {
         if (entity instanceof Player player) {
             if (!level.isClientSide) {
                 int phase = 4;
-                if (this.getUseDuration(stack, entity) - timeLeft >= 16) {
+                if (this.getUseDuration(stack, entity) - timeLeft >= this.getChargeTime()) {
                     phase = 0;
                 }
                 Vec3 look = player.getLookAngle();

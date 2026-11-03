@@ -1,5 +1,6 @@
 package com.barl_inc.opposing_force.item.melee;
 
+import com.barl_inc.opposing_force.item.base.SpearAnimatedItem;
 import com.barl_inc.opposing_force.item.utils.OFTooltips;
 import com.barl_inc.opposing_force.registry.OFItems;
 import com.barl_inc.opposing_force.registry.properties.OFToolDefinitions;
@@ -27,7 +28,7 @@ import net.neoforged.neoforge.common.ItemAbilities;
 
 import java.util.List;
 
-public class ChitinLanceItem extends SinewSwordItem {
+public class ChitinLanceItem extends SinewSwordItem implements SpearAnimatedItem {
 
     private int damageTime = 0;
 
@@ -36,8 +37,28 @@ public class ChitinLanceItem extends SinewSwordItem {
     }
 
     @Override
+    public int getChargeTime() {
+        return 10;
+    }
+
+    @Override
+    public int getStabDuration() {
+        return 12;
+    }
+
+    @Override
+    public float getChargeTurn() {
+        return 0.0F;
+    }
+
+    @Override
+    public float getThrustDistance() {
+        return 0.0F;
+    }
+
+    @Override
     public UseAnim getUseAnimation(ItemStack stack) {
-        return UseAnim.BOW;
+        return UseAnim.NONE;
     }
 
     @Override

@@ -17,13 +17,5 @@
     "ground": {
       "parent": "opposing_force:item/tuning_fork_gui"
     }
-  },
-  "overrides": [
-    {
-      "predicate": {
-        "charging": 1
-      },
-      "model": "opposing_force:item/tuning_fork_charging"
-    }
-  ]
+  }
 }

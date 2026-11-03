@@ -1,7 +1,9 @@
 package com.barl_inc.opposing_force.mixins;
 
 import com.barl_inc.opposing_force.client.render.entity.layer.SpectralShieldLayer;
+import com.barl_inc.opposing_force.client.render.item.SpearAnimations;
 import com.mojang.blaze3d.vertex.PoseStack;
+import net.minecraft.client.model.HumanoidModel;
 import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.entity.layers.ItemInHandLayer;
 import net.minecraft.world.entity.HumanoidArm;
@@ -20,6 +22,13 @@ public abstract class ItemInHandLayerMixin {
     private void opposingForce$renderArmWithItem(LivingEntity entity, ItemStack stack, ItemDisplayContext displayContext, HumanoidArm arm, PoseStack poseStack, MultiBufferSource buffer, int packedLight, CallbackInfo ci) {
         if (SpectralShieldLayer.isShielding(entity)) {
             ci.cancel();
+        }
+    }
+
+    @Inject(at = @At(value = "INVOKE", target = "Lcom/mojang/blaze3d/vertex/PoseStack;translate(FFF)V", shift = At.Shift.AFTER), method = "renderArmWithItem")
+    private void opposingForce$animateHeldItem(LivingEntity entity, ItemStack stack, ItemDisplayContext displayContext, HumanoidArm arm, PoseStack poseStack, MultiBufferSource buffer, int packedLight, CallbackInfo ci) {
+        if (((ItemInHandLayer<?, ?>) (Object) this).getParentModel() instanceof HumanoidModel<?> model) {
+            SpearAnimations.thirdPersonItem(model, entity, arm, poseStack);
         }
     }
 }

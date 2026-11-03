@@ -73,8 +73,8 @@ public class Haunt extends PhasingMonster {
             } else if (this.getAnimationState() == 0 && this.position().distanceToSqr(this.xo, this.yo, this.zo) < 1.0E-4D && this.getRandom().nextInt(1500) == 0) {
                 this.headSpinTicks = 65;
             }
-            if (this.isAlive() && this.isSpinning()) {
-                SinewParticleUtils.createAfterImage(this, Vec3.directionFromRotation(0.0F, this.yHeadRot), 20 + this.getRandom().nextInt(20), 0x50d9e5, 0.25F);
+            if (this.isAlive() && this.isSpinning() && this.tickCount % 2 == 0) {
+                SinewParticleUtils.createAfterImage(this, Vec3.directionFromRotation(0.0F, this.yHeadRot).subtract(this.getDeltaMovement()), 10 + this.getRandom().nextInt(5), 0x66f3ff, 0.1F);
             }
         }
     }

@@ -124,7 +124,7 @@ public class Dicer extends AnimatedMonster {
             this.laserProgress--;
         }
         if (this.level().isClientSide && this.isAlive() && this.hasAfterimage()) {
-            SinewParticleUtils.createAfterImage(this, Vec3.directionFromRotation(0.0F, this.yHeadRot));
+            SinewParticleUtils.createAfterImage(this, Vec3.directionFromRotation(0.0F, this.yHeadRot).subtract(this.getDeltaMovement()), 15, 0xff246d, 0.15F);
         }
     }
 
@@ -265,11 +265,11 @@ public class Dicer extends AnimatedMonster {
             if (this.timer > 28 && this.timer < 32) {
                 this.hurtNearbyEntities();
             }
+            if (this.timer == 34) {
+                this.dicer.setHasAfterimage(false);
+            }
             if (this.timer < 40) {
                 this.dicer.setDeltaMovement(this.dicer.getDeltaMovement().add(0.0D, -0.3D, 0.0D));
-            }
-            if (this.timer == 40) {
-                this.dicer.setHasAfterimage(false);
             }
             if (this.timer > 50) {
                 this.timer = 0;

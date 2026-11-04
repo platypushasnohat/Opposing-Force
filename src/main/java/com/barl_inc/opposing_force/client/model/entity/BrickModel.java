@@ -33,7 +33,7 @@ public class BrickModel extends SinewEntityModel<Brick> {
         this.animateSmooth(entity.meltAnimationState, BrickAnimations.MELT, ageInTicks, partialTicks);
         this.animateSmooth(entity.hurtAnimationState, BrickAnimations.HIT_BLEND, ageInTicks, partialTicks);
         this.animateSmooth(entity.summonAnimationState, BrickAnimations.SUMMONED, ageInTicks, partialTicks);
-        if (entity.isSummoned() && entity.tickCount < 30) {
+        if (entity.isSummoned() && entity.getSummonAge() < 30) {
             float center = -19.0F * this.body_main.yScale;
             this.body_main.y += center * (1.0F - Mth.cos(this.body_main.xRot));
             this.body_main.z -= center * Mth.sin(this.body_main.xRot);

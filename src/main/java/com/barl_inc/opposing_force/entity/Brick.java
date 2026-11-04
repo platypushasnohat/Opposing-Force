@@ -241,7 +241,7 @@ public class Brick extends SummonableMonster {
         this.defendAnimationState.animateWhen(state == DEFEND_ANIMATION, this.tickCount);
         this.meltAnimationState.animateWhen(state == MELT_ANIMATION, this.tickCount);
         this.hurtAnimationState.animateWhen(this.hurtTime > 0 && state != MELT_ANIMATION, this.tickCount);
-        this.summonAnimationState.animateWhen(this.isSummoned() && this.tickCount < 30, this.tickCount);
+        this.summonAnimationState.animateWhen(this.isSummoned() && this.getSummonAge() < 30, this.tickCount);
     }
 
     @Override

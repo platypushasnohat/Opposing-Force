@@ -169,7 +169,7 @@ public class Mushy extends SummonableMonster {
         this.danceAnimationState.animateWhen(!this.isInWaterOrBubble() && this.onGround() && this.getAnimationState() == DANCE_ANIMATION, this.tickCount);
         this.launchAnimationState.animateWhen(!this.isInWaterOrBubble() && this.onGround() && this.getAnimationState() == JUMP_ANIMATION, this.tickCount);
         this.spinAnimationState.animateWhen(!this.isInWaterOrBubble() && this.getAnimationState() == SPIN_ANIMATION, this.tickCount);
-        this.summonAnimationState.animateWhen(this.isSummoned() && this.tickCount < 30, this.tickCount);
+        this.summonAnimationState.animateWhen(this.isSummoned() && this.getSummonAge() < 30, this.tickCount);
     }
 
     @Override

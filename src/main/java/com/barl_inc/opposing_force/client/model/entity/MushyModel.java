@@ -32,7 +32,7 @@ public class MushyModel extends SinewEntityModel<Mushy> {
         this.animateSmooth(entity.launchAnimationState, MushyAnimations.LAUNCH_START, ageInTicks, partialTicks);
         this.animateSmooth(entity.spinAnimationState, MushyAnimations.LAUNCH_LOOP, ageInTicks, partialTicks);
         this.animateSmooth(entity.summonAnimationState, MushyAnimations.SUMMONED, ageInTicks, partialTicks);
-        if (entity.isSummoned() && entity.tickCount < 30) {
+        if (entity.isSummoned() && entity.getSummonAge() < 30) {
             float center = -6.0F * this.body_main.yScale;
             this.body_main.y += center * (1.0F - Mth.cos(this.body_main.xRot));
             this.body_main.z -= center * Mth.sin(this.body_main.xRot);

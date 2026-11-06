@@ -32,8 +32,8 @@ public class SummonWeaponItem extends Item {
 
     public SummonWeaponItem(Properties properties, Supplier<? extends EntityType<? extends SummonableMonster>> summonType, double damage, double duration, int cooldown) {
         super(properties.attributes(ItemAttributeModifiers.builder()
-                .add(SinewAttributes.MINION_DAMAGE, new AttributeModifier(OpposingForce.location("minion_damage"), damage, AttributeModifier.Operation.ADD_VALUE), EquipmentSlotGroup.MAINHAND)
-                .add(SinewAttributes.MINION_DURATION, new AttributeModifier(OpposingForce.location("minion_duration"), duration, AttributeModifier.Operation.ADD_VALUE), EquipmentSlotGroup.MAINHAND)
+                .add(SinewAttributes.MINION_DAMAGE, new AttributeModifier(SinewAttributes.BASE_MINION_DAMAGE_ID, damage, AttributeModifier.Operation.ADD_VALUE), EquipmentSlotGroup.MAINHAND)
+                .add(SinewAttributes.MINION_DURATION,new AttributeModifier(SinewAttributes.BASE_MINION_DURATION_ID, duration, AttributeModifier.Operation.ADD_VALUE), EquipmentSlotGroup.MAINHAND)
                 .build()));
         this.summonType = summonType;
         this.cooldown = cooldown;

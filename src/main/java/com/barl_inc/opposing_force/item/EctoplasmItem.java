@@ -2,6 +2,8 @@ package com.barl_inc.opposing_force.item;
 
 import com.barl_inc.opposing_force.entity.projectile.Soul;
 import net.minecraft.ChatFormatting;
+import net.minecraft.core.Direction;
+import net.minecraft.core.Position;
 import net.minecraft.network.chat.Component;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.sounds.SoundSource;
@@ -10,8 +12,10 @@ import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResultHolder;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.entity.projectile.Projectile;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.ProjectileItem;
 import net.minecraft.world.item.TooltipFlag;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.phys.Vec3;
@@ -19,7 +23,7 @@ import net.minecraft.world.phys.Vec3;
 import javax.annotation.Nullable;
 import java.util.List;
 
-public class EctoplasmItem extends Item {
+public class EctoplasmItem extends Item implements ProjectileItem {
 
     public EctoplasmItem(Properties properties) {
         super(properties);
@@ -46,6 +50,16 @@ public class EctoplasmItem extends Item {
     private LivingEntity getTarget(Player player) {
         LivingEntity target = player.getLastHurtMob();
         return target != null && target.isAlive() && target != player && player.tickCount - player.getLastHurtMobTimestamp() < 100 ? target : null;
+    }
+
+    @Override
+    public Projectile asProjectile(Level level, Position pos, ItemStack stack, Direction direction) {
+        return new Soul(level, null, null, new Vec3(pos.x(), pos.y(), pos.z()), 3.0F, 0.6F);
+    }
+
+    @Override
+    public DispenseConfig createDispenseConfig() {
+        return DispenseConfig.builder().power(0.6F).uncertainty(2.0F).build();
     }
 
     @Override

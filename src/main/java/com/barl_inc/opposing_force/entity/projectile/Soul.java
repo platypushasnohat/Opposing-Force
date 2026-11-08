@@ -8,6 +8,7 @@ import net.minecraft.network.syncher.SynchedEntityData;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.world.damagesource.DamageSource;
+import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.player.Player;
@@ -29,7 +30,7 @@ public class Soul extends Projectile {
         this.noPhysics = true;
     }
 
-    public Soul(Level level, Player owner, @Nullable LivingEntity target, Vec3 position, float damage, float speed) {
+    public Soul(Level level, @Nullable Player owner, @Nullable LivingEntity target, Vec3 position, float damage, float speed) {
         this(OFEntities.SOUL.get(), level);
         this.setOwner(owner);
         this.target = target;
@@ -62,7 +63,8 @@ public class Soul extends Projectile {
     public void tick() {
         super.tick();
         if (!this.level().isClientSide) {
-            if (this.hasValidTarget() && this.getOwner() instanceof LivingEntity owner && this.tickCount < 200) {
+            if (this.hasValidTarget() && this.tickCount < 200) {
+                Entity owner = this.getOwner();
                 LivingEntity hit = null;
                 if (this.target != null) {
                     Vec3 direction = this.target.getBoundingBox().getCenter().subtract(this.position()).normalize().scale(this.speed);
@@ -71,7 +73,7 @@ public class Soul extends Projectile {
                         hit = this.target;
                     }
                 } else {
-                    hit = this.level().getEntitiesOfClass(LivingEntity.class, this.getBoundingBox().inflate(0.2D), entity -> entity != owner && entity.isAlive() && !entity.isAlliedTo(owner)).stream().findFirst().orElse(null);
+                    hit = this.level().getEntitiesOfClass(LivingEntity.class, this.getBoundingBox().inflate(0.2D), entity -> entity.isAlive() && (owner == null || (entity != owner && !entity.isAlliedTo(owner)))).stream().findFirst().orElse(null);
                 }
                 if (hit != null) {
                     hit.hurt(OFDamageTypes.causeSoulDamage(this.level().registryAccess(), this, owner), this.damage);

@@ -113,7 +113,7 @@ public class Sawblade extends Entity implements ItemSupplier {
         AABB bashBox = this.getBoundingBox();
         DamageSource source = OFDamageTypes.causeSawDamage(this.level().registryAccess(), this.getOwner());
         for (LivingEntity entity : this.level().getEntitiesOfClass(LivingEntity.class, bashBox)) {
-            if (this.hitCooldown <= 0 && !this.isAlliedTo(entity) && (this.getOwner() != null && !entity.is(this.getOwner()) && !entity.isAlliedTo(this.getOwner()))) {
+            if (this.hitCooldown <= 0 && !this.isAlliedTo(entity) && (this.getOwner() == null || (!entity.is(this.getOwner()) && !entity.isAlliedTo(this.getOwner())))) {
                 if (entity.hurt(source, DAMAGE)) {
                     this.hitCooldown = 5;
                     entity.knockback(0.1F, this.getX() - entity.getX(), this.getZ() - entity.getZ());

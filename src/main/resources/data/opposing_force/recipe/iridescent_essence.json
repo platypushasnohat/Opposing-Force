@@ -1,0 +1,42 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "equipment",
+  "key": {
+    "A": {
+      "item": "minecraft:iron_ingot"
+    },
+    "B": {
+      "item": "opposing_force:ectoplasm"
+    },
+    "C": {
+      "item": "minecraft:nether_star"
+    },
+    "D": {
+      "item": "minecraft:shulker_shell"
+    },
+    "E": {
+      "item": "minecraft:dragon_breath"
+    },
+    "F": {
+      "item": "opposing_force:chitin"
+    },
+    "G": {
+      "item": "minecraft:blue_ice"
+    },
+    "H": {
+      "item": "opposing_force:laser_focus"
+    },
+    "I": {
+      "item": "minecraft:blaze_powder"
+    }
+  },
+  "pattern": [
+    "ABC",
+    "DEF",
+    "GHI"
+  ],
+  "result": {
+    "count": 1,
+    "id": "opposing_force:iridescent_essence"
+  }
+}

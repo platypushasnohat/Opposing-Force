@@ -1,0 +1,21 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "equipment",
+  "key": {
+    "B": {
+      "item": "opposing_force:iridescent_essence"
+    },
+    "A": {
+      "item": "minecraft:water_bucket"
+    }
+  },
+  "pattern": [
+    "AAA",
+    "ABA",
+    "AAA"
+  ],
+  "result": {
+    "count": 1,
+    "id": "opposing_force:bottomless_water_bucket"
+  }
+}

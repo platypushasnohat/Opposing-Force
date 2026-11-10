@@ -22,7 +22,7 @@ import java.util.List;
 
 public class ElectricArcParticle extends Particle {
 
-    private static final float WIDTH = 0.025F;
+    private static final float WIDTH = 0.021F;
     private static final float ALPHA = 0.75F;
 
     private final List<Vec3> points = new ArrayList<>();
@@ -75,25 +75,25 @@ public class ElectricArcParticle extends Particle {
     public void render(VertexConsumer buffer, Camera camera, float partialTicks) {
         float progress = Mth.clamp((this.age + partialTicks) / this.lifetime, 0.0F, 1.0F);
         float alpha = ALPHA * (1.0F - progress * progress);
-        if (alpha <= 0.0F) return;
+        if (alpha > 0.0F) {
+            Vec3 cameraPos = camera.getPosition();
+            double x = Mth.lerp(partialTicks, this.xo, this.x);
+            double y = Mth.lerp(partialTicks, this.yo, this.y);
+            double z = Mth.lerp(partialTicks, this.zo, this.z);
+            Vec3 toCamera = cameraPos.subtract(x, y, z);
 
-        Vec3 cameraPos = camera.getPosition();
-        double x = Mth.lerp(partialTicks, this.xo, this.x);
-        double y = Mth.lerp(partialTicks, this.yo, this.y);
-        double z = Mth.lerp(partialTicks, this.zo, this.z);
-        Vec3 toCamera = cameraPos.subtract(x, y, z);
+            PoseStack poseStack = new PoseStack();
+            poseStack.translate(x - cameraPos.x, y - cameraPos.y, z - cameraPos.z);
+            Matrix4f pose = poseStack.last().pose();
 
-        PoseStack poseStack = new PoseStack();
-        poseStack.translate(x - cameraPos.x, y - cameraPos.y, z - cameraPos.z);
-        Matrix4f pose = poseStack.last().pose();
-
-        MultiBufferSource.BufferSource bufferSource = Minecraft.getInstance().renderBuffers().bufferSource();
-        RenderType renderType = OFRenderTypes.getElectricArc();
-        VertexConsumer consumer = bufferSource.getBuffer(renderType);
-        for (float[] layer : ElectricChargeRenderer.LAYERS) {
-            ElectricChargeRenderer.drawArc(consumer, pose, toCamera, this.points, WIDTH * layer[0], layer[1], layer[2], layer[3], layer[4] * alpha);
+            MultiBufferSource.BufferSource bufferSource = Minecraft.getInstance().renderBuffers().bufferSource();
+            RenderType renderType = OFRenderTypes.getElectricArc();
+            VertexConsumer consumer = bufferSource.getBuffer(renderType);
+            for (float[] layer : ElectricChargeRenderer.LAYERS) {
+                ElectricChargeRenderer.drawArc(consumer, pose, toCamera, this.points, WIDTH * layer[0], layer[1], layer[2], layer[3], layer[4] * alpha);
+            }
+            bufferSource.endBatch(renderType);
         }
-        bufferSource.endBatch(renderType);
     }
 
     @Override

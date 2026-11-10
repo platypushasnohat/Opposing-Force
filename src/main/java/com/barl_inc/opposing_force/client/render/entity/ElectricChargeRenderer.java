@@ -86,7 +86,7 @@ public class ElectricChargeRenderer extends EntityRenderer<ElectricCharge> {
         Matrix4f pose = poseStack.last().pose();
         VertexConsumer consumer = bufferSource.getBuffer(OFRenderTypes.getElectricArc());
 
-        float baseWidth = discharging ? 0.038F : 0.025F;
+        float baseWidth = discharging ? 0.032F : 0.021F;
         for (float[] layer : LAYERS) {
             float width = baseWidth * layer[0];
             for (List<Vec3> arc : entity.arcs) {

@@ -107,7 +107,7 @@ public class ElectricCharge extends ThrowableProjectile {
         } else {
             if (this.level().getFluidState(this.blockPosition()).is(FluidTags.WATER)) {
                 this.discharge(WATER_RADIUS);
-            } else if (this.getY() > this.level().getMaxBuildHeight() + 30) {
+            } else if (this.tickCount >= 140 || this.getY() > this.level().getMaxBuildHeight() + 30) {
                 this.discharge(IMPACT_RADIUS);
             }
         }

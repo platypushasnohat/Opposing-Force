@@ -5,6 +5,6 @@
     "type": "opposing_force:ghost",
     "maxCount": 2,
     "minCount": 1,
-    "weight": 12
+    "weight": 16
   }
 }

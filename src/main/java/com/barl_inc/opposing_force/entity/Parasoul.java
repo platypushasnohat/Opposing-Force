@@ -63,6 +63,11 @@ public class Parasoul extends AnimatedMonster implements SpectralEntity {
         this.xpReward = 10;
     }
 
+    @Override
+    public boolean isPreventingPlayerRest(Player player) {
+        return false;
+    }
+
     public static AttributeSupplier.Builder registerAttributes() {
         return Mob.createMobAttributes()
                 .add(Attributes.MAX_HEALTH, 30.0D)

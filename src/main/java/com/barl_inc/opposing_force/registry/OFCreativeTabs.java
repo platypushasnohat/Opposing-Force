@@ -63,6 +63,8 @@ public class OFCreativeTabs {
 
                         // post nether
                         output.accept(OFItems.ACID_CHARGE);
+                        output.accept(OFItems.ELECTRIC_CHARGE);
+                        output.accept(OFItems.TESLA_INGOT);
                         output.accept(OFItems.ECTOPLASM);
                         output.accept(OFItems.SPECTRAL_CLEAVER);
                         output.accept(OFItems.SPECTRAL_SHIELD);

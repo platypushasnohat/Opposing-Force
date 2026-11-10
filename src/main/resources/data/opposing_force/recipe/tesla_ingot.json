@@ -1,0 +1,19 @@
+{
+  "type": "minecraft:crafting_shapeless",
+  "category": "misc",
+  "ingredients": [
+    {
+      "item": "opposing_force:electric_charge"
+    },
+    {
+      "tag": "c:ingots/gold"
+    },
+    {
+      "tag": "c:gems/diamond"
+    }
+  ],
+  "result": {
+    "count": 2,
+    "id": "opposing_force:tesla_ingot"
+  }
+}

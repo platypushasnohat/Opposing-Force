@@ -142,6 +142,27 @@
     ],
     "subtitle": "subtitles.opposing_force.dicer_step"
   },
+  "electric_charge": {
+    "sounds": [
+      {
+        "attenuation_distance": 20,
+        "name": "opposing_force:entity/electric_charge/loop1"
+      }
+    ],
+    "subtitle": "subtitles.opposing_force.electric_charge"
+  },
+  "electric_charge_dissipate": {
+    "sounds": [
+      "opposing_force:entity/electric_charge/dissipate1"
+    ],
+    "subtitle": "subtitles.opposing_force.electric_charge_dissipate"
+  },
+  "electric_charge_zap": {
+    "sounds": [
+      "opposing_force:entity/electric_charge/zap1"
+    ],
+    "subtitle": "subtitles.opposing_force.electric_charge_zap"
+  },
   "furball_attack": {
     "sounds": [
       "opposing_force:mob/furball/attack"

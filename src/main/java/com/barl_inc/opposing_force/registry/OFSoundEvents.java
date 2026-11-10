@@ -55,6 +55,10 @@ public class OFSoundEvents {
     public static final DeferredHolder<SoundEvent, SoundEvent> ACID_CHARGE_EXPLODE = registerSoundEvent("acid_charge_explode");
     public static final DeferredHolder<SoundEvent, SoundEvent> ACID_BURNING = registerSoundEvent("acid_burning");
 
+    public static final DeferredHolder<SoundEvent, SoundEvent> ELECTRIC_CHARGE = registerSoundEvent("electric_charge");
+    public static final DeferredHolder<SoundEvent, SoundEvent> ELECTRIC_CHARGE_DISSIPATE = registerSoundEvent("electric_charge_dissipate");
+    public static final DeferredHolder<SoundEvent, SoundEvent> ELECTRIC_CHARGE_ZAP = registerSoundEvent("electric_charge_zap");
+
     public static final DeferredHolder<SoundEvent, SoundEvent> SLAYSER_DISC = registerSoundEvent("slayser_disc");
 
     public static final DeferredHolder<SoundEvent, SoundEvent> ZOMBIE_REINFORCEMENT = registerSoundEvent("zombie_reinforcement");

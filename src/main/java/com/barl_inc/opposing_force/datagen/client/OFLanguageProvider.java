@@ -20,6 +20,7 @@ public class OFLanguageProvider extends SinewLanguageProvider {
 
         this.add(OFEntities.GRELL_CLONE.get(), "Grell");
         this.add(OFMobEffects.MANIA.get(), "Mania");
+        this.add(OFMobEffects.ELECTRIFIED.get(), "Electrified");
 
         this.addSound(OFSoundEvents.DICER_HURT, "Dicer hurts");
         this.addSound(OFSoundEvents.DICER_DEATH, "Dicer dies");
@@ -64,6 +65,10 @@ public class OFLanguageProvider extends SinewLanguageProvider {
 
         this.addSound(OFSoundEvents.ACID_CHARGE_EXPLODE, "Acid charge explodes");
         this.addSound(OFSoundEvents.ACID_BURNING, "Acid burns");
+
+        this.addSound(OFSoundEvents.ELECTRIC_CHARGE, "Electric charge whirls");
+        this.addSound(OFSoundEvents.ELECTRIC_CHARGE_DISSIPATE, "Electric charge dissipates");
+        this.addSound(OFSoundEvents.ELECTRIC_CHARGE_ZAP, "Electric charge zaps");
 
         this.addSound(OFSoundEvents.SLAYSER_DISC, "Music Disc");
         this.addMusicDisc(OFItems.MUSIC_DISC_SLAYSER.get(), "ChipsTheCat - Slayser");
@@ -110,6 +115,7 @@ public class OFLanguageProvider extends SinewLanguageProvider {
         this.add("item.opposing_force.tuning_fork.description", "Melee hits produce sound waves");
         this.add("item.opposing_force.tuning_fork.description.two", "Right click to charge a sound wave");
         this.add("item.opposing_force.acid_charge.description", "Throwable");
+        this.add("item.opposing_force.electric_charge.description", "Throwable");
         this.add("item.opposing_force.ectoplasm.description", "Throwable");
         this.add("item.opposing_force.knockback_spores.description", "Knocks entities away");
         this.add("item.opposing_force.repair_kit.description", "Right click to repair all items in your inventory");
@@ -210,5 +216,13 @@ public class OFLanguageProvider extends SinewLanguageProvider {
 
         this.add("death.attack.mania", "%s lost their mind");
         this.add("death.attack.mania.player", "%s lost their mind to %s");
+
+        this.add("death.attack.electric_0", "%s met a shocking end");
+        this.add("death.attack.electric_1", "%s was fried");
+        this.add("death.attack.electric_0.entity", "%s was zapped by %s");
+        this.add("death.attack.electric_1.entity", "%s was fried by %s");
+
+        this.add("death.attack.electrified", "%s was electrified");
+        this.add("death.attack.electrified.player", "%s was electrified while fighting %s");
     }
 }

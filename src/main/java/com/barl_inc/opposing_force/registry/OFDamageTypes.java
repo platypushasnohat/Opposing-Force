@@ -26,6 +26,8 @@ public class OFDamageTypes {
     public static final ResourceKey<DamageType> GRELL_BITE = ResourceKey.create(Registries.DAMAGE_TYPE, OpposingForce.location("grell_bite"));
     public static final ResourceKey<DamageType> SOUNDWAVE = ResourceKey.create(Registries.DAMAGE_TYPE, OpposingForce.location("soundwave"));
     public static final ResourceKey<DamageType> MANIA = ResourceKey.create(Registries.DAMAGE_TYPE, OpposingForce.location("mania"));
+    public static final ResourceKey<DamageType> ELECTRIC = ResourceKey.create(Registries.DAMAGE_TYPE, OpposingForce.location("electric"));
+    public static final ResourceKey<DamageType> ELECTRIFIED = ResourceKey.create(Registries.DAMAGE_TYPE, OpposingForce.location("electrified"));
 
     public static DamageSource causeLaserDamage(RegistryAccess registryAccess, Entity source) {
         return new RandomMessageDamageSource(registryAccess.registry(Registries.DAMAGE_TYPE).get().getHolderOrThrow(LASER), source, 1);
@@ -65,5 +67,13 @@ public class OFDamageTypes {
 
     public static DamageSource causeManiaDamage(RegistryAccess registryAccess, Entity brain, @Nullable Entity source) {
         return new DamageSource(registryAccess.registry(Registries.DAMAGE_TYPE).get().getHolderOrThrow(MANIA), brain, source);
+    }
+
+    public static DamageSource causeElectricDamage(RegistryAccess registryAccess, Entity charge, @Nullable Entity source) {
+        return new RandomMessageDamageSource(registryAccess.registry(Registries.DAMAGE_TYPE).get().getHolderOrThrow(ELECTRIC), charge, source, 2);
+    }
+
+    public static DamageSource causeElectrifiedDamage(RegistryAccess registryAccess) {
+        return new DamageSource(registryAccess.registry(Registries.DAMAGE_TYPE).get().getHolderOrThrow(ELECTRIFIED));
     }
 }

@@ -148,6 +148,16 @@ public class OFSoundDefinitionsProvider extends SinewSoundDefinitionsProvider {
                 sound(OpposingForce.location("entity/acid_charge/burn2"))
         );
 
+        this.registerSound(OFSoundEvents.ELECTRIC_CHARGE,
+                sound(OpposingForce.location("entity/electric_charge/loop1")).attenuationDistance(20)
+        );
+        this.registerSound(OFSoundEvents.ELECTRIC_CHARGE_DISSIPATE,
+                sound(OpposingForce.location("entity/electric_charge/dissipate1"))
+        );
+        this.registerSound(OFSoundEvents.ELECTRIC_CHARGE_ZAP,
+                sound(OpposingForce.location("entity/electric_charge/zap1"))
+        );
+
         this.registerSound(OFSoundEvents.SLAYSER_DISC,
                 sound(OpposingForce.location("record/slayser")).stream()
         );

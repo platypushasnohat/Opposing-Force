@@ -6,6 +6,8 @@
     "opposing_force:acid",
     "opposing_force:bullet",
     "opposing_force:soul",
-    "opposing_force:mania"
+    "opposing_force:mania",
+    "opposing_force:electric",
+    "opposing_force:electrified"
   ]
 }

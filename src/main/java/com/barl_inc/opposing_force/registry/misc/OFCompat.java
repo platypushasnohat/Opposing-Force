@@ -19,6 +19,7 @@ public class OFCompat {
 
     private static void registerDispenserBehaviors() {
         DispenserBlock.registerProjectileBehavior(OFItems.ACID_CHARGE.get());
+        DispenserBlock.registerProjectileBehavior(OFItems.ELECTRIC_CHARGE.get());
         DispenserBlock.registerProjectileBehavior(OFItems.ECTOPLASM.get());
         DispenserBlock.registerBehavior(OFItems.SAWBLADE.get(), new DefaultDispenseItemBehavior() {
             @Override

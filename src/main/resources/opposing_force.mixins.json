@@ -12,6 +12,7 @@
     "ZombieMixin"
   ],
   "client": [
+    "GuiMixin",
     "HumanoidModelMixin",
     "ItemInHandLayerMixin"
   ],

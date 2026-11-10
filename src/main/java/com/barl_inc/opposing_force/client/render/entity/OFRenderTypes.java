@@ -61,6 +61,18 @@ public class OFRenderTypes extends SinewRenderTypes {
         return create("phasing_glow", DefaultVertexFormat.NEW_ENTITY, VertexFormat.Mode.QUADS, 256, false, true, compositeState);
     }
 
+    private static final RenderType ELECTRIC_ARC = create("electric_arc", DefaultVertexFormat.POSITION_COLOR, VertexFormat.Mode.QUADS, 1536, false, false, CompositeState.builder()
+            .setShaderState(RENDERTYPE_LIGHTNING_SHADER)
+            .setTransparencyState(LIGHTNING_TRANSPARENCY)
+            .setWriteMaskState(COLOR_WRITE)
+            .setCullState(NO_CULL)
+            .setOutputState(WEATHER_TARGET)
+            .createCompositeState(false));
+
+    public static RenderType getElectricArc() {
+        return ELECTRIC_ARC;
+    }
+
     public static RenderType getLaserBolt(ResourceLocation resourceLocation) {
         return LASER_BOLT.apply(resourceLocation);
     }

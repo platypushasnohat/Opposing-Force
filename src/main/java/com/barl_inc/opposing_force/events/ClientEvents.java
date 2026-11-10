@@ -88,6 +88,7 @@ public class ClientEvents {
         event.registerEntityRenderer(OFEntities.LASER_BOLT.get(), LaserBoltRenderer::new);
         event.registerEntityRenderer(OFEntities.LASER_BLADE.get(), LaserBladeRenderer::new);
         event.registerEntityRenderer(OFEntities.ACID_CHARGE.get(), AcidChargeRenderer::new);
+        event.registerEntityRenderer(OFEntities.ELECTRIC_CHARGE.get(), ElectricChargeRenderer::new);
         event.registerEntityRenderer(OFEntities.ACID_CLOUD.get(), NoopRenderer::new);
         event.registerEntityRenderer(OFEntities.MUDBALL.get(), MudballRenderer::new);
         event.registerEntityRenderer(OFEntities.MUD_SPLATTER.get(), MudSplatterRenderer::new);
@@ -153,6 +154,7 @@ public class ClientEvents {
         event.registerSpriteSet(OFParticleTypes.LASER_IMPACT.get(), ImpactParticle.LaserFactory::new);
         event.registerSpriteSet(OFParticleTypes.LASER_SWEEP.get(), LaserSweepParticle.Factory::new);
         event.registerSpriteSet(OFParticleTypes.ACID.get(), AcidParticle.Factory::new);
+        event.registerSpecial(OFParticleTypes.ELECTRIC_ARC.get(), new ElectricArcParticle.Factory());
         event.registerSpriteSet(OFParticleTypes.FIRE_BREATH.get(), FireBreathParticle.Factory::new);
         event.registerSpriteSet(OFParticleTypes.SPORE_CLOUD.get(), SporeCloudParticle.Factory::new);
         event.registerSpriteSet(OFParticleTypes.BULLET_TRAIL.get(), BulletTrailParticle.Factory::new);

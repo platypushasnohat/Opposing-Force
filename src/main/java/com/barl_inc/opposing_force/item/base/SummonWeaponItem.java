@@ -1,6 +1,5 @@
 package com.barl_inc.opposing_force.item.base;
 
-import com.barl_inc.opposing_force.OpposingForce;
 import com.platypushasnohat.sinew.entity.base.SummonableMonster;
 import com.platypushasnohat.sinew.registry.SinewAttributes;
 import net.minecraft.ChatFormatting;

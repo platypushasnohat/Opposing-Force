@@ -166,6 +166,11 @@ public abstract class PhasingMonster extends BasicFlyingMonster implements Spect
     }
 
     @Override
+    public boolean isPreventingPlayerRest(Player player) {
+        return false;
+    }
+
+    @Override
     public boolean isVisibleWithoutSight(Player viewer) {
         return this.fade.isVisibleTo(viewer);
     }

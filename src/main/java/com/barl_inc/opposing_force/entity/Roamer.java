@@ -60,6 +60,11 @@ public class Roamer extends AnimatedMonster implements SpectralEntity {
     }
 
     @Override
+    public boolean isPreventingPlayerRest(Player player) {
+        return false;
+    }
+
+    @Override
     protected void registerGoals() {
         this.goalSelector.addGoal(0, new FloatGoal(this));
         this.goalSelector.addGoal(1, new RoamerDisappearGoal(this));

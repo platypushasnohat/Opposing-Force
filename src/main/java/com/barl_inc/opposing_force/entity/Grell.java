@@ -89,6 +89,11 @@ public class Grell extends BasicFlyingMonster implements SpectralEntity, EliteMo
         this.moveControl = new FlyingMoveControl(this, 10, true);
     }
 
+    @Override
+    public boolean isPreventingPlayerRest(Player player) {
+        return false;
+    }
+
     public static AttributeSupplier.Builder registerAttributes() {
         return Mob.createMobAttributes()
                 .add(Attributes.MAX_HEALTH, 120.0D)

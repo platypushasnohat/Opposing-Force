@@ -18,7 +18,7 @@ import java.util.concurrent.CompletableFuture;
 
 public class OFItemTagsProvider extends ItemTagsProvider {
 
-	public OFItemTagsProvider(PackOutput output, CompletableFuture<Provider> provider, CompletableFuture<TagsProvider.TagLookup<Block>> lookup, ExistingFileHelper helper) {
+	public OFItemTagsProvider(PackOutput output, CompletableFuture<Provider> provider, CompletableFuture<TagLookup<Block>> lookup, ExistingFileHelper helper) {
 		super(output, provider, lookup, OpposingForce.MOD_ID, helper);
 	}
 
@@ -31,7 +31,8 @@ public class OFItemTagsProvider extends ItemTagsProvider {
                 OFItems.CHITIN_LANCE.get(),
                 OFItems.LAPIS_LAZULI_SWORD.get(),
                 OFItems.SPECTRAL_CLEAVER.get(),
-                OFItems.TUNING_FORK.get()
+                OFItems.TUNING_FORK.get(),
+                OFItems.TACHI.get()
         );
 
         this.tag(ItemTags.PICKAXES).add(

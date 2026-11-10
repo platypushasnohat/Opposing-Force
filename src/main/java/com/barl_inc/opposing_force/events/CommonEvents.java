@@ -1,6 +1,7 @@
 package com.barl_inc.opposing_force.events;
 
 import com.barl_inc.opposing_force.OpposingForce;
+import com.barl_inc.opposing_force.network.ReconDashEffectPayload;
 import com.barl_inc.opposing_force.network.ReconDashPayload;
 import com.barl_inc.opposing_force.config.OFConfig;
 import com.barl_inc.opposing_force.entity.*;
@@ -71,6 +72,7 @@ public class CommonEvents {
     public static void registerPayloads(RegisterPayloadHandlersEvent event) {
         PayloadRegistrar registrar = event.registrar("1");
         registrar.playToServer(ReconDashPayload.TYPE, ReconDashPayload.STREAM_CODEC, ReconDashPayload::handle);
+        registrar.playToClient(ReconDashEffectPayload.TYPE, ReconDashEffectPayload.STREAM_CODEC, ReconDashEffectPayload::handle);
     }
 
     @SubscribeEvent

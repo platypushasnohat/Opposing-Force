@@ -90,6 +90,7 @@ public class OFItems {
 
     public static final DeferredItem<Item> PIPSQUEAK_SPAWN_EGG = registerSpawnEggItem("pipsqueak", OFEntities.PIPSQUEAK, 0x5d3d32, 0x9a2222);
     public static final DeferredItem<Item> TUNING_FORK = registerItem("tuning_fork", () -> new TuningForkItem(new Item.Properties().durability(1024).rarity(Rarity.UNCOMMON).attributes(TuningForkItem.createAttributes())));
+    public static final DeferredItem<Item> TACHI = registerItem("tachi", () -> new TachiItem(OFItemTiers.TACHI, new Item.Properties().attributes(SwordItem.createAttributes(OFItemTiers.TACHI, 3.0F, -2.4F)).rarity(Rarity.UNCOMMON)));
 
     //mageslop
     public static final DeferredItem<Item> GRASPER_SPAWN_EGG = registerSpawnEggItem("grasper", OFEntities.GRASPER, 0x293c3b, 0xac8e16);

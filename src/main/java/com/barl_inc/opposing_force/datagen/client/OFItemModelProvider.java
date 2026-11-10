@@ -96,6 +96,8 @@ public class OFItemModelProvider extends SinewItemModelProvider {
                 OFItems.SAWBLADE
         );
 
+        this.withExistingParent(name(OFItems.TACHI.get()), this.modLoc("item/handheld_flipped")).texture("layer0", itemTexture(OFItems.TACHI.get()));
+
         for (DeferredItem<Item> staff : List.of(OFItems.GNAT_STAFF, OFItems.SHROOM_STAFF)) {
             this.withExistingParent(name(staff.get()), this.modLoc("item/handheld_staff")).texture("layer0", itemTexture(staff.get()));
         }

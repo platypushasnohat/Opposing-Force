@@ -1,6 +1,7 @@
 package com.barl_inc.opposing_force.item.armor;
 
 import com.barl_inc.opposing_force.item.utils.OFTooltips;
+import com.barl_inc.opposing_force.network.ReconDashEffectPayload;
 import com.barl_inc.opposing_force.registry.OFItems;
 import com.barl_inc.opposing_force.registry.OFParticleTypes;
 import com.barl_inc.opposing_force.registry.OFSoundEvents;
@@ -18,6 +19,7 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.TooltipFlag;
 import net.minecraft.world.phys.AABB;
 import net.minecraft.world.phys.Vec3;
+import net.neoforged.neoforge.network.PacketDistributor;
 
 import java.util.List;
 
@@ -34,7 +36,7 @@ public class ReconKnightArmorItem extends SkinLayerHidingArmorItem {
 
     private static final EquipmentSlot[] SLOTS = {EquipmentSlot.HEAD, EquipmentSlot.CHEST, EquipmentSlot.LEGS, EquipmentSlot.FEET};
 
-    public ReconKnightArmorItem(Type type, Item.Properties properties, ArmorDefinition definition) {
+    public ReconKnightArmorItem(Type type, Properties properties, ArmorDefinition definition) {
         super(type, properties, definition);
     }
 
@@ -76,6 +78,7 @@ public class ReconKnightArmorItem extends SkinLayerHidingArmorItem {
 
             player.connection.teleport(end.x, end.y, end.z, player.getYRot(), player.getXRot());
             player.resetFallDistance();
+            PacketDistributor.sendToPlayersTrackingEntityAndSelf(player, new ReconDashEffectPayload(player.getId(), start, end));
 
             for (EquipmentSlot slot : SLOTS) {
                 ItemStack stack = player.getItemBySlot(slot);
@@ -90,7 +93,7 @@ public class ReconKnightArmorItem extends SkinLayerHidingArmorItem {
         Vec3 forward = new Vec3(-Mth.sin(yaw), 0.0D, Mth.cos(yaw));
         Vec3 left = new Vec3(Mth.cos(yaw), 0.0D, Mth.sin(yaw));
         Vec3 heading;
-        if (direction == DASH_BACK) { //horrors
+        if (direction == DASH_BACK) {
             heading = forward.reverse();
         } else if (direction == DASH_LEFT) {
             heading = left;

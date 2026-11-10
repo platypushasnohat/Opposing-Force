@@ -101,6 +101,7 @@ public class OFCreativeTabs {
                         output.accept(OFItems.JAEGER);
                         output.accept(OFItems.BOOMSTICK);
                         output.accept(OFItems.GORLOFF);
+                        output.accept(OFItems.TACHI);
 
                         output.accept(OFItems.EMERALD_SWORD);
                         output.accept(OFItems.EMERALD_SHOVEL);

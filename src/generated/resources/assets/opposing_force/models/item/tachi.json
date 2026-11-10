@@ -1,0 +1,6 @@
+{
+  "parent": "opposing_force:item/handheld_flipped",
+  "textures": {
+    "layer0": "opposing_force:item/tachi"
+  }
+}

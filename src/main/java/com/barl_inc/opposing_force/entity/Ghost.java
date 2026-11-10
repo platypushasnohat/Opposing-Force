@@ -3,11 +3,14 @@ package com.barl_inc.opposing_force.entity;
 import com.barl_inc.opposing_force.entity.ai.goal.PhasingWanderGoal;
 import com.barl_inc.opposing_force.entity.base.PhasingMonster;
 import com.barl_inc.opposing_force.registry.OFItems;
+import com.barl_inc.opposing_force.registry.datapack.tags.OFBlockTags;
 import com.platypushasnohat.sinew.client.animation.SmoothAnimationState;
 import com.platypushasnohat.sinew.entity.ai.goal.AttackGoal;
 import com.platypushasnohat.sinew.entity.ai.goal.SpectralStareGoal;
 import com.platypushasnohat.sinew.entity.spectral.SpectralSight;
 import net.minecraft.core.BlockPos;
+import net.minecraft.core.SectionPos;
+import net.minecraft.nbt.CompoundTag;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.util.RandomSource;
 import net.minecraft.world.DifficultyInstance;
@@ -25,8 +28,14 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.item.TieredItem;
 import net.minecraft.world.level.Level;
+import net.minecraft.world.level.LevelReader;
 import net.minecraft.world.level.ServerLevelAccessor;
 import net.minecraft.world.level.biome.Biomes;
+import net.minecraft.world.level.block.LiquidBlock;
+import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.level.chunk.ChunkAccess;
+import net.minecraft.world.level.chunk.LevelChunkSection;
+import net.minecraft.world.level.chunk.status.ChunkStatus;
 import net.minecraft.world.phys.Vec3;
 
 import javax.annotation.Nullable;
@@ -41,7 +50,11 @@ public class Ghost extends PhasingMonster {
     public final SmoothAnimationState attackAnimationState = new SmoothAnimationState();
     public final SmoothAnimationState attack2AnimationState = new SmoothAnimationState();
 
+    public static final double MAX_UNDERGROUND_Y = 40.0D;
+    public static final int LIGHT_BLOCK_RADIUS = 30;
+
     private int carryCooldown;
+    private boolean aboveground;
 
     public Ghost(EntityType<? extends Ghost> entityType, Level level) {
         super(entityType, level);
@@ -84,11 +97,88 @@ public class Ghost extends PhasingMonster {
             }
             this.setDropChance(EquipmentSlot.MAINHAND, 0.5F);
         }
+        this.aboveground = this.getY() >= MAX_UNDERGROUND_Y;
         return super.finalizeSpawn(level, difficulty, spawnType, spawnGroupData);
     }
 
+    @Override
+    public void addAdditionalSaveData(CompoundTag tag) {
+        super.addAdditionalSaveData(tag);
+        tag.putBoolean("Aboveground", this.aboveground);
+    }
+
+    @Override
+    public void readAdditionalSaveData(CompoundTag tag) {
+        super.readAdditionalSaveData(tag);
+        this.aboveground = tag.contains("Aboveground") ? tag.getBoolean("Aboveground") : this.getY() >= MAX_UNDERGROUND_Y;
+    }
+
+    @Override
+    public double getMaxPathY() {
+        return this.aboveground ? super.getMaxPathY() : MAX_UNDERGROUND_Y;
+    }
+
+    @Override
+    protected boolean despawnsInDaylight() {
+        return true;
+    }
+
+    @Override
+    protected void vanish() {
+        this.dropCarried();
+        super.vanish();
+    }
+
     public static boolean checkGhostSpawnRules(EntityType<Ghost> entityType, ServerLevelAccessor level, MobSpawnType spawnType, BlockPos pos, RandomSource random) {
-        return (MobSpawnType.isSpawner(spawnType) || (pos.getY() < 40 || level.getBiome(pos).is(Biomes.DARK_FOREST) && random.nextBoolean())) && checkMonsterSpawnRules(entityType, level, spawnType, pos, random);
+        boolean spawner = MobSpawnType.isSpawner(spawnType);
+        boolean location = spawner || pos.getY() < MAX_UNDERGROUND_Y || level.getBiome(pos).is(Biomes.DARK_FOREST) && random.nextBoolean();
+        return location && checkMonsterSpawnRules(entityType, level, spawnType, pos, random) && (spawner || !isNearLightSource(level, pos));
+    }
+
+    public static boolean isGhostRepellent(BlockState state) {
+        return state.getLightEmission() > 0 && !(state.getBlock() instanceof LiquidBlock) && !state.is(OFBlockTags.IGNORED_BY_GHOSTS);
+    }
+
+    public static boolean isNearLightSource(LevelReader level, BlockPos pos) {
+        int minX = pos.getX() - LIGHT_BLOCK_RADIUS;
+        int maxX = pos.getX() + LIGHT_BLOCK_RADIUS;
+        int minY = Math.max(level.getMinBuildHeight(), pos.getY() - LIGHT_BLOCK_RADIUS);
+        int maxY = Math.min(level.getMaxBuildHeight() - 1, pos.getY() + LIGHT_BLOCK_RADIUS);
+        int minZ = pos.getZ() - LIGHT_BLOCK_RADIUS;
+        int maxZ = pos.getZ() + LIGHT_BLOCK_RADIUS;
+        boolean found = false;
+        for (int chunkX = SectionPos.blockToSectionCoord(minX); chunkX <= SectionPos.blockToSectionCoord(maxX) && !found; chunkX++) {
+            for (int chunkZ = SectionPos.blockToSectionCoord(minZ); chunkZ <= SectionPos.blockToSectionCoord(maxZ) && !found; chunkZ++) {
+                ChunkAccess chunk = level.getChunk(chunkX, chunkZ, ChunkStatus.FULL, false);
+                if (chunk != null) {
+                    for (int sectionY = SectionPos.blockToSectionCoord(minY); sectionY <= SectionPos.blockToSectionCoord(maxY) && !found; sectionY++) {
+                        LevelChunkSection section = chunk.getSection(chunk.getSectionIndexFromSectionY(sectionY));
+                        if (!section.hasOnlyAir() && section.maybeHas(Ghost::isGhostRepellent)) {
+                            found = sectionHasLightSource(section, SectionPos.of(chunkX, sectionY, chunkZ), minX, maxX, minY, maxY, minZ, maxZ);
+                        }
+                    }
+                }
+            }
+        }
+        return found;
+    }
+
+    private static boolean sectionHasLightSource(LevelChunkSection section, SectionPos sectionPos, int minX, int maxX, int minY, int maxY, int minZ, int maxZ) {
+        int startX = Math.max(0, minX - sectionPos.minBlockX());
+        int endX = Math.min(15, maxX - sectionPos.minBlockX());
+        int startY = Math.max(0, minY - sectionPos.minBlockY());
+        int endY = Math.min(15, maxY - sectionPos.minBlockY());
+        int startZ = Math.max(0, minZ - sectionPos.minBlockZ());
+        int endZ = Math.min(15, maxZ - sectionPos.minBlockZ());
+        boolean found = false;
+        for (int x = startX; x <= endX && !found; x++) {
+            for (int y = startY; y <= endY && !found; y++) {
+                for (int z = startZ; z <= endZ && !found; z++) {
+                    found = isGhostRepellent(section.getBlockState(x, y, z));
+                }
+            }
+        }
+        return found;
     }
 
     @Override
@@ -271,7 +361,7 @@ public class Ghost extends PhasingMonster {
         @Nullable
         private ItemEntity findItem() {
             boolean carryingTool = isTool(this.ghost.getOffhandItem());
-            return this.ghost.level().getEntitiesOfClass(ItemEntity.class, this.ghost.getBoundingBox().inflate(12.0D, 0.0D, 12.0D).expandTowards(0.0D, -16.0D, 0.0D).expandTowards(0.0D, 4.0D, 0.0D), item -> !item.hasPickUpDelay() && (!carryingTool || isTool(item.getItem()))).stream()
+            return this.ghost.level().getEntitiesOfClass(ItemEntity.class, this.ghost.getBoundingBox().inflate(12.0D, 0.0D, 12.0D).expandTowards(0.0D, -16.0D, 0.0D).expandTowards(0.0D, 4.0D, 0.0D), item -> !item.hasPickUpDelay() && item.getY() <= this.ghost.getMaxPathY() + 1.0D && (!carryingTool || isTool(item.getItem()))).stream()
                     .min(Comparator.<ItemEntity>comparingInt(item -> isTool(item.getItem()) ? 0 : 1).thenComparingDouble(this.ghost::distanceToSqr))
                     .orElse(null);
         }

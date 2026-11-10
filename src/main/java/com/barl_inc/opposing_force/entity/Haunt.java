@@ -142,6 +142,11 @@ public class Haunt extends PhasingMonster {
         this.setXRot((float) -(Mth.atan2(velocity.y, velocity.horizontalDistance()) * Mth.RAD_TO_DEG));
     }
 
+    @Override
+    protected boolean despawnsInDaylight() {
+        return true;
+    }
+
     public static boolean checkHauntSpawnRules(EntityType<Haunt> entityType, ServerLevelAccessor level, MobSpawnType spawnType, BlockPos pos, RandomSource random) {
         return (MobSpawnType.isSpawner(spawnType) || pos.getY() < 0) && checkMonsterSpawnRules(entityType, level, spawnType, pos, random);
     }

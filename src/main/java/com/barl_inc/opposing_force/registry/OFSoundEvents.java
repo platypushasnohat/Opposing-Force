@@ -21,6 +21,11 @@ public class OFSoundEvents {
     public static final DeferredHolder<SoundEvent, SoundEvent> DICER_LASER_START = registerSoundEvent("dicer_laser_start");
     public static final DeferredHolder<SoundEvent, SoundEvent> DICER_LASER_END = registerSoundEvent("dicer_laser_end");
 
+    public static final DeferredHolder<SoundEvent, SoundEvent> GHOST_AMBIENT = registerFixedRangeSoundEvent("ghost_ambient", 10.0F);
+    public static final DeferredHolder<SoundEvent, SoundEvent> GHOST_HURT = registerFixedRangeSoundEvent("ghost_hurt", 10.0F);
+    public static final DeferredHolder<SoundEvent, SoundEvent> GHOST_DEATH = registerFixedRangeSoundEvent("ghost_death", 10.0F);
+    public static final DeferredHolder<SoundEvent, SoundEvent> GHOST_SWING = registerFixedRangeSoundEvent("ghost_swing", 10.0F);
+
     public static final DeferredHolder<SoundEvent, SoundEvent> GNAT_BUZZING = registerSoundEvent("gnat_buzzing");
 
     public static final DeferredHolder<SoundEvent, SoundEvent> FURBALL_HURT = registerSoundEvent("furball_hurt");
@@ -72,5 +77,9 @@ public class OFSoundEvents {
 
     private static DeferredHolder<SoundEvent, SoundEvent> registerSoundEvent(String soundName) {
         return SOUND_EVENT.register(soundName, () -> SoundEvent.createVariableRangeEvent(OpposingForce.location(soundName)));
+    }
+
+    private static DeferredHolder<SoundEvent, SoundEvent> registerFixedRangeSoundEvent(String soundName, float range) {
+        return SOUND_EVENT.register(soundName, () -> SoundEvent.createFixedRangeEvent(OpposingForce.location(soundName), range));
     }
 }

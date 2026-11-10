@@ -21,6 +21,10 @@ public class OFLanguageProvider extends SinewLanguageProvider {
         this.add(OFEntities.GRELL_CLONE.get(), "Grell");
         this.add(OFMobEffects.MANIA.get(), "Mania");
 
+        this.addSound(OFSoundEvents.GHOST_AMBIENT, "Ghost whispers");
+        this.addSound(OFSoundEvents.GHOST_HURT, "Ghost hurts");
+        this.addSound(OFSoundEvents.GHOST_DEATH, "Ghost dies");
+        this.addSound(OFSoundEvents.GHOST_SWING, "Ghost swings");
         this.addSound(OFSoundEvents.DICER_HURT, "Dicer hurts");
         this.addSound(OFSoundEvents.DICER_DEATH, "Dicer dies");
         this.addSound(OFSoundEvents.DICER_IDLE, "Dicer gurgles");

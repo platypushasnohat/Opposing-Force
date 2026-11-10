@@ -171,6 +171,86 @@
     ],
     "subtitle": "subtitles.opposing_force.furball_idle"
   },
+  "ghost_ambient": {
+    "sounds": [
+      {
+        "attenuation_distance": 10,
+        "name": "mob/vex/idle1"
+      },
+      {
+        "attenuation_distance": 10,
+        "name": "mob/vex/idle2"
+      },
+      {
+        "attenuation_distance": 10,
+        "name": "mob/vex/idle3"
+      },
+      {
+        "attenuation_distance": 10,
+        "name": "mob/vex/idle4"
+      }
+    ],
+    "subtitle": "subtitles.opposing_force.ghost_ambient"
+  },
+  "ghost_death": {
+    "sounds": [
+      {
+        "attenuation_distance": 10,
+        "name": "mob/vex/death1"
+      },
+      {
+        "attenuation_distance": 10,
+        "name": "mob/vex/death2"
+      }
+    ],
+    "subtitle": "subtitles.opposing_force.ghost_death"
+  },
+  "ghost_hurt": {
+    "sounds": [
+      {
+        "attenuation_distance": 10,
+        "name": "mob/vex/hurt1"
+      },
+      {
+        "attenuation_distance": 10,
+        "name": "mob/vex/hurt2"
+      }
+    ],
+    "subtitle": "subtitles.opposing_force.ghost_hurt"
+  },
+  "ghost_swing": {
+    "sounds": [
+      {
+        "attenuation_distance": 10,
+        "name": "entity/player/attack/sweep1"
+      },
+      {
+        "attenuation_distance": 10,
+        "name": "entity/player/attack/sweep2"
+      },
+      {
+        "attenuation_distance": 10,
+        "name": "entity/player/attack/sweep3"
+      },
+      {
+        "attenuation_distance": 10,
+        "name": "entity/player/attack/sweep4"
+      },
+      {
+        "attenuation_distance": 10,
+        "name": "entity/player/attack/sweep5"
+      },
+      {
+        "attenuation_distance": 10,
+        "name": "entity/player/attack/sweep6"
+      },
+      {
+        "attenuation_distance": 10,
+        "name": "entity/player/attack/sweep7"
+      }
+    ],
+    "subtitle": "subtitles.opposing_force.ghost_swing"
+  },
   "gnat_buzzing": {
     "sounds": [
       "opposing_force:mob/gnat/buzz"

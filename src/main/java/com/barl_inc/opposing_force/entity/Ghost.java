@@ -3,6 +3,7 @@ package com.barl_inc.opposing_force.entity;
 import com.barl_inc.opposing_force.entity.ai.goal.PhasingWanderGoal;
 import com.barl_inc.opposing_force.entity.base.PhasingMonster;
 import com.barl_inc.opposing_force.registry.OFItems;
+import com.barl_inc.opposing_force.registry.OFSoundEvents;
 import com.barl_inc.opposing_force.registry.datapack.tags.OFBlockTags;
 import com.platypushasnohat.sinew.client.animation.SmoothAnimationState;
 import com.platypushasnohat.sinew.entity.ai.goal.AttackGoal;
@@ -11,9 +12,10 @@ import com.platypushasnohat.sinew.entity.spectral.SpectralSight;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.SectionPos;
 import net.minecraft.nbt.CompoundTag;
-import net.minecraft.sounds.SoundEvents;
+import net.minecraft.sounds.SoundEvent;
 import net.minecraft.util.RandomSource;
 import net.minecraft.world.DifficultyInstance;
+import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.entity.*;
 import net.minecraft.world.entity.ai.attributes.AttributeSupplier;
 import net.minecraft.world.entity.ai.attributes.Attributes;
@@ -121,6 +123,21 @@ public class Ghost extends PhasingMonster {
     @Override
     protected boolean despawnsNaturally() {
         return true;
+    }
+
+    @Override
+    protected SoundEvent getAmbientSound() {
+        return OFSoundEvents.GHOST_AMBIENT.get();
+    }
+
+    @Override
+    protected SoundEvent getHurtSound(DamageSource damageSource) {
+        return OFSoundEvents.GHOST_HURT.get();
+    }
+
+    @Override
+    protected SoundEvent getDeathSound() {
+        return OFSoundEvents.GHOST_DEATH.get();
     }
 
     @Override
@@ -295,7 +312,7 @@ public class Ghost extends PhasingMonster {
                 this.ghost.setDeltaMovement(this.ghost.getDeltaMovement().scale(0.6D));
             }
             if (this.timer == 19) {
-                this.ghost.playSound(SoundEvents.PLAYER_ATTACK_SWEEP, 0.7F, 1.3F);
+                this.ghost.playSound(OFSoundEvents.GHOST_SWING.get(), 0.7F, 1.3F);
             }
             if (this.timer == 21 && this.ghost.getGap(target) < 2.0D && this.ghost.hasLineOfSight(target)) {
                 this.ghost.doHurtTarget(target);

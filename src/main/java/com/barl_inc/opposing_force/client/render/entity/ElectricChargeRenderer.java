@@ -58,10 +58,13 @@ public class ElectricChargeRenderer extends EntityRenderer<ElectricCharge> {
 
     @Override
     public void render(ElectricCharge entity, float entityYaw, float partialTicks, PoseStack poseStack, MultiBufferSource bufferSource, int packedLight) {
-        if (entity.tickCount < 2 && this.entityRenderDispatcher.camera.getEntity().distanceToSqr(entity) < MIN_CAMERA_DISTANCE_SQUARED) {
-            return;
+        boolean tooClose = entity.tickCount < 2 && this.entityRenderDispatcher.camera.getEntity().distanceToSqr(entity) < MIN_CAMERA_DISTANCE_SQUARED;
+        if (!tooClose) {
+            this.renderCharge(entity, partialTicks, poseStack, bufferSource);
         }
+    }
 
+    private void renderCharge(ElectricCharge entity, float partialTicks, PoseStack poseStack, MultiBufferSource bufferSource) {
         boolean discharging = entity.isDischarging();
         int tick = discharging ? entity.getDischargeTicks() + 10000 : (int) ((entity.tickCount + partialTicks) * BALL_SPEED / BALL_REFRESH_TICKS);
 
@@ -113,20 +116,18 @@ public class ElectricChargeRenderer extends EntityRenderer<ElectricCharge> {
             Vec3 start = points.get(i);
             Vec3 end = points.get(i + 1);
             Vec3 direction = end.subtract(start);
-            if (direction.lengthSqr() < 1.0E-6D) continue;
-
-            Vec3 extension = direction.normalize().scale(width * 0.5F);
-            Vec3 from = start.subtract(extension);
-            Vec3 to = end.add(extension);
-
             Vec3 side = direction.cross(camera.subtract(start));
-            if (side.lengthSqr() < 1.0E-6D) continue;
-            side = side.normalize().scale(width);
+            if (direction.lengthSqr() >= 1.0E-6D && side.lengthSqr() >= 1.0E-6D) {
+                Vec3 extension = direction.normalize().scale(width * 0.5F);
+                Vec3 from = start.subtract(extension);
+                Vec3 to = end.add(extension);
+                side = side.normalize().scale(width);
 
-            vertex(consumer, pose, from.subtract(side), r, g, b, a);
-            vertex(consumer, pose, from.add(side), r, g, b, a);
-            vertex(consumer, pose, to.add(side), r, g, b, a);
-            vertex(consumer, pose, to.subtract(side), r, g, b, a);
+                vertex(consumer, pose, from.subtract(side), r, g, b, a);
+                vertex(consumer, pose, from.add(side), r, g, b, a);
+                vertex(consumer, pose, to.add(side), r, g, b, a);
+                vertex(consumer, pose, to.subtract(side), r, g, b, a);
+            }
         }
     }
 

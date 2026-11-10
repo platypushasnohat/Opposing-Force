@@ -31,6 +31,7 @@ public class ElectricCharge extends ThrowableProjectile {
     public static final int DISCHARGE_DURATION = 8;
     public static final float IMPACT_RADIUS = 3.0F;
     public static final float WATER_RADIUS = 4.0F;
+    public static final int MAX_LIFETIME = 140;
 
     private int dischargeTicks;
 
@@ -86,28 +87,31 @@ public class ElectricCharge extends ThrowableProjectile {
     @Override
     public void tick() {
         if (this.isDischarging()) {
-            this.dischargeTicks++;
-            this.setDeltaMovement(Vec3.ZERO);
-            if (!this.level().isClientSide && this.dischargeTicks >= DISCHARGE_DURATION) {
-                this.discard();
-            }
-            return;
+            this.tickDischarge();
+        } else {
+            this.tickFlight();
         }
+    }
 
+    private void tickDischarge() {
+        this.dischargeTicks++;
+        this.setDeltaMovement(Vec3.ZERO);
+        if (!this.level().isClientSide && this.dischargeTicks >= DISCHARGE_DURATION) {
+            this.discard();
+        }
+    }
+
+    private void tickFlight() {
         super.tick();
 
-        if (this.isRemoved() || this.isDischarging()) {
-            return;
-        }
+        if (!this.isRemoved() && !this.isDischarging()) {
+            this.setDeltaMovement(this.getDeltaMovement().scale(1.0F / 0.99F));
 
-        this.setDeltaMovement(this.getDeltaMovement().scale(1.0F / 0.99F));
-
-        if (this.level().isClientSide) {
-            OpposingForce.PROXY.playSound(this, (byte) 5);
-        } else {
-            if (this.level().getFluidState(this.blockPosition()).is(FluidTags.WATER)) {
+            if (this.level().isClientSide) {
+                OpposingForce.PROXY.playSound(this, (byte) 5);
+            } else if (this.level().getFluidState(this.blockPosition()).is(FluidTags.WATER)) {
                 this.discharge(WATER_RADIUS);
-            } else if (this.tickCount >= 140 || this.getY() > this.level().getMaxBuildHeight() + 30) {
+            } else if (this.tickCount >= MAX_LIFETIME || this.getY() > this.level().getMaxBuildHeight() + 30) {
                 this.discharge(IMPACT_RADIUS);
             }
         }
@@ -143,24 +147,24 @@ public class ElectricCharge extends ThrowableProjectile {
         Entity owner = this.getOwner();
 
         for (LivingEntity living : this.level().getEntitiesOfClass(LivingEntity.class, this.getBoundingBox().inflate(reach))) {
-            if (living.isSpectator() || !living.isAlive()) continue;
-
             double distance = Math.sqrt(living.distanceToSqr(center)) / reach;
-            if (distance > 1.0D) continue;
-
             Vec3 push = new Vec3(living.getX() - center.x, living.getEyeY() - center.y, living.getZ() - center.z);
-            if (push.lengthSqr() == 0.0D) continue;
-
-            double impact = (1.0D - distance) * Explosion.getSeenPercent(center, living);
-            float damage = (float) ((int) ((impact * impact + impact) / 2.0D * 5.0D * reach + 1.0D));
-            living.hurt(OFDamageTypes.causeElectricDamage(this.level().registryAccess(), this, owner), damage);
-
-            double knockback = impact * (1.0D - living.getAttributeValue(Attributes.EXPLOSION_KNOCKBACK_RESISTANCE));
-            living.setDeltaMovement(living.getDeltaMovement().add(push.normalize().scale(knockback)));
-            living.hurtMarked = true;
-
-            living.addEffect(new MobEffectInstance(OFMobEffects.ELECTRIFIED, 300, 0), owner);
+            if (!living.isSpectator() && living.isAlive() && distance <= 1.0D && push.lengthSqr() > 0.0D) {
+                this.shockEntity(living, center, push, distance, reach, owner);
+            }
         }
+    }
+
+    private void shockEntity(LivingEntity living, Vec3 center, Vec3 push, double distance, double reach, Entity owner) {
+        double impact = (1.0D - distance) * Explosion.getSeenPercent(center, living);
+        float damage = (float) ((int) ((impact * impact + impact) / 2.0D * 5.0D * reach + 1.0D));
+        living.hurt(OFDamageTypes.causeElectricDamage(this.level().registryAccess(), this, owner), damage);
+
+        double knockback = impact * (1.0D - living.getAttributeValue(Attributes.EXPLOSION_KNOCKBACK_RESISTANCE));
+        living.setDeltaMovement(living.getDeltaMovement().add(push.normalize().scale(knockback)));
+        living.hurtMarked = true;
+
+        living.addEffect(new MobEffectInstance(OFMobEffects.ELECTRIFIED, 300, 0), owner);
     }
 
     @Override

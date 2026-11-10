@@ -26,12 +26,16 @@ public abstract class GuiMixin {
 
     @WrapOperation(method = "renderHeart", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/gui/Gui$HeartType;getSprite(ZZZ)Lnet/minecraft/resources/ResourceLocation;"))
     private ResourceLocation opposingForce$electrifiedHeart(Gui.HeartType heartType, boolean hardcore, boolean halfHeart, boolean blinking, Operation<ResourceLocation> original) {
+        ResourceLocation sprite;
         if (!blinking && heartType != Gui.HeartType.CONTAINER && heartType != Gui.HeartType.ABSORBING && heartType != Gui.HeartType.FROZEN && Minecraft.getInstance().getCameraEntity() instanceof Player player && player.hasEffect(OFMobEffects.ELECTRIFIED)) {
             if (hardcore) {
-                return halfHeart ? ELECTRIFIED_HARDCORE_HALF : ELECTRIFIED_HARDCORE_FULL;
+                sprite = halfHeart ? ELECTRIFIED_HARDCORE_HALF : ELECTRIFIED_HARDCORE_FULL;
+            } else {
+                sprite = halfHeart ? ELECTRIFIED_HALF : ELECTRIFIED_FULL;
             }
-            return halfHeart ? ELECTRIFIED_HALF : ELECTRIFIED_FULL;
+        } else {
+            sprite = original.call(heartType, hardcore, halfHeart, blinking);
         }
-        return original.call(heartType, hardcore, halfHeart, blinking);
+        return sprite;
     }
 }

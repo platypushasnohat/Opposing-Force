@@ -34,14 +34,14 @@ public class ElectricChargeSoundInstance extends AbstractTickableSoundInstance {
     public void tick() {
         if (!this.charge.isAlive() || this.charge.isDischarging()) {
             this.stop();
-            return;
+        } else {
+            this.x = (float) this.charge.getX();
+            this.y = (float) this.charge.getY();
+            this.z = (float) this.charge.getZ();
+            float speed = (float) this.charge.getDeltaMovement().horizontalDistance();
+            this.pitch = Mth.lerp(Mth.clamp(speed, MIN_PITCH, MAX_PITCH), MIN_PITCH, MAX_PITCH);
+            this.volume = 2.0F;
         }
-        this.x = (float) this.charge.getX();
-        this.y = (float) this.charge.getY();
-        this.z = (float) this.charge.getZ();
-        float speed = (float) this.charge.getDeltaMovement().horizontalDistance();
-        this.pitch = Mth.lerp(Mth.clamp(speed, MIN_PITCH, MAX_PITCH), MIN_PITCH, MAX_PITCH);
-        this.volume = 2.0F;
     }
 
     @Override

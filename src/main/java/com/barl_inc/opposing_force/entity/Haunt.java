@@ -143,7 +143,7 @@ public class Haunt extends PhasingMonster {
     }
 
     @Override
-    protected boolean despawnsInDaylight() {
+    protected boolean despawnsNaturally() {
         return true;
     }
 

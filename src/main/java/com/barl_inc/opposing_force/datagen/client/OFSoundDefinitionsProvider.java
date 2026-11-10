@@ -4,6 +4,7 @@ import com.barl_inc.opposing_force.OpposingForce;
 import com.barl_inc.opposing_force.registry.OFSoundEvents;
 import com.platypushasnohat.sinew.datagen.client.SinewSoundDefinitionsProvider;
 import net.minecraft.data.PackOutput;
+import net.minecraft.resources.ResourceLocation;
 import net.neoforged.neoforge.common.data.ExistingFileHelper;
 
 public class OFSoundDefinitionsProvider extends SinewSoundDefinitionsProvider {
@@ -46,6 +47,30 @@ public class OFSoundDefinitionsProvider extends SinewSoundDefinitionsProvider {
         );
         this.registerSound(OFSoundEvents.DICER_LASER_END,
                 sound(OpposingForce.location("mob/dicer/laser_end"))
+        );
+
+        this.registerSound(OFSoundEvents.GHOST_AMBIENT,
+                sound(ResourceLocation.withDefaultNamespace("mob/vex/idle1")).attenuationDistance(10),
+                sound(ResourceLocation.withDefaultNamespace("mob/vex/idle2")).attenuationDistance(10),
+                sound(ResourceLocation.withDefaultNamespace("mob/vex/idle3")).attenuationDistance(10),
+                sound(ResourceLocation.withDefaultNamespace("mob/vex/idle4")).attenuationDistance(10)
+        );
+        this.registerSound(OFSoundEvents.GHOST_HURT,
+                sound(ResourceLocation.withDefaultNamespace("mob/vex/hurt1")).attenuationDistance(10),
+                sound(ResourceLocation.withDefaultNamespace("mob/vex/hurt2")).attenuationDistance(10)
+        );
+        this.registerSound(OFSoundEvents.GHOST_DEATH,
+                sound(ResourceLocation.withDefaultNamespace("mob/vex/death1")).attenuationDistance(10),
+                sound(ResourceLocation.withDefaultNamespace("mob/vex/death2")).attenuationDistance(10)
+        );
+        this.registerSound(OFSoundEvents.GHOST_SWING,
+                sound(ResourceLocation.withDefaultNamespace("entity/player/attack/sweep1")).attenuationDistance(10),
+                sound(ResourceLocation.withDefaultNamespace("entity/player/attack/sweep2")).attenuationDistance(10),
+                sound(ResourceLocation.withDefaultNamespace("entity/player/attack/sweep3")).attenuationDistance(10),
+                sound(ResourceLocation.withDefaultNamespace("entity/player/attack/sweep4")).attenuationDistance(10),
+                sound(ResourceLocation.withDefaultNamespace("entity/player/attack/sweep5")).attenuationDistance(10),
+                sound(ResourceLocation.withDefaultNamespace("entity/player/attack/sweep6")).attenuationDistance(10),
+                sound(ResourceLocation.withDefaultNamespace("entity/player/attack/sweep7")).attenuationDistance(10)
         );
 
         this.registerSound(OFSoundEvents.GNAT_BUZZING,

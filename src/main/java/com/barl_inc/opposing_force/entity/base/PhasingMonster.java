@@ -7,9 +7,12 @@ import com.platypushasnohat.sinew.entity.spectral.SpectralEntity;
 import com.platypushasnohat.sinew.entity.spectral.SpectralFade;
 import com.platypushasnohat.sinew.registry.SinewDamageTypes;
 import net.minecraft.core.BlockPos;
+import net.minecraft.nbt.CompoundTag;
 import net.minecraft.sounds.SoundEvent;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.util.Mth;
+import net.minecraft.world.InteractionHand;
+import net.minecraft.world.InteractionResult;
 import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.entity.EntityEvent;
 import net.minecraft.world.entity.EntityType;
@@ -24,9 +27,12 @@ import net.minecraft.world.phys.Vec3;
 
 public abstract class PhasingMonster extends BasicFlyingMonster implements SpectralEntity {
 
+    public static final int IDLE_DESPAWN_TICKS = 2400;
+
     private final SpectralFade fade = new SpectralFade(this);
     private float tilt;
     private float prevTilt;
+    private int idleTicks;
 
     protected PhasingMonster(EntityType<? extends PhasingMonster> entityType, Level level) {
         super(entityType, level);
@@ -55,17 +61,44 @@ public abstract class PhasingMonster extends BasicFlyingMonster implements Spect
     @Override
     protected void customServerAiStep() {
         super.customServerAiStep();
-        if (this.tickCount % 20 == 0 && this.shouldVanishInDaylight() && this.random.nextInt(4) == 0) {
+        if (this.getTarget() != null || !this.canVanish()) {
+            this.idleTicks = 0;
+        } else {
+            this.idleTicks++;
+        }
+        if (this.idleTicks >= IDLE_DESPAWN_TICKS || this.tickCount % 20 == 0 && this.shouldVanishInDaylight() && this.random.nextInt(4) == 0) {
             this.vanish();
         }
     }
 
-    protected boolean despawnsInDaylight() {
+    protected boolean despawnsNaturally() {
         return false;
     }
 
+    private boolean canVanish() {
+        return this.despawnsNaturally() && !this.hasCustomName() && !this.isLeashed();
+    }
+
     private boolean shouldVanishInDaylight() {
-        return this.despawnsInDaylight() && this.level().isDay() && !this.hasCustomName() && !this.isLeashed() && this.isAboveground();
+        return this.canVanish() && this.level().isDay() && this.isAboveground();
+    }
+
+    @Override
+    protected InteractionResult mobInteract(Player player, InteractionHand hand) {
+        this.idleTicks = 0;
+        return super.mobInteract(player, hand);
+    }
+
+    @Override
+    public void addAdditionalSaveData(CompoundTag tag) {
+        super.addAdditionalSaveData(tag);
+        tag.putInt("IdleTicks", this.idleTicks);
+    }
+
+    @Override
+    public void readAdditionalSaveData(CompoundTag tag) {
+        super.readAdditionalSaveData(tag);
+        this.idleTicks = tag.getInt("IdleTicks");
     }
 
     public boolean isAboveground() {
@@ -125,7 +158,16 @@ public abstract class PhasingMonster extends BasicFlyingMonster implements Spect
         } else if (source.is(SinewDamageTypes.MAGIC_DAMAGE)) {
             scale = 1.25F;
         }
-        return !(source.getEntity() instanceof PhasingMonster) && super.hurt(source, amount * scale);
+        boolean hurt = !(source.getEntity() instanceof PhasingMonster) && super.hurt(source, amount * scale);
+        if (hurt) {
+            this.idleTicks = 0;
+        }
+        return hurt;
+    }
+
+    @Override
+    public boolean isPreventingPlayerRest(Player player) {
+        return false;
     }
 
     @Override

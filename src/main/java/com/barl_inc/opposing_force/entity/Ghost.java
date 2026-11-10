@@ -119,7 +119,7 @@ public class Ghost extends PhasingMonster {
     }
 
     @Override
-    protected boolean despawnsInDaylight() {
+    protected boolean despawnsNaturally() {
         return true;
     }
 

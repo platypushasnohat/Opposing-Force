@@ -1,6 +1,7 @@
 package com.barl_inc.opposing_force.registry.properties;
 
 import com.barl_inc.opposing_force.OpposingForce;
+import com.barl_inc.opposing_force.registry.OFItems;
 import net.minecraft.Util;
 import net.minecraft.core.Holder;
 import net.minecraft.core.registries.Registries;
@@ -22,6 +23,7 @@ public class OFArmorMaterials {
     public static final DeferredRegister<ArmorMaterial> ARMOR_MATERIALS = DeferredRegister.create(Registries.ARMOR_MATERIAL, OpposingForce.MOD_ID);
 
     public static final DeferredHolder<ArmorMaterial, ArmorMaterial> EMERALD = register("emerald", defense(3, 6, 8, 3, 11), 15, SoundEvents.ARMOR_EQUIP_DIAMOND, 2.0F, 0.0F, () -> Ingredient.of(Tags.Items.GEMS_EMERALD));
+    public static final DeferredHolder<ArmorMaterial, ArmorMaterial> RECON_KNIGHT = register("recon_knight", defense(3, 6, 8, 3, 11), 10, SoundEvents.ARMOR_EQUIP_DIAMOND, 2.0F, 0.0F, () -> Ingredient.of(OFItems.TESLA_INGOT));
     public static final DeferredHolder<ArmorMaterial, ArmorMaterial> MOON_SHOES = register("moon_shoes", defense(2, 1, 1, 1, 11), 15, SoundEvents.ARMOR_EQUIP_LEATHER, 0.0F, 0.0F, () -> Ingredient.of(Tags.Items.FEATHERS));
 
     public static EnumMap<ArmorItem.Type, Integer> defense(int boots, int leggings, int chestplate, int helmet, int body) {

@@ -116,6 +116,7 @@ public class OFLanguageProvider extends SinewLanguageProvider {
         this.add("item.opposing_force.tuning_fork.description.two", "Right click to charge a sound wave");
         this.add("item.opposing_force.acid_charge.description", "Throwable");
         this.add("item.opposing_force.electric_charge.description", "Throwable");
+        this.add("item.opposing_force.recon_knight.set_bonus", "Set bonus: Double tap sprint to dash");
         this.add("item.opposing_force.ectoplasm.description", "Throwable");
         this.add("item.opposing_force.knockback_spores.description", "Knocks entities away");
         this.add("item.opposing_force.repair_kit.description", "Right click to repair all items in your inventory");

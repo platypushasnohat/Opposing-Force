@@ -14,4 +14,10 @@ public class OFArmorDefinitions {
             .texture(slot -> slot == EquipmentSlot.LEGS ? OpposingForce.location("textures/models/armor/emerald_layer_2.png") : OpposingForce.location("textures/models/armor/emerald_layer_1.png"))
             .build();
 
+    public static final ArmorDefinition RECON_KNIGHT_ARMOR = new ArmorDefinition.Builder()
+            .material(OFArmorMaterials.RECON_KNIGHT)
+            .attribute(SinewAttributes.AIR_SPEED, 0.05F, AttributeModifier.Operation.ADD_VALUE)
+            .attribute(SinewAttributes.PROJECTILE_DAMAGE, 0.75F, AttributeModifier.Operation.ADD_VALUE)
+            .texture(slot -> slot == EquipmentSlot.LEGS ? OpposingForce.location("textures/models/armor/recon_knight_layer_2.png") : OpposingForce.location("textures/models/armor/recon_knight_layer_1.png"))
+            .build();
 }

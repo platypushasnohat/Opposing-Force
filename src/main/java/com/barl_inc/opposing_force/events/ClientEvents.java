@@ -1,7 +1,9 @@
 package com.barl_inc.opposing_force.events;
 
 import com.barl_inc.opposing_force.OpposingForce;
+import com.barl_inc.opposing_force.client.utils.*;
 import com.barl_inc.opposing_force.client.model.armor.EmeraldArmorModel;
+import com.barl_inc.opposing_force.client.model.armor.ReconKnightArmorModel;
 import com.barl_inc.opposing_force.client.model.entity.*;
 import com.barl_inc.opposing_force.client.model.item.*;
 import com.barl_inc.opposing_force.client.particle.*;
@@ -154,7 +156,8 @@ public class ClientEvents {
         event.registerSpriteSet(OFParticleTypes.LASER_IMPACT.get(), ImpactParticle.LaserFactory::new);
         event.registerSpriteSet(OFParticleTypes.LASER_SWEEP.get(), LaserSweepParticle.Factory::new);
         event.registerSpriteSet(OFParticleTypes.ACID.get(), AcidParticle.Factory::new);
-        event.registerSpecial(OFParticleTypes.ELECTRIC_ARC.get(), new ElectricArcParticle.Factory());
+        event.registerSpecial(OFParticleTypes.ELECTRIC_ARC.get(), new ElectricArcParticle.Factory(1.0F, 3, 3));
+        event.registerSpecial(OFParticleTypes.ELECTRIC_BOLT.get(), new ElectricArcParticle.Factory(3.0F, 4, 4));
         event.registerSpriteSet(OFParticleTypes.FIRE_BREATH.get(), FireBreathParticle.Factory::new);
         event.registerSpriteSet(OFParticleTypes.SPORE_CLOUD.get(), SporeCloudParticle.Factory::new);
         event.registerSpriteSet(OFParticleTypes.BULLET_TRAIL.get(), BulletTrailParticle.Factory::new);
@@ -189,6 +192,13 @@ public class ClientEvents {
                 return EmeraldArmorModel.INSTANCE;
             }
         }, OFItems.EMERALD_MASK, OFItems.EMERALD_CHESTPLATE, OFItems.EMERALD_LEGGINGS, OFItems.EMERALD_BOOTS);
+        event.registerItem(new IClientItemExtensions() {
+            @Override
+            public HumanoidModel<?> getHumanoidArmorModel(LivingEntity entity, ItemStack stack, EquipmentSlot slot, HumanoidModel<?> properties) {
+                ReconKnightArmorModel.INSTANCE.setupCape(entity, Minecraft.getInstance().getTimer().getGameTimeDeltaPartialTick(true));
+                return ReconKnightArmorModel.INSTANCE;
+            }
+        }, OFItems.RECON_KNIGHT_HELMET, OFItems.RECON_KNIGHT_CHESTPLATE, OFItems.RECON_KNIGHT_LEGGINGS, OFItems.RECON_KNIGHT_BOOTS);
     }
 
     @SubscribeEvent
@@ -264,6 +274,7 @@ public class ClientEvents {
     @SubscribeEvent
     public static void onClientTick(ClientTickEvent.Post event) {
         SpectralLensOverlay.tick();
+        ReconDashHandler.tick();
         ManiaTrip.tick();
     }
 

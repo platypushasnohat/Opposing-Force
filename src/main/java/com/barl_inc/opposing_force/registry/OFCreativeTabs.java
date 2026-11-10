@@ -112,6 +112,11 @@ public class OFCreativeTabs {
                         output.accept(OFItems.EMERALD_LEGGINGS);
                         output.accept(OFItems.EMERALD_BOOTS);
 
+                        output.accept(OFItems.RECON_KNIGHT_HELMET);
+                        output.accept(OFItems.RECON_KNIGHT_CHESTPLATE);
+                        output.accept(OFItems.RECON_KNIGHT_LEGGINGS);
+                        output.accept(OFItems.RECON_KNIGHT_BOOTS);
+
                         output.accept(OFItems.LAPIS_LAZULI_SWORD);
                         output.accept(OFItems.LAPIS_LAZULI_SHOVEL);
                         output.accept(OFItems.LAPIS_LAZULI_PICKAXE);

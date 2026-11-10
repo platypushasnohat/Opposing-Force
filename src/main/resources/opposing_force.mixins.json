@@ -12,9 +12,11 @@
     "ZombieMixin"
   ],
   "client": [
+    "CapeLayerMixin",
     "GuiMixin",
     "HumanoidModelMixin",
-    "ItemInHandLayerMixin"
+    "ItemInHandLayerMixin",
+    "PlayerRendererMixin"
   ],
   "injectors": {
     "defaultRequire": 1

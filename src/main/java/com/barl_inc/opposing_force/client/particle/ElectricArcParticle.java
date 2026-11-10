@@ -27,21 +27,44 @@ public class ElectricArcParticle extends Particle {
 
     private final List<Vec3> points = new ArrayList<>();
 
-    protected ElectricArcParticle(ClientLevel level, double x, double y, double z) {
+    private final float scale;
+
+    protected ElectricArcParticle(ClientLevel level, double x, double y, double z, double xSpeed, double ySpeed, double zSpeed, float scale, int minLifetime, int lifetimeRange) {
         super(level, x, y, z);
-        this.lifetime = 3 + this.random.nextInt(3);
+        this.scale = scale;
+        this.lifetime = minLifetime + this.random.nextInt(lifetimeRange);
         this.gravity = 0.0F;
         this.hasPhysics = false;
         this.xd = 0.0D;
         this.yd = 0.0D;
         this.zd = 0.0D;
-        this.createArc();
+        Vec3 reach = new Vec3(xSpeed, ySpeed, zSpeed);
+        if (reach.lengthSqr() > 1.0E-4D) {
+            this.createBolt(reach);
+        } else {
+            this.createArc();
+        }
+    }
+
+    private void createBolt(Vec3 reach) {
+        double length = reach.length();
+        int segments = Math.max(4, Mth.ceil(length / 0.35D));
+        double jitter = Math.min(0.35D, length * 0.07D);
+        for (int i = 0; i <= segments; i++) {
+            float t = (float) i / segments;
+            Vec3 point = reach.scale(t);
+            if (i > 0 && i < segments) {
+                point = point.add(this.randomUnitVector().scale(jitter * (0.5D + this.random.nextDouble() * 0.5D)));
+            }
+            this.points.add(point);
+        }
+        this.setBoundingBox(this.getBoundingBox().expandTowards(reach).inflate(0.5D));
     }
 
     private void createArc() {
         Vec3 direction = this.randomUnitVector();
-        float length = 0.2F + this.random.nextFloat() * 0.25F;
-        int segments = 3 + this.random.nextInt(2);
+        float length = (0.2F + this.random.nextFloat() * 0.25F) * this.scale;
+        int segments = 3 + this.random.nextInt(2) + (int) (this.scale - 1.0F);
         Vec3 start = direction.scale(-length / 2.0F);
         Vec3 end = direction.scale(length / 2.0F);
         for (int i = 0; i <= segments; i++) {
@@ -103,9 +126,19 @@ public class ElectricArcParticle extends Particle {
 
     public static class Factory implements ParticleProvider<SimpleParticleType> {
 
+        private final float scale;
+        private final int minLifetime;
+        private final int lifetimeRange;
+
+        public Factory(float scale, int minLifetime, int lifetimeRange) {
+            this.scale = scale;
+            this.minLifetime = minLifetime;
+            this.lifetimeRange = lifetimeRange;
+        }
+
         @Override
         public Particle createParticle(SimpleParticleType type, ClientLevel level, double x, double y, double z, double xSpeed, double ySpeed, double zSpeed) {
-            return new ElectricArcParticle(level, x, y, z);
+            return new ElectricArcParticle(level, x, y, z, xSpeed, ySpeed, zSpeed, this.scale, this.minLifetime, this.lifetimeRange);
         }
     }
 }

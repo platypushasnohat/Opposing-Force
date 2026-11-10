@@ -1,5 +1,6 @@
 package com.barl_inc.opposing_force.entity.ai.goal;
 
+import com.barl_inc.opposing_force.entity.base.PhasingMonster;
 import net.minecraft.core.BlockPos;
 import net.minecraft.world.entity.EntitySelector;
 import net.minecraft.world.entity.PathfinderMob;
@@ -77,11 +78,13 @@ public class PhasingWanderGoal extends Goal {
         double minDistance = player != null ? this.minPlayerDistance : 0.0D;
         double maxDistance = player != null ? this.maxPlayerDistance : this.idleRange;
         double height = player != null ? this.playerHeight : this.idleHeight;
+        double maxY = this.mob instanceof PhasingMonster phasing ? phasing.getMaxPathY() : Double.MAX_VALUE;
         Vec3 fallback = null;
         for (int i = 0; i < 10; i++) {
             double angle = this.mob.getRandom().nextDouble() * Math.PI * 2.0D;
             double distance = minDistance + this.mob.getRandom().nextDouble() * (maxDistance - minDistance);
-            Vec3 pos = center.add(Math.cos(angle) * distance, (this.mob.getRandom().nextDouble() * 2.0D - 1.0D) * height, Math.sin(angle) * distance);
+            Vec3 offset = center.add(Math.cos(angle) * distance, (this.mob.getRandom().nextDouble() * 2.0D - 1.0D) * height, Math.sin(angle) * distance);
+            Vec3 pos = new Vec3(offset.x, Math.min(offset.y, maxY), offset.z);
             BlockPos blockPos = BlockPos.containing(pos);
             if (this.mob.level().isEmptyBlock(blockPos) && this.mob.level().isEmptyBlock(blockPos.above())) {
                 return pos;

@@ -1,5 +1,9 @@
 package com.barl_inc.opposing_force.events;
 
+import com.barl_inc.opposing_force.item.melee.HeroSwordItem;
+import com.barl_inc.opposing_force.network.HeroSwordSwingPayload;
+import net.minecraft.world.phys.HitResult;
+import net.neoforged.neoforge.network.PacketDistributor;
 import com.barl_inc.opposing_force.OpposingForce;
 import com.barl_inc.opposing_force.client.utils.ReconDashHandler;
 import com.barl_inc.opposing_force.client.model.armor.EmeraldArmorModel;
@@ -103,6 +107,7 @@ public class ClientEvents {
         event.registerEntityRenderer(OFEntities.GRELL_CLONE.get(), GrellRenderer::new);
         event.registerEntityRenderer(OFEntities.SOUNDWAVE.get(), SoundwaveRenderer::new);
         event.registerEntityRenderer(OFEntities.TACHI_SLASH.get(), TachiSlashRenderer::new);
+        event.registerEntityRenderer(OFEntities.HERO_SWORD_BEAM.get(), HeroSwordBeamRenderer::new);
         event.registerEntityRenderer(OFEntities.MANIA_BRAIN.get(), ManiaBrainRenderer::new);
     }
 
@@ -165,6 +170,7 @@ public class ClientEvents {
         event.registerSpriteSet(OFParticleTypes.BULLET_TRAIL.get(), BulletTrailParticle.Factory::new);
         event.registerSpriteSet(OFParticleTypes.BULLET_IMPACT.get(), ImpactParticle.BulletFactory::new);
         event.registerSpriteSet(OFParticleTypes.SPECTRAL_SWEEP.get(), LaserSweepParticle.Factory::new);
+        event.registerSpriteSet(OFParticleTypes.HERO_SWEEP.get(), LaserSweepParticle.Factory::new);
         event.registerSpriteSet(OFParticleTypes.SMALL_SOUL_FIRE_FLAME.get(), FlameParticle.SmallFlameProvider::new);
         event.registerSpriteSet(OFParticleTypes.SHOCKWAVE.get(), ShockwaveParticle.Factory::new);
         event.registerSpriteSet(OFParticleTypes.SMALL_SHOCKWAVE.get(), ShockwaveParticle.Factory::new);
@@ -202,6 +208,16 @@ public class ClientEvents {
                 return ReconKnightArmorModel.INSTANCE;
             }
         }, OFItems.RECON_KNIGHT_HELMET, OFItems.RECON_KNIGHT_CHESTPLATE, OFItems.RECON_KNIGHT_LEGGINGS, OFItems.RECON_KNIGHT_BOOTS);
+    }
+
+    @SubscribeEvent
+    public static void onInteractionKey(InputEvent.InteractionKeyMappingTriggered event) {
+        Minecraft minecraft = Minecraft.getInstance();
+        LocalPlayer player = minecraft.player;
+        boolean swingingHeroSword = event.isAttack() && event.getHand() == InteractionHand.MAIN_HAND && player != null && !player.isSpectator() && player.getMainHandItem().getItem() instanceof HeroSwordItem;
+        if (swingingHeroSword && player.getAttackStrengthScale(0.5F) >= HeroSwordItem.FULL_CHARGE && (minecraft.hitResult == null || minecraft.hitResult.getType() != HitResult.Type.BLOCK)) {
+            PacketDistributor.sendToServer(HeroSwordSwingPayload.INSTANCE);
+        }
     }
 
     @SubscribeEvent

@@ -35,10 +35,6 @@ import java.util.WeakHashMap;
 public class TachiItem extends SwordItem {
 
     public static final int FULL_CHARGE_TICKS = 20;
-    public static final int SLASH_COOLDOWN = 80;
-    private static final double SLASH_RANGE = 3.5D;
-    private static final double SLASH_ARC = 0.5D;
-    private static final float SINGLE_TARGET_BONUS = 2.0F;
     private static final Map<Player, Float> SINGLE_TARGET_SWINGS = new WeakHashMap<>();
 
     public TachiItem(Tier tier, Properties properties) {
@@ -64,7 +60,7 @@ public class TachiItem extends SwordItem {
                 slash(serverLevel, player, stack, held >= FULL_CHARGE_TICKS);
                 stack.hurtAndBreak(1, player, EquipmentSlot.MAINHAND);
             }
-            player.getCooldowns().addCooldown(this, SLASH_COOLDOWN);
+            player.getCooldowns().addCooldown(this, 80);
             player.awardStat(Stats.ITEM_USED.get(this));
         }
     }
@@ -75,7 +71,7 @@ public class TachiItem extends SwordItem {
         DamageSource source = player.damageSources().playerAttack(player);
         float baseDamage = (float) player.getAttributeValue(Attributes.ATTACK_DAMAGE);
         float yaw = player.getYRot() * Mth.DEG_TO_RAD;
-        List<LivingEntity> targets = level.getEntitiesOfClass(LivingEntity.class, player.getBoundingBox().inflate(SLASH_RANGE), target -> isSlashTarget(player, target, eye, look));
+        List<LivingEntity> targets = level.getEntitiesOfClass(LivingEntity.class, player.getBoundingBox().inflate(3.5D), target -> isSlashTarget(player, target, eye, look));
         for (LivingEntity target : targets) {
             float damage = EnchantmentHelper.modifyDamage(level, stack, target, source, baseDamage);
             if (target.hurt(source, damage)) {
@@ -86,7 +82,8 @@ public class TachiItem extends SwordItem {
         if (fullyCharged) {
             Vec3 forward = Vec3.directionFromRotation(0.0F, player.getYRot());
             Vec3 start = player.position().add(forward).add(0.0D, player.getBbHeight() * 0.55D - 0.25D, 0.0D);
-            level.addFreshEntity(new TachiSlash(level, player, start, player.getYRot(), targets));
+            float slashDamage = Math.max(0.0F, 4.0F + (baseDamage - 6.0F) / 2.0F);
+            level.addFreshEntity(new TachiSlash(level, player, start, player.getYRot(), slashDamage, targets));
         }
         Vec3 front = eye.add(look.scale(1.5D));
         level.sendParticles(ParticleTypes.SWEEP_ATTACK, front.x, front.y - 0.3D, front.z, 1, 0.0D, 0.0D, 0.0D, 0.0D);
@@ -96,7 +93,7 @@ public class TachiItem extends SwordItem {
     private static boolean isSlashTarget(Player player, LivingEntity target, Vec3 eye, Vec3 look) {
         Vec3 offset = target.getBoundingBox().getCenter().subtract(eye);
         boolean valid = target != player && target.isAlive() && !player.isAlliedTo(target) && !(target instanceof ArmorStand stand && stand.isMarker());
-        return valid && offset.length() <= SLASH_RANGE + target.getBbWidth() / 2.0D && offset.normalize().dot(look) > SLASH_ARC && player.hasLineOfSight(target);
+        return valid && offset.length() <= 3.5D + target.getBbWidth() / 2.0D && offset.normalize().dot(look) > 0.5D && player.hasLineOfSight(target);
     }
 
     @Override
@@ -128,7 +125,7 @@ public class TachiItem extends SwordItem {
         if (damageSource.getEntity() instanceof Player player) {
             Float scale = SINGLE_TARGET_SWINGS.remove(player);
             if (scale != null) {
-                bonus += SINGLE_TARGET_BONUS * scale;
+                bonus += 2.0F * scale;
             }
         }
         return bonus;

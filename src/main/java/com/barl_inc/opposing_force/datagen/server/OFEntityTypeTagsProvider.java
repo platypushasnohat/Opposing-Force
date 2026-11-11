@@ -62,7 +62,9 @@ public class OFEntityTypeTagsProvider extends EntityTypeTagsProvider {
                 OFEntities.SOUNDWAVE.get(),
                 OFEntities.SOUL.get(),
                 OFEntities.DICER_LASER.get(),
-                OFEntities.LASER_BLADE.get()
+                OFEntities.LASER_BLADE.get(),
+                OFEntities.TACHI_SLASH.get(),
+                OFEntities.HERO_SWORD_BEAM.get()
         );
 
         this.tag(OFEntityTypeTags.BUGS).add(

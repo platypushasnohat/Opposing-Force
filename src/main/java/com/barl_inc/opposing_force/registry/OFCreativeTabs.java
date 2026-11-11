@@ -65,6 +65,10 @@ public class OFCreativeTabs {
                         output.accept(OFItems.ACID_CHARGE);
                         output.accept(OFItems.ELECTRIC_CHARGE);
                         output.accept(OFItems.TESLA_INGOT);
+                        output.accept(OFItems.RECON_KNIGHT_HELMET);
+                        output.accept(OFItems.RECON_KNIGHT_CHESTPLATE);
+                        output.accept(OFItems.RECON_KNIGHT_LEGGINGS);
+                        output.accept(OFItems.RECON_KNIGHT_BOOTS);
                         output.accept(OFItems.ECTOPLASM);
                         output.accept(OFItems.SPECTRAL_CLEAVER);
                         output.accept(OFItems.SPECTRAL_SHIELD);
@@ -96,13 +100,17 @@ public class OFCreativeTabs {
                         output.accept(OFItems.IRON_BULLET);
                         output.accept(OFItems.PRECISION_BULLET);
 
-                        // weapons
+                        // weapons (ranged)
                         output.accept(OFItems.CRACKSHOT);
                         output.accept(OFItems.JAEGER);
                         output.accept(OFItems.BOOMSTICK);
                         output.accept(OFItems.GORLOFF);
+
+                        // weapons (melee)
+                        output.accept(OFItems.HERO_SWORD);
                         output.accept(OFItems.TACHI);
 
+                        // toolsets, armor
                         output.accept(OFItems.EMERALD_SWORD);
                         output.accept(OFItems.EMERALD_SHOVEL);
                         output.accept(OFItems.EMERALD_PICKAXE);
@@ -112,11 +120,6 @@ public class OFCreativeTabs {
                         output.accept(OFItems.EMERALD_CHESTPLATE);
                         output.accept(OFItems.EMERALD_LEGGINGS);
                         output.accept(OFItems.EMERALD_BOOTS);
-
-                        output.accept(OFItems.RECON_KNIGHT_HELMET);
-                        output.accept(OFItems.RECON_KNIGHT_CHESTPLATE);
-                        output.accept(OFItems.RECON_KNIGHT_LEGGINGS);
-                        output.accept(OFItems.RECON_KNIGHT_BOOTS);
 
                         output.accept(OFItems.LAPIS_LAZULI_SWORD);
                         output.accept(OFItems.LAPIS_LAZULI_SHOVEL);

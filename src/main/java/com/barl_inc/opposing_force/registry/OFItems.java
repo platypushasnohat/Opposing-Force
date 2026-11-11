@@ -181,6 +181,7 @@ public class OFItems {
     public static final DeferredItem<Item> HAUNT_SPAWN_EGG = registerSpawnEggItem("haunt", OFEntities.HAUNT, 0x90a9a1, 0x2d2e49);
     public static final DeferredItem<Item> ECTOPLASM = registerItem("ectoplasm", () -> new EctoplasmItem(new Item.Properties().rarity(OFEnumProxy.RARITY_SPECTRAL.getValue())));
     public static final DeferredItem<Item> SPECTRAL_CLEAVER = registerItem("spectral_cleaver", () -> new SpectralCleaverItem(OFItemTiers.SPECTRAL_CLEAVER, new Item.Properties().attributes(SwordItem.createAttributes(OFItemTiers.SPECTRAL_CLEAVER, 3.5F, -2.4F)).rarity(OFEnumProxy.RARITY_SPECTRAL.getValue())));
+    public static final DeferredItem<Item> HERO_SWORD = registerItem("hero_sword", () -> new HeroSwordItem(OFItemTiers.HERO_SWORD, new Item.Properties().attributes(SwordItem.createAttributes(OFItemTiers.HERO_SWORD, 3.0F, -2.4F)).rarity(Rarity.RARE)));
     public static final DeferredItem<Item> SPECTRAL_SHIELD = registerItem("spectral_shield", () -> new SpectralShieldItem(new Item.Properties().durability(672).rarity(OFEnumProxy.RARITY_SPECTRAL.getValue())));
 
     public static final DeferredItem<Item> IRIDESCENT_ESSENCE = registerItem("iridescent_essence", () -> new Item(new Item.Properties().rarity(OFEnumProxy.RARITY_IRIDESCENT.getValue())));

@@ -32,7 +32,8 @@ public class OFItemTagsProvider extends ItemTagsProvider {
                 OFItems.LAPIS_LAZULI_SWORD.get(),
                 OFItems.SPECTRAL_CLEAVER.get(),
                 OFItems.TUNING_FORK.get(),
-                OFItems.TACHI.get()
+                OFItems.TACHI.get(),
+                OFItems.HERO_SWORD.get()
         );
 
         this.tag(ItemTags.PICKAXES).add(

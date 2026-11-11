@@ -25,9 +25,9 @@ public class TachiSlash extends Entity {
 
     public static final int LIFETIME = 12;
     public static final double SPEED = 0.5D;
-    public static final float DAMAGE = 4.0F;
 
     private final Set<UUID> hitEntities = new HashSet<>();
+    private float damage;
     @Nullable
     private LivingEntity owner;
 
@@ -36,9 +36,10 @@ public class TachiSlash extends Entity {
         this.noPhysics = true;
     }
 
-    public TachiSlash(Level level, LivingEntity owner, Vec3 pos, float yaw, Collection<? extends Entity> alreadyHit) {
+    public TachiSlash(Level level, LivingEntity owner, Vec3 pos, float yaw, float damage, Collection<? extends Entity> alreadyHit) {
         this(OFEntities.TACHI_SLASH.get(), level);
         this.owner = owner;
+        this.damage = damage;
         this.setPos(pos);
         this.setYRot(yaw);
         this.yRotO = yaw;
@@ -76,7 +77,7 @@ public class TachiSlash extends Entity {
         float yaw = this.getYRot() * Mth.DEG_TO_RAD;
         for (LivingEntity target : this.level().getEntitiesOfClass(LivingEntity.class, this.getBoundingBox().inflate(0.25D), target -> Soundwave.isEnemy(target, owner) && !this.hitEntities.contains(target.getUUID()))) {
             this.hitEntities.add(target.getUUID());
-            if (target.hurt(source, DAMAGE)) {
+            if (target.hurt(source, this.damage)) {
                 target.knockback(0.3F, Mth.sin(yaw), -Mth.cos(yaw));
             }
         }

@@ -3,6 +3,7 @@ package com.barl_inc.opposing_force.registry.properties;
 import com.barl_inc.opposing_force.registry.OFItems;
 import com.platypushasnohat.sinew.utils.SinewItemTier;
 import net.minecraft.tags.BlockTags;
+import net.minecraft.world.item.Items;
 import net.minecraft.world.item.Tier;
 import net.minecraft.world.item.crafting.Ingredient;
 import net.neoforged.neoforge.common.Tags;
@@ -15,5 +16,6 @@ public class OFItemTiers {
 	public static final Tier LAPIS_LAZULI = new SinewItemTier(BlockTags.INCORRECT_FOR_IRON_TOOL, 200, 7.0F, 0.0F, 25, () -> Ingredient.of(Tags.Items.GEMS_LAPIS));
 	public static final Tier BUZZSAW = new SinewItemTier(BlockTags.INCORRECT_FOR_IRON_TOOL, 560, 12.0F, 2.0F, 12, () -> Ingredient.of(Tags.Items.INGOTS_IRON));
     public static final Tier TACHI = new SinewItemTier(BlockTags.INCORRECT_FOR_IRON_TOOL, 1561, 6.0F, 2.0F, 14, () -> Ingredient.of(Tags.Items.INGOTS_IRON));
+    public static final Tier HERO_SWORD = new SinewItemTier(BlockTags.INCORRECT_FOR_DIAMOND_TOOL, 2342, 8.0F, 3.0F, 10, () -> Ingredient.of(Items.ECHO_SHARD));
     public static final Tier SPECTRAL_CLEAVER = new SinewItemTier(BlockTags.INCORRECT_FOR_NETHERITE_TOOL, 1761, 6.5F, 3.0F, 15, () -> Ingredient.of(OFItems.ECTOPLASM));
 }

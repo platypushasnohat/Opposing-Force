@@ -111,6 +111,7 @@ public class OFLanguageProvider extends SinewLanguageProvider {
         this.add("item.opposing_force.spectral_shield.description", "Blocks up to six hits from any direction");
         this.add("item.opposing_force.spectral_cleaver.description", "Summons a homing soul on hit");
         this.add("item.opposing_force.chitin_lance.description", "Hold right-click to charge a dash");
+        this.add("item.opposing_force.hero_sword.description", "Fully charged swings launch a sword beam");
         this.add("item.opposing_force.tachi.description", "Does more damage to single targets");
         this.add("item.opposing_force.tachi.description.two", "Hold right-click with an empty offhand to charge a slash");
         this.add("item.opposing_force.buzzsaw.description", "Hold right-click to activate saw");

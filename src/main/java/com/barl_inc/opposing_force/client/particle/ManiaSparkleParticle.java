@@ -73,4 +73,18 @@ public class ManiaSparkleParticle extends TextureSheetParticle {
             return new ManiaSparkleParticle(level, x, y, z, xSpeed, ySpeed, zSpeed, this.spriteSet, 0x6F9BFF);
         }
     }
+
+    public static class HeroFactory implements ParticleProvider<SimpleParticleType> {
+
+        private final SpriteSet spriteSet;
+
+        public HeroFactory(SpriteSet spriteSet) {
+            this.spriteSet = spriteSet;
+        }
+
+        @Override
+        public Particle createParticle(SimpleParticleType type, ClientLevel level, double x, double y, double z, double xSpeed, double ySpeed, double zSpeed) {
+            return new ManiaSparkleParticle(level, x, y, z, xSpeed, ySpeed, zSpeed, this.spriteSet, 0x6EBEFF);
+        }
+    }
 }

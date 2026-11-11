@@ -1,6 +1,7 @@
 package com.barl_inc.opposing_force.entity.projectile;
 
 import com.barl_inc.opposing_force.registry.OFEntities;
+import com.barl_inc.opposing_force.registry.OFParticleTypes;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.syncher.SynchedEntityData;
 import net.minecraft.util.Mth;
@@ -18,8 +19,6 @@ import net.minecraft.world.phys.HitResult;
 import net.minecraft.world.phys.Vec3;
 
 public class HeroSwordBeam extends Projectile {
-
-    public static final float SPEED = 1.5F;
 
     private float damage = 2.0F;
 
@@ -47,6 +46,9 @@ public class HeroSwordBeam extends Projectile {
     @Override
     public void tick() {
         super.tick();
+        if (this.level().isClientSide) {
+            this.spawnTrail();
+        }
         HitResult hit = ProjectileUtil.getHitResultOnMoveVector(this, this::canHitEntity);
         if (hit.getType() != HitResult.Type.MISS) {
             this.onHit(hit);
@@ -55,6 +57,18 @@ public class HeroSwordBeam extends Projectile {
         this.setPos(this.getX() + velocity.x, this.getY() + velocity.y, this.getZ() + velocity.z);
         if (!this.level().isClientSide && this.tickCount >= 20) {
             this.discard();
+        }
+    }
+
+    private void spawnTrail() {
+        Vec3 velocity = this.getDeltaMovement();
+        double centerY = this.getY() + this.getBbHeight() / 2.0D;
+        for (int i = 0; i < 3; i++) {
+            double progress = (double) i / 3;
+            double x = this.getX() - velocity.x * progress + (this.random.nextDouble() - 0.5D) * 0.3D;
+            double y = centerY - velocity.y * progress + (this.random.nextDouble() - 0.5D) * 0.3D;
+            double z = this.getZ() - velocity.z * progress + (this.random.nextDouble() - 0.5D) * 0.3D;
+            this.level().addParticle(OFParticleTypes.HERO_SPARKLE.get(), x, y, z, velocity.x * 0.05D, velocity.y * 0.05D, velocity.z * 0.05D);
         }
     }
 

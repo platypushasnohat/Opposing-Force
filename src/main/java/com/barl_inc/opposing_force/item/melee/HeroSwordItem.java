@@ -9,6 +9,7 @@ import net.minecraft.network.chat.Component;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.sounds.SoundSource;
+import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.entity.ai.attributes.Attributes;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.SwordItem;
@@ -31,8 +32,9 @@ public class HeroSwordItem extends SwordItem implements CustomSweepParticle {
             float attackDamage = (float) player.getAttributeValue(Attributes.ATTACK_DAMAGE);
             float damage = Math.max(0.0F, DEFAULT_ATTACK_DAMAGE / 3.0F + (attackDamage - DEFAULT_ATTACK_DAMAGE) / 2.0F);
             HeroSwordBeam beam = new HeroSwordBeam(player.level(), player, damage);
-            beam.shootFromRotation(player, player.getXRot(), player.getYRot(), 0.0F, HeroSwordBeam.SPEED, 0.0F);
+            beam.shootFromRotation(player, player.getXRot(), player.getYRot(), 0.0F, 1.5F, 0.0F);
             player.level().addFreshEntity(beam);
+            player.getMainHandItem().hurtAndBreak(1, player, EquipmentSlot.MAINHAND);
             player.level().playSound(null, player.getX(), player.getY(), player.getZ(), SoundEvents.AMETHYST_BLOCK_RESONATE, SoundSource.PLAYERS, 0.8F, 1.6F);
         }
     }

@@ -180,6 +180,7 @@ public class ClientEvents {
         event.registerSpriteSet(OFParticleTypes.BULLET_SMOKE.get(), BulletSmokeParticle.Factory::new);
         event.registerSpriteSet(OFParticleTypes.MANIA_SPARKLE.get(), ManiaSparkleParticle.Factory::new);
         event.registerSpriteSet(OFParticleTypes.ELITE_MANIA_SPARKLE.get(), ManiaSparkleParticle.EliteFactory::new);
+        event.registerSpriteSet(OFParticleTypes.HERO_SPARKLE.get(), ManiaSparkleParticle.HeroFactory::new);
     }
 
     @SubscribeEvent

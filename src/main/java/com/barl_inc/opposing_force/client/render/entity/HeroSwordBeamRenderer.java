@@ -27,10 +27,10 @@ public class HeroSwordBeamRenderer extends EntityRenderer<HeroSwordBeam> {
     private static final Direction[] SIDES = {null, Direction.DOWN, Direction.UP, Direction.NORTH, Direction.SOUTH, Direction.WEST, Direction.EAST};
     private static final RandomSource RANDOM = RandomSource.create();
     private static final float SIZE = 1.25F;
-    private static final float RED = 0.45F;
-    private static final float GREEN = 0.75F;
+    private static final float RED = 0.3F;
+    private static final float GREEN = 0.60F;
     private static final float BLUE = 1.0F;
-    private static final float ALPHA = 0.35F;
+    private static final float ALPHA = 1.0F;
 
     public HeroSwordBeamRenderer(EntityRendererProvider.Context context) {
         super(context);
@@ -42,7 +42,7 @@ public class HeroSwordBeamRenderer extends EntityRenderer<HeroSwordBeam> {
         float yaw = (float) (Mth.atan2(velocity.x, velocity.z) * Mth.RAD_TO_DEG);
         float pitch = (float) (Mth.atan2(velocity.y, velocity.horizontalDistance()) * Mth.RAD_TO_DEG);
         BakedModel model = Minecraft.getInstance().getItemRenderer().getItemModelShaper().getItemModel(new ItemStack(OFItems.HERO_SWORD.get()));
-        VertexConsumer consumer = buffer.getBuffer(RenderType.entityTranslucentEmissive(TextureAtlas.LOCATION_BLOCKS));
+        VertexConsumer consumer = buffer.getBuffer(RenderType.eyes(TextureAtlas.LOCATION_BLOCKS));
 
         poseStack.pushPose();
         poseStack.translate(0.0F, entity.getBbHeight() / 2.0F, 0.0F);
@@ -54,7 +54,7 @@ public class HeroSwordBeamRenderer extends EntityRenderer<HeroSwordBeam> {
         poseStack.translate(-0.5F, -0.5F, -0.5F);
         for (Direction side : SIDES) {
             for (BakedQuad quad : model.getQuads(null, side, RANDOM)) {
-                consumer.putBulkData(poseStack.last(), quad, RED, GREEN, BLUE, ALPHA, LightTexture.FULL_BRIGHT, OverlayTexture.NO_OVERLAY);
+                consumer.putBulkData(poseStack.last(), quad, RED * ALPHA, GREEN * ALPHA, BLUE * ALPHA, 1.0F, LightTexture.FULL_BRIGHT, OverlayTexture.NO_OVERLAY);
             }
         }
         poseStack.popPose();

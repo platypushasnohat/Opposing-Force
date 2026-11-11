@@ -1,7 +1,7 @@
 package com.barl_inc.opposing_force.events;
 
 import com.barl_inc.opposing_force.OpposingForce;
-import com.barl_inc.opposing_force.client.utils.*;
+import com.barl_inc.opposing_force.client.utils.ReconDashHandler;
 import com.barl_inc.opposing_force.client.model.armor.EmeraldArmorModel;
 import com.barl_inc.opposing_force.client.model.armor.ReconKnightArmorModel;
 import com.barl_inc.opposing_force.client.model.entity.*;
@@ -11,6 +11,7 @@ import com.barl_inc.opposing_force.client.render.entity.*;
 import com.barl_inc.opposing_force.client.render.entity.layer.SpectralShieldLayer;
 import com.barl_inc.opposing_force.client.render.item.OFItemExtensions;
 import com.barl_inc.opposing_force.client.render.item.SpearAnimations;
+import com.barl_inc.opposing_force.client.render.item.TachiAnimations;
 import com.barl_inc.opposing_force.client.render.shader.ManiaTrip;
 import com.barl_inc.opposing_force.client.render.shader.SpectralLensOverlay;
 import com.barl_inc.opposing_force.item.SpectralShieldItem;
@@ -101,6 +102,7 @@ public class ClientEvents {
         event.registerEntityRenderer(OFEntities.SHOCKWAVE.get(), NoopRenderer::new);
         event.registerEntityRenderer(OFEntities.GRELL_CLONE.get(), GrellRenderer::new);
         event.registerEntityRenderer(OFEntities.SOUNDWAVE.get(), SoundwaveRenderer::new);
+        event.registerEntityRenderer(OFEntities.TACHI_SLASH.get(), TachiSlashRenderer::new);
         event.registerEntityRenderer(OFEntities.MANIA_BRAIN.get(), ManiaBrainRenderer::new);
     }
 
@@ -186,6 +188,7 @@ public class ClientEvents {
         event.registerItem(OFItemExtensions.itemExtensions, OFItems.GORLOFF.get());
         event.registerItem(OFItemExtensions.itemExtensions, OFItems.MANIA.get());
         event.registerItem(SpearAnimations.EXTENSIONS, OFItems.TUNING_FORK.get(), OFItems.CHITIN_LANCE.get());
+        event.registerItem(TachiAnimations.EXTENSIONS, OFItems.TACHI.get());
         event.registerItem(new IClientItemExtensions() {
             @Override
             public HumanoidModel<?> getHumanoidArmorModel(LivingEntity entity, ItemStack stack, EquipmentSlot slot, HumanoidModel<?> properties) {
@@ -275,6 +278,7 @@ public class ClientEvents {
     public static void onClientTick(ClientTickEvent.Post event) {
         SpectralLensOverlay.tick();
         ReconDashHandler.tick();
+        TachiAnimations.tick();
         ManiaTrip.tick();
     }
 

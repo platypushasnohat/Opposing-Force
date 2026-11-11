@@ -1,6 +1,7 @@
 package com.barl_inc.opposing_force.mixins;
 
 import com.barl_inc.opposing_force.client.render.item.SpearAnimations;
+import com.barl_inc.opposing_force.client.render.item.TachiAnimations;
 import net.minecraft.client.model.HumanoidModel;
 import net.minecraft.world.entity.LivingEntity;
 import org.spongepowered.asm.mixin.Mixin;
@@ -19,5 +20,11 @@ public abstract class HumanoidModelMixin<T extends LivingEntity> {
             SpearAnimations.thirdPersonAttackArm(model, entity);
             ci.cancel();
         }
+    }
+
+    @SuppressWarnings("unchecked")
+    @Inject(at = @At("TAIL"), method = "setupAnim(Lnet/minecraft/world/entity/LivingEntity;FFFFF)V")
+    private void opposingForce$setupAnim(T entity, float limbSwing, float limbSwingAmount, float ageInTicks, float netHeadYaw, float headPitch, CallbackInfo ci) {
+        TachiAnimations.poseBody((HumanoidModel<T>) (Object) this, entity);
     }
 }

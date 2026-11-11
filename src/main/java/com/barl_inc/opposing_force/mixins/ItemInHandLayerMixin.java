@@ -2,6 +2,7 @@ package com.barl_inc.opposing_force.mixins;
 
 import com.barl_inc.opposing_force.client.render.entity.layer.SpectralShieldLayer;
 import com.barl_inc.opposing_force.client.render.item.SpearAnimations;
+import com.barl_inc.opposing_force.client.render.item.TachiAnimations;
 import com.mojang.blaze3d.vertex.PoseStack;
 import net.minecraft.client.model.HumanoidModel;
 import net.minecraft.client.renderer.MultiBufferSource;
@@ -30,5 +31,6 @@ public abstract class ItemInHandLayerMixin {
         if (((ItemInHandLayer<?, ?>) (Object) this).getParentModel() instanceof HumanoidModel<?> model) {
             SpearAnimations.thirdPersonItem(model, entity, arm, poseStack);
         }
+        TachiAnimations.thirdPersonItem(entity, arm, poseStack);
     }
 }

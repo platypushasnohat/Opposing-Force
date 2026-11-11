@@ -223,6 +223,8 @@
   "item.opposing_force.stalker_gloves.description": "+30% Initial Damage",
   "item.opposing_force.stone_bullet": "Stone Bullet",
   "item.opposing_force.tachi": "Tachi",
+  "item.opposing_force.tachi.description": "Does more damage to single targets",
+  "item.opposing_force.tachi.description.two": "Hold right-click with an empty offhand to charge a slash",
   "item.opposing_force.tarantula_spawn_egg": "Tarantula Spawn Egg",
   "item.opposing_force.tear_of_aquarius": "Tear of Aquarius",
   "item.opposing_force.terror_leg": "Terror Leg",

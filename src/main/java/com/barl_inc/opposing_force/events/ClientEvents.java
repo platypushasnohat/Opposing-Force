@@ -185,6 +185,7 @@ public class ClientEvents {
         event.registerSpriteSet(OFParticleTypes.HERO_SPARKLE.get(), ManiaSparkleParticle.HeroFactory::new);
         event.registerSpriteSet(OFParticleTypes.KIRIN_STEP.get(), KirinStepParticle.Factory::new);
         event.registerSpriteSet(OFParticleTypes.KIRIN_SMOKE.get(), KirinSmokeParticle.Factory::new);
+        event.registerSpriteSet(OFParticleTypes.KIRIN_RING.get(), KirinRingParticle.Factory::new);
     }
 
     @SubscribeEvent

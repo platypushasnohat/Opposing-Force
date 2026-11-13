@@ -2,14 +2,16 @@ package com.barl_inc.opposing_force.entity;
 
 import com.barl_inc.opposing_force.registry.OFParticleTypes;
 import com.platypushasnohat.sinew.client.animation.SmoothAnimationState;
-import com.platypushasnohat.sinew.entity.base.AnimatedMonster;
+import com.platypushasnohat.sinew.entity.base.SummonableMount;
 import com.platypushasnohat.sinew.entity.utils.BodyChain;
 import com.platypushasnohat.sinew.entity.utils.BodyChainMob;
 import com.platypushasnohat.sinew.registry.SinewAttributes;
 import net.minecraft.core.BlockPos;
 import net.minecraft.nbt.CompoundTag;
+import net.minecraft.server.level.ServerLevel;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.util.Mth;
+import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.Mob;
 import net.minecraft.world.entity.ai.attributes.AttributeSupplier;
@@ -19,9 +21,8 @@ import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.state.BlockState;
 
+import javax.annotation.Nullable;
 import java.util.EnumSet;
-
-import com.platypushasnohat.sinew.entity.base.SummonableMount;
 
 public class Kirin extends SummonableMount implements BodyChainMob {
 
@@ -30,11 +31,14 @@ public class Kirin extends SummonableMount implements BodyChainMob {
     public static final int IDLE_TWITCH_THREE_ANIMATION = 3;
     public static final int IDLE_SHAKE_ONE_ANIMATION = 4;
     public static final int IDLE_SHAKE_TWO_ANIMATION = 5;
+    public static final int DEATH_ANIMATION = 6;
+
+    public static final float DEATH_GLOW_START = 1.3F;
+    public static final float DEATH_LENGTH = 2.0F;
 
     private static final int[] IDLE_BLEND_DURATIONS = {20, 20, 25, 20, 20};
     private static final int IDLE_BLEND_COOLDOWN = 200;
 
-    //awful implementation of this shit will have to change later?
     private static final float[] STEP_TIMES = {0.0F, 0.5F, 1.0F, 1.5F};
     private static final float[][] FOOT_POSITIONS = {{2.0F, -19.5F}, {2.0F, -0.5F}, {-2.0F, -19.5F}, {-2.0F, -0.5F}};
     private static final float[][] IDLE_FOOT_POSITIONS = {{2.5F, -4.4F}, {2.5F, 2.7F}, {-2.5F, -2.4F}, {-2.5F, 6.6F}};
@@ -44,9 +48,14 @@ public class Kirin extends SummonableMount implements BodyChainMob {
     public final SmoothAnimationState idleTwitchThreeAnimationState = new SmoothAnimationState();
     public final SmoothAnimationState idleShakeOneAnimationState = new SmoothAnimationState();
     public final SmoothAnimationState idleShakeTwoAnimationState = new SmoothAnimationState();
+    public final SmoothAnimationState deathAnimationState = new SmoothAnimationState(1.0F);
 
     private final BodyChain bodyChain = new BodyChain(0.5F, 0.0F, 0.0F, 0.0F, new float[]{0.5F, 0.25F, 0.3F, 0.35F}, new float[]{0.0F, 0.0F, 0.0F, 0.0F});
+
     private int idleBlendCooldown;
+    private int deathTicks;
+    @Nullable
+    private DamageSource deathSource;
     private float prevWalkTime;
 
     public Kirin(EntityType<? extends Kirin> entityType, Level level) {
@@ -89,7 +98,7 @@ public class Kirin extends SummonableMount implements BodyChainMob {
     @Override
     public void tick() {
         super.tick();
-        if (this.level().isClientSide) {
+        if (this.level().isClientSide && !this.isDeadOrDying()) {
             this.bodyChain.tick(this.yBodyRot, 0.0F, 0.0F);
             this.tickFootsteps();
             if (this.walkAnimation.speed() < 0.15F) {
@@ -99,29 +108,35 @@ public class Kirin extends SummonableMount implements BodyChainMob {
     }
 
     @Override
-    public BodyChain getBodyChain() {
-        return this.bodyChain;
+    public void die(DamageSource damageSource) {
+        super.die(damageSource);
+        this.setAnimationState(DEATH_ANIMATION);
     }
 
     @Override
-    public float getRenderYaw(float partialTicks) {
-        return this.bodyChain.getRenderYaw(partialTicks);
+    protected void dropAllDeathLoot(ServerLevel level, DamageSource damageSource) {
+        this.deathSource = damageSource;
     }
 
     @Override
-    public float getSegmentYawOffset(int index, float partialTicks) {
-        return this.bodyChain.getSegmentYawOffset(index, partialTicks);
+    protected void tickDeath() {
+        this.deathTicks++;
+        this.hurtTime = 0;
+        if (this.level().isClientSide && this.deathTicks == Mth.ceil(DEATH_GLOW_START * 20.0F)) {
+            for (int i = 0; i < 8; i++) {
+                this.level().addParticle(OFParticleTypes.KIRIN_RING.get(), this.getX(), this.getY(), this.getZ(), this.yBodyRot, 1.4D, i);
+            }
+        }
+        if (!this.level().isClientSide && this.deathTicks >= DEATH_LENGTH * 20.0F && !this.isRemoved()) {
+            if (this.deathSource != null) {
+                super.dropAllDeathLoot((ServerLevel) this.level(), this.deathSource);
+            }
+            this.remove(RemovalReason.KILLED);
+        }
     }
 
-    @Override
-    public float getSegmentPitchOffset(int index, float partialTicks) {
-        return this.bodyChain.getSegmentPitchOffset(index, partialTicks, 0.0F);
-    }
-
-    public float getDarkness() {
-        float daylight = Mth.clamp(0.5F + 2.0F * Mth.cos(this.level().getTimeOfDay(1.0F) * Mth.TWO_PI), 0.0F, 1.0F);
-        float weather = (1.0F - this.level().getRainLevel(1.0F) * 5.0F / 16.0F) * (1.0F - this.level().getThunderLevel(1.0F) * 5.0F / 16.0F);
-        return 1.0F - daylight * weather;
+    public float getDeathSeconds(float partialTicks) {
+        return (this.deathTicks + partialTicks) / 20.0F;
     }
 
     @Override
@@ -169,18 +184,45 @@ public class Kirin extends SummonableMount implements BodyChainMob {
     }
 
     @Override
+    public BodyChain getBodyChain() {
+        return this.bodyChain;
+    }
+
+    @Override
+    public float getRenderYaw(float partialTicks) {
+        return this.bodyChain.getRenderYaw(partialTicks);
+    }
+
+    @Override
+    public float getSegmentYawOffset(int index, float partialTicks) {
+        return this.bodyChain.getSegmentYawOffset(index, partialTicks);
+    }
+
+    @Override
+    public float getSegmentPitchOffset(int index, float partialTicks) {
+        return this.bodyChain.getSegmentPitchOffset(index, partialTicks, 0.0F);
+    }
+
+    public float getDarkness() {
+        float daylight = Mth.clamp(0.5F + 2.0F * Mth.cos(this.level().getTimeOfDay(1.0F) * Mth.TWO_PI), 0.0F, 1.0F);
+        float weather = (1.0F - this.level().getRainLevel(1.0F) * 5.0F / 16.0F) * (1.0F - this.level().getThunderLevel(1.0F) * 5.0F / 16.0F);
+        return 1.0F - daylight * weather;
+    }
+
+    @Override
     protected void playStepSound(BlockPos pos, BlockState state) {
     }
 
     @Override
     public void setupAnimationStates() {
-        this.idleAnimationState.animateWhen(true, this.tickCount);
-        this.walkAnimationState.animateWhen(true, this.tickCount);
+        this.idleAnimationState.animateWhen(this.getAnimationState() != DEATH_ANIMATION, this.tickCount);
+        this.walkAnimationState.animateWhen(this.getAnimationState() != DEATH_ANIMATION, this.tickCount);
         this.idleTwitchOneAnimationState.animateWhen(this.getAnimationState() == IDLE_TWITCH_ONE_ANIMATION, this.tickCount);
         this.idleTwitchTwoAnimationState.animateWhen(this.getAnimationState() == IDLE_TWITCH_TWO_ANIMATION, this.tickCount);
         this.idleTwitchThreeAnimationState.animateWhen(this.getAnimationState() == IDLE_TWITCH_THREE_ANIMATION, this.tickCount);
         this.idleShakeOneAnimationState.animateWhen(this.getAnimationState() == IDLE_SHAKE_ONE_ANIMATION, this.tickCount);
         this.idleShakeTwoAnimationState.animateWhen(this.getAnimationState() == IDLE_SHAKE_TWO_ANIMATION, this.tickCount);
+        this.deathAnimationState.animateWhen(this.getAnimationState() == DEATH_ANIMATION, this.tickCount);
     }
 
     private static class KirinIdleBlendGoal extends Goal {

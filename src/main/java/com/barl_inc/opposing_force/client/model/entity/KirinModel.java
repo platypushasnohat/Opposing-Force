@@ -46,6 +46,7 @@ public class KirinModel extends SinewEntityModel<Kirin> {
         this.animateSmooth(entity.idleTwitchThreeAnimationState, KirinAnimations.IDLE_TWITCH_BLEND3, ageInTicks, partialTicks);
         this.animateSmooth(entity.idleShakeOneAnimationState, KirinAnimations.IDLE_SHAKE_BLEND1, ageInTicks, partialTicks);
         this.animateSmooth(entity.idleShakeTwoAnimationState, KirinAnimations.IDLE_SHAKE_BLEND2, ageInTicks, partialTicks);
+        this.animateSmooth(entity.deathAnimationState, KirinAnimations.DISAPPEAR, ageInTicks, partialTicks);
         float lookYaw = Mth.clamp(netHeadYaw, -60.0F, 60.0F) * Mth.DEG_TO_RAD;
         float lookPitch = Mth.clamp(headPitch, -30.0F, 30.0F) * Mth.DEG_TO_RAD;
         this.rotatePart(this.neck, lookPitch * 0.4F, lookYaw * 0.4F + entity.getSegmentYawOffset(0, partialTicks) * Mth.DEG_TO_RAD, 0.0F);

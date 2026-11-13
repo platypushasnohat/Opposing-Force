@@ -99,6 +99,7 @@ public class CommonEvents {
         event.put(OFEntities.GRELL_CLONE.get(), GrellClone.registerAttributes().build());
         event.put(OFEntities.PIPSQUEAK.get(), Pipsqueak.registerAttributes().build());
         event.put(OFEntities.BRICK.get(), Brick.registerAttributes().build());
+        event.put(OFEntities.KIRIN.get(), Kirin.registerAttributes().build());
     }
 
     @SubscribeEvent

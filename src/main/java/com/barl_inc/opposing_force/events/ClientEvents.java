@@ -90,6 +90,7 @@ public class ClientEvents {
         event.registerEntityRenderer(OFEntities.GRELL.get(), GrellRenderer::new);
         event.registerEntityRenderer(OFEntities.PIPSQUEAK.get(), PipsqueakRenderer::new);
         event.registerEntityRenderer(OFEntities.BRICK.get(), BrickRenderer::new);
+        event.registerEntityRenderer(OFEntities.KIRIN.get(), KirinRenderer::new);
 
         event.registerEntityRenderer(OFEntities.DICER_LASER.get(), DicerLaserRenderer::new);
         event.registerEntityRenderer(OFEntities.LASER_BOLT.get(), LaserBoltRenderer::new);
@@ -132,6 +133,7 @@ public class ClientEvents {
         event.registerLayerDefinition(OFModelLayers.GRELL, GrellModel::createBodyLayer);
         event.registerLayerDefinition(OFModelLayers.PIPSQUEAK, PipsqueakModel::createBodyLayer);
         event.registerLayerDefinition(OFModelLayers.BRICK, BrickModel::createBodyLayer);
+        event.registerLayerDefinition(OFModelLayers.KIRIN, KirinModel::createBodyLayer);
 
         event.registerLayerDefinition(OFModelLayers.LASER_BOLT, LaserBoltModel::createBodyLayer);
         event.registerLayerDefinition(OFModelLayers.ACID_CHARGE, AcidChargeModel::createBodyLayer);
@@ -181,6 +183,8 @@ public class ClientEvents {
         event.registerSpriteSet(OFParticleTypes.MANIA_SPARKLE.get(), ManiaSparkleParticle.Factory::new);
         event.registerSpriteSet(OFParticleTypes.ELITE_MANIA_SPARKLE.get(), ManiaSparkleParticle.EliteFactory::new);
         event.registerSpriteSet(OFParticleTypes.HERO_SPARKLE.get(), ManiaSparkleParticle.HeroFactory::new);
+        event.registerSpriteSet(OFParticleTypes.KIRIN_STEP.get(), KirinStepParticle.Factory::new);
+        event.registerSpriteSet(OFParticleTypes.KIRIN_SMOKE.get(), KirinSmokeParticle.Factory::new);
     }
 
     @SubscribeEvent

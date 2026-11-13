@@ -33,5 +33,6 @@ public class OFParticleTypes {
     public static final DeferredHolder<ParticleType<?>, SimpleParticleType> ELECTRIC_BOLT = PARTICLE_TYPE.register("electric_bolt", () -> new SimpleParticleType(true));
     public static final DeferredHolder<ParticleType<?>, SimpleParticleType> ELITE_MANIA_SPARKLE = PARTICLE_TYPE.register("elite_mania_sparkle", () -> new SimpleParticleType(false));
     public static final DeferredHolder<ParticleType<?>, SimpleParticleType> HERO_SPARKLE = PARTICLE_TYPE.register("hero_sparkle", () -> new SimpleParticleType(false));
-
+    public static final DeferredHolder<ParticleType<?>, SimpleParticleType> KIRIN_STEP = PARTICLE_TYPE.register("kirin_step", () -> new SimpleParticleType(true));
+    public static final DeferredHolder<ParticleType<?>, SimpleParticleType> KIRIN_SMOKE = PARTICLE_TYPE.register("kirin_smoke", () -> new SimpleParticleType(false));
 }

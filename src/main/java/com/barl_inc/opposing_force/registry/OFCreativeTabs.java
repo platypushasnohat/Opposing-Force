@@ -42,6 +42,7 @@ public class OFCreativeTabs {
 
                         // post end
                         output.accept(OFItems.GRELL_SPAWN_EGG);
+                        output.accept(OFItems.KIRIN_SPAWN_EGG);
 
                         // mob materials/weapons
 

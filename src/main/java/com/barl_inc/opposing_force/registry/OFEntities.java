@@ -41,6 +41,7 @@ public class OFEntities {
     public static final DeferredHolder<EntityType<?>, EntityType<Grell>> GRELL = registerEntity("grell", Grell::new, MobCategory.MONSTER, builder -> builder.sized(1.5F, 2.0F).eyeHeight(1.4F).clientTrackingRange(10));
     public static final DeferredHolder<EntityType<?>, EntityType<Pipsqueak>> PIPSQUEAK = registerEntity("pipsqueak", Pipsqueak::new, MobCategory.MONSTER, builder -> builder.sized(0.9F, 1.0F).eyeHeight(0.4F).clientTrackingRange(8));
     public static final DeferredHolder<EntityType<?>, EntityType<Brick>> BRICK = registerEntity("brick", Brick::new, MobCategory.MONSTER, builder -> builder.sized(2.3F, 2.5F).clientTrackingRange(8));
+    public static final DeferredHolder<EntityType<?>, EntityType<Kirin>> KIRIN = registerEntity("kirin", Kirin::new, MobCategory.MONSTER, builder -> builder.sized(1.5F, 3.2F).eyeHeight(2.8F).clientTrackingRange(10));
 
     //other
     public static final DeferredHolder<EntityType<?>, EntityType<DicerLaser>> DICER_LASER = registerEntity("dicer_laser", DicerLaser::new, MobCategory.MISC, builder -> builder.sized(0.1F, 0.1F).setUpdateInterval(1).clientTrackingRange(4).fireImmune());

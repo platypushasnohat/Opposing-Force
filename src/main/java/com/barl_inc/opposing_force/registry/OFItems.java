@@ -59,6 +59,7 @@ public class OFItems {
 
     public static final DeferredItem<Item> ELECTRIC_CHARGE = registerItem("electric_charge", () -> new ElectricChargeItem(new Item.Properties()));
     public static final DeferredItem<Item> TESLA_INGOT = registerItem("tesla_ingot", () -> new Item(new Item.Properties()));
+    public static final DeferredItem<Item> KIRIN_SPAWN_EGG = registerSpawnEggItem("kirin", OFEntities.KIRIN, 0x10151b, 0xa8cad0);
 
     public static final DeferredItem<Item> GNAT_SPAWN_EGG = registerSpawnEggItem("gnat", OFEntities.GNAT, 0x403229, 0xc6322c);
     public static final DeferredItem<Item> GNAT_STAFF = registerItem("gnat_staff", () -> new SummonWeaponItem(new Item.Properties().durability(200), OFEntities.GNAT, 2.0D, 20.0D, 6));

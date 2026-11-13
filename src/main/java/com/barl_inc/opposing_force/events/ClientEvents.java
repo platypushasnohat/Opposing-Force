@@ -186,6 +186,7 @@ public class ClientEvents {
         event.registerSpriteSet(OFParticleTypes.KIRIN_STEP.get(), KirinStepParticle.Factory::new);
         event.registerSpriteSet(OFParticleTypes.KIRIN_SMOKE.get(), KirinSmokeParticle.Factory::new);
         event.registerSpriteSet(OFParticleTypes.KIRIN_RING.get(), KirinRingParticle.Factory::new);
+        event.registerSpecial(OFParticleTypes.LIGHTNING_CALL.get(), new LightningCallParticle.Factory());
     }
 
     @SubscribeEvent

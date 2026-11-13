@@ -36,4 +36,5 @@ public class OFParticleTypes {
     public static final DeferredHolder<ParticleType<?>, SimpleParticleType> KIRIN_STEP = PARTICLE_TYPE.register("kirin_step", () -> new SimpleParticleType(true));
     public static final DeferredHolder<ParticleType<?>, SimpleParticleType> KIRIN_SMOKE = PARTICLE_TYPE.register("kirin_smoke", () -> new SimpleParticleType(false));
     public static final DeferredHolder<ParticleType<?>, SimpleParticleType> KIRIN_RING = PARTICLE_TYPE.register("kirin_ring", () -> new SimpleParticleType(true));
+    public static final DeferredHolder<ParticleType<?>, SimpleParticleType> LIGHTNING_CALL = PARTICLE_TYPE.register("lightning_call", () -> new SimpleParticleType(true));
 }

@@ -1,6 +1,10 @@
 package com.barl_inc.opposing_force.entity;
 
+import com.barl_inc.opposing_force.entity.ai.goal.KirinAttackGoal;
+import com.barl_inc.opposing_force.registry.OFDamageTypes;
+import com.barl_inc.opposing_force.registry.OFMobEffects;
 import com.barl_inc.opposing_force.registry.OFParticleTypes;
+import com.barl_inc.opposing_force.registry.OFSoundEvents;
 import com.platypushasnohat.sinew.client.animation.SmoothAnimationState;
 import com.platypushasnohat.sinew.entity.base.SummonableMount;
 import com.platypushasnohat.sinew.entity.utils.BodyChain;
@@ -10,8 +14,10 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.sounds.SoundEvents;
+import net.minecraft.sounds.SoundSource;
 import net.minecraft.util.Mth;
 import net.minecraft.world.damagesource.DamageSource;
+import net.minecraft.world.effect.MobEffectInstance;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.Mob;
 import net.minecraft.world.entity.ai.attributes.AttributeSupplier;
@@ -23,9 +29,12 @@ import net.minecraft.world.entity.ai.targeting.TargetingConditions;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.phys.AABB;
+import net.minecraft.world.phys.Vec3;
 
 import javax.annotation.Nullable;
 import java.util.EnumSet;
+import java.util.List;
 
 public class Kirin extends SummonableMount implements BodyChainMob {
 
@@ -35,6 +44,8 @@ public class Kirin extends SummonableMount implements BodyChainMob {
     public static final int IDLE_SHAKE_ONE_ANIMATION = 4;
     public static final int IDLE_SHAKE_TWO_ANIMATION = 5;
     public static final int DEATH_ANIMATION = 6;
+    public static final int TELEPORT_ANIMATION = 7;
+    public static final int LIGHTNING_CALL_ANIMATION = 8;
 
     public static final float DEATH_GLOW_START = 1.3F;
     public static final float DEATH_LENGTH = 2.0F;
@@ -52,6 +63,8 @@ public class Kirin extends SummonableMount implements BodyChainMob {
     public final SmoothAnimationState idleShakeOneAnimationState = new SmoothAnimationState();
     public final SmoothAnimationState idleShakeTwoAnimationState = new SmoothAnimationState();
     public final SmoothAnimationState deathAnimationState = new SmoothAnimationState(1.0F);
+    public final SmoothAnimationState teleportAnimationState = new SmoothAnimationState(1.0F);
+    public final SmoothAnimationState lightningCallAnimationState = new SmoothAnimationState(1.0F);
 
     private final BodyChain bodyChain = new BodyChain(0.5F, 0.0F, 0.0F, 0.0F, new float[]{0.5F, 0.25F, 0.3F, 0.35F}, new float[]{0.0F, 0.0F, 0.0F, 0.0F});
 
@@ -63,6 +76,7 @@ public class Kirin extends SummonableMount implements BodyChainMob {
     @Nullable
     private DamageSource deathSource;
     private float prevWalkTime;
+    private int teleportTicks;
 
     public Kirin(EntityType<? extends Kirin> entityType, Level level) {
         super(entityType, level);
@@ -83,6 +97,7 @@ public class Kirin extends SummonableMount implements BodyChainMob {
     @Override
     protected void registerGoals() {
         this.goalSelector.addGoal(0, new FloatGoal(this));
+        this.goalSelector.addGoal(1, new KirinAttackGoal(this));
         this.goalSelector.addGoal(1, new KirinIdleBlendGoal(this));
         this.goalSelector.addGoal(2, new WaterAvoidingRandomStrollGoal(this, 0.8D));
         this.goalSelector.addGoal(3, new LookAtPlayerGoal(this, Player.class, 12.0F));
@@ -106,10 +121,17 @@ public class Kirin extends SummonableMount implements BodyChainMob {
     @Override
     public void tick() {
         super.tick();
+        if (this.level().isClientSide) {
+            if (this.getAnimationState() == TELEPORT_ANIMATION) {
+                this.teleportTicks++;
+            } else {
+                this.teleportTicks = 0;
+            }
+        }
         if (this.level().isClientSide && !this.isDeadOrDying()) {
             this.bodyChain.tick(this.yBodyRot, 0.0F, 0.0F);
             this.tickFootsteps();
-            if (this.walkAnimation.speed() < 0.15F) {
+            if (this.walkAnimation.speed() < 0.15F && this.getAnimationState() != TELEPORT_ANIMATION) {
                 this.spawnHoverSmoke();
             }
         }
@@ -143,6 +165,91 @@ public class Kirin extends SummonableMount implements BodyChainMob {
             this.level().playSound(null, this.getX(), this.getY(), this.getZ(), SoundEvents.LIGHTNING_BOLT_IMPACT, this.getSoundSource(), 2.0F, 0.5F + this.random.nextFloat() * 0.2F);
             this.remove(RemovalReason.KILLED);
         }
+    }
+
+    public boolean isTeleportHidden(float partialTicks) {
+        float seconds = (this.teleportTicks + partialTicks) / 20.0F;
+        return this.getAnimationState() == TELEPORT_ANIMATION && seconds >= 0.09F && seconds < 0.34F;
+    }
+
+    @Override
+    public void lerpTo(double x, double y, double z, float yRot, float xRot, int steps) {
+        if (this.getAnimationState() == TELEPORT_ANIMATION && this.distanceToSqr(x, y, z) > 4.0D) {
+            this.lerpSteps = 0;
+            this.setPos(x, y, z);
+            this.setYRot(yRot);
+            this.setXRot(xRot);
+            this.yBodyRot = yRot;
+            this.yBodyRotO = yRot;
+            this.yHeadRot = yRot;
+            this.yHeadRotO = yRot;
+            this.setOldPosAndRot();
+        } else {
+            super.lerpTo(x, y, z, yRot, xRot, steps);
+        }
+    }
+
+    public void teleportBurst() {
+        ServerLevel level = (ServerLevel) this.level();
+        int bolts = 8 + this.random.nextInt(4);
+        for (int i = 0; i < bolts; i++) {
+            float angle = (i + this.random.nextFloat() * 0.6F) / bolts * Mth.TWO_PI;
+            double length = 1.5D + this.random.nextDouble() * 1.5D;
+            double reachX = Mth.cos(angle) * length;
+            double reachY = 0.1D + this.random.nextDouble() * 0.3D;
+            double reachZ = Mth.sin(angle) * length;
+            double startX = this.getX() + Mth.cos(angle) * 0.4D;
+            double startY = this.getY() + 0.1D;
+            double startZ = this.getZ() + Mth.sin(angle) * 0.4D;
+            level.sendParticles(OFParticleTypes.ELECTRIC_BOLT.get(), startX, startY, startZ, 0, reachX, reachY, reachZ, 1.0D);
+            double split = 0.3D + this.random.nextDouble() * 0.4D;
+            float branchAngle = angle + (this.random.nextBoolean() ? 0.6F : -0.6F);
+            double branchLength = length * (1.0D - split) * 0.7D;
+            level.sendParticles(OFParticleTypes.ELECTRIC_BOLT.get(), startX + reachX * split, startY + reachY * split, startZ + reachZ * split, 0, Mth.cos(branchAngle) * branchLength, 0.05D, Mth.sin(branchAngle) * branchLength, 1.0D);
+        }
+        level.sendParticles(OFParticleTypes.ELECTRIC_ARC.get(), this.getX(), this.getY() + 0.3D, this.getZ(), 12, 0.6D, 0.2D, 0.6D, 0.0D);
+        this.level().playSound(null, this.getX(), this.getY(), this.getZ(), OFSoundEvents.ELECTRIC_CHARGE_DISSIPATE.get(), SoundSource.HOSTILE, 3.0F, (1.0F + (this.random.nextFloat() - this.random.nextFloat()) * 0.2F) * 0.7F);
+    }
+
+    public void electricBurst(double x, double y, double z, int minBolts, double minLength, int arcs, float volume) {
+        ServerLevel level = (ServerLevel) this.level();
+        int bolts = minBolts + this.random.nextInt(4);
+        for (int i = 0; i < bolts; i++) {
+            float angle = (i + this.random.nextFloat() * 0.6F) / bolts * Mth.TWO_PI;
+            double length = minLength + this.random.nextDouble() * minLength;
+            double reachX = Mth.cos(angle) * length;
+            double reachY = 0.1D + this.random.nextDouble() * 0.3D;
+            double reachZ = Mth.sin(angle) * length;
+            double startX = x + Mth.cos(angle) * 0.4D;
+            double startY = y + 0.1D;
+            double startZ = z + Mth.sin(angle) * 0.4D;
+            level.sendParticles(OFParticleTypes.ELECTRIC_BOLT.get(), startX, startY, startZ, 0, reachX, reachY, reachZ, 1.0D);
+            double split = 0.3D + this.random.nextDouble() * 0.4D;
+            float branchAngle = angle + (this.random.nextBoolean() ? 0.6F : -0.6F);
+            double branchLength = length * (1.0D - split) * 0.7D;
+            level.sendParticles(OFParticleTypes.ELECTRIC_BOLT.get(), startX + reachX * split, startY + reachY * split, startZ + reachZ * split, 0, Mth.cos(branchAngle) * branchLength, 0.05D, Mth.sin(branchAngle) * branchLength, 1.0D);
+        }
+        level.sendParticles(OFParticleTypes.ELECTRIC_ARC.get(), x, y + 0.3D, z, arcs, minLength * 0.4D, 0.2D, minLength * 0.4D, 0.0D);
+        this.level().playSound(null, x, y, z, OFSoundEvents.ELECTRIC_CHARGE_DISSIPATE.get(), SoundSource.HOSTILE, volume, (1.0F + (this.random.nextFloat() - this.random.nextFloat()) * 0.2F) * 0.7F);
+    }
+
+    public void lightningCall(Vec3 strike) {
+        ((ServerLevel) this.level()).sendParticles(OFParticleTypes.LIGHTNING_CALL.get(), strike.x, strike.y, strike.z, 0, 0.0D, 40.0D, 0.0D, 1.0D);
+    }
+
+    public void lightningCallImpact(Vec3 strike) {
+        this.electricBurst(strike.x, strike.y, strike.z, 16, 3.0D, 30, 5.0F);
+        this.level().playSound(null, strike.x, strike.y, strike.z, OFSoundEvents.ELECTRIC_CHARGE_ZAP.get(), SoundSource.HOSTILE, 3.0F, 0.6F + this.random.nextFloat() * 0.2F);
+        AABB hitBox = new AABB(strike.x - 0.8D, strike.y - 0.5D, strike.z - 0.8D, strike.x + 0.8D, strike.y + 2.5D, strike.z + 0.8D);
+        for (Player player : this.level().getEntitiesOfClass(Player.class, hitBox, player -> player.isAlive() && !player.isSpectator() && !player.isCreative())) {
+            if (player.hurt(OFDamageTypes.causeElectricDamage(this.level().registryAccess(), this, this), (float) this.getAttributeValue(Attributes.ATTACK_DAMAGE))) {
+                player.addEffect(new MobEffectInstance(OFMobEffects.ELECTRIFIED, 900, 0), this);
+            }
+        }
+    }
+
+    public List<Player> getLightningCallTargets() {
+        return this.level().getEntitiesOfClass(Player.class, this.getBoundingBox().inflate(16.0D), player -> player.isAlive() && !player.isSpectator() && !player.isCreative() && player.hasEffect(OFMobEffects.ELECTRIFIED));
     }
 
     public float getDeathSeconds(float partialTicks) {
@@ -233,6 +340,12 @@ public class Kirin extends SummonableMount implements BodyChainMob {
 
     @Override
     protected void playStepSound(BlockPos pos, BlockState state) {
+        //empty because the step stuff is custom
+    }
+
+    @Override
+    public boolean isInvulnerableTo(DamageSource source) {
+        return source.is(OFDamageTypes.ELECTRIFIED) || super.isInvulnerableTo(source);
     }
 
     @Override
@@ -245,6 +358,8 @@ public class Kirin extends SummonableMount implements BodyChainMob {
         this.idleShakeOneAnimationState.animateWhen(this.getAnimationState() == IDLE_SHAKE_ONE_ANIMATION, this.tickCount);
         this.idleShakeTwoAnimationState.animateWhen(this.getAnimationState() == IDLE_SHAKE_TWO_ANIMATION, this.tickCount);
         this.deathAnimationState.animateWhen(this.getAnimationState() == DEATH_ANIMATION, this.tickCount);
+        this.teleportAnimationState.animateWhen(this.getAnimationState() == TELEPORT_ANIMATION, this.tickCount);
+        this.lightningCallAnimationState.animateWhen(this.getAnimationState() == LIGHTNING_CALL_ANIMATION, this.tickCount);
     }
 
     private static class KirinProximityTargetGoal extends TargetGoal {

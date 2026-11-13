@@ -29,7 +29,9 @@ public class KirinRenderer extends MobRenderer<Kirin, KirinModel> {
 
     @Override
     public void render(Kirin kirin, float entityYaw, float partialTicks, PoseStack poseStack, MultiBufferSource buffer, int packedLight) {
-        super.render(kirin, entityYaw, partialTicks, poseStack, buffer, packedLight);
+        if (!kirin.isTeleportHidden(partialTicks)) {
+            super.render(kirin, entityYaw, partialTicks, poseStack, buffer, packedLight);
+        }
         if (kirin.isDeadOrDying()) {
             this.renderBeam(kirin.getDeathSeconds(partialTicks), poseStack, buffer);
         }

@@ -17,6 +17,9 @@ import net.minecraft.world.entity.Mob;
 import net.minecraft.world.entity.ai.attributes.AttributeSupplier;
 import net.minecraft.world.entity.ai.attributes.Attributes;
 import net.minecraft.world.entity.ai.goal.*;
+import net.minecraft.world.entity.ai.goal.target.HurtByTargetGoal;
+import net.minecraft.world.entity.ai.goal.target.TargetGoal;
+import net.minecraft.world.entity.ai.targeting.TargetingConditions;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.state.BlockState;
@@ -55,6 +58,9 @@ public class Kirin extends SummonableMount implements BodyChainMob {
     private int idleBlendCooldown;
     private int deathTicks;
     @Nullable
+    private Player closePlayer;
+    private int closeTicks;
+    @Nullable
     private DamageSource deathSource;
     private float prevWalkTime;
 
@@ -81,6 +87,8 @@ public class Kirin extends SummonableMount implements BodyChainMob {
         this.goalSelector.addGoal(2, new WaterAvoidingRandomStrollGoal(this, 0.8D));
         this.goalSelector.addGoal(3, new LookAtPlayerGoal(this, Player.class, 12.0F));
         this.goalSelector.addGoal(4, new RandomLookAroundGoal(this));
+        this.targetSelector.addGoal(0, new HurtByTargetGoal(this));
+        this.targetSelector.addGoal(1, new KirinProximityTargetGoal(this));
     }
 
     @Override
@@ -131,6 +139,8 @@ public class Kirin extends SummonableMount implements BodyChainMob {
             if (this.deathSource != null) {
                 super.dropAllDeathLoot((ServerLevel) this.level(), this.deathSource);
             }
+            this.level().playSound(null, this.getX(), this.getY(), this.getZ(), SoundEvents.LIGHTNING_BOLT_THUNDER, this.getSoundSource(), 190.0F, 0.8F + this.random.nextFloat() * 0.2F);
+            this.level().playSound(null, this.getX(), this.getY(), this.getZ(), SoundEvents.LIGHTNING_BOLT_IMPACT, this.getSoundSource(), 2.0F, 0.5F + this.random.nextFloat() * 0.2F);
             this.remove(RemovalReason.KILLED);
         }
     }
@@ -142,9 +152,21 @@ public class Kirin extends SummonableMount implements BodyChainMob {
     @Override
     protected void customServerAiStep() {
         super.customServerAiStep();
+        Player nearest = this.level().getNearestPlayer(TargetingConditions.forCombat().range(6.0D).selector(target -> !this.isIgnoredPlayer((Player) target)), this);
+        if (nearest != null && nearest == this.closePlayer) {
+            this.closeTicks++;
+        } else {
+            this.closePlayer = nearest;
+            this.closeTicks = 0;
+        }
         if (this.idleBlendCooldown > 0) {
             this.idleBlendCooldown--;
         }
+    }
+
+    //todo later once kirin armor in
+    private boolean isIgnoredPlayer(Player player) {
+        return false;
     }
 
     private void tickFootsteps() {
@@ -223,6 +245,29 @@ public class Kirin extends SummonableMount implements BodyChainMob {
         this.idleShakeOneAnimationState.animateWhen(this.getAnimationState() == IDLE_SHAKE_ONE_ANIMATION, this.tickCount);
         this.idleShakeTwoAnimationState.animateWhen(this.getAnimationState() == IDLE_SHAKE_TWO_ANIMATION, this.tickCount);
         this.deathAnimationState.animateWhen(this.getAnimationState() == DEATH_ANIMATION, this.tickCount);
+    }
+
+    private static class KirinProximityTargetGoal extends TargetGoal {
+
+        private final Kirin kirin;
+
+        public KirinProximityTargetGoal(Kirin kirin) {
+            super(kirin, false);
+            this.kirin = kirin;
+            this.setFlags(EnumSet.of(Flag.TARGET));
+        }
+
+        @Override
+        public boolean canUse() {
+            return this.kirin.getTarget() == null && this.kirin.closePlayer != null && this.kirin.closeTicks >= 300;
+        }
+
+        @Override
+        public void start() {
+            this.kirin.setTarget(this.kirin.closePlayer);
+            this.kirin.closeTicks = 0;
+            super.start();
+        }
     }
 
     private static class KirinIdleBlendGoal extends Goal {

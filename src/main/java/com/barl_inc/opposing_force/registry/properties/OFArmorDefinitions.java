@@ -1,6 +1,7 @@
 package com.barl_inc.opposing_force.registry.properties;
 
 import com.barl_inc.opposing_force.OpposingForce;
+import com.barl_inc.opposing_force.registry.OFAttributes;
 import com.platypushasnohat.sinew.item.ArmorDefinition;
 import com.platypushasnohat.sinew.registry.SinewAttributes;
 import net.minecraft.world.entity.EquipmentSlot;
@@ -19,5 +20,13 @@ public class OFArmorDefinitions {
             .attribute(SinewAttributes.AIR_SPEED, 0.05F, AttributeModifier.Operation.ADD_VALUE)
             .attribute(SinewAttributes.PROJECTILE_DAMAGE, 0.75F, AttributeModifier.Operation.ADD_VALUE)
             .texture(slot -> slot == EquipmentSlot.LEGS ? OpposingForce.location("textures/models/armor/recon_knight_layer_2.png") : OpposingForce.location("textures/models/armor/recon_knight_layer_1.png"))
+            .build();
+
+    public static final ArmorDefinition STORM_LORD_ARMOR = new ArmorDefinition.Builder()
+            .material(OFArmorMaterials.STORM_LORD)
+            .attribute(SinewAttributes.AIR_SPEED, 0.075F, AttributeModifier.Operation.ADD_VALUE)
+            .attribute(SinewAttributes.PROJECTILE_DAMAGE, 1.25F, AttributeModifier.Operation.ADD_VALUE)
+            .attribute(OFAttributes.KIRIN_JUMPS, 1.0F, AttributeModifier.Operation.ADD_VALUE)
+            .texture(slot -> slot == EquipmentSlot.LEGS ? OpposingForce.location("textures/models/armor/storm_lord_layer_2.png") : OpposingForce.location("textures/models/armor/storm_lord_layer_1.png"))
             .build();
 }

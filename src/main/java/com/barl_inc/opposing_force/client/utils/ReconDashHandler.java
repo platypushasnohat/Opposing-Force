@@ -1,6 +1,7 @@
 package com.barl_inc.opposing_force.client.utils;
 
 import com.barl_inc.opposing_force.item.armor.ReconKnightArmorItem;
+import com.barl_inc.opposing_force.item.armor.StormLordArmorItem;
 import com.barl_inc.opposing_force.network.ReconDashPayload;
 import com.mojang.blaze3d.platform.InputConstants;
 import net.minecraft.client.Minecraft;
@@ -26,7 +27,7 @@ public class ReconDashHandler {
 
         if (player != null && minecraft.screen == null && pressed) {
             boolean doubleTap = player.tickCount - lastTapTick <= DOUBLE_TAP_WINDOW;
-            if (doubleTap && ReconKnightArmorItem.canDash(player)) {
+            if (doubleTap && (ReconKnightArmorItem.canDash(player) || StormLordArmorItem.canDash(player))) {
                 PacketDistributor.sendToServer(new ReconDashPayload(getDirection(minecraft.options, player.getRandom())));
                 lastTapTick = -100;
             } else {

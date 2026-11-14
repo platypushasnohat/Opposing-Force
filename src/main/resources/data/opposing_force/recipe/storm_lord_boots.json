@@ -1,0 +1,23 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "equipment",
+  "key": {
+    "#": {
+      "item": "opposing_force:energized_tuft"
+    },
+    "A": {
+      "item": "opposing_force:recon_knight_boots"
+    },
+    "N": {
+      "item": "minecraft:netherite_ingot"
+    }
+  },
+  "pattern": [
+    "#A#",
+    "#N#"
+  ],
+  "result": {
+    "count": 1,
+    "id": "opposing_force:storm_lord_boots"
+  }
+}

@@ -28,6 +28,7 @@ public class OFDamageTypes {
     public static final ResourceKey<DamageType> MANIA = ResourceKey.create(Registries.DAMAGE_TYPE, OpposingForce.location("mania"));
     public static final ResourceKey<DamageType> ELECTRIC = ResourceKey.create(Registries.DAMAGE_TYPE, OpposingForce.location("electric"));
     public static final ResourceKey<DamageType> ELECTRIFIED = ResourceKey.create(Registries.DAMAGE_TYPE, OpposingForce.location("electrified"));
+    public static final ResourceKey<DamageType> LIGHTNING_CALL = ResourceKey.create(Registries.DAMAGE_TYPE, OpposingForce.location("lightning_call"));
 
     public static DamageSource causeLaserDamage(RegistryAccess registryAccess, Entity source) {
         return new RandomMessageDamageSource(registryAccess.registry(Registries.DAMAGE_TYPE).get().getHolderOrThrow(LASER), source, 1);
@@ -75,5 +76,9 @@ public class OFDamageTypes {
 
     public static DamageSource causeElectrifiedDamage(RegistryAccess registryAccess) {
         return new DamageSource(registryAccess.registry(Registries.DAMAGE_TYPE).get().getHolderOrThrow(ELECTRIFIED));
+    }
+
+    public static DamageSource causeLightningCallDamage(RegistryAccess registryAccess, Entity source) {
+        return new RandomMessageDamageSource(registryAccess.registry(Registries.DAMAGE_TYPE).get().getHolderOrThrow(LIGHTNING_CALL), source, source, 2);
     }
 }

@@ -16,7 +16,7 @@ public abstract class CapeLayerMixin {
 
     @Inject(method = "render(Lcom/mojang/blaze3d/vertex/PoseStack;Lnet/minecraft/client/renderer/MultiBufferSource;ILnet/minecraft/client/player/AbstractClientPlayer;FFFFFF)V", at = @At("HEAD"), cancellable = true)
     private void opposingForce$hideCape(PoseStack poseStack, MultiBufferSource bufferSource, int packedLight, AbstractClientPlayer player, float limbSwing, float limbSwingAmount, float partialTicks, float ageInTicks, float netHeadYaw, float headPitch, CallbackInfo ci) {
-        if (player.getItemBySlot(EquipmentSlot.CHEST).is(OFItems.RECON_KNIGHT_CHESTPLATE)) {
+        if (player.getItemBySlot(EquipmentSlot.CHEST).is(OFItems.RECON_KNIGHT_CHESTPLATE) || player.getItemBySlot(EquipmentSlot.CHEST).is(OFItems.STORM_LORD_CHESTPLATE)) {
             ci.cancel();
         }
     }

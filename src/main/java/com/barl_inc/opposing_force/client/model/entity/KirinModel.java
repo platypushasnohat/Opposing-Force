@@ -65,6 +65,8 @@ public class KirinModel extends SinewEntityModel<Kirin> {
         this.animateSmooth(entity.slamStartAnimationState, KirinAirAnimations.SLAM_START, ageInTicks, partialTicks);
         this.animateSmooth(entity.slamAnimationState, KirinAirAnimations.SLAM, ageInTicks, partialTicks);
         this.animateSmooth(entity.slamEndAnimationState, KirinAirAnimations.SLAM_END, ageInTicks, partialTicks);
+        this.animateSmooth(entity.blessingBeckonAnimationState, KirinAnimations.BLESSING_BECKON, ageInTicks, partialTicks);
+        this.animateSmooth(entity.blessingReceiveAnimationState, KirinAnimations.BLESSING_RECEIVE, ageInTicks, partialTicks);
         this.rotatePart(this.base, 30.0F * Mth.DEG_TO_RAD * entity.airWalkAnimationState.factor(partialTicks), 0.0F, 0.0F);
         float lookYaw = Mth.clamp(netHeadYaw, -60.0F, 60.0F) * Mth.DEG_TO_RAD;
         float lookPitch = Mth.clamp(headPitch, -30.0F, 30.0F) * Mth.DEG_TO_RAD;

@@ -3,6 +3,8 @@ package com.barl_inc.opposing_force.entity;
 import com.barl_inc.opposing_force.OpposingForce;
 import com.barl_inc.opposing_force.entity.ai.goal.KirinAttackGoal;
 import com.barl_inc.opposing_force.entity.projectile.ElectricCharge;
+import com.barl_inc.opposing_force.registry.OFItems;
+import com.barl_inc.opposing_force.item.armor.StormLordArmorItem;
 import com.barl_inc.opposing_force.registry.OFDamageTypes;
 import com.barl_inc.opposing_force.registry.OFMobEffects;
 import com.barl_inc.opposing_force.registry.OFParticleTypes;
@@ -13,6 +15,14 @@ import com.platypushasnohat.sinew.entity.utils.BodyChain;
 import com.platypushasnohat.sinew.entity.utils.BodyChainMob;
 import com.platypushasnohat.sinew.registry.SinewAttributes;
 import net.minecraft.core.BlockPos;
+import net.minecraft.world.item.Items;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.entity.item.ItemEntity;
+import net.minecraft.world.effect.MobEffects;
+import net.minecraft.world.effect.MobEffect;
+import net.minecraft.world.InteractionResult;
+import net.minecraft.world.InteractionHand;
+import net.minecraft.core.Holder;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.sounds.SoundEvents;
@@ -64,6 +74,8 @@ public class Kirin extends SummonableMount implements BodyChainMob {
     public static final int SLAM_START_ANIMATION = 19;
     public static final int SLAM_ANIMATION = 20;
     public static final int SLAM_END_ANIMATION = 21;
+    public static final int BLESSING_BECKON_ANIMATION = 22;
+    public static final int BLESSING_RECEIVE_ANIMATION = 23;
     public static final byte DASH_SKIP_EVENT = 80;
     public static final byte SLAM_STEP_EVENT = 81;
 
@@ -99,6 +111,8 @@ public class Kirin extends SummonableMount implements BodyChainMob {
     public final SmoothAnimationState slamStartAnimationState = new SmoothAnimationState();
     public final SmoothAnimationState slamAnimationState = new SmoothAnimationState();
     public final SmoothAnimationState slamEndAnimationState = new SmoothAnimationState();
+    public final SmoothAnimationState blessingBeckonAnimationState = new SmoothAnimationState(1.0F);
+    public final SmoothAnimationState blessingReceiveAnimationState = new SmoothAnimationState(1.0F);
 
     private final BodyChain bodyChain = new BodyChain(0.5F, 0.0F, 0.0F, 0.0F, new float[]{0.5F, 0.25F, 0.3F, 0.35F}, new float[]{0.0F, 0.0F, 0.0F, 0.0F});
 
@@ -109,6 +123,11 @@ public class Kirin extends SummonableMount implements BodyChainMob {
     private int closeTicks;
     @Nullable
     private DamageSource deathSource;
+    private int offeringStage;
+    private int offeringTicks;
+    private Player offeringPlayer;
+    private ItemStack offering = ItemStack.EMPTY;
+    private ItemStack offeringReward = ItemStack.EMPTY;
     private float prevWalkTime;
     private float prevAirWalkTime;
     private int animationTicks;
@@ -128,12 +147,14 @@ public class Kirin extends SummonableMount implements BodyChainMob {
                 .add(Attributes.FOLLOW_RANGE, 64.0D)
                 .add(Attributes.STEP_HEIGHT, 1.2D)
                 .add(SinewAttributes.PROJECTILE_RESISTANCE, 0.2D)
-                .add(SinewAttributes.MAGIC_RESISTANCE, 0.2D);
+                .add(SinewAttributes.MAGIC_RESISTANCE, 0.2D)
+                .add(SinewAttributes.ARMOR_PIERCING, 0.3D);
     }
 
     @Override
     protected void registerGoals() {
         this.goalSelector.addGoal(0, new FloatGoal(this));
+        this.goalSelector.addGoal(0, new KirinOfferingGoal(this));
         this.goalSelector.addGoal(1, new KirinAttackGoal(this));
         this.goalSelector.addGoal(1, new KirinIdleBlendGoal(this));
         this.goalSelector.addGoal(2, new WaterAvoidingRandomStrollGoal(this, 0.8D));
@@ -191,6 +212,56 @@ public class Kirin extends SummonableMount implements BodyChainMob {
     }
 
     @Override
+    public InteractionResult mobInteract(Player player, InteractionHand hand) {
+        InteractionResult result;
+        if (hand == InteractionHand.MAIN_HAND && this.offeringStage == 0 && this.getTarget() == null && this.getAnimationState() < DEATH_ANIMATION && StormLordArmorItem.hasFullSet(player)) {
+            if (!this.level().isClientSide) {
+                this.offeringPlayer = player;
+                this.offeringStage = 1;
+            }
+            result = InteractionResult.sidedSuccess(this.level().isClientSide);
+        } else {
+            result = super.mobInteract(player, hand);
+        }
+        return result;
+    }
+
+    private void completeOffering() {
+        this.offeringReward = this.offering;
+        this.offering = ItemStack.EMPTY;
+        this.offeringStage = 0;
+        this.setHealth(0.0F);
+        this.die(this.damageSources().genericKill());
+    }
+
+    private void giveOfferingReward(ItemStack offering) {
+        List<Holder<MobEffect>> effects = List.of(MobEffects.DAMAGE_BOOST, MobEffects.MOVEMENT_SPEED, MobEffects.DAMAGE_RESISTANCE);
+        if (offering.is(OFItems.TACHI)) {
+            this.dropReward(new ItemStack(Items.PORKCHOP));
+        } else if (offering.is(OFItems.FUR)) {
+            this.dropReward(new ItemStack(OFItems.ENERGIZED_TUFT.get(), 6 + this.random.nextInt(5)));
+        } else if (offering.is(Items.SADDLE)) {
+            this.dropReward(new ItemStack(Items.BEEF));
+        } else if (offering.is(Items.ENCHANTED_GOLDEN_APPLE)) {
+            if (this.offeringPlayer != null) {
+                for (Holder<MobEffect> effect : effects) {
+                    this.offeringPlayer.addEffect(new MobEffectInstance(effect, 72000, 0), this);
+                }
+            }
+        } else if (this.random.nextBoolean()) {
+            this.dropReward(new ItemStack(OFItems.ELECTRIC_CHARGE.get(), 8 + this.random.nextInt(13)));
+        } else if (this.offeringPlayer != null) {
+            this.offeringPlayer.addEffect(new MobEffectInstance(effects.get(this.random.nextInt(effects.size())), 72000, this.random.nextInt(2)), this);
+        }
+    }
+
+    private void dropReward(ItemStack reward) {
+        while (!reward.isEmpty()) {
+            this.spawnAtLocation(reward.split(reward.getMaxStackSize()), 0.5F);
+        }
+    }
+
+    @Override
     public void die(DamageSource damageSource) {
         super.die(damageSource);
         this.setAnimationState(DEATH_ANIMATION);
@@ -211,7 +282,9 @@ public class Kirin extends SummonableMount implements BodyChainMob {
             }
         }
         if (!this.level().isClientSide && this.deathTicks >= DEATH_LENGTH * 20.0F && !this.isRemoved()) {
-            if (this.deathSource != null) {
+            if (!this.offeringReward.isEmpty()) {
+                this.giveOfferingReward(this.offeringReward);
+            } else if (this.deathSource != null) {
                 super.dropAllDeathLoot((ServerLevel) this.level(), this.deathSource);
             }
             this.level().playSound(null, this.getX(), this.getY(), this.getZ(), SoundEvents.LIGHTNING_BOLT_THUNDER, this.getSoundSource(), 190.0F, 0.8F + this.random.nextFloat() * 0.2F);
@@ -287,7 +360,7 @@ public class Kirin extends SummonableMount implements BodyChainMob {
                 if (living instanceof Player player && player.isBlocking()) {
                     player.disableShield();
                 }
-                if (living.hurt(this.damageSources().mobAttack(this), (float) this.getAttributeValue(Attributes.ATTACK_DAMAGE) * 2.0F)) {
+                if (living.hurt(OFDamageTypes.causeElectricDamage(this.level().registryAccess(), this, this), (float) this.getAttributeValue(Attributes.ATTACK_DAMAGE) * 2.0F)) {
                     Vec3 push = living.position().subtract(this.position()).multiply(1.0D, 0.0D, 1.0D);
                     if (push.lengthSqr() < 1.0E-4D) {
                         push = new Vec3(1.0D, 0.0D, 0.0D);
@@ -329,11 +402,15 @@ public class Kirin extends SummonableMount implements BodyChainMob {
     }
 
     public void dashHit(LivingEntity player, Vec3 direction) {
-        if (player.hurt(this.damageSources().mobAttack(this), (float) this.getAttributeValue(Attributes.ATTACK_DAMAGE))) {
+        boolean blocking = player.isBlocking();
+        if (player.hurt(OFDamageTypes.causeElectricDamage(this.level().registryAccess(), this, this), (float) this.getAttributeValue(Attributes.ATTACK_DAMAGE))) {
             double strength = 2.5D * (1.0D - player.getAttributeValue(Attributes.KNOCKBACK_RESISTANCE));
             player.setDeltaMovement(direction.x * strength, 0.35D, direction.z * strength);
             player.hurtMarked = true;
             player.addEffect(new MobEffectInstance(OFMobEffects.ELECTRIFIED, 600, 0), this);
+        }
+        if (blocking && player instanceof Player blocker) {
+            blocker.disableShield();
         }
     }
 
@@ -372,7 +449,7 @@ public class Kirin extends SummonableMount implements BodyChainMob {
         this.level().playSound(null, strike.x, strike.y, strike.z, OFSoundEvents.ELECTRIC_CHARGE_ZAP.get(), SoundSource.HOSTILE, 3.0F, 0.6F + this.random.nextFloat() * 0.2F);
         AABB hitBox = new AABB(strike.x - 0.8D, strike.y - 0.5D, strike.z - 0.8D, strike.x + 0.8D, strike.y + 2.5D, strike.z + 0.8D);
         for (LivingEntity player : this.level().getEntitiesOfClass(LivingEntity.class, hitBox, this::isValidVictim)) {
-            if (player.hurt(OFDamageTypes.causeElectricDamage(this.level().registryAccess(), this, this), (float) this.getAttributeValue(Attributes.ATTACK_DAMAGE))) {
+            if (player.hurt(OFDamageTypes.causeLightningCallDamage(this.level().registryAccess(), this), (float) this.getAttributeValue(Attributes.ATTACK_DAMAGE))) {
                 player.addEffect(new MobEffectInstance(OFMobEffects.ELECTRIFIED, 900, 0), this);
             }
         }
@@ -530,11 +607,12 @@ public class Kirin extends SummonableMount implements BodyChainMob {
         this.slamStartAnimationState.animateWhen(this.getAnimationState() == SLAM_START_ANIMATION, this.tickCount);
         this.slamAnimationState.animateWhen(this.getAnimationState() == SLAM_ANIMATION, this.tickCount);
         this.slamEndAnimationState.animateWhen(this.getAnimationState() == SLAM_END_ANIMATION, this.tickCount);
+        this.blessingBeckonAnimationState.animateWhen(this.getAnimationState() == BLESSING_BECKON_ANIMATION, this.tickCount);
+        this.blessingReceiveAnimationState.animateWhen(this.getAnimationState() == BLESSING_RECEIVE_ANIMATION, this.tickCount);
     }
 
-    //todo later once kirin armor in
     private boolean isIgnoredPlayer(Player player) {
-        return false;
+        return StormLordArmorItem.hasFullSet(player);
     }
 
     private static class KirinProximityTargetGoal extends TargetGoal {
@@ -604,6 +682,83 @@ public class Kirin extends SummonableMount implements BodyChainMob {
         @Override
         public void tick() {
             this.timer++;
+        }
+    }
+
+    private static class KirinOfferingGoal extends Goal {
+
+        private final Kirin kirin;
+
+        public KirinOfferingGoal(Kirin kirin) {
+            this.kirin = kirin;
+            this.setFlags(EnumSet.of(Flag.MOVE, Flag.LOOK));
+        }
+
+        @Override
+        public boolean canUse() {
+            return this.kirin.offeringStage > 0;
+        }
+
+        @Override
+        public boolean canContinueToUse() {
+            Player player = this.kirin.offeringPlayer;
+            return this.kirin.offeringStage > 0 && this.kirin.getTarget() == null && player != null && player.isAlive() && player.distanceToSqr(this.kirin) < 256.0D;
+        }
+
+        @Override
+        public void start() {
+            this.kirin.getNavigation().stop();
+            this.kirin.offeringTicks = 0;
+            this.kirin.setAnimationState(BLESSING_BECKON_ANIMATION);
+        }
+
+        @Override
+        public void stop() {
+            if (this.kirin.offeringStage > 0) {
+                if (!this.kirin.offering.isEmpty()) {
+                    this.kirin.spawnAtLocation(this.kirin.offering, 0.5F);
+                    this.kirin.offering = ItemStack.EMPTY;
+                }
+                this.kirin.offeringStage = 0;
+                this.kirin.offeringPlayer = null;
+                this.kirin.setAnimationState(0);
+            }
+        }
+
+        @Override
+        public void tick() {
+            Player player = this.kirin.offeringPlayer;
+            this.kirin.getNavigation().stop();
+            this.kirin.getLookControl().setLookAt(player, 30.0F, 30.0F);
+            this.kirin.offeringTicks++;
+            if (this.kirin.offeringStage == 1 && this.kirin.offeringTicks >= 40) {
+                this.kirin.setAnimationState(0);
+                this.kirin.offeringStage = 2;
+                this.kirin.offeringTicks = 0;
+            } else if (this.kirin.offeringStage == 2) {
+                List<ItemEntity> items = this.kirin.level().getEntitiesOfClass(ItemEntity.class, this.kirin.getBoundingBox().inflate(4.0D), item -> item.isAlive() && item.getOwner() == player);
+                if (!items.isEmpty()) {
+                    ItemEntity item = items.get(0);
+                    ItemStack stack = item.getItem().copy();
+                    this.kirin.offering = stack.split(1);
+                    item.setItem(stack);
+                    if (stack.isEmpty()) {
+                        item.discard();
+                    }
+                    this.kirin.setAnimationState(BLESSING_RECEIVE_ANIMATION);
+                    this.kirin.offeringStage = 3;
+                    this.kirin.offeringTicks = 0;
+                } else if (this.kirin.offeringTicks >= 600) {
+                    this.stop();
+                }
+            } else if (this.kirin.offeringStage == 3 && this.kirin.offeringTicks >= 80) {
+                this.kirin.completeOffering();
+            }
+        }
+
+        @Override
+        public boolean requiresUpdateEveryTick() {
+            return true;
         }
     }
 }

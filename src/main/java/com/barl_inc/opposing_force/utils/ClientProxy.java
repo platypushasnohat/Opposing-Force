@@ -1,13 +1,14 @@
 package com.barl_inc.opposing_force.utils;
 
+import com.barl_inc.opposing_force.client.particle.ReconAfterImageParticle;
 import com.barl_inc.opposing_force.client.particle.StaticAfterImageParticle;
 import com.barl_inc.opposing_force.client.sound.*;
+import com.barl_inc.opposing_force.client.utils.MidairJumpHandler;
 import com.barl_inc.opposing_force.entity.Gnat;
 import com.barl_inc.opposing_force.entity.Terror;
 import com.barl_inc.opposing_force.entity.misc.DicerLaser;
 import com.barl_inc.opposing_force.entity.projectile.ElectricCharge;
 import com.barl_inc.opposing_force.entity.projectile.LaserBlade;
-import com.barl_inc.opposing_force.client.particle.ReconAfterImageParticle;
 import com.platypushasnohat.sinew.mixins.client.SoundEngineAccessor;
 import com.platypushasnohat.sinew.mixins.client.SoundManagerAccessor;
 import it.unimi.dsi.fastutil.ints.Int2ObjectMap;
@@ -158,5 +159,10 @@ public class ClientProxy extends CommonProxy {
             double z = Mth.lerp(partialTicks, entity.zo, entity.getZ());
             Minecraft.getInstance().particleEngine.add(new StaticAfterImageParticle(entity, level, x, y, z, lifetime, color, alpha, partialTicks));
         }
+    }
+
+    @Override
+    public void midairJumpEffect(int entityId) {
+        MidairJumpHandler.effect(entityId);
     }
 }

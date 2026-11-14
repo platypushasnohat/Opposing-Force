@@ -9,6 +9,7 @@ import net.minecraft.sounds.SoundEvent;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.world.item.ArmorItem;
 import net.minecraft.world.item.ArmorMaterial;
+import net.minecraft.world.item.Items;
 import net.minecraft.world.item.crafting.Ingredient;
 import net.neoforged.neoforge.common.Tags;
 import net.neoforged.neoforge.registries.DeferredHolder;
@@ -25,6 +26,7 @@ public class OFArmorMaterials {
     public static final DeferredHolder<ArmorMaterial, ArmorMaterial> EMERALD = register("emerald", defense(3, 6, 8, 3, 11), 15, SoundEvents.ARMOR_EQUIP_DIAMOND, 2.0F, 0.0F, () -> Ingredient.of(Tags.Items.GEMS_EMERALD));
     public static final DeferredHolder<ArmorMaterial, ArmorMaterial> RECON_KNIGHT = register("recon_knight", defense(3, 6, 8, 3, 11), 10, SoundEvents.ARMOR_EQUIP_DIAMOND, 2.0F, 0.0F, () -> Ingredient.of(OFItems.TESLA_INGOT));
     public static final DeferredHolder<ArmorMaterial, ArmorMaterial> MOON_SHOES = register("moon_shoes", defense(2, 1, 1, 1, 11), 15, SoundEvents.ARMOR_EQUIP_LEATHER, 0.0F, 0.0F, () -> Ingredient.of(Tags.Items.FEATHERS));
+    public static final DeferredHolder<ArmorMaterial, ArmorMaterial> STORM_LORD = register("storm_lord", defense(3, 6, 8, 3, 11), 15, SoundEvents.ARMOR_EQUIP_NETHERITE, 3.0F, 0.0F, () -> Ingredient.of(OFItems.ENERGIZED_TUFT));
 
     public static EnumMap<ArmorItem.Type, Integer> defense(int boots, int leggings, int chestplate, int helmet, int body) {
         return Util.make(new EnumMap<>(ArmorItem.Type.class), map -> {

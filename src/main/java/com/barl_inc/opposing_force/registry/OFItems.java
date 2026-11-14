@@ -3,6 +3,7 @@ package com.barl_inc.opposing_force.registry;
 import com.barl_inc.opposing_force.OpposingForce;
 import com.barl_inc.opposing_force.item.*;
 import com.barl_inc.opposing_force.item.armor.ReconKnightArmorItem;
+import com.barl_inc.opposing_force.item.armor.StormLordArmorItem;
 import com.barl_inc.opposing_force.item.base.SummonWeaponItem;
 import com.barl_inc.opposing_force.item.curios.*;
 import com.barl_inc.opposing_force.item.magic.CursedRinglineItem;
@@ -61,6 +62,14 @@ public class OFItems {
     public static final DeferredItem<Item> TESLA_INGOT = registerItem("tesla_ingot", () -> new Item(new Item.Properties()));
     public static final DeferredItem<Item> KIRIN_SPAWN_EGG = registerSpawnEggItem("kirin", OFEntities.KIRIN, 0x10151b, 0xa8cad0);
     public static final DeferredItem<Item> ENERGIZED_TUFT = registerItem("energized_tuft", () -> new Item(new Item.Properties()));
+    public static final DeferredItem<Item> RECON_KNIGHT_HELMET = registerItem("recon_knight_helmet", () -> new ReconKnightArmorItem(Type.HELMET, new Item.Properties().durability(Type.HELMET.getDurability(33)), OFArmorDefinitions.RECON_KNIGHT_ARMOR));
+    public static final DeferredItem<Item> RECON_KNIGHT_CHESTPLATE = registerItem("recon_knight_chestplate", () -> new ReconKnightArmorItem(Type.CHESTPLATE, new Item.Properties().durability(Type.CHESTPLATE.getDurability(33)), OFArmorDefinitions.RECON_KNIGHT_ARMOR));
+    public static final DeferredItem<Item> RECON_KNIGHT_LEGGINGS = registerItem("recon_knight_leggings", () -> new ReconKnightArmorItem(Type.LEGGINGS, new Item.Properties().durability(Type.LEGGINGS.getDurability(33)), OFArmorDefinitions.RECON_KNIGHT_ARMOR));
+    public static final DeferredItem<Item> RECON_KNIGHT_BOOTS = registerItem("recon_knight_boots", () -> new ReconKnightArmorItem(Type.BOOTS, new Item.Properties().durability(Type.BOOTS.getDurability(33)), OFArmorDefinitions.RECON_KNIGHT_ARMOR));
+    public static final DeferredItem<Item> STORM_LORD_HELMET = registerItem("storm_lord_helmet", () -> new StormLordArmorItem(Type.HELMET, new Item.Properties().fireResistant().durability(Type.HELMET.getDurability(50)), OFArmorDefinitions.STORM_LORD_ARMOR));
+    public static final DeferredItem<Item> STORM_LORD_CHESTPLATE = registerItem("storm_lord_chestplate", () -> new StormLordArmorItem(Type.CHESTPLATE, new Item.Properties().fireResistant().durability(Type.CHESTPLATE.getDurability(50)), OFArmorDefinitions.STORM_LORD_ARMOR));
+    public static final DeferredItem<Item> STORM_LORD_LEGGINGS = registerItem("storm_lord_leggings", () -> new StormLordArmorItem(Type.LEGGINGS, new Item.Properties().fireResistant().durability(Type.LEGGINGS.getDurability(50)), OFArmorDefinitions.STORM_LORD_ARMOR));
+    public static final DeferredItem<Item> STORM_LORD_BOOTS = registerItem("storm_lord_boots", () -> new StormLordArmorItem(Type.BOOTS, new Item.Properties().fireResistant().durability(Type.BOOTS.getDurability(50)), OFArmorDefinitions.STORM_LORD_ARMOR));
 
     public static final DeferredItem<Item> GNAT_SPAWN_EGG = registerSpawnEggItem("gnat", OFEntities.GNAT, 0x403229, 0xc6322c);
     public static final DeferredItem<Item> GNAT_STAFF = registerItem("gnat_staff", () -> new SummonWeaponItem(new Item.Properties().durability(200), OFEntities.GNAT, 2.0D, 20.0D, 6));
@@ -127,11 +136,6 @@ public class OFItems {
     public static final DeferredItem<Item> EMERALD_CHESTPLATE = registerItem("emerald_chestplate", () -> new SkinLayerHidingArmorItem(Type.CHESTPLATE, new Item.Properties().rarity(Rarity.UNCOMMON).durability(Type.CHESTPLATE.getDurability(33)), OFArmorDefinitions.EMERALD_ARMOR));
     public static final DeferredItem<Item> EMERALD_LEGGINGS = registerItem("emerald_leggings", () -> new SkinLayerHidingArmorItem(Type.LEGGINGS, new Item.Properties().rarity(Rarity.UNCOMMON).durability(Type.LEGGINGS.getDurability(33)), OFArmorDefinitions.EMERALD_ARMOR));
     public static final DeferredItem<Item> EMERALD_BOOTS = registerItem("emerald_boots", () -> new SkinLayerHidingArmorItem(Type.BOOTS, new Item.Properties().rarity(Rarity.UNCOMMON).durability(Type.BOOTS.getDurability(33)), OFArmorDefinitions.EMERALD_ARMOR));
-
-    public static final DeferredItem<Item> RECON_KNIGHT_HELMET = registerItem("recon_knight_helmet", () -> new ReconKnightArmorItem(Type.HELMET, new Item.Properties().durability(Type.HELMET.getDurability(33)), OFArmorDefinitions.RECON_KNIGHT_ARMOR));
-    public static final DeferredItem<Item> RECON_KNIGHT_CHESTPLATE = registerItem("recon_knight_chestplate", () -> new ReconKnightArmorItem(Type.CHESTPLATE, new Item.Properties().durability(Type.CHESTPLATE.getDurability(33)), OFArmorDefinitions.RECON_KNIGHT_ARMOR));
-    public static final DeferredItem<Item> RECON_KNIGHT_LEGGINGS = registerItem("recon_knight_leggings", () -> new ReconKnightArmorItem(Type.LEGGINGS, new Item.Properties().durability(Type.LEGGINGS.getDurability(33)), OFArmorDefinitions.RECON_KNIGHT_ARMOR));
-    public static final DeferredItem<Item> RECON_KNIGHT_BOOTS = registerItem("recon_knight_boots", () -> new ReconKnightArmorItem(Type.BOOTS, new Item.Properties().durability(Type.BOOTS.getDurability(33)), OFArmorDefinitions.RECON_KNIGHT_ARMOR));
 
     public static final DeferredItem<Item> LAPIS_LAZULI_SWORD = registerItem("lapis_lazuli_sword", () -> new SinewSwordItem(OFToolDefinitions.LAPIS_LAZULI, 3.0F, -2.4F, new Item.Properties()));
     public static final DeferredItem<Item> LAPIS_LAZULI_PICKAXE = registerItem("lapis_lazuli_pickaxe", () -> new SinewPickaxeItem(OFToolDefinitions.LAPIS_LAZULI, 1.0F, -2.8F, new Item.Properties()));

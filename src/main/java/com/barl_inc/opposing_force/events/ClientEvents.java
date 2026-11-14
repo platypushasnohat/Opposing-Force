@@ -1,13 +1,9 @@
 package com.barl_inc.opposing_force.events;
 
-import com.barl_inc.opposing_force.item.melee.HeroSwordItem;
-import com.barl_inc.opposing_force.network.HeroSwordSwingPayload;
-import net.minecraft.world.phys.HitResult;
-import net.neoforged.neoforge.network.PacketDistributor;
 import com.barl_inc.opposing_force.OpposingForce;
-import com.barl_inc.opposing_force.client.utils.ReconDashHandler;
 import com.barl_inc.opposing_force.client.model.armor.EmeraldArmorModel;
 import com.barl_inc.opposing_force.client.model.armor.ReconKnightArmorModel;
+import com.barl_inc.opposing_force.client.model.armor.StormLordArmorModel;
 import com.barl_inc.opposing_force.client.model.entity.*;
 import com.barl_inc.opposing_force.client.model.item.*;
 import com.barl_inc.opposing_force.client.particle.*;
@@ -18,10 +14,14 @@ import com.barl_inc.opposing_force.client.render.item.SpearAnimations;
 import com.barl_inc.opposing_force.client.render.item.TachiAnimations;
 import com.barl_inc.opposing_force.client.render.shader.ManiaTrip;
 import com.barl_inc.opposing_force.client.render.shader.SpectralLensOverlay;
+import com.barl_inc.opposing_force.client.utils.MidairJumpHandler;
+import com.barl_inc.opposing_force.client.utils.ReconDashHandler;
 import com.barl_inc.opposing_force.item.SpectralShieldItem;
 import com.barl_inc.opposing_force.item.base.GunItem;
+import com.barl_inc.opposing_force.item.melee.HeroSwordItem;
 import com.barl_inc.opposing_force.item.ranged.ammo.BulletComponent;
 import com.barl_inc.opposing_force.item.utils.OFTooltips;
+import com.barl_inc.opposing_force.network.HeroSwordSwingPayload;
 import com.barl_inc.opposing_force.registry.*;
 import com.barl_inc.opposing_force.registry.datapack.tags.OFItemTags;
 import com.mojang.blaze3d.systems.RenderSystem;
@@ -50,6 +50,7 @@ import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.entity.HumanoidArm;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.phys.HitResult;
 import net.minecraft.world.phys.Vec3;
 import net.neoforged.api.distmarker.Dist;
 import net.neoforged.bus.api.SubscribeEvent;
@@ -61,6 +62,8 @@ import net.neoforged.neoforge.client.extensions.common.RegisterClientExtensionsE
 import net.neoforged.neoforge.client.gui.VanillaGuiLayers;
 import net.neoforged.neoforge.common.util.TriState;
 import net.neoforged.neoforge.event.entity.player.ItemTooltipEvent;
+import net.neoforged.neoforge.event.tick.PlayerTickEvent;
+import net.neoforged.neoforge.network.PacketDistributor;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -215,6 +218,13 @@ public class ClientEvents {
                 return ReconKnightArmorModel.INSTANCE;
             }
         }, OFItems.RECON_KNIGHT_HELMET, OFItems.RECON_KNIGHT_CHESTPLATE, OFItems.RECON_KNIGHT_LEGGINGS, OFItems.RECON_KNIGHT_BOOTS);
+        event.registerItem(new IClientItemExtensions() {
+            @Override
+            public HumanoidModel<?> getHumanoidArmorModel(LivingEntity entity, ItemStack stack, EquipmentSlot slot, HumanoidModel<?> properties) {
+                StormLordArmorModel.INSTANCE.setupCape(entity, Minecraft.getInstance().getTimer().getGameTimeDeltaPartialTick(true));
+                return StormLordArmorModel.INSTANCE;
+            }
+        }, OFItems.STORM_LORD_HELMET, OFItems.STORM_LORD_CHESTPLATE, OFItems.STORM_LORD_LEGGINGS, OFItems.STORM_LORD_BOOTS);
     }
 
     @SubscribeEvent
@@ -388,5 +398,12 @@ public class ClientEvents {
     @SubscribeEvent
     public static void onComputeFov(ViewportEvent.ComputeFov event) {
         event.setFOV(ManiaTrip.modifyFov(event.getFOV(), (float) event.getPartialTick()));
+    }
+
+    @SubscribeEvent
+    public static void onPlayerTickPre(PlayerTickEvent.Pre event) {
+        if (event.getEntity() instanceof LocalPlayer player) {
+            MidairJumpHandler.tick(player);
+        }
     }
 }

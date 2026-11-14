@@ -58,14 +58,22 @@ public class ReconKnightArmorItem extends SkinLayerHidingArmorItem {
     }
 
     public static void dash(ServerPlayer player, int direction) {
-        if (direction >= DASH_FORWARD && direction <= DASH_RIGHT && canDash(player)) {
+        if (canDash(player)) {
+            performDash(player, direction, DASH_DISTANCE);
+        } else if (StormLordArmorItem.canDash(player)) {
+            performDash(player, direction, 10.0D);
+        }
+    }
+
+    public static void performDash(ServerPlayer player, int direction, double dashDistance) {
+        if (direction >= DASH_FORWARD && direction <= DASH_RIGHT) {
             ServerLevel level = player.serverLevel();
             Vec3 heading = getHeading(player, direction);
             Vec3 start = player.position();
 
             double distance = 0.0D;
             boolean clear = true;
-            while (clear && distance + DASH_STEP <= DASH_DISTANCE) {
+            while (clear && distance + DASH_STEP <= dashDistance) {
                 AABB box = player.getBoundingBox().move(heading.scale(distance + DASH_STEP));
                 clear = level.noCollision(player, box);
                 if (clear) {

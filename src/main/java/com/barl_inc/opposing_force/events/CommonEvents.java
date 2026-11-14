@@ -1,19 +1,20 @@
 package com.barl_inc.opposing_force.events;
 
 import com.barl_inc.opposing_force.OpposingForce;
-import com.barl_inc.opposing_force.network.HeroSwordSwingPayload;
-import com.barl_inc.opposing_force.network.ReconDashEffectPayload;
-import com.barl_inc.opposing_force.network.ReconDashPayload;
 import com.barl_inc.opposing_force.config.OFConfig;
 import com.barl_inc.opposing_force.entity.*;
 import com.barl_inc.opposing_force.entity.ai.goal.LightDependentTargetGoal;
 import com.barl_inc.opposing_force.entity.misc.GrellClone;
 import com.barl_inc.opposing_force.entity.misc.MudSplatter;
 import com.barl_inc.opposing_force.item.SpectralShieldItem;
+import com.barl_inc.opposing_force.item.armor.StormLordArmorItem;
 import com.barl_inc.opposing_force.item.curios.AbstractCurioItem;
 import com.barl_inc.opposing_force.item.curios.MomentumGauntletItem;
 import com.barl_inc.opposing_force.item.curios.SpectralGogglesItem;
 import com.barl_inc.opposing_force.item.utils.SlimyShielding;
+import com.barl_inc.opposing_force.network.*;
+import com.barl_inc.opposing_force.registry.OFAttributes;
+import com.barl_inc.opposing_force.registry.OFDamageTypes;
 import com.barl_inc.opposing_force.registry.OFEntities;
 import com.barl_inc.opposing_force.registry.OFItems;
 import com.barl_inc.opposing_force.registry.datapack.tags.OFItemTags;
@@ -21,6 +22,7 @@ import com.platypushasnohat.sinew.entity.base.AnimatedMonster;
 import com.platypushasnohat.sinew.entity.villager.MultipleInputsTrade;
 import com.platypushasnohat.sinew.registry.SinewDamageTypes;
 import net.minecraft.network.chat.Component;
+import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.server.packs.PackType;
 import net.minecraft.server.packs.repository.Pack;
 import net.minecraft.server.packs.repository.PackSource;
@@ -28,10 +30,7 @@ import net.minecraft.tags.DamageTypeTags;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.damagesource.DamageSource;
-import net.minecraft.world.entity.Entity;
-import net.minecraft.world.entity.LivingEntity;
-import net.minecraft.world.entity.Mob;
-import net.minecraft.world.entity.SpawnPlacementTypes;
+import net.minecraft.world.entity.*;
 import net.minecraft.world.entity.ai.goal.AvoidEntityGoal;
 import net.minecraft.world.entity.monster.EnderMan;
 import net.minecraft.world.entity.monster.Spider;
@@ -49,8 +48,10 @@ import net.neoforged.neoforge.common.Tags;
 import net.neoforged.neoforge.event.AddPackFindersEvent;
 import net.neoforged.neoforge.event.entity.*;
 import net.neoforged.neoforge.event.entity.living.LivingDamageEvent;
+import net.neoforged.neoforge.event.entity.living.LivingFallEvent;
 import net.neoforged.neoforge.event.entity.living.LivingIncomingDamageEvent;
 import net.neoforged.neoforge.event.entity.living.LivingShieldBlockEvent;
+import net.neoforged.neoforge.event.entity.player.PlayerEvent;
 import net.neoforged.neoforge.event.entity.player.PlayerInteractEvent;
 import net.neoforged.neoforge.event.level.BlockEvent;
 import net.neoforged.neoforge.event.tick.PlayerTickEvent;
@@ -75,6 +76,13 @@ public class CommonEvents {
         registrar.playToServer(ReconDashPayload.TYPE, ReconDashPayload.STREAM_CODEC, ReconDashPayload::handle);
         registrar.playToServer(HeroSwordSwingPayload.TYPE, HeroSwordSwingPayload.STREAM_CODEC, HeroSwordSwingPayload::handle);
         registrar.playToClient(ReconDashEffectPayload.TYPE, ReconDashEffectPayload.STREAM_CODEC, ReconDashEffectPayload::handle);
+        registrar.playToServer(MidairJumpPayload.TYPE, MidairJumpPayload.STREAM_CODEC, MidairJumpPayload::handle);
+        registrar.playToClient(MidairJumpEffectPayload.TYPE, MidairJumpEffectPayload.STREAM_CODEC, MidairJumpEffectPayload::handle);
+    }
+
+    @SubscribeEvent
+    public static void modifyEntityAttributes(EntityAttributeModificationEvent event) {
+        event.add(EntityType.PLAYER, OFAttributes.KIRIN_JUMPS);
     }
 
     @SubscribeEvent
@@ -167,7 +175,11 @@ public class CommonEvents {
                 && CuriosApi.getCuriosInventory(attacker).map(inventory -> inventory.isEquipped(OFItems.STALKER_GLOVES.get())).orElse(false)) {
             event.setAmount(event.getAmount() * 1.3F);
         }
-        SlimyShielding.absorbHit(event, OFItems.SLIMY_SHIELD.get(), 300);
+        if (event.getSource().is(OFDamageTypes.ELECTRIFIED) && StormLordArmorItem.hasFullSet(event.getEntity())) {
+            event.setCanceled(true);
+        } else {
+            SlimyShielding.absorbHit(event, OFItems.SLIMY_SHIELD.get(), 300);
+        }
     }
 
     @SubscribeEvent
@@ -202,6 +214,15 @@ public class CommonEvents {
     public static void onPlayerTick(PlayerTickEvent.Post event) {
         if (!event.getEntity().level().isClientSide) {
             SpectralGogglesItem.updateSight(event.getEntity());
+            StormLordArmorItem.tickFall(event.getEntity());
+        }
+    }
+
+    @SubscribeEvent
+    public static void onLivingFall(LivingFallEvent event) {
+        if (StormLordArmorItem.preventsFall(event.getEntity())) {
+            event.setCanceled(true);
+            event.getEntity().getPersistentData().remove("opposing_force:storm_lord_fall");
         }
     }
 

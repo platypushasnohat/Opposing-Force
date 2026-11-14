@@ -77,7 +77,11 @@ public class OFItemModelProvider extends SinewItemModelProvider {
                 OFItems.IRIDESCENT_ESSENCE,
                 OFItems.BOTTOMLESS_LAVA_BUCKET,
                 OFItems.BOTTOMLESS_WATER_BUCKET,
-                OFItems.ENERGIZED_TUFT
+                OFItems.ENERGIZED_TUFT,
+                OFItems.STORM_LORD_HELMET,
+                OFItems.STORM_LORD_CHESTPLATE,
+                OFItems.STORM_LORD_LEGGINGS,
+                OFItems.STORM_LORD_BOOTS
         );
 
         this.handheldItem(

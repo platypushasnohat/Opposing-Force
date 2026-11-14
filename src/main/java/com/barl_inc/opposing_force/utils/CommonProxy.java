@@ -19,4 +19,7 @@ public class CommonProxy {
 
     public void spawnAfterImage(LivingEntity entity, float partialTicks, int lifetime, int color, float alpha) {
     }
+
+    public void midairJumpEffect(int entityId) {
+    }
 }

@@ -16,11 +16,14 @@
     },
     "W": {
       "item": "opposing_force:water_walkers"
+    },
+    "I": {
+      "item": "opposing_force:iridescent_essence"
     }
   },
   "pattern": [
     "SLS",
-    "NMN",
+    "NMI",
     "SWS"
   ],
   "result": {

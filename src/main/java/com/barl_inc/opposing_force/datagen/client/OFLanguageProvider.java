@@ -132,6 +132,11 @@ public class OFLanguageProvider extends SinewLanguageProvider {
         this.add("item.opposing_force.shroom_staff.description", "Summons a Mushy, using 1 minion slot");
         this.add("item.opposing_force.shroom_staff.sneak_description", "Sneak while using to summon a Brick, using 3 minion slots");
         this.add("item.opposing_force.mania.description", "Hold to charge blast");
+        this.add("item.opposing_force.storm_lord.set_bonus", "Set bonus:");
+        this.add("item.opposing_force.storm_lord.set_bonus.electrified", "Take no damage from the electrified effect");
+        this.add("item.opposing_force.storm_lord.set_bonus.dash", "Double tap sprint to dash");
+        this.add("item.opposing_force.storm_lord.set_bonus.kirin", "The Kirin looks at you as one of its own...");
+        this.add("attribute.name.opposing_force.kirin_jumps", "Kirin Jumps");
 
         this.add("item.opposing_force.tooltip.magic_damage", "%s Magic Damage");
         this.add("item.opposing_force.tooltip.magic_multi_damage", "%sx%s Magic Damage");

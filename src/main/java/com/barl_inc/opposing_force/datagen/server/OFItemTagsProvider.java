@@ -78,19 +78,27 @@ public class OFItemTagsProvider extends ItemTagsProvider {
         );
 
         this.tag(ItemTags.HEAD_ARMOR).add(
-                OFItems.EMERALD_MASK.get()
+                OFItems.EMERALD_MASK.get(),
+                OFItems.RECON_KNIGHT_HELMET.get(),
+                OFItems.STORM_LORD_HELMET.get()
         );
 
         this.tag(ItemTags.CHEST_ARMOR).add(
-                OFItems.EMERALD_CHESTPLATE.get()
+                OFItems.EMERALD_CHESTPLATE.get(),
+                OFItems.RECON_KNIGHT_CHESTPLATE.get(),
+                OFItems.STORM_LORD_CHESTPLATE.get()
         );
 
         this.tag(ItemTags.LEG_ARMOR).add(
-                OFItems.EMERALD_LEGGINGS.get()
+                OFItems.EMERALD_LEGGINGS.get(),
+                OFItems.RECON_KNIGHT_LEGGINGS.get(),
+                OFItems.STORM_LORD_LEGGINGS.get()
         );
 
         this.tag(ItemTags.FOOT_ARMOR).add(
-                OFItems.EMERALD_BOOTS.get()
+                OFItems.EMERALD_BOOTS.get(),
+                OFItems.RECON_KNIGHT_BOOTS.get(),
+                OFItems.STORM_LORD_BOOTS.get()
         );
 
         this.tag(ItemTags.MEAT).add(

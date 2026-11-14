@@ -1,6 +1,7 @@
 {
   "replace": false,
   "values": [
-    "opposing_force:grell_bite"
+    "opposing_force:grell_bite",
+    "opposing_force:lightning_call"
   ]
 }

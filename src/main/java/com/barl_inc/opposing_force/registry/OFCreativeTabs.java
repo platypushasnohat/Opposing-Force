@@ -91,6 +91,10 @@ public class OFCreativeTabs {
                         // post end
                         output.accept(OFItems.MANIA);
                         output.accept(OFItems.ENERGIZED_TUFT);
+                        output.accept(OFItems.STORM_LORD_HELMET);
+                        output.accept(OFItems.STORM_LORD_CHESTPLATE);
+                        output.accept(OFItems.STORM_LORD_LEGGINGS);
+                        output.accept(OFItems.STORM_LORD_BOOTS);
                         output.accept(OFItems.IRIDESCENT_ESSENCE);
                         output.accept(OFItems.BOTTOMLESS_WATER_BUCKET);
                         output.accept(OFItems.BOTTOMLESS_LAVA_BUCKET);

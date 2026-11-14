@@ -1,5 +1,6 @@
 package com.barl_inc.opposing_force.utils;
 
+import com.barl_inc.opposing_force.client.particle.StaticAfterImageParticle;
 import com.barl_inc.opposing_force.client.sound.*;
 import com.barl_inc.opposing_force.entity.Gnat;
 import com.barl_inc.opposing_force.entity.Terror;
@@ -16,6 +17,7 @@ import net.minecraft.client.multiplayer.ClientLevel;
 import net.minecraft.client.resources.sounds.AbstractTickableSoundInstance;
 import net.minecraft.client.sounds.SoundEngine;
 import net.minecraft.client.sounds.SoundManager;
+import net.minecraft.util.Mth;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.phys.Vec3;
@@ -145,6 +147,16 @@ public class ClientProxy extends CommonProxy {
                 Vec3 pos = start.add(path.scale((double) i / count));
                 Minecraft.getInstance().particleEngine.add(new ReconAfterImageParticle(entity, level, pos.x, pos.y, pos.z, 6 + i * 2, 0x66f3ff, 0.15F));
             }
+        }
+    }
+
+    @Override
+    public void spawnAfterImage(LivingEntity entity, float partialTicks, int lifetime, int color, float alpha) {
+        if (entity.level() instanceof ClientLevel level) {
+            double x = Mth.lerp(partialTicks, entity.xo, entity.getX());
+            double y = Mth.lerp(partialTicks, entity.yo, entity.getY());
+            double z = Mth.lerp(partialTicks, entity.zo, entity.getZ());
+            Minecraft.getInstance().particleEngine.add(new StaticAfterImageParticle(entity, level, x, y, z, lifetime, color, alpha, partialTicks));
         }
     }
 }

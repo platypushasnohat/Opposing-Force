@@ -90,6 +90,7 @@ public class OFCreativeTabs {
 
                         // post end
                         output.accept(OFItems.MANIA);
+                        output.accept(OFItems.ENERGIZED_TUFT);
                         output.accept(OFItems.IRIDESCENT_ESSENCE);
                         output.accept(OFItems.BOTTOMLESS_WATER_BUCKET);
                         output.accept(OFItems.BOTTOMLESS_LAVA_BUCKET);

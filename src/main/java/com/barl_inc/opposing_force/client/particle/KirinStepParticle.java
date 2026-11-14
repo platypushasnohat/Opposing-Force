@@ -17,12 +17,12 @@ public class KirinStepParticle extends TextureSheetParticle {
     private final SpriteSet spriteSet;
     private final float yaw;
 
-    protected KirinStepParticle(ClientLevel level, double x, double y, double z, float yaw, SpriteSet spriteSet) {
+    protected KirinStepParticle(ClientLevel level, double x, double y, double z, float yaw, float scale, SpriteSet spriteSet) {
         super(level, x, y, z);
         this.spriteSet = spriteSet;
         this.yaw = yaw;
         this.lifetime = LIFETIME;
-        this.quadSize = 0.375F;
+        this.quadSize = 0.375F * scale;
         this.gravity = 0.0F;
         this.hasPhysics = false;
         this.setSpriteFromAge(spriteSet);
@@ -69,7 +69,7 @@ public class KirinStepParticle extends TextureSheetParticle {
 
         @Override
         public Particle createParticle(SimpleParticleType type, ClientLevel level, double x, double y, double z, double xSpeed, double ySpeed, double zSpeed) {
-            return new KirinStepParticle(level, x, y, z, (float) xSpeed, this.spriteSet);
+            return new KirinStepParticle(level, x, y, z, (float) xSpeed, ySpeed > 0.0D ? (float) ySpeed : 1.0F, this.spriteSet);
         }
     }
 }

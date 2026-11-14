@@ -1,6 +1,8 @@
 package com.barl_inc.opposing_force.entity;
 
+import com.barl_inc.opposing_force.OpposingForce;
 import com.barl_inc.opposing_force.entity.ai.goal.KirinAttackGoal;
+import com.barl_inc.opposing_force.entity.projectile.ElectricCharge;
 import com.barl_inc.opposing_force.registry.OFDamageTypes;
 import com.barl_inc.opposing_force.registry.OFMobEffects;
 import com.barl_inc.opposing_force.registry.OFParticleTypes;
@@ -19,13 +21,16 @@ import net.minecraft.util.Mth;
 import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.effect.MobEffectInstance;
 import net.minecraft.world.entity.EntityType;
+import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.Mob;
 import net.minecraft.world.entity.ai.attributes.AttributeSupplier;
 import net.minecraft.world.entity.ai.attributes.Attributes;
 import net.minecraft.world.entity.ai.goal.*;
 import net.minecraft.world.entity.ai.goal.target.HurtByTargetGoal;
+import net.minecraft.world.entity.ai.goal.target.NearestAttackableTargetGoal;
 import net.minecraft.world.entity.ai.goal.target.TargetGoal;
 import net.minecraft.world.entity.ai.targeting.TargetingConditions;
+import net.minecraft.world.entity.monster.Husk;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.state.BlockState;
@@ -46,6 +51,21 @@ public class Kirin extends SummonableMount implements BodyChainMob {
     public static final int DEATH_ANIMATION = 6;
     public static final int TELEPORT_ANIMATION = 7;
     public static final int LIGHTNING_CALL_ANIMATION = 8;
+    public static final int DASH_ANIMATION = 9;
+    public static final int JUMP_START_ANIMATION = 10;
+    public static final int JUMP_FALL_ANIMATION = 11;
+    public static final int AIR_WALK_ANIMATION = 12;
+    public static final int LIGHTNING_CALL_AIR_ANIMATION = 13;
+    public static final int LIGHTNING_BALL_ONE_ANIMATION = 14;
+    public static final int LIGHTNING_BALL_TWO_ANIMATION = 15;
+    public static final int JUMP_MIDAIR_ANIMATION = 16;
+    public static final int JUMP_MIDAIR_LEFT_ANIMATION = 17;
+    public static final int JUMP_MIDAIR_RIGHT_ANIMATION = 18;
+    public static final int SLAM_START_ANIMATION = 19;
+    public static final int SLAM_ANIMATION = 20;
+    public static final int SLAM_END_ANIMATION = 21;
+    public static final byte DASH_SKIP_EVENT = 80;
+    public static final byte SLAM_STEP_EVENT = 81;
 
     public static final float DEATH_GLOW_START = 1.3F;
     public static final float DEATH_LENGTH = 2.0F;
@@ -54,6 +74,7 @@ public class Kirin extends SummonableMount implements BodyChainMob {
     private static final int IDLE_BLEND_COOLDOWN = 200;
 
     private static final float[] STEP_TIMES = {0.0F, 0.5F, 1.0F, 1.5F};
+    private static final float[] AIR_STEP_TIMES = {0.0F, 0.25F, 0.5F, 0.75F};
     private static final float[][] FOOT_POSITIONS = {{2.0F, -19.5F}, {2.0F, -0.5F}, {-2.0F, -19.5F}, {-2.0F, -0.5F}};
     private static final float[][] IDLE_FOOT_POSITIONS = {{2.5F, -4.4F}, {2.5F, 2.7F}, {-2.5F, -2.4F}, {-2.5F, 6.6F}};
 
@@ -65,6 +86,19 @@ public class Kirin extends SummonableMount implements BodyChainMob {
     public final SmoothAnimationState deathAnimationState = new SmoothAnimationState(1.0F);
     public final SmoothAnimationState teleportAnimationState = new SmoothAnimationState(1.0F);
     public final SmoothAnimationState lightningCallAnimationState = new SmoothAnimationState(1.0F);
+    public final SmoothAnimationState dashAnimationState = new SmoothAnimationState(1.0F);
+    public final SmoothAnimationState jumpStartAnimationState = new SmoothAnimationState(1.0F);
+    public final SmoothAnimationState jumpFallAnimationState = new SmoothAnimationState();
+    public final SmoothAnimationState airWalkAnimationState = new SmoothAnimationState();
+    public final SmoothAnimationState lightningCallAirAnimationState = new SmoothAnimationState();
+    public final SmoothAnimationState lightningBallOneAnimationState = new SmoothAnimationState();
+    public final SmoothAnimationState lightningBallTwoAnimationState = new SmoothAnimationState();
+    public final SmoothAnimationState jumpMidairAnimationState = new SmoothAnimationState();
+    public final SmoothAnimationState jumpMidairLeftAnimationState = new SmoothAnimationState();
+    public final SmoothAnimationState jumpMidairRightAnimationState = new SmoothAnimationState();
+    public final SmoothAnimationState slamStartAnimationState = new SmoothAnimationState();
+    public final SmoothAnimationState slamAnimationState = new SmoothAnimationState();
+    public final SmoothAnimationState slamEndAnimationState = new SmoothAnimationState();
 
     private final BodyChain bodyChain = new BodyChain(0.5F, 0.0F, 0.0F, 0.0F, new float[]{0.5F, 0.25F, 0.3F, 0.35F}, new float[]{0.0F, 0.0F, 0.0F, 0.0F});
 
@@ -76,7 +110,9 @@ public class Kirin extends SummonableMount implements BodyChainMob {
     @Nullable
     private DamageSource deathSource;
     private float prevWalkTime;
-    private int teleportTicks;
+    private float prevAirWalkTime;
+    private int animationTicks;
+    private int prevAnimationState;
 
     public Kirin(EntityType<? extends Kirin> entityType, Level level) {
         super(entityType, level);
@@ -89,6 +125,7 @@ public class Kirin extends SummonableMount implements BodyChainMob {
                 .add(Attributes.ATTACK_DAMAGE, 16.0D)
                 .add(Attributes.ARMOR, 8.0D)
                 .add(Attributes.MOVEMENT_SPEED, 0.25D)
+                .add(Attributes.FOLLOW_RANGE, 64.0D)
                 .add(Attributes.STEP_HEIGHT, 1.2D)
                 .add(SinewAttributes.PROJECTILE_RESISTANCE, 0.2D)
                 .add(SinewAttributes.MAGIC_RESISTANCE, 0.2D);
@@ -104,6 +141,7 @@ public class Kirin extends SummonableMount implements BodyChainMob {
         this.goalSelector.addGoal(4, new RandomLookAroundGoal(this));
         this.targetSelector.addGoal(0, new HurtByTargetGoal(this));
         this.targetSelector.addGoal(1, new KirinProximityTargetGoal(this));
+        this.targetSelector.addGoal(2, new NearestAttackableTargetGoal<>(this, Husk.class, true));
     }
 
     @Override
@@ -116,25 +154,40 @@ public class Kirin extends SummonableMount implements BodyChainMob {
     public void readAdditionalSaveData(CompoundTag compound) {
         super.readAdditionalSaveData(compound);
         this.idleBlendCooldown = compound.getInt("IdleBlendCooldown");
+        this.setNoGravity(false);
+        if (this.getAnimationState() >= TELEPORT_ANIMATION) {
+            this.setAnimationState(0);
+        }
     }
 
     @Override
     public void tick() {
         super.tick();
         if (this.level().isClientSide) {
-            if (this.getAnimationState() == TELEPORT_ANIMATION) {
-                this.teleportTicks++;
+            if (this.getAnimationState() == this.prevAnimationState) {
+                this.animationTicks++;
             } else {
-                this.teleportTicks = 0;
+                this.animationTicks = 0;
+                this.prevAnimationState = this.getAnimationState();
             }
         }
         if (this.level().isClientSide && !this.isDeadOrDying()) {
             this.bodyChain.tick(this.yBodyRot, 0.0F, 0.0F);
             this.tickFootsteps();
-            if (this.walkAnimation.speed() < 0.15F && this.getAnimationState() != TELEPORT_ANIMATION) {
+            this.tickAirFootsteps();
+            if (this.getAnimationState() == DASH_ANIMATION && this.animationTicks >= 15 && this.animationTicks <= 32) {
+                OpposingForce.PROXY.spawnAfterImage(this, 0.0F, 10, 0x99D9EA, 0.25F);
+                OpposingForce.PROXY.spawnAfterImage(this, 0.5F, 10, 0x99D9EA, 0.25F);
+            }
+            if (this.onGround() && this.walkAnimation.speed() < 0.15F && this.getAnimationState() != TELEPORT_ANIMATION && this.getAnimationState() != DASH_ANIMATION) {
                 this.spawnHoverSmoke();
             }
         }
+    }
+
+    @Override
+    public boolean isInvulnerableTo(DamageSource source) {
+        return source.is(OFDamageTypes.ELECTRIFIED) || super.isInvulnerableTo(source);
     }
 
     @Override
@@ -168,13 +221,13 @@ public class Kirin extends SummonableMount implements BodyChainMob {
     }
 
     public boolean isTeleportHidden(float partialTicks) {
-        float seconds = (this.teleportTicks + partialTicks) / 20.0F;
+        float seconds = (this.animationTicks + partialTicks) / 20.0F;
         return this.getAnimationState() == TELEPORT_ANIMATION && seconds >= 0.09F && seconds < 0.34F;
     }
 
     @Override
     public void lerpTo(double x, double y, double z, float yRot, float xRot, int steps) {
-        if (this.getAnimationState() == TELEPORT_ANIMATION && this.distanceToSqr(x, y, z) > 4.0D) {
+        if ((this.getAnimationState() == TELEPORT_ANIMATION || this.getAnimationState() == DASH_ANIMATION) && this.distanceToSqr(x, y, z) > 4.0D) {
             this.lerpSteps = 0;
             this.setPos(x, y, z);
             this.setYRot(yRot);
@@ -189,26 +242,103 @@ public class Kirin extends SummonableMount implements BodyChainMob {
         }
     }
 
-    public void teleportBurst() {
-        ServerLevel level = (ServerLevel) this.level();
-        int bolts = 8 + this.random.nextInt(4);
-        for (int i = 0; i < bolts; i++) {
-            float angle = (i + this.random.nextFloat() * 0.6F) / bolts * Mth.TWO_PI;
-            double length = 1.5D + this.random.nextDouble() * 1.5D;
-            double reachX = Mth.cos(angle) * length;
-            double reachY = 0.1D + this.random.nextDouble() * 0.3D;
-            double reachZ = Mth.sin(angle) * length;
-            double startX = this.getX() + Mth.cos(angle) * 0.4D;
-            double startY = this.getY() + 0.1D;
-            double startZ = this.getZ() + Mth.sin(angle) * 0.4D;
-            level.sendParticles(OFParticleTypes.ELECTRIC_BOLT.get(), startX, startY, startZ, 0, reachX, reachY, reachZ, 1.0D);
-            double split = 0.3D + this.random.nextDouble() * 0.4D;
-            float branchAngle = angle + (this.random.nextBoolean() ? 0.6F : -0.6F);
-            double branchLength = length * (1.0D - split) * 0.7D;
-            level.sendParticles(OFParticleTypes.ELECTRIC_BOLT.get(), startX + reachX * split, startY + reachY * split, startZ + reachZ * split, 0, Mth.cos(branchAngle) * branchLength, 0.05D, Mth.sin(branchAngle) * branchLength, 1.0D);
+    @Override
+    public void handleEntityEvent(byte id) {
+        if (id == DASH_SKIP_EVENT) {
+            int skipTicks = Math.max(0, Mth.floor((1500L - this.dashAnimationState.getAccumulatedTime()) / 50.0F));
+            this.dashAnimationState.fastForward(skipTicks, 1.0F);
+            this.animationTicks = 30;
+        } else if (id == SLAM_STEP_EVENT) {
+            for (float[] foot : FOOT_POSITIONS) {
+                this.footstep(foot, 0.0D, 2.5F);
+            }
+        } else {
+            super.handleEntityEvent(id);
         }
-        level.sendParticles(OFParticleTypes.ELECTRIC_ARC.get(), this.getX(), this.getY() + 0.3D, this.getZ(), 12, 0.6D, 0.2D, 0.6D, 0.0D);
-        this.level().playSound(null, this.getX(), this.getY(), this.getZ(), OFSoundEvents.ELECTRIC_CHARGE_DISSIPATE.get(), SoundSource.HOSTILE, 3.0F, (1.0F + (this.random.nextFloat() - this.random.nextFloat()) * 0.2F) * 0.7F);
+    }
+
+    @Override
+    public boolean causeFallDamage(float fallDistance, float multiplier, DamageSource source) {
+        return false;
+    }
+
+    public void lightningBall(LivingEntity target, int index) {
+        Vec3 forward = Vec3.directionFromRotation(0.0F, this.getYRot());
+        Vec3 side = new Vec3(-forward.z, 0.0D, forward.x);
+        Vec3 head = this.position().add(forward.scale(1.3D)).add(0.0D, 2.2D, 0.0D);
+        Vec3 direction = target.getBoundingBox().getCenter().subtract(head).normalize();
+        Vec3 offset = side.scale((index - 1) * 0.9D + (this.random.nextDouble() - 0.5D) * 0.3D).add(0.0D, (this.random.nextDouble() - 0.5D) * 1.0D, 0.0D);
+        Vec3 spawn = head.add(offset);
+        ElectricCharge charge = new ElectricCharge(this.level(), this);
+        charge.setPos(spawn.x, spawn.y, spawn.z);
+        charge.shoot(direction.x, direction.y, direction.z, 0.75F, 0.0F);
+        this.level().addFreshEntity(charge);
+        this.level().playSound(null, spawn.x, spawn.y, spawn.z, OFSoundEvents.ELECTRIC_CHARGE_ZAP.get(), SoundSource.HOSTILE, 1.5F, 0.8F + this.random.nextFloat() * 0.3F);
+    }
+
+    public void slamImpact() {
+        ServerLevel level = (ServerLevel) this.level();
+        this.electricBurst(this.getX(), this.getY(), this.getZ(), 20, 4.0D, 60, 6.0F);
+        level.playSound(null, this.getX(), this.getY(), this.getZ(), SoundEvents.LIGHTNING_BOLT_IMPACT, SoundSource.HOSTILE, 3.0F, 0.6F + this.random.nextFloat() * 0.2F);
+        AABB hitBox = this.getBoundingBox().inflate(3.5D, 1.0D, 3.5D);
+        for (LivingEntity living : level.getEntitiesOfClass(LivingEntity.class, hitBox, this::isValidVictim)) {
+            double distance = living.position().subtract(this.position()).horizontalDistance();
+            if (distance <= 4.0D) {
+                if (living instanceof Player player && player.isBlocking()) {
+                    player.disableShield();
+                }
+                if (living.hurt(this.damageSources().mobAttack(this), (float) this.getAttributeValue(Attributes.ATTACK_DAMAGE) * 2.0F)) {
+                    Vec3 push = living.position().subtract(this.position()).multiply(1.0D, 0.0D, 1.0D);
+                    if (push.lengthSqr() < 1.0E-4D) {
+                        push = new Vec3(1.0D, 0.0D, 0.0D);
+                    }
+                    double strength = 1.5D * (1.0D - living.getAttributeValue(Attributes.KNOCKBACK_RESISTANCE));
+                    push = push.normalize().scale(strength);
+                    living.setDeltaMovement(push.x, 0.5D, push.z);
+                    living.hurtMarked = true;
+                    living.addEffect(new MobEffectInstance(OFMobEffects.ELECTRIFIED, 900, 0), this);
+                }
+            }
+        }
+    }
+
+    public void dashChargeParticles() {
+        ((ServerLevel) this.level()).sendParticles(OFParticleTypes.ELECTRIC_ARC.get(), this.getX(), this.getY(0.5D), this.getZ(), 8, this.getBbWidth() * 0.5D, this.getBbHeight() * 0.35D, this.getBbWidth() * 0.5D, 0.0D);
+    }
+
+    public void dashBlinkSound(Vec3 from) {
+        this.level().playSound(null, from.x, from.y, from.z, OFSoundEvents.ELECTRIC_CHARGE_ZAP.get(), SoundSource.HOSTILE, 1.5F, 1.2F + this.random.nextFloat() * 0.3F);
+    }
+
+    public void dashSkidParticles(int skidTicks) {
+        float seconds = skidTicks / 20.0F;
+        double behind = 0.0D;
+        if (seconds < 0.125F) {
+            behind = Mth.lerp(seconds / 0.125F, 2.0D, 0.5D);
+        } else if (seconds < 0.5F) {
+            behind = Mth.lerp((seconds - 0.125F) / 0.375F, 0.5D, 0.0D);
+        }
+        Vec3 feet = this.position().subtract(Vec3.directionFromRotation(0.0F, this.getYRot()).scale(behind));
+        ServerLevel level = (ServerLevel) this.level();
+        level.sendParticles(OFParticleTypes.ELECTRIC_ARC.get(), feet.x, feet.y + 0.15D, feet.z, 4, 0.7D, 0.05D, 0.7D, 0.0D);
+        if (skidTicks % 2 == 0) {
+            float angle = this.random.nextFloat() * Mth.TWO_PI;
+            double length = 0.8D + this.random.nextDouble() * 0.7D;
+            level.sendParticles(OFParticleTypes.ELECTRIC_BOLT.get(), feet.x, feet.y + 0.1D, feet.z, 0, Mth.cos(angle) * length, 0.05D, Mth.sin(angle) * length, 1.0D);
+        }
+    }
+
+    public void dashHit(LivingEntity player, Vec3 direction) {
+        if (player.hurt(this.damageSources().mobAttack(this), (float) this.getAttributeValue(Attributes.ATTACK_DAMAGE))) {
+            double strength = 2.5D * (1.0D - player.getAttributeValue(Attributes.KNOCKBACK_RESISTANCE));
+            player.setDeltaMovement(direction.x * strength, 0.35D, direction.z * strength);
+            player.hurtMarked = true;
+            player.addEffect(new MobEffectInstance(OFMobEffects.ELECTRIFIED, 600, 0), this);
+        }
+    }
+
+    public void teleportBurst() {
+        this.electricBurst(this.getX(), this.getY(), this.getZ(), 8, 1.5D, 12, 3.0F);
     }
 
     public void electricBurst(double x, double y, double z, int minBolts, double minLength, int arcs, float volume) {
@@ -241,15 +371,20 @@ public class Kirin extends SummonableMount implements BodyChainMob {
         this.electricBurst(strike.x, strike.y, strike.z, 16, 3.0D, 30, 5.0F);
         this.level().playSound(null, strike.x, strike.y, strike.z, OFSoundEvents.ELECTRIC_CHARGE_ZAP.get(), SoundSource.HOSTILE, 3.0F, 0.6F + this.random.nextFloat() * 0.2F);
         AABB hitBox = new AABB(strike.x - 0.8D, strike.y - 0.5D, strike.z - 0.8D, strike.x + 0.8D, strike.y + 2.5D, strike.z + 0.8D);
-        for (Player player : this.level().getEntitiesOfClass(Player.class, hitBox, player -> player.isAlive() && !player.isSpectator() && !player.isCreative())) {
+        for (LivingEntity player : this.level().getEntitiesOfClass(LivingEntity.class, hitBox, this::isValidVictim)) {
             if (player.hurt(OFDamageTypes.causeElectricDamage(this.level().registryAccess(), this, this), (float) this.getAttributeValue(Attributes.ATTACK_DAMAGE))) {
                 player.addEffect(new MobEffectInstance(OFMobEffects.ELECTRIFIED, 900, 0), this);
             }
         }
     }
 
-    public List<Player> getLightningCallTargets() {
-        return this.level().getEntitiesOfClass(Player.class, this.getBoundingBox().inflate(16.0D), player -> player.isAlive() && !player.isSpectator() && !player.isCreative() && player.hasEffect(OFMobEffects.ELECTRIFIED));
+    public List<LivingEntity> getLightningCallTargets() {
+        return this.level().getEntitiesOfClass(LivingEntity.class, this.getBoundingBox().inflate(16.0D), living -> this.isValidVictim(living) && living.hasEffect(OFMobEffects.ELECTRIFIED));
+    }
+
+    public boolean isValidVictim(LivingEntity living) {
+        boolean ignoredPlayer = living instanceof Player player && (player.isSpectator() || player.isCreative());
+        return living != this && living.isAlive() && !ignoredPlayer && (living instanceof Player || living == this.getTarget());
     }
 
     public float getDeathSeconds(float partialTicks) {
@@ -271,14 +406,9 @@ public class Kirin extends SummonableMount implements BodyChainMob {
         }
     }
 
-    //todo later once kirin armor in
-    private boolean isIgnoredPlayer(Player player) {
-        return false;
-    }
-
     private void tickFootsteps() {
         float walkTime = this.walkAnimation.position() * 0.05F * 5.0F;
-        if (this.onGround() && this.walkAnimation.speed() > 0.15F) {
+        if (this.onGround() && this.walkAnimation.speed() > 0.15F && this.getAnimationState() != DASH_ANIMATION) {
             for (int i = 0; i < STEP_TIMES.length; i++) {
                 if (Mth.floor((walkTime - STEP_TIMES[i]) / 2.0F) > Mth.floor((this.prevWalkTime - STEP_TIMES[i]) / 2.0F)) {
                     this.footstep(FOOT_POSITIONS[i]);
@@ -305,11 +435,43 @@ public class Kirin extends SummonableMount implements BodyChainMob {
         return this.getZ() + foot[0] / 16.0D * Mth.sin(yaw) - foot[1] / 16.0D * Mth.cos(yaw);
     }
 
+    private void tickAirFootsteps() {
+        float airWalkTime = this.airWalkAnimationState.getAccumulatedTime() / 1000.0F;
+        if (this.isAirWalking()) {
+            for (int i = 0; i < AIR_STEP_TIMES.length; i++) {
+                if (Mth.floor(airWalkTime - AIR_STEP_TIMES[i]) > Mth.floor(this.prevAirWalkTime - AIR_STEP_TIMES[i])) {
+                    float forward = -FOOT_POSITIONS[i][1] / 16.0F;
+                    this.footstep(new float[]{FOOT_POSITIONS[i][0], -forward * 0.866F * 16.0F}, -forward * 0.5F);
+                }
+            }
+            this.prevAirWalkTime = airWalkTime;
+        } else {
+            this.prevAirWalkTime = 0.0F;
+        }
+    }
+
+    public boolean isAirWalking() {
+        return this.getAnimationState() >= AIR_WALK_ANIMATION && this.getAnimationState() <= LIGHTNING_BALL_TWO_ANIMATION;
+    }
+
+    public boolean isAirborneState() {
+        return this.getAnimationState() >= JUMP_START_ANIMATION && this.getAnimationState() <= SLAM_END_ANIMATION;
+    }
+
     private void footstep(float[] foot) {
+        this.footstep(foot, 0.0D);
+    }
+
+    private void footstep(float[] foot, double yOffset) {
+        this.footstep(foot, yOffset, 1.0F);
+    }
+
+    private void footstep(float[] foot, double yOffset, float scale) {
         double x = this.footX(foot);
+        double y = this.getY() + yOffset;
         double z = this.footZ(foot);
-        this.level().addParticle(OFParticleTypes.KIRIN_STEP.get(), x, this.getY() + 0.02D, z, this.yBodyRot, 0.0D, 0.0D);
-        this.level().playLocalSound(x, this.getY(), z, SoundEvents.AMETHYST_BLOCK_STEP, this.getSoundSource(), 0.5F, 0.85F + this.random.nextFloat() * 0.3F, false);
+        this.level().addParticle(OFParticleTypes.KIRIN_STEP.get(), x, y + 0.02D, z, this.yBodyRot, scale, 0.0D);
+        this.level().playLocalSound(x, y, z, SoundEvents.AMETHYST_BLOCK_STEP, this.getSoundSource(), 0.5F * scale, (0.85F + this.random.nextFloat() * 0.3F) / Mth.sqrt(scale), false);
     }
 
     @Override
@@ -344,14 +506,9 @@ public class Kirin extends SummonableMount implements BodyChainMob {
     }
 
     @Override
-    public boolean isInvulnerableTo(DamageSource source) {
-        return source.is(OFDamageTypes.ELECTRIFIED) || super.isInvulnerableTo(source);
-    }
-
-    @Override
     public void setupAnimationStates() {
-        this.idleAnimationState.animateWhen(this.getAnimationState() != DEATH_ANIMATION, this.tickCount);
-        this.walkAnimationState.animateWhen(this.getAnimationState() != DEATH_ANIMATION, this.tickCount);
+        this.idleAnimationState.animateWhen(this.getAnimationState() != DEATH_ANIMATION && !this.isAirborneState(), this.tickCount);
+        this.walkAnimationState.animateWhen(this.getAnimationState() != DEATH_ANIMATION && !this.isAirborneState(), this.tickCount);
         this.idleTwitchOneAnimationState.animateWhen(this.getAnimationState() == IDLE_TWITCH_ONE_ANIMATION, this.tickCount);
         this.idleTwitchTwoAnimationState.animateWhen(this.getAnimationState() == IDLE_TWITCH_TWO_ANIMATION, this.tickCount);
         this.idleTwitchThreeAnimationState.animateWhen(this.getAnimationState() == IDLE_TWITCH_THREE_ANIMATION, this.tickCount);
@@ -360,6 +517,24 @@ public class Kirin extends SummonableMount implements BodyChainMob {
         this.deathAnimationState.animateWhen(this.getAnimationState() == DEATH_ANIMATION, this.tickCount);
         this.teleportAnimationState.animateWhen(this.getAnimationState() == TELEPORT_ANIMATION, this.tickCount);
         this.lightningCallAnimationState.animateWhen(this.getAnimationState() == LIGHTNING_CALL_ANIMATION, this.tickCount);
+        this.dashAnimationState.animateWhen(this.getAnimationState() == DASH_ANIMATION, this.tickCount);
+        this.jumpStartAnimationState.animateWhen(this.getAnimationState() == JUMP_START_ANIMATION, this.tickCount);
+        this.jumpFallAnimationState.animateWhen(this.getAnimationState() == JUMP_FALL_ANIMATION, this.tickCount);
+        this.airWalkAnimationState.animateWhen(this.isAirWalking(), this.tickCount);
+        this.lightningCallAirAnimationState.animateWhen(this.getAnimationState() == LIGHTNING_CALL_AIR_ANIMATION, this.tickCount);
+        this.lightningBallOneAnimationState.animateWhen(this.getAnimationState() == LIGHTNING_BALL_ONE_ANIMATION, this.tickCount);
+        this.lightningBallTwoAnimationState.animateWhen(this.getAnimationState() == LIGHTNING_BALL_TWO_ANIMATION, this.tickCount);
+        this.jumpMidairAnimationState.animateWhen(this.getAnimationState() == JUMP_MIDAIR_ANIMATION, this.tickCount);
+        this.jumpMidairLeftAnimationState.animateWhen(this.getAnimationState() == JUMP_MIDAIR_LEFT_ANIMATION, this.tickCount);
+        this.jumpMidairRightAnimationState.animateWhen(this.getAnimationState() == JUMP_MIDAIR_RIGHT_ANIMATION, this.tickCount);
+        this.slamStartAnimationState.animateWhen(this.getAnimationState() == SLAM_START_ANIMATION, this.tickCount);
+        this.slamAnimationState.animateWhen(this.getAnimationState() == SLAM_ANIMATION, this.tickCount);
+        this.slamEndAnimationState.animateWhen(this.getAnimationState() == SLAM_END_ANIMATION, this.tickCount);
+    }
+
+    //todo later once kirin armor in
+    private boolean isIgnoredPlayer(Player player) {
+        return false;
     }
 
     private static class KirinProximityTargetGoal extends TargetGoal {

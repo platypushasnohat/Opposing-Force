@@ -1,5 +1,6 @@
 package com.barl_inc.opposing_force.client.model.entity;
 
+import com.barl_inc.opposing_force.client.model.entity.animation.KirinAirAnimations;
 import com.barl_inc.opposing_force.client.model.entity.animation.KirinAnimations;
 import com.barl_inc.opposing_force.entity.Kirin;
 import com.platypushasnohat.sinew.client.model.entity.SinewEntityModel;
@@ -16,6 +17,7 @@ public class KirinModel extends SinewEntityModel<Kirin> {
     private static final Set<Direction> PLANE = Set.of(Direction.EAST);
 
     private final ModelPart root;
+    private final ModelPart base;
     private final ModelPart neck;
     private final ModelPart head;
     private final ModelPart tail1;
@@ -24,7 +26,8 @@ public class KirinModel extends SinewEntityModel<Kirin> {
 
     public KirinModel(ModelPart root) {
         this.root = root;
-        ModelPart body = root.getChild("root").getChild("body_main").getChild("body_upper").getChild("body");
+        this.base = root.getChild("root");
+        ModelPart body = this.base.getChild("body_main").getChild("body_upper").getChild("body");
         this.neck = body.getChild("neck");
         this.head = this.neck.getChild("head");
         this.tail1 = body.getChild("tail1");
@@ -49,6 +52,20 @@ public class KirinModel extends SinewEntityModel<Kirin> {
         this.animateSmooth(entity.deathAnimationState, KirinAnimations.DISAPPEAR, ageInTicks, partialTicks);
         this.animateSmooth(entity.teleportAnimationState, KirinAnimations.TELEPORT, ageInTicks, partialTicks);
         this.animateSmooth(entity.lightningCallAnimationState, KirinAnimations.LEVINBOLT, ageInTicks, partialTicks);
+        this.animateSmooth(entity.dashAnimationState, KirinAnimations.DASH, ageInTicks, partialTicks);
+        this.animateSmooth(entity.jumpStartAnimationState, KirinAirAnimations.JUMP_START, ageInTicks, partialTicks);
+        this.animateSmooth(entity.jumpFallAnimationState, KirinAirAnimations.JUMP_FALL, ageInTicks, partialTicks);
+        this.animateSmooth(entity.airWalkAnimationState, KirinAirAnimations.AIR_WALK, ageInTicks, partialTicks);
+        this.animateSmooth(entity.lightningCallAirAnimationState, KirinAirAnimations.LEVINBOLT_AIR_BLEND, ageInTicks, partialTicks);
+        this.animateSmooth(entity.lightningBallOneAnimationState, KirinAirAnimations.LIGHTNINGBALL_AIR_BLEND1, ageInTicks, partialTicks);
+        this.animateSmooth(entity.lightningBallTwoAnimationState, KirinAirAnimations.LIGHTNINGBALL_AIR_BLEND2, ageInTicks, partialTicks);
+        this.animateSmooth(entity.jumpMidairAnimationState, KirinAirAnimations.JUMP_MIDAIR, ageInTicks, partialTicks);
+        this.animateSmooth(entity.jumpMidairLeftAnimationState, KirinAirAnimations.JUMP_MIDAIR_LEFT, ageInTicks, partialTicks);
+        this.animateSmooth(entity.jumpMidairRightAnimationState, KirinAirAnimations.JUMP_MIDAIR_RIGHT, ageInTicks, partialTicks);
+        this.animateSmooth(entity.slamStartAnimationState, KirinAirAnimations.SLAM_START, ageInTicks, partialTicks);
+        this.animateSmooth(entity.slamAnimationState, KirinAirAnimations.SLAM, ageInTicks, partialTicks);
+        this.animateSmooth(entity.slamEndAnimationState, KirinAirAnimations.SLAM_END, ageInTicks, partialTicks);
+        this.rotatePart(this.base, 30.0F * Mth.DEG_TO_RAD * entity.airWalkAnimationState.factor(partialTicks), 0.0F, 0.0F);
         float lookYaw = Mth.clamp(netHeadYaw, -60.0F, 60.0F) * Mth.DEG_TO_RAD;
         float lookPitch = Mth.clamp(headPitch, -30.0F, 30.0F) * Mth.DEG_TO_RAD;
         this.rotatePart(this.neck, lookPitch * 0.4F, lookYaw * 0.4F + entity.getSegmentYawOffset(0, partialTicks) * Mth.DEG_TO_RAD, 0.0F);

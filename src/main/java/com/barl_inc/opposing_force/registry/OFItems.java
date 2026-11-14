@@ -12,6 +12,7 @@ import com.barl_inc.opposing_force.item.melee.*;
 import com.barl_inc.opposing_force.item.ranged.*;
 import com.barl_inc.opposing_force.item.ranged.ammo.BulletComponent;
 import com.barl_inc.opposing_force.item.ranged.ammo.PowerCellItem;
+import com.barl_inc.opposing_force.item.summon.CloudWhistleItem;
 import com.barl_inc.opposing_force.item.summon.ShroomStaffItem;
 import com.barl_inc.opposing_force.registry.datapack.OFJukeboxSongs;
 import com.barl_inc.opposing_force.registry.misc.OFEnumProxy;
@@ -70,6 +71,7 @@ public class OFItems {
     public static final DeferredItem<Item> STORM_LORD_CHESTPLATE = registerItem("storm_lord_chestplate", () -> new StormLordArmorItem(Type.CHESTPLATE, new Item.Properties().fireResistant().durability(Type.CHESTPLATE.getDurability(50)), OFArmorDefinitions.STORM_LORD_ARMOR));
     public static final DeferredItem<Item> STORM_LORD_LEGGINGS = registerItem("storm_lord_leggings", () -> new StormLordArmorItem(Type.LEGGINGS, new Item.Properties().fireResistant().durability(Type.LEGGINGS.getDurability(50)), OFArmorDefinitions.STORM_LORD_ARMOR));
     public static final DeferredItem<Item> STORM_LORD_BOOTS = registerItem("storm_lord_boots", () -> new StormLordArmorItem(Type.BOOTS, new Item.Properties().fireResistant().durability(Type.BOOTS.getDurability(50)), OFArmorDefinitions.STORM_LORD_ARMOR));
+    public static final DeferredItem<Item> CLOUD_WHISTLE = registerItem("cloud_whistle", () -> new CloudWhistleItem(new Item.Properties().stacksTo(1)));
 
     public static final DeferredItem<Item> GNAT_SPAWN_EGG = registerSpawnEggItem("gnat", OFEntities.GNAT, 0x403229, 0xc6322c);
     public static final DeferredItem<Item> GNAT_STAFF = registerItem("gnat_staff", () -> new SummonWeaponItem(new Item.Properties().durability(200), OFEntities.GNAT, 2.0D, 20.0D, 6));

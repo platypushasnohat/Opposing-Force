@@ -2,8 +2,10 @@ package com.barl_inc.opposing_force.client.model.entity;
 
 import com.barl_inc.opposing_force.client.model.entity.animation.KirinAirAnimations;
 import com.barl_inc.opposing_force.client.model.entity.animation.KirinAnimations;
+import com.barl_inc.opposing_force.client.model.entity.animation.KirinMountAnimations;
 import com.barl_inc.opposing_force.entity.Kirin;
 import com.platypushasnohat.sinew.client.model.entity.SinewEntityModel;
+import com.mojang.blaze3d.vertex.PoseStack;
 import net.minecraft.client.model.geom.ModelPart;
 import net.minecraft.client.model.geom.PartPose;
 import net.minecraft.client.model.geom.builders.*;
@@ -18,6 +20,9 @@ public class KirinModel extends SinewEntityModel<Kirin> {
 
     private final ModelPart root;
     private final ModelPart base;
+    private final ModelPart bodyMain;
+    private final ModelPart bodyUpper;
+    private final ModelPart body;
     private final ModelPart neck;
     private final ModelPart head;
     private final ModelPart tail1;
@@ -27,10 +32,12 @@ public class KirinModel extends SinewEntityModel<Kirin> {
     public KirinModel(ModelPart root) {
         this.root = root;
         this.base = root.getChild("root");
-        ModelPart body = this.base.getChild("body_main").getChild("body_upper").getChild("body");
-        this.neck = body.getChild("neck");
+        this.bodyMain = this.base.getChild("body_main");
+        this.bodyUpper = this.bodyMain.getChild("body_upper");
+        this.body = this.bodyUpper.getChild("body");
+        this.neck = this.body.getChild("neck");
         this.head = this.neck.getChild("head");
-        this.tail1 = body.getChild("tail1");
+        this.tail1 = this.body.getChild("tail1");
         this.tail2 = this.tail1.getChild("tail2");
         this.tai3 = this.tail2.getChild("tai3");
     }
@@ -40,10 +47,19 @@ public class KirinModel extends SinewEntityModel<Kirin> {
         return this.root;
     }
 
+    public void translateRiderToBody(PoseStack poseStack) {
+        this.root.translateAndRotate(poseStack);
+        this.base.translateAndRotate(poseStack);
+        this.bodyMain.translateAndRotate(poseStack);
+        this.bodyUpper.translateAndRotate(poseStack);
+        this.body.translateAndRotate(poseStack);
+    }
+
     @Override
     protected void setupAnimations(Kirin entity, float limbSwing, float limbSwingAmount, float ageInTicks, float partialTicks, float netHeadYaw, float headPitch) {
         this.animateIdleSmooth(entity.idleAnimationState, KirinAnimations.IDLE, ageInTicks, partialTicks, limbSwingAmount);
         this.animateWalkSmooth(entity.walkAnimationState, KirinAnimations.WALK, limbSwing, limbSwingAmount, 5.0F, 2.5F, partialTicks);
+        this.animateWalkSmooth(entity.runAnimationState, KirinMountAnimations.RUN, limbSwing, limbSwingAmount, 2.0F, 2.5F, partialTicks);
         this.animateSmooth(entity.idleTwitchOneAnimationState, KirinAnimations.IDLE_TWITCH_BLEND1, ageInTicks, partialTicks);
         this.animateSmooth(entity.idleTwitchTwoAnimationState, KirinAnimations.IDLE_TWITCH_BLEND2, ageInTicks, partialTicks);
         this.animateSmooth(entity.idleTwitchThreeAnimationState, KirinAnimations.IDLE_TWITCH_BLEND3, ageInTicks, partialTicks);
@@ -59,7 +75,7 @@ public class KirinModel extends SinewEntityModel<Kirin> {
         this.animateSmooth(entity.lightningCallAirAnimationState, KirinAirAnimations.LEVINBOLT_AIR_BLEND, ageInTicks, partialTicks);
         this.animateSmooth(entity.lightningBallOneAnimationState, KirinAirAnimations.LIGHTNINGBALL_AIR_BLEND1, ageInTicks, partialTicks);
         this.animateSmooth(entity.lightningBallTwoAnimationState, KirinAirAnimations.LIGHTNINGBALL_AIR_BLEND2, ageInTicks, partialTicks);
-        this.animateSmooth(entity.jumpMidairAnimationState, KirinAirAnimations.JUMP_MIDAIR, ageInTicks, partialTicks);
+        this.animateSmooth(entity.jumpMidairAnimationState, KirinMountAnimations.JUMP_MIDAIR, ageInTicks, partialTicks);
         this.animateSmooth(entity.jumpMidairLeftAnimationState, KirinAirAnimations.JUMP_MIDAIR_LEFT, ageInTicks, partialTicks);
         this.animateSmooth(entity.jumpMidairRightAnimationState, KirinAirAnimations.JUMP_MIDAIR_RIGHT, ageInTicks, partialTicks);
         this.animateSmooth(entity.slamStartAnimationState, KirinAirAnimations.SLAM_START, ageInTicks, partialTicks);
@@ -67,6 +83,9 @@ public class KirinModel extends SinewEntityModel<Kirin> {
         this.animateSmooth(entity.slamEndAnimationState, KirinAirAnimations.SLAM_END, ageInTicks, partialTicks);
         this.animateSmooth(entity.blessingBeckonAnimationState, KirinAnimations.BLESSING_BECKON, ageInTicks, partialTicks);
         this.animateSmooth(entity.blessingReceiveAnimationState, KirinAnimations.BLESSING_RECEIVE, ageInTicks, partialTicks);
+        this.animateSmooth(entity.sitStartAnimationState, KirinMountAnimations.SIT_START, ageInTicks, partialTicks);
+        this.animateSmooth(entity.sitAnimationState, KirinMountAnimations.SIT, ageInTicks, partialTicks);
+        this.animateSmooth(entity.sitEndAnimationState, KirinMountAnimations.SIT_END, ageInTicks, partialTicks);
         this.rotatePart(this.base, 30.0F * Mth.DEG_TO_RAD * entity.airWalkAnimationState.factor(partialTicks), 0.0F, 0.0F);
         float lookYaw = Mth.clamp(netHeadYaw, -60.0F, 60.0F) * Mth.DEG_TO_RAD;
         float lookPitch = Mth.clamp(headPitch, -30.0F, 30.0F) * Mth.DEG_TO_RAD;

@@ -22,6 +22,7 @@ import net.minecraft.world.level.Level;
 import net.minecraft.world.phys.HitResult;
 import net.minecraft.world.phys.Vec3;
 
+import javax.annotation.Nullable;
 import java.util.List;
 
 public class ElectricCharge extends ThrowableProjectile {
@@ -34,6 +35,8 @@ public class ElectricCharge extends ThrowableProjectile {
     public static final int MAX_LIFETIME = 140;
 
     private int dischargeTicks;
+    @Nullable
+    private LivingEntity homingTarget;
 
     public List<List<Vec3>> arcs = List.of();
     public int lastArcTick = -1;
@@ -65,6 +68,10 @@ public class ElectricCharge extends ThrowableProjectile {
     public void readAdditionalSaveData(CompoundTag compoundTag) {
         super.readAdditionalSaveData(compoundTag);
         this.setDischarging(compoundTag.getBoolean("Discharging"));
+    }
+
+    public void setHomingTarget(@Nullable LivingEntity homingTarget) {
+        this.homingTarget = homingTarget;
     }
 
     public boolean isDischarging() {
@@ -106,6 +113,12 @@ public class ElectricCharge extends ThrowableProjectile {
 
         if (!this.isRemoved() && !this.isDischarging()) {
             this.setDeltaMovement(this.getDeltaMovement().scale(1.0F / 0.99F));
+            if (!this.level().isClientSide && this.homingTarget != null && this.homingTarget.isAlive()) {
+                Vec3 motion = this.getDeltaMovement();
+                Vec3 toTarget = this.homingTarget.getBoundingBox().getCenter().subtract(this.position());
+                this.setDeltaMovement(motion.normalize().lerp(toTarget.normalize(), 0.08D).normalize().scale(motion.length()));
+                this.hasImpulse = true;
+            }
 
             if (this.level().isClientSide) {
                 OpposingForce.PROXY.playSound(this, (byte) 5);

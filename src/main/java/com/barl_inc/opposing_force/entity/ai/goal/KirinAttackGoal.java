@@ -27,7 +27,7 @@ public class KirinAttackGoal extends AttackGoal {
     private int airAttack;
     private int airAttackTimer;
     private boolean airAttackUsed;
-    private Vec3 airGoal = Vec3.ZERO;
+    private int airCircleSide;
     private boolean dashQueued;
     private boolean leapQueued;
     private boolean slamQueued;
@@ -49,24 +49,37 @@ public class KirinAttackGoal extends AttackGoal {
     }
 
     @Override
+    public boolean canUse() {
+        return super.canUse() && !this.kirin.isSitState();
+    }
+
+    @Override
+    public boolean canContinueToUse() {
+        return super.canContinueToUse() && !this.kirin.isSitState();
+    }
+
+    private int cooldown(int ticks) {
+        return this.kirin.isInTameTrial() ? ticks / 4 : ticks;
+    }
+
+    @Override
     public void start() {
         super.start();
-        this.teleportCooldown = 20;
-        this.lightningCallCooldown = 40;
-        this.dashCooldown = 60;
-        this.leapCooldown = 120;
+        this.teleportCooldown = this.cooldown(20);
+        this.lightningCallCooldown = this.cooldown(40);
+        this.dashCooldown = this.cooldown(60);
+        this.leapCooldown = this.cooldown(120);
         this.dashQueued = false;
         this.leapQueued = false;
         this.slamQueued = false;
-        this.slamCooldown = 160;
+        this.slamCooldown = this.kirin.isInTameTrial() ? 20 : 160;
         this.setState(0);
     }
 
     @Override
     public void stop() {
         super.stop();
-        this.trackedPlayers.clear();
-        this.strikes.clear();
+        this.clearStrikes();
         this.dashHitPlayers.clear();
         this.dashQueued = false;
         this.leapQueued = false;
@@ -115,7 +128,7 @@ public class KirinAttackGoal extends AttackGoal {
         boolean grounded = this.kirin.onGround();
         if (grounded && this.lightningCallCooldown <= 0 && !this.kirin.getLightningCallTargets().isEmpty()) {
             this.setState(2);
-        } else if (grounded && this.dashCooldown <= 0) {
+        } else if (grounded && this.dashCooldown <= 0) { //do note that a teleport is used to start all attacks
             this.dashQueued = true;
             this.setState(1);
         } else if (grounded && this.leapCooldown <= 0) {
@@ -145,7 +158,7 @@ public class KirinAttackGoal extends AttackGoal {
         if (this.timer == 2) {
             this.kirin.teleportBurst();
         }
-        if (this.timer == 4) {
+        if (this.timer == 4) { //now it checks which was queued before the teleport as these have different distances
             if (this.dashQueued) {
                 this.teleportFar(target, 20.0D, 16.0D);
             } else if (this.leapQueued) {
@@ -161,7 +174,7 @@ public class KirinAttackGoal extends AttackGoal {
         }
         if (this.timer >= 10) {
             this.kirin.setAnimationState(0);
-            this.teleportCooldown = 60;
+            this.teleportCooldown = this.cooldown(60);
             if (this.dashQueued) {
                 this.dashQueued = false;
                 this.setState(3);
@@ -197,10 +210,10 @@ public class KirinAttackGoal extends AttackGoal {
         if (this.timer > 31 && this.timer <= 51) {
             this.kirin.dashSkidParticles(this.timer - 31);
         }
-        if (this.timer >= 51) {
+        if (this.timer >= 51) { //timer is skipped to here in the case of early dash end
             this.kirin.setAnimationState(0);
-            this.dashCooldown = 160;
-            this.teleportCooldown = Math.max(this.teleportCooldown, 30);
+            this.dashCooldown = this.cooldown(160);
+            this.teleportCooldown = Math.max(this.teleportCooldown, this.cooldown(30));
             this.dashHitPlayers.clear();
             this.setState(0);
         }
@@ -211,10 +224,10 @@ public class KirinAttackGoal extends AttackGoal {
         Vec3 toTarget = target.position().subtract(start).multiply(1.0D, 0.0D, 1.0D);
         double distance = toTarget.length();
         Vec3 direction = Vec3.directionFromRotation(0.0F, this.kirin.getYRot());
-        if (distance > 1.0E-4D) {
+        if (distance > 1.0E-4D) { //prevent directional mistake if reached target
             direction = toTarget.normalize();
         }
-        double step = this.blinks == 0 ? 7.0D : 6.5D;
+        double step = this.blinks == 0 ? 7.0D : 6.5D; //first dash longer, might remove this
         boolean reaches = distance <= step + 2.0D || (this.blinks == 3 && distance <= 12.0D);
         if (reaches) {
             step = distance + 3.0D;
@@ -260,7 +273,7 @@ public class KirinAttackGoal extends AttackGoal {
     }
 
     private Vec3 fit(Vec3 position, Vec3 start) {
-        double[] rises = {0.0D, 0.5D, 1.0D, 1.2D};
+        double[] rises = {0.0D, 0.5D, 1.0D, 1.2D}; //step heights
         Vec3 fitted = null;
         for (int i = 0; i < rises.length && fitted == null; i++) {
             Vec3 raised = position.add(0.0D, rises[i], 0.0D);
@@ -280,7 +293,7 @@ public class KirinAttackGoal extends AttackGoal {
 
     private void teleportFar(LivingEntity target, double maxDistance, double minDistance) {
         Vec3 spot = null;
-        for (int pass = 0; pass < 2 && spot == null; pass++) {
+        for (int pass = 0; pass < 2 && spot == null; pass++) { //quite inefficient
             for (int i = 0; i < 12 && spot == null; i++) {
                 float angle = this.kirin.getRandom().nextFloat() * Mth.TWO_PI;
                 double distance = maxDistance - (i / 4) * (maxDistance - minDistance) / 2.0D;
@@ -311,7 +324,7 @@ public class KirinAttackGoal extends AttackGoal {
         this.tickStrikes(this.timer);
         if (this.timer >= 30) {
             this.kirin.setAnimationState(0);
-            this.lightningCallCooldown = 240;
+            this.lightningCallCooldown = this.cooldown(240);
             this.setState(0);
         }
     }
@@ -327,8 +340,9 @@ public class KirinAttackGoal extends AttackGoal {
             for (int i = 0; i < this.strikes.size(); i++) {
                 Vec3 strike = this.strikes.get(i);
                 Vec3 toPlayer = this.trackedPlayers.get(i).position().subtract(strike);
-                if (toPlayer.length() > 0.24D) {
-                    toPlayer = toPlayer.normalize().scale(0.24D);
+                double trackSpeed = this.kirin.isInTameTrial() ? 0.5D : 0.24D; //it barely hits you anyways
+                if (toPlayer.length() > trackSpeed) {
+                    toPlayer = toPlayer.normalize().scale(trackSpeed);
                 }
                 this.strikes.set(i, strike.add(toPlayer));
             }
@@ -342,8 +356,7 @@ public class KirinAttackGoal extends AttackGoal {
             for (Vec3 strike : this.strikes) {
                 this.kirin.lightningCallImpact(strike);
             }
-            this.trackedPlayers.clear();
-            this.strikes.clear();
+            this.clearStrikes();
         }
     }
 
@@ -378,15 +391,7 @@ public class KirinAttackGoal extends AttackGoal {
             this.airAttack = 0;
             this.airAttackTimer = 0;
             this.airAttackUsed = false;
-            Vec3 toTarget = target.position().subtract(this.kirin.position()).multiply(1.0D, 0.0D, 1.0D);
-            double sideDistance = 7.0D;
-            if (this.kirin.getRandom().nextBoolean()) {
-                sideDistance = -sideDistance;
-            }
-            this.airGoal = target.position();
-            if (toTarget.lengthSqr() > 1.0E-4D) {
-                this.airGoal = target.position().add(new Vec3(-toTarget.z, 0.0D, toTarget.x).normalize().scale(sideDistance));
-            }
+            this.airCircleSide = this.kirin.getRandom().nextBoolean() ? 1 : -1;
             this.setState(5);
         }
     }
@@ -394,13 +399,21 @@ public class KirinAttackGoal extends AttackGoal {
     private void tickAirWalk(LivingEntity target) {
         this.timer++;
         this.kirin.getNavigation().stop();
-        this.lookAtTarget(target, 30.0F, 30.0F);
-        Vec3 toGoal = this.airGoal.subtract(this.kirin.position()).multiply(1.0D, 0.0D, 1.0D);
-        Vec3 move = Vec3.ZERO;
-        if (toGoal.length() > 1.0D) {
-            move = toGoal.normalize().scale(0.3D);
+        Vec3 fromTarget = this.kirin.position().subtract(target.position()).multiply(1.0D, 0.0D, 1.0D);
+        Vec3 outward = fromTarget.normalize();
+        Vec3 around = new Vec3(-outward.z, 0.0D, outward.x).scale(this.airCircleSide);
+        double distance = fromTarget.length();
+        double correction = Mth.clamp((6.5D - distance) * 1.5D, -1.0D, 1.0D); //circling bullshit
+        Vec3 move = around.add(outward.scale(correction)).normalize().scale(0.3D);
+        if (distance < 5.0D) {
+            move = outward.scale(0.4D);
         }
-        this.faceTowards(target.position());
+        if (move.lengthSqr() > 1.0E-4D) {
+            float yaw = Mth.approachDegrees(this.kirin.getYRot(), (float) (Mth.atan2(move.z, move.x) * Mth.RAD_TO_DEG) - 90.0F, 20.0F);
+            this.kirin.setYRot(yaw);
+            this.kirin.setYBodyRot(yaw);
+        }
+        this.kirin.getLookControl().setLookAt(target, 30.0F, 30.0F);
         this.kirin.setDeltaMovement(move.x, -0.15D, move.z);
         if (this.timer == 10 && !this.airAttackUsed) {
             this.airAttackUsed = true;
@@ -427,8 +440,7 @@ public class KirinAttackGoal extends AttackGoal {
             }
             if (this.airAttackTimer >= 30) {
                 this.airAttack = 0;
-                this.trackedPlayers.clear();
-                this.strikes.clear();
+                this.clearStrikes();
                 this.kirin.setAnimationState(Kirin.AIR_WALK_ANIMATION);
             }
         }
@@ -436,10 +448,9 @@ public class KirinAttackGoal extends AttackGoal {
             this.kirin.setNoGravity(false);
             this.kirin.setAnimationState(0);
             this.airAttack = 0;
-            this.trackedPlayers.clear();
-            this.strikes.clear();
-            this.leapCooldown = 200;
-            this.teleportCooldown = Math.max(this.teleportCooldown, 20);
+            this.clearStrikes();
+            this.leapCooldown = this.cooldown(200);
+            this.teleportCooldown = Math.max(this.teleportCooldown, this.cooldown(20)); //so it doesnt weirdly teleport while lerping onto the ground
             this.setState(0);
         }
     }
@@ -480,7 +491,8 @@ public class KirinAttackGoal extends AttackGoal {
         if (this.timer == 74) {
             this.kirin.setAnimationState(Kirin.SLAM_ANIMATION);
         }
-        if (this.timer < 69) {
+        boolean trial = this.kirin.isInTameTrial();
+        if (this.timer < 69) { //bullshit for tracking
             this.lookAtTarget(target, 30.0F, 30.0F);
             this.faceTowards(target.position());
             Vec3 drift = Vec3.ZERO;
@@ -492,8 +504,8 @@ public class KirinAttackGoal extends AttackGoal {
                 float progress = (this.timer - 32) / 12.0F;
                 Vec3 desired = this.slamSecondStart.lerp(target.position(), this.easeOut(progress)).add(left.scale(this.slamSecondSide * Mth.sin(progress * Mth.PI) * 3.0D));
                 drift = desired.subtract(this.kirin.position());
-            } else if (this.timer > 44 && this.timer <= 64) {
-                drift = toTarget.normalize().scale(Math.min(0.3D, toTarget.length()));
+            } else if (this.timer > 44 && this.timer <= (trial ? 69 : 64)) {
+                drift = toTarget.normalize().scale(Math.min(trial ? 1.0D : 0.3D, toTarget.length()));
             }
             drift = drift.multiply(1.0D, 0.0D, 1.0D);
             if (drift.length() > 1.5D) {
@@ -502,7 +514,7 @@ public class KirinAttackGoal extends AttackGoal {
             this.kirin.setDeltaMovement(drift.x, this.slamStartY + this.slamHeight(this.timer) - this.kirin.getY(), drift.z);
         } else {
             this.slamFallSpeed = Math.min(this.slamFallSpeed + 0.15F, 2.5F);
-            Vec3 drift = toTarget.lengthSqr() > 1.0E-4D ? toTarget.normalize().scale(Math.min(0.03D, toTarget.length())) : Vec3.ZERO;
+            Vec3 drift = toTarget.normalize().scale(Math.min(trial ? 0.4D : 0.03D, toTarget.length()));
             this.kirin.setDeltaMovement(drift.x, -0.2D - this.slamFallSpeed, drift.z);
             if (this.kirin.onGround() || this.timer >= 200) {
                 this.kirin.setNoGravity(false);
@@ -528,7 +540,7 @@ public class KirinAttackGoal extends AttackGoal {
             height = 11.0D - 0.0329D * air * air;
         } else if (time > 32 && time <= 44) {
             double air = time - 32;
-            height = 1.5D + 1.583D * air - 0.066D * air * air;
+            height = 1.5D + Kirin.slamRise(air);
         } else if (time > 44) {
             double air = time - 44;
             height = 11.0D - 0.001D * air * air;
@@ -542,8 +554,8 @@ public class KirinAttackGoal extends AttackGoal {
         this.kirin.setDeltaMovement(0.0D, this.kirin.getDeltaMovement().y, 0.0D);
         if (this.timer >= 20) {
             this.kirin.setAnimationState(0);
-            this.slamCooldown = 400;
-            this.teleportCooldown = Math.max(this.teleportCooldown, 20);
+            this.slamCooldown = this.kirin.isInTameTrial() ? 60 : 400;
+            this.teleportCooldown = Math.max(this.teleportCooldown, this.cooldown(20));
             this.setState(0);
         }
     }
@@ -583,6 +595,11 @@ public class KirinAttackGoal extends AttackGoal {
             }
         }
         return ground;
+    }
+
+    private void clearStrikes() {
+        this.trackedPlayers.clear();
+        this.strikes.clear();
     }
 
     private void setState(int state) {

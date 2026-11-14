@@ -95,6 +95,7 @@ public class OFCreativeTabs {
                         output.accept(OFItems.STORM_LORD_CHESTPLATE);
                         output.accept(OFItems.STORM_LORD_LEGGINGS);
                         output.accept(OFItems.STORM_LORD_BOOTS);
+                        output.accept(OFItems.CLOUD_WHISTLE);
                         output.accept(OFItems.IRIDESCENT_ESSENCE);
                         output.accept(OFItems.BOTTOMLESS_WATER_BUCKET);
                         output.accept(OFItems.BOTTOMLESS_LAVA_BUCKET);

@@ -12,7 +12,9 @@
     "ZombieMixin"
   ],
   "client": [
+    "CameraMixin",
     "CapeLayerMixin",
+    "ClientPacketListenerMixin",
     "GuiMixin",
     "HumanoidModelMixin",
     "ItemInHandLayerMixin",

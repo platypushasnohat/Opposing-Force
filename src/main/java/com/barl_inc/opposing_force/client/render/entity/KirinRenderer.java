@@ -4,6 +4,7 @@ import com.barl_inc.opposing_force.OpposingForce;
 import com.barl_inc.opposing_force.client.model.entity.KirinModel;
 import com.barl_inc.opposing_force.client.render.entity.layer.KirinDeathGlowLayer;
 import com.barl_inc.opposing_force.client.render.entity.layer.KirinGlowLayer;
+import com.barl_inc.opposing_force.client.render.entity.layer.KirinRiderLayer;
 import com.barl_inc.opposing_force.entity.Kirin;
 import com.barl_inc.opposing_force.registry.OFModelLayers;
 import com.mojang.blaze3d.vertex.PoseStack;
@@ -25,6 +26,7 @@ public class KirinRenderer extends MobRenderer<Kirin, KirinModel> {
         super(context, new KirinModel(context.bakeLayer(OFModelLayers.KIRIN)), 0.0F);
         this.addLayer(new KirinGlowLayer(this));
         this.addLayer(new KirinDeathGlowLayer(this));
+        this.addLayer(new KirinRiderLayer(this));
     }
 
     @Override

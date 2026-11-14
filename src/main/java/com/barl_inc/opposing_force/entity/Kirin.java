@@ -264,7 +264,7 @@ public class Kirin extends SummonableMount implements BodyChainMob, PlayerRideab
 
     @Override
     public boolean isInvulnerableTo(DamageSource source) {
-        return source.is(OFDamageTypes.ELECTRIFIED) || super.isInvulnerableTo(source);
+        return source.is(OFDamageTypes.ELECTRIFIED) || (source.getEntity() != null && this.hasPassenger(source.getEntity())) || super.isInvulnerableTo(source);
     }
 
     @Override
@@ -338,7 +338,7 @@ public class Kirin extends SummonableMount implements BodyChainMob, PlayerRideab
         }
     }
 
-    private void startTameTrial() { //fyi it gets 40% armor pierce, strength 2, better attack tracking and super reduced cooldowns during this
+    private void startTameTrial() { //fyi it gets 45% armor pierce, strength 2, better attack tracking and super reduced cooldowns during this
         Player player = this.offeringPlayer;
         this.tameStep = 0;
         this.offeringStage = 0;

@@ -32,6 +32,7 @@ public class KirinAttackGoal extends AttackGoal {
     private boolean leapQueued;
     private boolean slamQueued;
     private int slamCooldown;
+    private int movesSinceSlam;
     private double slamStartY;
     private float slamFallSpeed;
     private Vec3 slamOrigin = Vec3.ZERO;
@@ -126,7 +127,10 @@ public class KirinAttackGoal extends AttackGoal {
         this.lookAtTarget(target, 30.0F, 30.0F);
         double distance = this.kirin.distanceToSqr(target);
         boolean grounded = this.kirin.onGround();
-        if (grounded && this.lightningCallCooldown <= 0 && !this.kirin.getLightningCallTargets().isEmpty()) {
+        if (grounded && this.kirin.isInTameTrial() && this.movesSinceSlam >= 5) {
+            this.slamQueued = true;
+            this.setState(1);
+        } else if (grounded && this.lightningCallCooldown <= 0 && !this.kirin.getLightningCallTargets().isEmpty()) {
             this.setState(2);
         } else if (grounded && this.dashCooldown <= 0) { //do note that a teleport is used to start all attacks
             this.dashQueued = true;
@@ -145,6 +149,11 @@ public class KirinAttackGoal extends AttackGoal {
             }
         } else {
             this.kirin.getNavigation().stop();
+        }
+        if (this.slamQueued) {
+            this.movesSinceSlam = 0;
+        } else if (this.attackState != 0) {
+            this.movesSinceSlam++;
         }
     }
 

@@ -10,6 +10,7 @@ import com.barl_inc.opposing_force.registry.OFMobEffects;
 import com.barl_inc.opposing_force.registry.OFParticleTypes;
 import com.barl_inc.opposing_force.registry.OFSoundEvents;
 import com.platypushasnohat.sinew.client.animation.SmoothAnimationState;
+import com.platypushasnohat.sinew.entity.base.AnimatedMonster;
 import com.platypushasnohat.sinew.entity.base.SummonableMount;
 import com.platypushasnohat.sinew.entity.utils.BodyChain;
 import com.platypushasnohat.sinew.entity.utils.BodyChainMob;
@@ -33,11 +34,13 @@ import net.minecraft.server.level.ServerLevel;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.util.Mth;
+import net.minecraft.util.RandomSource;
 import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.effect.MobEffectInstance;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.Mob;
+import net.minecraft.world.entity.MobSpawnType;
 import net.minecraft.world.entity.ai.attributes.AttributeSupplier;
 import net.minecraft.world.entity.ai.attributes.Attributes;
 import net.minecraft.world.entity.ai.attributes.AttributeInstance;
@@ -55,6 +58,7 @@ import net.minecraft.world.entity.ai.targeting.TargetingConditions;
 import net.minecraft.world.entity.monster.Husk;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.Level;
+import net.minecraft.world.level.ServerLevelAccessor;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.AABB;
 import net.minecraft.world.phys.Vec3;
@@ -176,6 +180,10 @@ public class Kirin extends SummonableMount implements BodyChainMob, PlayerRideab
                 .add(SinewAttributes.PROJECTILE_RESISTANCE, 0.2D)
                 .add(SinewAttributes.MAGIC_RESISTANCE, 0.2D)
                 .add(SinewAttributes.ARMOR_PIERCING, 0.3D);
+    }
+
+    public static boolean checkKirinSpawnRules(EntityType<Kirin> entityType, ServerLevelAccessor level, MobSpawnType spawnType, BlockPos pos, RandomSource random) {
+        return (MobSpawnType.isSpawner(spawnType) || (level.getLevel().isThundering() && level.canSeeSky(pos))) && AnimatedMonster.checkSurfaceMonsterSpawnRules(entityType, level, spawnType, pos, random);
     }
 
     @Override
@@ -777,6 +785,9 @@ public class Kirin extends SummonableMount implements BodyChainMob, PlayerRideab
         }
         if (this.idleBlendCooldown > 0) {
             this.idleBlendCooldown--;
+        }
+        if (!this.level().isThundering() && !this.isTame() && !this.isSummoned() && this.getTarget() == null && this.offeringStage == 0 && this.tameTrialPlayer == null) {
+            this.expire();
         }
     }
 

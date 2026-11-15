@@ -55,7 +55,8 @@ public class OFEntityTypeTagsProvider extends EntityTypeTagsProvider {
         );
 
         this.tag(SinewEntityTags.POST_END_SPAWNS).add(
-                OFEntities.GRELL.get()
+                OFEntities.GRELL.get(),
+                OFEntities.KIRIN.get()
         );
 
         this.tag(OFEntityTypeTags.PIPSQUEAK_CANNOT_SWALLOW).add(

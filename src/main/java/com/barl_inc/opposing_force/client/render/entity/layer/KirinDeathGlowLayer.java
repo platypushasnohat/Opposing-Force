@@ -17,6 +17,7 @@ import net.minecraft.util.Mth;
 public class KirinDeathGlowLayer extends RenderLayer<Kirin, KirinModel> {
 
     private static final ResourceLocation WHITE = OpposingForce.location("textures/entity/kirin/kirin_white.png");
+    private static final float SHELL_SCALE = 1.08F;
 
     public KirinDeathGlowLayer(RenderLayerParent<Kirin, KirinModel> renderer) {
         super(renderer);
@@ -24,14 +25,14 @@ public class KirinDeathGlowLayer extends RenderLayer<Kirin, KirinModel> {
 
     @Override
     public void render(PoseStack poseStack, MultiBufferSource buffer, int packedLight, Kirin kirin, float limbSwing, float limbSwingAmount, float partialTicks, float ageInTicks, float netHeadYaw, float headPitch) {
-        if (kirin.isDeadOrDying()) {
+        if (kirin.isDeadOrDying() && !kirin.isInvisible()) {
             float glow = Mth.clamp((kirin.getDeathSeconds(partialTicks) - Kirin.DEATH_GLOW_START) / (Kirin.DEATH_LENGTH - Kirin.DEATH_GLOW_START), 0.0F, 1.0F);
             if (glow > 0.0F) {
                 this.getParentModel().renderToBuffer(poseStack, buffer.getBuffer(RenderType.entityTranslucentEmissive(WHITE)), LightTexture.FULL_BRIGHT, OverlayTexture.NO_OVERLAY, FastColor.ARGB32.color((int) (255.0F * glow), 255, 255, 255));
                 poseStack.pushPose();
-                poseStack.scale(1.08F, 1.08F, 1.08F);
+                poseStack.scale(SHELL_SCALE, SHELL_SCALE, SHELL_SCALE);
                 this.getParentModel().renderToBuffer(poseStack, buffer.getBuffer(RenderType.entityTranslucentCull(WHITE)), LightTexture.FULL_BRIGHT, OverlayTexture.NO_OVERLAY, FastColor.ARGB32.color((int) (160.0F * glow), 153, 217, 234));
-                poseStack.popPose(); //this isnt really even visible i might just delete it
+                poseStack.popPose();
             }
         }
     }

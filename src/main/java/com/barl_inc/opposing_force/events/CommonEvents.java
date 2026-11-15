@@ -131,6 +131,7 @@ public class CommonEvents {
         event.register(OFEntities.GRELL.get(), SpawnPlacementTypes.ON_GROUND, Heightmap.Types.MOTION_BLOCKING_NO_LEAVES, Grell::checkGrellSpawnRules, RegisterSpawnPlacementsEvent.Operation.AND);
         event.register(OFEntities.PIPSQUEAK.get(), SpawnPlacementTypes.ON_GROUND, Heightmap.Types.MOTION_BLOCKING_NO_LEAVES, Pipsqueak::checkPipsqueakSpawnRules, RegisterSpawnPlacementsEvent.Operation.AND);
         event.register(OFEntities.BRICK.get(), SpawnPlacementTypes.ON_GROUND, Heightmap.Types.MOTION_BLOCKING_NO_LEAVES, Brick::checkBrickSpawnRules, RegisterSpawnPlacementsEvent.Operation.AND);
+        event.register(OFEntities.KIRIN.get(), SpawnPlacementTypes.ON_GROUND, Heightmap.Types.MOTION_BLOCKING_NO_LEAVES, Kirin::checkKirinSpawnRules, RegisterSpawnPlacementsEvent.Operation.AND);
     }
 
     @SubscribeEvent

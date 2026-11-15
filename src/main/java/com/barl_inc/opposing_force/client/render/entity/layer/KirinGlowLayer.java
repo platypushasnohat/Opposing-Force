@@ -23,7 +23,9 @@ public class KirinGlowLayer extends RenderLayer<Kirin, KirinModel> {
 
     @Override
     public void render(PoseStack poseStack, MultiBufferSource buffer, int packedLight, Kirin kirin, float limbSwing, float limbSwingAmount, float partialTicks, float ageInTicks, float netHeadYaw, float headPitch) {
-        int brightness = (int) (255.0F * (0.3F + 0.55F * kirin.getDarkness()));
-        this.getParentModel().renderToBuffer(poseStack, buffer.getBuffer(GLOW), LightTexture.FULL_BRIGHT, OverlayTexture.NO_OVERLAY, FastColor.ARGB32.color(255, brightness, brightness, brightness));
+        if (!kirin.isInvisible()) {
+            int brightness = (int) (255.0F * (0.3F + 0.55F * kirin.getDarkness()));
+            this.getParentModel().renderToBuffer(poseStack, buffer.getBuffer(GLOW), LightTexture.FULL_BRIGHT, OverlayTexture.NO_OVERLAY, FastColor.ARGB32.color(255, brightness, brightness, brightness));
+        }
     }
 }

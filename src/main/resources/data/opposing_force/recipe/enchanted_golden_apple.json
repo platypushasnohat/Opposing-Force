@@ -1,0 +1,21 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "equipment",
+  "key": {
+    "G": {
+      "item": "minecraft:golden_apple"
+    },
+    "I": {
+      "item": "opposing_force:iridescent_essence"
+    }
+  },
+  "pattern": [
+    "GGG",
+    "GIG",
+    "GGG"
+  ],
+  "result": {
+    "count": 8,
+    "id": "minecraft:enchanted_golden_apple"
+  }
+}

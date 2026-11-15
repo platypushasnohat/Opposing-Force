@@ -100,7 +100,8 @@ public class OFItemModelProvider extends SinewItemModelProvider {
                 OFItems.TERROR_LEG,
                 OFItems.FRIED_TERROR_LEG,
                 OFItems.SAWBLADE,
-                OFItems.HERO_SWORD
+                OFItems.HERO_SWORD,
+                OFItems.SACRIFICIAL_SICKLE
         );
 
         this.withExistingParent(name(OFItems.TACHI.get()), this.modLoc("item/handheld_flipped")).texture("layer0", itemTexture(OFItems.TACHI.get()));

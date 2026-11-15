@@ -139,6 +139,7 @@ public class OFLanguageProvider extends SinewLanguageProvider {
         this.add("attribute.name.opposing_force.kirin_jumps", "Kirin Jumps");
         this.add("item.opposing_force.cloud_whistle.description", "Summons a Kirin to ride");
         this.add("entity.opposing_force.kirin.mount_tip", "Ctrl to sprint, Left Shift to dismount, Ctrl midair to air walk");
+        this.add("item.opposing_force.sacrificial_sickle.description", "Grants a burst of speed on kill.");
 
         this.add("item.opposing_force.tooltip.magic_damage", "%s Magic Damage");
         this.add("item.opposing_force.tooltip.magic_multi_damage", "%sx%s Magic Damage");

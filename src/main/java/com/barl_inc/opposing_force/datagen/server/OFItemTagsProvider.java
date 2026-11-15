@@ -33,7 +33,8 @@ public class OFItemTagsProvider extends ItemTagsProvider {
                 OFItems.SPECTRAL_CLEAVER.get(),
                 OFItems.TUNING_FORK.get(),
                 OFItems.TACHI.get(),
-                OFItems.HERO_SWORD.get()
+                OFItems.HERO_SWORD.get(),
+                OFItems.SACRIFICIAL_SICKLE.get()
         );
 
         this.tag(ItemTags.PICKAXES).add(

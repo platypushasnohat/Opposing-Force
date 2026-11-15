@@ -115,6 +115,7 @@ public class OFCreativeTabs {
 
                         // weapons (melee)
                         output.accept(OFItems.HERO_SWORD);
+                        output.accept(OFItems.SACRIFICIAL_SICKLE);
                         output.accept(OFItems.TACHI);
 
                         // toolsets, armor

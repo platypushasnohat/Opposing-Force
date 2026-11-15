@@ -211,6 +211,8 @@
   "item.opposing_force.repair_kit": "Repair Kit",
   "item.opposing_force.repair_kit.description": "Right click to repair all items in your inventory",
   "item.opposing_force.roamer_spawn_egg": "Roamer Spawn Egg",
+  "item.opposing_force.sacrificial_sickle": "Sacrificial Sickle",
+  "item.opposing_force.sacrificial_sickle.description": "Grants a burst of speed on kill.",
   "item.opposing_force.sake": "Sake",
   "item.opposing_force.sawblade": "Sawblade",
   "item.opposing_force.scatter_blaster": "Scatter Blaster",

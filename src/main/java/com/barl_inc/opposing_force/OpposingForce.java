@@ -52,6 +52,9 @@ public class OpposingForce {
         OFCreativeTabs.CREATIVE_MODE_TAB.register(modEventBus);
         OFMobEffects.MOB_EFFECT.register(modEventBus);
         OFAttributes.ATTRIBUTES.register(modEventBus);
+        OFLootFunctions.LOOT_FUNCTION_TYPE.register(modEventBus);
+        OFTornScrolls.ATTACHMENT_TYPES.register(modEventBus);
+        modEventBus.addListener(OFTornScrolls::registerDatapackRegistries);
         modEventBus.addListener(OFMobVariants::registerDatapackRegistries);
         modEventBus.addListener(this::commonSetup);
         modEventBus.addListener(this::clientSetup);

@@ -4,6 +4,7 @@
   "compatibilityLevel": "JAVA_21",
   "refmap": "opposing_force.refmap.json",
   "mixins": [
+    "ChiseledBookShelfBlockEntityMixin",
     "CurioSlotMixin",
     "DynamicStackHandlerMixin",
     "LiquidBlockMixin",

@@ -1,6 +1,7 @@
 package com.barl_inc.opposing_force.registry;
 
 import com.barl_inc.opposing_force.OpposingForce;
+import com.barl_inc.opposing_force.item.scroll.TornScrollItem;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.item.CreativeModeTab;
@@ -164,5 +165,12 @@ public class OFCreativeTabs {
                         // permanent upgrades
                         output.accept(OFItems.CRYSTALLIZED_HEART);
                     })
+                    .build());
+
+    public static final DeferredHolder<CreativeModeTab, CreativeModeTab> TORN_SCROLLS_TAB = CREATIVE_MODE_TAB.register("torn_scrolls_creative_tab",
+            () -> CreativeModeTab.builder().icon(() -> new ItemStack(OFItems.TORN_SCROLL.get()))
+                    .title(Component.translatable("creative_tab.opposing_force.torn_scrolls"))
+                    .withTabsBefore(OPPOSING_FORCE_TAB.getKey())
+                    .displayItems((parameters, output) -> TornScrollItem.addCreativeVariants(parameters, output, OFItems.TORN_SCROLL.get()))
                     .build());
 }

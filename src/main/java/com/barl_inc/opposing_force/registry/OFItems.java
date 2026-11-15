@@ -12,6 +12,7 @@ import com.barl_inc.opposing_force.item.melee.*;
 import com.barl_inc.opposing_force.item.ranged.*;
 import com.barl_inc.opposing_force.item.ranged.ammo.BulletComponent;
 import com.barl_inc.opposing_force.item.ranged.ammo.PowerCellItem;
+import com.barl_inc.opposing_force.item.scroll.TornScrollItem;
 import com.barl_inc.opposing_force.item.summon.CloudWhistleItem;
 import com.barl_inc.opposing_force.item.summon.ShroomStaffItem;
 import com.barl_inc.opposing_force.registry.datapack.OFJukeboxSongs;
@@ -105,6 +106,9 @@ public class OFItems {
     public static final DeferredItem<Item> TUNING_FORK = registerItem("tuning_fork", () -> new TuningForkItem(new Item.Properties().durability(1024).rarity(Rarity.UNCOMMON).attributes(TuningForkItem.createAttributes())));
     public static final DeferredItem<Item> TACHI = registerItem("tachi", () -> new TachiItem(OFItemTiers.TACHI, new Item.Properties().attributes(SwordItem.createAttributes(OFItemTiers.TACHI, 3.0F, -2.4F)).rarity(Rarity.UNCOMMON)));
     public static final DeferredItem<Item> SACRIFICIAL_SICKLE = registerItem("sacrificial_sickle", () -> new SacrificialSickleItem(new Item.Properties().attributes(SacrificialSickleItem.createAttributes()).rarity(Rarity.UNCOMMON)));
+
+    //scroll
+    public static final DeferredItem<Item> TORN_SCROLL = registerItem("torn_scroll", () -> new TornScrollItem(new Item.Properties().stacksTo(1)));
 
     //mageslop
     public static final DeferredItem<Item> GRASPER_SPAWN_EGG = registerSpawnEggItem("grasper", OFEntities.GRASPER, 0x293c3b, 0xac8e16);

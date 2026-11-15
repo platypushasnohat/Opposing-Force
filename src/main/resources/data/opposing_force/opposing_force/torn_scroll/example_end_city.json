@@ -1,0 +1,8 @@
+{
+  "stage": "post_end",
+  "name": {
+    "translate": "torn_scroll.opposing_force.example_end_city.name"
+  },
+  "weight": 10,
+  "structures": "minecraft:end_city"
+}

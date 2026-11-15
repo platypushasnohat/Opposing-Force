@@ -160,5 +160,9 @@ public class OFItemTagsProvider extends ItemTagsProvider {
         ).add(
                 OFItems.MANIA.get()
         );
+
+        this.tag(ItemTags.BOOKSHELF_BOOKS).add(
+                OFItems.TORN_SCROLL.get()
+        );
 	}
 }

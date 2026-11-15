@@ -1,0 +1,5 @@
+Plain text, §lbold§r, §oitalic§r, §nunderlined§r and §mstruck§r.
+
+A blank line above.
+
+Ploop

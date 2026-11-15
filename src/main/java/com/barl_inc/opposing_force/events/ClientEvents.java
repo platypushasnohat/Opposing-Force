@@ -7,6 +7,7 @@ import com.barl_inc.opposing_force.client.model.armor.StormLordArmorModel;
 import com.barl_inc.opposing_force.client.model.entity.*;
 import com.barl_inc.opposing_force.client.model.item.*;
 import com.barl_inc.opposing_force.client.particle.*;
+import com.barl_inc.opposing_force.client.render.block.TornScrollBookshelfRenderer;
 import com.barl_inc.opposing_force.client.render.entity.*;
 import com.barl_inc.opposing_force.client.render.entity.layer.SpectralShieldLayer;
 import com.barl_inc.opposing_force.client.render.item.OFItemExtensions;
@@ -50,6 +51,7 @@ import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.entity.HumanoidArm;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.phys.HitResult;
 import net.minecraft.world.phys.Vec3;
 import net.neoforged.api.distmarker.Dist;
@@ -113,6 +115,7 @@ public class ClientEvents {
         event.registerEntityRenderer(OFEntities.TACHI_SLASH.get(), TachiSlashRenderer::new);
         event.registerEntityRenderer(OFEntities.HERO_SWORD_BEAM.get(), HeroSwordBeamRenderer::new);
         event.registerEntityRenderer(OFEntities.MANIA_BRAIN.get(), ManiaBrainRenderer::new);
+        event.registerBlockEntityRenderer(BlockEntityType.CHISELED_BOOKSHELF, TornScrollBookshelfRenderer::new);
     }
 
     @SubscribeEvent

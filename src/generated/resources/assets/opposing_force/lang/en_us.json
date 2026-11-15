@@ -2,6 +2,7 @@
   "attribute.name.opposing_force.kirin_jumps": "Kirin Jumps",
   "block.opposing_force.mystic_pot": "Mystic Pot",
   "creative_tab.opposing_force": "Opposing Force",
+  "creative_tab.opposing_force.torn_scrolls": "Opposing Force: Torn Scrolls",
   "death.attack.acid_0": "%s was melted by acid",
   "death.attack.acid_0.entity": "%s was dunked in acid by %s",
   "death.attack.acid_1": "%s was liquefied",
@@ -268,6 +269,7 @@
   "item.opposing_force.tooltip.when_fired": "When fired:",
   "item.opposing_force.tooltip.when_thrown": "When thrown:",
   "item.opposing_force.tooltip.when_used_as_ammo": "When used as ammo:",
+  "item.opposing_force.torn_scroll": "Torn Scroll",
   "item.opposing_force.tri_blaster": "Tri-Blaster",
   "item.opposing_force.tuning_fork": "Tuning Fork",
   "item.opposing_force.tuning_fork.description": "Melee hits produce sound waves",
@@ -328,5 +330,14 @@
   "subtitles.opposing_force.terror_saw_end": "Terror stops sawing",
   "subtitles.opposing_force.terror_saw_loop": "Terror saws",
   "subtitles.opposing_force.terror_saw_start": "Terror starts sawing",
-  "subtitles.opposing_force.zombie_reinforcement": "Zombie summons reinforcement"
+  "subtitles.opposing_force.zombie_reinforcement": "Zombie summons reinforcement",
+  "torn_scroll.opposing_force.blank.name": "Blank",
+  "torn_scroll.opposing_force.example.name": "Example",
+  "torn_scroll.opposing_force.example_end_city.name": "End City Example",
+  "torn_scroll.opposing_force.illegible": "The writing is illegible.",
+  "torn_scroll.opposing_force.stage.blank": "Blank",
+  "torn_scroll.opposing_force.stage.post_end": "Post-End",
+  "torn_scroll.opposing_force.stage.post_nether": "Post-Nether",
+  "torn_scroll.opposing_force.stage.pre_nether": "Pre-Nether",
+  "torn_scroll.opposing_force.unread": "Unread"
 }

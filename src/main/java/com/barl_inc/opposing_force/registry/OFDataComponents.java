@@ -2,7 +2,10 @@ package com.barl_inc.opposing_force.registry;
 
 import com.barl_inc.opposing_force.OpposingForce;
 import com.barl_inc.opposing_force.item.ranged.ammo.BulletComponent;
+import com.barl_inc.opposing_force.item.scroll.TornScrollOrigin;
+import com.barl_inc.opposing_force.item.scroll.TornScrollVariant;
 import com.mojang.serialization.Codec;
+import net.minecraft.core.Holder;
 import net.minecraft.core.component.DataComponentType;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.network.codec.ByteBufCodecs;
@@ -22,6 +25,9 @@ public class OFDataComponents {
     public static final DeferredHolder<DataComponentType<?>, DataComponentType<BulletComponent>> BULLET = register("bullet", builder -> builder.persistent(BulletComponent.CODEC).networkSynchronized(BulletComponent.STREAM_CODEC));
 
     public static final DeferredHolder<DataComponentType<?>, DataComponentType<Boolean>> SWAP_HAND = register("swap_hand", builder -> builder.persistent(Codec.BOOL).networkSynchronized(ByteBufCodecs.BOOL));
+
+    public static final DeferredHolder<DataComponentType<?>, DataComponentType<Holder<TornScrollVariant>>> TORN_SCROLL_VARIANT = register("torn_scroll_variant", builder -> builder.persistent(TornScrollVariant.CODEC).networkSynchronized(TornScrollVariant.STREAM_CODEC));
+    public static final DeferredHolder<DataComponentType<?>, DataComponentType<TornScrollOrigin>> TORN_SCROLL_ORIGIN = register("torn_scroll_origin", builder -> builder.persistent(TornScrollOrigin.CODEC).networkSynchronized(TornScrollOrigin.STREAM_CODEC));
 
     private static <T> DeferredHolder<DataComponentType<?>, DataComponentType<T>> register(String name, UnaryOperator<DataComponentType.Builder<T>> builder) {
         return DATA_COMPONENTS.register(name, () -> builder.apply(DataComponentType.builder()).build());

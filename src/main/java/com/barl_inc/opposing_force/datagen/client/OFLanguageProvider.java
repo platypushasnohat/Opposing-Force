@@ -141,6 +141,17 @@ public class OFLanguageProvider extends SinewLanguageProvider {
         this.add("entity.opposing_force.kirin.mount_tip", "Ctrl to sprint, Left Shift to dismount, Ctrl midair to air walk");
         this.add("item.opposing_force.sacrificial_sickle.description", "Grants a burst of speed on kill.");
 
+        this.add("creative_tab.opposing_force.torn_scrolls", "Opposing Force: Torn Scrolls");
+        this.add("torn_scroll.opposing_force.illegible", "The writing is illegible.");
+        this.add("torn_scroll.opposing_force.stage.blank", "Blank");
+        this.add("torn_scroll.opposing_force.stage.pre_nether", "Pre-Nether");
+        this.add("torn_scroll.opposing_force.stage.post_nether", "Post-Nether");
+        this.add("torn_scroll.opposing_force.stage.post_end", "Post-End");
+        this.add("torn_scroll.opposing_force.blank.name", "Blank");
+        this.add("torn_scroll.opposing_force.example.name", "Example");
+        this.add("torn_scroll.opposing_force.example_end_city.name", "End City Example");
+        this.add("torn_scroll.opposing_force.unread", "Unread");
+
         this.add("item.opposing_force.tooltip.magic_damage", "%s Magic Damage");
         this.add("item.opposing_force.tooltip.magic_multi_damage", "%sx%s Magic Damage");
         this.add("item.opposing_force.tooltip.ranged_damage", "%s Ranged Damage");

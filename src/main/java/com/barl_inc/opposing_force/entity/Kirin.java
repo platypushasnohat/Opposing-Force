@@ -368,6 +368,14 @@ public class Kirin extends SummonableMount implements BodyChainMob, PlayerRideab
         if (piercing != null && !piercing.hasModifier(OpposingForce.location("tame_trial_armor_piercing"))) {
             piercing.addPermanentModifier(new AttributeModifier(OpposingForce.location("tame_trial_armor_piercing"), 0.45D, AttributeModifier.Operation.ADD_VALUE)); //GOOD LUCK DUDE
         }
+        AttributeInstance projectileRes = this.getAttribute(SinewAttributes.PROJECTILE_RESISTANCE);
+        if (projectileRes != null && !projectileRes.hasModifier(OpposingForce.location("tame_trial_projectile_resistance"))) {
+            projectileRes.addPermanentModifier(new AttributeModifier(OpposingForce.location("tame_trial_projectile_resistance"), 0.45D, AttributeModifier.Operation.ADD_VALUE)); //GOOD LUCK DUDE
+        }
+        AttributeInstance magicRes = this.getAttribute(SinewAttributes.MAGIC_RESISTANCE);
+        if (magicRes != null && !magicRes.hasModifier(OpposingForce.location("tame_trial_magic_resistance"))) {
+            magicRes.addPermanentModifier(new AttributeModifier(OpposingForce.location("tame_trial_magic_resistance"), 0.45D, AttributeModifier.Operation.ADD_VALUE)); //GOOD LUCK DUDE
+        }
         if (player != null) {
             this.tameTrialPlayer = player.getUUID();
             this.setTarget(player);
@@ -389,6 +397,14 @@ public class Kirin extends SummonableMount implements BodyChainMob, PlayerRideab
         AttributeInstance piercing = this.getAttribute(SinewAttributes.ARMOR_PIERCING);
         if (piercing != null) {
             piercing.removeModifier(OpposingForce.location("tame_trial_armor_piercing"));
+        }
+        AttributeInstance projectileRes = this.getAttribute(SinewAttributes.PROJECTILE_RESISTANCE);
+        if (projectileRes != null) {
+            projectileRes.removeModifier(OpposingForce.location("tame_trial_armor_piercing"));
+        }
+        AttributeInstance magicRes = this.getAttribute(SinewAttributes.MAGIC_RESISTANCE);
+        if (magicRes != null) {
+            magicRes.removeModifier(OpposingForce.location("tame_trial_magic_resistance"));
         }
         this.setTarget(null);
         this.setLastHurtByMob(null);

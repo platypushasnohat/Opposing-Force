@@ -59,6 +59,8 @@ import net.minecraft.world.entity.monster.Husk;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.ServerLevelAccessor;
+import net.minecraft.world.entity.SpawnGroupData;
+import net.minecraft.world.DifficultyInstance;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.AABB;
 import net.minecraft.world.phys.Vec3;
@@ -152,6 +154,7 @@ public class Kirin extends SummonableMount implements BodyChainMob, PlayerRideab
     private DamageSource deathSource;
     private int offeringStage;
     private int tameStep;
+    private boolean naturalSpawn;
     private int sitTicks;
     @Nullable
     private UUID tameTrialPlayer;
@@ -215,9 +218,16 @@ public class Kirin extends SummonableMount implements BodyChainMob, PlayerRideab
     }
 
     @Override
+    public SpawnGroupData finalizeSpawn(ServerLevelAccessor level, DifficultyInstance difficulty, MobSpawnType spawnType, @Nullable SpawnGroupData spawnGroupData) {
+        this.naturalSpawn = spawnType == MobSpawnType.NATURAL;
+        return super.finalizeSpawn(level, difficulty, spawnType, spawnGroupData);
+    }
+
+    @Override
     public void addAdditionalSaveData(CompoundTag compound) {
         super.addAdditionalSaveData(compound);
         compound.putInt("IdleBlendCooldown", this.idleBlendCooldown);
+        compound.putBoolean("NaturalSpawn", this.naturalSpawn);
         if (this.tameTrialPlayer != null) {
             compound.putUUID("TameTrialPlayer", this.tameTrialPlayer);
         }
@@ -227,6 +237,7 @@ public class Kirin extends SummonableMount implements BodyChainMob, PlayerRideab
     public void readAdditionalSaveData(CompoundTag compound) {
         super.readAdditionalSaveData(compound);
         this.idleBlendCooldown = compound.getInt("IdleBlendCooldown");
+        this.naturalSpawn = compound.getBoolean("NaturalSpawn");
         this.setNoGravity(false);
         if (compound.hasUUID("TameTrialPlayer")) {
             this.tameTrialPlayer = compound.getUUID("TameTrialPlayer");

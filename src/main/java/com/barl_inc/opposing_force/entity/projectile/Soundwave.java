@@ -378,8 +378,8 @@ public class Soundwave extends Projectile {
 
     public enum Type {
         SCREAM(new float[]{0.45F, 0.6F, 0.75F, 0.9F, 1.05F, 1.2F}, new float[]{1.6F, 1.35F, 1.1F, 0.85F, 0.6F, 0.35F}, new float[]{6.0F, 4.0F, 4.0F, 2.0F, 2.0F, 1.0F}, 6, 300, SoundEvents.PHANTOM_AMBIENT, SoundSource.HOSTILE, 1.2F),
-        FORK(new float[]{0.9F, 0.97F, 1.04F, 1.11F, 1.18F, 1.25F, 1.32F, 1.4F}, new float[]{1.6F, 1.42F, 1.24F, 1.06F, 0.88F, 0.7F, 0.52F, 0.35F}, new float[]{8.0F, 8.0F, 6.0F, 6.0F, 4.0F, 4.0F, 2.0F, 2.0F}, 8, 300, SoundEvents.BELL_BLOCK, SoundSource.PLAYERS, 1.6F),
-        SPLIT(new float[]{0.6F}, new float[]{1.0F, 0.66F, 0.33F}, new float[]{8.0F, 6.0F, 4.0F}, 3, 100, SoundEvents.BELL_BLOCK, SoundSource.PLAYERS, 1.6F);
+        FORK(new float[]{0.9F, 0.97F, 1.04F, 1.11F, 1.18F, 1.25F, 1.32F, 1.4F}, new float[]{1.6F, 1.42F, 1.24F, 1.06F, 0.88F, 0.7F, 0.52F, 0.35F}, new float[]{6.0F, 6.0F, 4.0F, 4.0F, 2.0F, 2.0F, 1.0F, 1.0F}, 8, 300, SoundEvents.BELL_BLOCK, SoundSource.PLAYERS, 1.6F),
+        SPLIT(new float[]{0.6F}, new float[]{1.0F, 0.66F, 0.33F}, new float[]{5.0F, 3.0F, 1.0F}, 3, 100, SoundEvents.BELL_BLOCK, SoundSource.PLAYERS, 1.6F);
 
         private final float[] speeds;
         private final float[] sizes;

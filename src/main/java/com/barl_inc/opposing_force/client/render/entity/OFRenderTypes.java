@@ -69,8 +69,31 @@ public class OFRenderTypes extends SinewRenderTypes {
             .setOutputState(WEATHER_TARGET)
             .createCompositeState(false));
 
+    private static final RenderType ELECTRIC_ARC_OVERLAY = create("electric_arc_overlay", DefaultVertexFormat.POSITION_COLOR, VertexFormat.Mode.QUADS, 1536, false, false, CompositeState.builder()
+            .setShaderState(RENDERTYPE_LIGHTNING_SHADER)
+            .setTransparencyState(LIGHTNING_TRANSPARENCY)
+            .setWriteMaskState(COLOR_WRITE)
+            .setCullState(NO_CULL)
+            .createCompositeState(false));
+
+    private static final RenderType ELECTRIC_ARC_DEPTH = create("electric_arc_depth", DefaultVertexFormat.POSITION_COLOR, VertexFormat.Mode.QUADS, 1536, false, false, CompositeState.builder()
+            .setShaderState(RENDERTYPE_LIGHTNING_SHADER)
+            .setTransparencyState(LIGHTNING_TRANSPARENCY)
+            .setWriteMaskState(DEPTH_WRITE)
+            .setCullState(NO_CULL)
+            .setOutputState(WEATHER_TARGET)
+            .createCompositeState(false));
+
+    public static RenderType getElectricArcDepth() {
+        return ELECTRIC_ARC_DEPTH;
+    }
+
     public static RenderType getElectricArc() {
         return ELECTRIC_ARC;
+    }
+
+    public static RenderType getElectricArcOverlay() {
+        return ELECTRIC_ARC_OVERLAY;
     }
 
     public static RenderType getLaserBolt(ResourceLocation resourceLocation) {

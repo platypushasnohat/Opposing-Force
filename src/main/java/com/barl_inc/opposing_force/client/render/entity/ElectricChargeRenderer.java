@@ -1,5 +1,6 @@
 package com.barl_inc.opposing_force.client.render.entity;
 
+import com.barl_inc.opposing_force.client.render.ElectricArcRendering;
 import com.barl_inc.opposing_force.entity.projectile.ElectricCharge;
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.VertexConsumer;
@@ -87,7 +88,7 @@ public class ElectricChargeRenderer extends EntityRenderer<ElectricCharge> {
         poseStack.pushPose();
         poseStack.translate(0.0F, entity.getBbHeight() / 2.0F, 0.0F);
         Matrix4f pose = poseStack.last().pose();
-        VertexConsumer consumer = bufferSource.getBuffer(OFRenderTypes.getElectricArc());
+        VertexConsumer consumer = ElectricArcRendering.getBuffer();
 
         float baseWidth = discharging ? 0.032F : 0.021F;
         for (float[] layer : LAYERS) {

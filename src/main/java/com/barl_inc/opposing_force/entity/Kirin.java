@@ -695,7 +695,7 @@ public class Kirin extends SummonableMount implements BodyChainMob, PlayerRideab
         }
     }
 
-    public void dashChargeParticles() { //when its chargng up, doesnt play during dash
+    public void dashChargeParticles() { //when its chargng up, doesn't play during dash
         ((ServerLevel) this.level()).sendParticles(OFParticleTypes.ELECTRIC_ARC.get(), this.getX(), this.getY(0.5D), this.getZ(), 8, this.getBbWidth() * 0.5D, this.getBbHeight() * 0.35D, this.getBbWidth() * 0.5D, 0.0D);
     }
 
@@ -813,7 +813,7 @@ public class Kirin extends SummonableMount implements BodyChainMob, PlayerRideab
         if (this.idleBlendCooldown > 0) {
             this.idleBlendCooldown--;
         }
-        if (!this.level().isThundering() && !this.isTame() && !this.isSummoned() && this.getTarget() == null && this.offeringStage == 0 && this.tameTrialPlayer == null) {
+        if (this.naturalSpawn && !this.level().isThundering() && !this.isTame() && !this.isSummoned() && this.getTarget() == null && this.offeringStage == 0 && this.tameTrialPlayer == null) {
             this.expire();
         }
     }

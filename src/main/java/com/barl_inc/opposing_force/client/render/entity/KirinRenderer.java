@@ -1,5 +1,6 @@
 package com.barl_inc.opposing_force.client.render.entity;
 
+import com.barl_inc.opposing_force.client.render.ElectricArcRendering;
 import com.barl_inc.opposing_force.OpposingForce;
 import com.barl_inc.opposing_force.client.model.entity.KirinModel;
 import com.barl_inc.opposing_force.client.render.entity.layer.KirinDeathGlowLayer;
@@ -48,7 +49,7 @@ public class KirinRenderer extends MobRenderer<Kirin, KirinModel> {
             float radius = Mth.lerp(grow * grow, 0.05F, 1.0F) * (1.0F - close);
             float bottom = 64.0F * (1.0F - descend * descend);
             Matrix4f pose = poseStack.last().pose();
-            VertexConsumer consumer = buffer.getBuffer(OFRenderTypes.getElectricArc());
+            VertexConsumer consumer = ElectricArcRendering.getBuffer();
             drawPrism(consumer, pose, radius, bottom, 0.6F, 0.85F, 0.92F, 0.6F);
             drawPrism(consumer, pose, radius * 0.55F, bottom, 1.0F, 1.0F, 1.0F, 0.9F);
         }

@@ -7,6 +7,7 @@ import com.barl_inc.opposing_force.client.model.armor.StormLordArmorModel;
 import com.barl_inc.opposing_force.client.model.entity.*;
 import com.barl_inc.opposing_force.client.model.item.*;
 import com.barl_inc.opposing_force.client.particle.*;
+import com.barl_inc.opposing_force.client.render.ElectricArcRendering;
 import com.barl_inc.opposing_force.client.render.entity.*;
 import com.barl_inc.opposing_force.client.render.entity.layer.SpectralShieldLayer;
 import com.barl_inc.opposing_force.client.render.item.OFItemExtensions;
@@ -335,6 +336,7 @@ public class ClientEvents {
 
     @SubscribeEvent
     public static void onRenderLevelStage(RenderLevelStageEvent event) {
+        ElectricArcRendering.onRenderLevelStage(event);
         Minecraft minecraft = Minecraft.getInstance();
         LocalPlayer player = minecraft.player;
         if (event.getStage() == RenderLevelStageEvent.Stage.AFTER_ENTITIES && player != null && minecraft.options.getCameraType().isFirstPerson() && SpectralShieldLayer.hasShields(player)) {

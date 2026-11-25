@@ -1,17 +1,14 @@
 package com.barl_inc.opposing_force.client.particle;
 
+import com.barl_inc.opposing_force.client.render.ElectricArcRendering;
 import com.barl_inc.opposing_force.client.render.entity.ElectricChargeRenderer;
-import com.barl_inc.opposing_force.client.render.entity.OFRenderTypes;
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.VertexConsumer;
 import net.minecraft.client.Camera;
-import net.minecraft.client.Minecraft;
 import net.minecraft.client.multiplayer.ClientLevel;
 import net.minecraft.client.particle.Particle;
 import net.minecraft.client.particle.ParticleProvider;
 import net.minecraft.client.particle.ParticleRenderType;
-import net.minecraft.client.renderer.MultiBufferSource;
-import net.minecraft.client.renderer.RenderType;
 import net.minecraft.core.particles.SimpleParticleType;
 import net.minecraft.util.Mth;
 import net.minecraft.world.phys.Vec3;
@@ -109,13 +106,10 @@ public class ElectricArcParticle extends Particle {
             poseStack.translate(x - cameraPos.x, y - cameraPos.y, z - cameraPos.z);
             Matrix4f pose = poseStack.last().pose();
 
-            MultiBufferSource.BufferSource bufferSource = Minecraft.getInstance().renderBuffers().bufferSource();
-            RenderType renderType = OFRenderTypes.getElectricArc();
-            VertexConsumer consumer = bufferSource.getBuffer(renderType);
+            VertexConsumer consumer = ElectricArcRendering.getBuffer();
             for (float[] layer : ElectricChargeRenderer.LAYERS) {
                 ElectricChargeRenderer.drawArc(consumer, pose, toCamera, this.points, WIDTH * layer[0], layer[1], layer[2], layer[3], layer[4] * alpha);
             }
-            bufferSource.endBatch(renderType);
         }
     }
 

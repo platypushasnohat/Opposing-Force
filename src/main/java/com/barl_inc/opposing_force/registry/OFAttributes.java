@@ -12,5 +12,5 @@ public class OFAttributes {
     public static final DeferredRegister<Attribute> ATTRIBUTES = DeferredRegister.create(Registries.ATTRIBUTE, OpposingForce.MOD_ID);
 
     public static final DeferredHolder<Attribute, Attribute> KIRIN_JUMPS = ATTRIBUTES.register("kirin_jumps", () -> new RangedAttribute("attribute.name.opposing_force.kirin_jumps", 0.0D, 0.0D, 64.0D).setSyncable(true));
-    public static final DeferredHolder<Attribute, Attribute> ELECTRIFIED_TIME = ATTRIBUTES.register("electrified_time", () -> new RangedAttribute("attribute.name.opposing_force.electrified_time", 1.0D, 0.0D, 1024.0D).setSyncable(true));
+    public static final DeferredHolder<Attribute, Attribute> ELECTRIFIED_TIME = ATTRIBUTES.register("electrified_time", () -> new RangedAttribute("attribute.name.opposing_force.electrified_time", 1.0D, 0.0D, 1024.0D).setSyncable(true).setSentiment(Attribute.Sentiment.NEGATIVE));
 }

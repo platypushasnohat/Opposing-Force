@@ -31,8 +31,13 @@ public class ShockerModel extends SinewEntityModel<Shocker> {
     @Override
     protected void setupAnimations(Shocker entity, float limbSwing, float limbSwingAmount, float ageInTicks, float partialTicks, float netHeadYaw, float headPitch) {
         this.animateWalkSmooth(entity.walkAnimationState, ShockerAnimations.WALK, limbSwing, limbSwingAmount, 2.0F, 4.0F, partialTicks);
+        this.animateWalkSmooth(entity.aggroWalkAnimationState, ShockerAnimations.AGGRO_WALK, limbSwing, limbSwingAmount, 2.0F, 4.0F, partialTicks);
         this.animateIdleSmooth(entity.idleAnimationState, ShockerAnimations.IDLE, ageInTicks, partialTicks, limbSwingAmount);
+        this.animateIdleSmooth(entity.aggroIdleAnimationState, ShockerAnimations.AGGRO_IDLE, ageInTicks, partialTicks, limbSwingAmount);
+        this.animateSmooth(entity.aggroStartAnimationState, ShockerAnimations.AGGRO_START, ageInTicks, partialTicks);
         this.animateSmooth(entity.tweakAnimationState, ShockerAnimations.TWEAKING, ageInTicks, partialTicks);
+        this.animateSmooth(entity.chargeAnimationState, ShockerAnimations.CHARGE_BLEND, ageInTicks, partialTicks);
+        this.animateSmooth(entity.shootAnimationState, ShockerAnimations.SHOOT_BLEND, ageInTicks, partialTicks);
         this.head.yRot += (entity.getHeadSpin(partialTicks) + netHeadYaw) * Mth.DEG_TO_RAD;
     }
 

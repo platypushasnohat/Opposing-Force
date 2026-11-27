@@ -14,6 +14,7 @@ import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.Mob;
 import net.minecraft.world.entity.ai.attributes.AttributeSupplier;
 import net.minecraft.world.entity.ai.attributes.Attributes;
+import net.minecraft.world.entity.ai.control.BodyRotationControl;
 import net.minecraft.world.entity.ai.goal.FloatGoal;
 import net.minecraft.world.entity.ai.goal.Goal;
 import net.minecraft.world.entity.ai.goal.LookAtPlayerGoal;
@@ -23,6 +24,8 @@ import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.LightLayer;
 import net.minecraft.world.level.block.state.BlockState;
+
+import java.util.EnumSet;
 
 public class Shocker extends AnimatedMonster {
 
@@ -58,10 +61,21 @@ public class Shocker extends AnimatedMonster {
     @Override
     protected void registerGoals() {
         this.goalSelector.addGoal(0, new FloatGoal(this));
-        this.goalSelector.addGoal(2, new WaterAvoidingRandomStrollGoal(this, 1.0D));
-        this.goalSelector.addGoal(3, new LookAtPlayerGoal(this, Player.class, 6.0F));
-        this.goalSelector.addGoal(3, new RandomLookAroundGoal(this));
-        this.goalSelector.addGoal(4, new ShockerHeadSpinGoal(this));
+        this.goalSelector.addGoal(1, new ShockerTweakGoal(this));
+        this.goalSelector.addGoal(2, new ShockerHeadSpinGoal(this));
+        this.goalSelector.addGoal(3, new WaterAvoidingRandomStrollGoal(this, 1.0D));
+        this.goalSelector.addGoal(4, new LookAtPlayerGoal(this, Player.class, 8.0F, 0.05F));
+        this.goalSelector.addGoal(4, new RandomLookAroundGoal(this));
+    }
+
+    @Override
+    protected BodyRotationControl createBodyControl() {
+        return new ShockerBodyRotationControl(this);
+    }
+
+    @Override
+    public int getMaxHeadYRot() {
+        return 180;
     }
 
     @Override
@@ -94,10 +108,14 @@ public class Shocker extends AnimatedMonster {
             this.headSpin = this.getHeadSpin();
             this.prevGlow = this.glow;
             this.glow += (this.getDarkness() - this.glow) * 0.1F;
-            if (this.tweakTicks > 0) {
-                this.tweakTicks--;
-            }
         }
+        if (this.tweakTicks > 0) {
+            this.tweakTicks--;
+        }
+    }
+
+    public boolean isTweaking() {
+        return this.tweakTicks > 0;
     }
 
     public float getDarkness() {
@@ -112,10 +130,15 @@ public class Shocker extends AnimatedMonster {
     @Override
     protected void customServerAiStep() {
         super.customServerAiStep();
+        if (this.getTarget() != null) {
+            this.getLookControl().setLookAt(this.getTarget(), 30.0F, 30.0F);
+            this.setHeadSpin(Mth.approachDegrees(this.getHeadSpin(), 0.0F, 10.0F));
+        }
         this.tweakCooldown--;
         if (this.tweakCooldown <= 0) {
             this.level().broadcastEntityEvent(this, TWEAK_EVENT);
-            this.tweakCooldown = 100 + this.getRandom().nextInt(101);
+            this.tweakTicks = 40;
+            this.tweakCooldown = 400 + this.getRandom().nextInt(101);
         }
     }
 
@@ -162,24 +185,69 @@ public class Shocker extends AnimatedMonster {
         this.playSound(SoundEvents.SPIDER_STEP, 0.15F, 1.0F);
     }
 
+    //idea here is only head turns when looking at stuff
+    private static class ShockerBodyRotationControl extends BodyRotationControl {
+
+        private final Shocker shocker;
+
+        public ShockerBodyRotationControl(Shocker shocker) {
+            super(shocker);
+            this.shocker = shocker;
+        }
+
+        @Override
+        public void clientTick() {
+            if (this.shocker.getDeltaMovement().horizontalDistanceSqr() > 2.5E-7D) {
+                this.shocker.yBodyRot = this.shocker.getYRot();
+            }
+        }
+    }
+
+    private static class ShockerTweakGoal extends Goal {
+
+        private final Shocker shocker;
+
+        public ShockerTweakGoal(Shocker shocker) {
+            this.shocker = shocker;
+            this.setFlags(EnumSet.of(Flag.MOVE, Flag.LOOK));
+        }
+
+        @Override
+        public boolean canUse() {
+            return this.shocker.isTweaking() && this.shocker.getTarget() == null;
+        }
+
+        @Override
+        public void start() {
+            this.shocker.getNavigation().stop();
+        }
+    }
+
     private static class ShockerHeadSpinGoal extends Goal {
 
         private final Shocker shocker;
         private float direction;
         private float spun;
+        private int nextSpinTick;
 
         public ShockerHeadSpinGoal(Shocker shocker) {
             this.shocker = shocker;
+            this.setFlags(EnumSet.of(Flag.MOVE, Flag.LOOK));
         }
 
         @Override
         public boolean canUse() {
-            return this.shocker.getRandom().nextInt(reducedTickDelay(200)) == 0;
+            return this.shocker.tickCount >= this.nextSpinTick && this.shocker.getTarget() == null && this.shocker.getNavigation().isDone() && this.shocker.getDeltaMovement().horizontalDistanceSqr() < 1.0E-4D && this.shocker.getRandom().nextInt(reducedTickDelay(200)) == 0;
         }
 
         @Override
         public boolean canContinueToUse() {
-            return this.spun < 360.0F;
+            return this.spun < 360.0F && this.shocker.getTarget() == null;
+        }
+
+        @Override
+        public boolean isInterruptable() {
+            return false;
         }
 
         @Override
@@ -191,6 +259,11 @@ public class Shocker extends AnimatedMonster {
         public void start() {
             this.direction = this.shocker.getRandom().nextBoolean() ? 1.0F : -1.0F;
             this.spun = 0.0F;
+        }
+
+        @Override
+        public void stop() {
+            this.nextSpinTick = this.shocker.tickCount + 400;
         }
 
         @Override

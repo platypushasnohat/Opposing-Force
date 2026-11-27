@@ -33,7 +33,7 @@ public class ShockerModel extends SinewEntityModel<Shocker> {
         this.animateWalkSmooth(entity.walkAnimationState, ShockerAnimations.WALK, limbSwing, limbSwingAmount, 2.0F, 4.0F, partialTicks);
         this.animateIdleSmooth(entity.idleAnimationState, ShockerAnimations.IDLE, ageInTicks, partialTicks, limbSwingAmount);
         this.animateSmooth(entity.tweakAnimationState, ShockerAnimations.TWEAKING, ageInTicks, partialTicks);
-        this.head.yRot += entity.getHeadSpin(partialTicks) * Mth.DEG_TO_RAD;
+        this.head.yRot += (entity.getHeadSpin(partialTicks) + netHeadYaw) * Mth.DEG_TO_RAD;
     }
 
     public static LayerDefinition createBodyLayer() {
@@ -57,9 +57,9 @@ public class ShockerModel extends SinewEntityModel<Shocker> {
                 .texOffs(0, 50).addBox(-5.0F, -0.5F, -24.0F, 2.0F, 1.0F, 23.0F, new CubeDeformation(0.0F))
                 .texOffs(0, 0).addBox(-6.0F, -0.5F, -24.5F, 5.0F, 1.0F, 23.0F, new CubeDeformation(0.5F)), PartPose.offset(-0.5F, -0.5F, 0.0F));
 
-        head.addOrReplaceChild("eye_right", CubeListBuilder.create().texOffs(-5, 74).addBox(-5.0F, 0.0F, -0.5F, 5.0F, 0.0F, 5.0F, EnumSet.of(Direction.UP)), PartPose.offsetAndRotation(-5.5F, -1.0F, 0.5F, 0.9599F, 0.0F, 0.0F));
+        head.addOrReplaceChild("eye_right", CubeListBuilder.create().texOffs(-5, 74).addBox(-5.0F, 0.0F, -0.5F, 5.0F, 0.0F, 5.0F, EnumSet.of(Direction.DOWN)), PartPose.offsetAndRotation(-5.5F, -1.0F, 0.5F, 0.9599F, 0.0F, 0.0F));
 
-        head.addOrReplaceChild("eye_left", CubeListBuilder.create().texOffs(-5, 79).addBox(0.0F, 0.0F, -0.5F, 5.0F, 0.0F, 5.0F, EnumSet.of(Direction.UP)), PartPose.offsetAndRotation(5.5F, -1.0F, 0.5F, 0.9599F, 0.0F, 0.0F));
+        head.addOrReplaceChild("eye_left", CubeListBuilder.create().texOffs(-5, 79).addBox(0.0F, 0.0F, -0.5F, 5.0F, 0.0F, 5.0F, EnumSet.of(Direction.DOWN)), PartPose.offsetAndRotation(5.5F, -1.0F, 0.5F, 0.9599F, 0.0F, 0.0F));
 
         PartDefinition leg_control = body_main.addOrReplaceChild("leg_control", CubeListBuilder.create(), PartPose.offset(0.0F, 2.0F, 0.0F));
 

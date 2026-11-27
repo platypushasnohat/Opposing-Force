@@ -81,7 +81,7 @@ public class OFItems {
     public static final DeferredItem<Item> FIERY_CARAPACE = registerItem("fiery_carapace", () -> new CurioItem(new Item.Properties(), OFCurioDefinitions.FIERY_CARAPACE));
     public static final DeferredItem<Item> OBSIDIAN_HUSK = registerItem("obsidian_husk", () -> new CurioItem(new Item.Properties().rarity(Rarity.RARE), OFCurioDefinitions.BEETLE_HUSK));
     //post end beetlegem
-    public static final DeferredItem<Item> SHOCKER_SPAWN_EGG = registerSpawnEggItem("shocker", OFEntities.SHOCKER, 0x2a3889, 0xac20df);
+    public static final DeferredItem<Item> SHOCKER_SPAWN_EGG = registerSpawnEggItem("shocker", OFEntities.SHOCKER, 0x392043, 0x5ac4d2);
     public static final DeferredItem<Item> VOLTAIC_CARAPACE = registerItem("voltaic_carapace", () -> new CurioItem(new Item.Properties(), OFCurioDefinitions.VOLTAIC_CARAPACE));
 
     public static final DeferredItem<Item> FURBALL_SPAWN_EGG = registerSpawnEggItem("furball", OFEntities.FURBALL, 0x5e564c, 0x1c1714);

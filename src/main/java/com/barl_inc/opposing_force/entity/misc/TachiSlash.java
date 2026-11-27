@@ -36,14 +36,16 @@ public class TachiSlash extends Entity {
         this.noPhysics = true;
     }
 
-    public TachiSlash(Level level, LivingEntity owner, Vec3 pos, float yaw, float damage, Collection<? extends Entity> alreadyHit) {
+    public TachiSlash(Level level, LivingEntity owner, Vec3 pos, float yaw, float pitch, float damage, Collection<? extends Entity> alreadyHit) {
         this(OFEntities.TACHI_SLASH.get(), level);
         this.owner = owner;
         this.damage = damage;
         this.setPos(pos);
         this.setYRot(yaw);
         this.yRotO = yaw;
-        this.setDeltaMovement(Vec3.directionFromRotation(0.0F, yaw).scale(SPEED));
+        this.setXRot(pitch);
+        this.xRotO = pitch;
+        this.setDeltaMovement(Vec3.directionFromRotation(pitch, yaw).scale(SPEED));
         for (Entity entity : alreadyHit) {
             this.hitEntities.add(entity.getUUID());
         }

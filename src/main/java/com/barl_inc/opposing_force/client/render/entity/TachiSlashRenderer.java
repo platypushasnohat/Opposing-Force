@@ -38,6 +38,7 @@ public class TachiSlashRenderer extends EntityRenderer<TachiSlash> {
         poseStack.pushPose();
         poseStack.translate(0.0F, entity.getBbHeight() / 2.0F, 0.0F);
         poseStack.mulPose(Axis.YP.rotationDegrees(-Mth.lerp(partialTicks, entity.yRotO, entity.getYRot())));
+        poseStack.mulPose(Axis.XP.rotationDegrees(Mth.lerp(partialTicks, entity.xRotO, entity.getXRot())));
         PoseStack.Pose pose = poseStack.last();
         VertexConsumer consumer = buffer.getBuffer(RenderType.entityTranslucent(FRAMES[frame]));
         vertex(consumer, pose, -half, half, 0.0F, 0.0F, alpha);

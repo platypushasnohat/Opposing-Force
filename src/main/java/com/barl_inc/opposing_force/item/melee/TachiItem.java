@@ -77,10 +77,10 @@ public class TachiItem extends SwordItem {
             }
         }
         if (fullyCharged) {
-            Vec3 forward = Vec3.directionFromRotation(0.0F, player.getYRot());
+            Vec3 forward = Vec3.directionFromRotation(player.getXRot(), player.getYRot());
             Vec3 start = player.position().add(forward).add(0.0D, player.getBbHeight() * 0.55D - 0.25D, 0.0D);
             float slashDamage = Math.max(0.0F, 4.0F + (baseDamage - 6.0F) / 2.0F);
-            level.addFreshEntity(new TachiSlash(level, player, start, player.getYRot(), slashDamage, targets));
+            level.addFreshEntity(new TachiSlash(level, player, start, player.getYRot(), player.getXRot(), slashDamage, targets));
         }
         Vec3 front = eye.add(look.scale(1.5D));
         level.sendParticles(ParticleTypes.SWEEP_ATTACK, front.x, front.y - 0.3D, front.z, 1, 0.0D, 0.0D, 0.0D, 0.0D);

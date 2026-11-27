@@ -13,6 +13,7 @@ import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.util.Mth;
 import net.minecraft.world.entity.EquipmentSlot;
+import net.minecraft.world.entity.RelativeMovement;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
@@ -84,7 +85,7 @@ public class ReconKnightArmorItem extends SkinLayerHidingArmorItem {
             Vec3 end = start.add(heading.scale(distance));
             spawnDashEffects(level, player, start, end);
 
-            player.connection.teleport(end.x, end.y, end.z, player.getYRot(), player.getXRot());
+            player.connection.teleport(end.x, end.y, end.z, player.getYRot(), player.getXRot(), RelativeMovement.ALL);
             player.resetFallDistance();
             PacketDistributor.sendToPlayersTrackingEntityAndSelf(player, new ReconDashEffectPayload(player.getId(), start, end));
 

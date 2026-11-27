@@ -1,5 +1,6 @@
 package com.barl_inc.opposing_force.entity;
 
+import com.barl_inc.opposing_force.config.OFConfig;
 import com.barl_inc.opposing_force.entity.ai.goal.GrellConjureGoal;
 import com.barl_inc.opposing_force.entity.ai.goal.PhasingWanderGoal;
 import com.barl_inc.opposing_force.entity.base.BasicFlyingMonster;
@@ -7,6 +8,8 @@ import com.barl_inc.opposing_force.entity.misc.GrellClone;
 import com.barl_inc.opposing_force.entity.misc.GrellShuffle;
 import com.barl_inc.opposing_force.registry.OFDamageTypes;
 import com.barl_inc.opposing_force.registry.OFEntities;
+import com.barl_inc.opposing_force.registry.OFMobEffects;
+import net.minecraft.world.effect.MobEffectInstance;
 import com.platypushasnohat.sinew.Sinew;
 import com.platypushasnohat.sinew.client.animation.SmoothAnimationState;
 import com.platypushasnohat.sinew.entity.ai.goal.AttackGoal;
@@ -482,7 +485,9 @@ public class Grell extends BasicFlyingMonster implements SpectralEntity, EliteMo
 
     public void punishBite(LivingEntity target) {
         DamageSource source = new DamageSource(this.level().registryAccess().registryOrThrow(Registries.DAMAGE_TYPE).getHolderOrThrow(OFDamageTypes.GRELL_BITE), this);
-        target.hurt(source, (float) this.getAttributeValue(Attributes.ATTACK_DAMAGE) * 2.0F);
+        if (target.hurt(source, (float) this.getAttributeValue(Attributes.ATTACK_DAMAGE) * 2.0F) && OFConfig.GRELL_BITE_MANIA.get()) {
+            target.addEffect(new MobEffectInstance(OFMobEffects.MANIA, 140, this.isElite() ? 1 : 0), this);
+        }
     }
 
     public void endIllusion() {

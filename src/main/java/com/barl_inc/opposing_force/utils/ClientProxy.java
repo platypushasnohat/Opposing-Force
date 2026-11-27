@@ -1,14 +1,15 @@
 package com.barl_inc.opposing_force.utils;
 
-import com.barl_inc.opposing_force.client.particle.ReconAfterImageParticle;
-import com.barl_inc.opposing_force.client.particle.StaticAfterImageParticle;
 import com.barl_inc.opposing_force.client.sound.*;
-import com.barl_inc.opposing_force.client.utils.MidairJumpHandler;
 import com.barl_inc.opposing_force.entity.Gnat;
 import com.barl_inc.opposing_force.entity.Terror;
 import com.barl_inc.opposing_force.entity.misc.DicerLaser;
 import com.barl_inc.opposing_force.entity.projectile.ElectricCharge;
 import com.barl_inc.opposing_force.entity.projectile.LaserBlade;
+import com.barl_inc.opposing_force.client.particle.ReconAfterImageParticle;
+import com.barl_inc.opposing_force.client.particle.StaticAfterImageParticle;
+import com.barl_inc.opposing_force.client.utils.MidairJumpHandler;
+import com.barl_inc.opposing_force.client.utils.ReconDashFov;
 import com.platypushasnohat.sinew.mixins.client.SoundEngineAccessor;
 import com.platypushasnohat.sinew.mixins.client.SoundManagerAccessor;
 import it.unimi.dsi.fastutil.ints.Int2ObjectMap;
@@ -18,8 +19,8 @@ import net.minecraft.client.multiplayer.ClientLevel;
 import net.minecraft.client.resources.sounds.AbstractTickableSoundInstance;
 import net.minecraft.client.sounds.SoundEngine;
 import net.minecraft.client.sounds.SoundManager;
-import net.minecraft.util.Mth;
 import net.minecraft.world.entity.Entity;
+import net.minecraft.util.Mth;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.phys.Vec3;
 
@@ -142,6 +143,9 @@ public class ClientProxy extends CommonProxy {
     public void spawnReconDashAfterImages(int entityId, Vec3 start, Vec3 end) {
         ClientLevel level = Minecraft.getInstance().level;
         if (level != null && level.getEntity(entityId) instanceof LivingEntity entity) {
+            if (entity == Minecraft.getInstance().player) {
+                ReconDashFov.trigger(entity.tickCount);
+            }
             Vec3 path = end.subtract(start);
             int count = Math.min(10, Math.max(2, (int) (path.length() / 0.75D)));
             for (int i = 0; i < count; i++) {

@@ -16,6 +16,7 @@ import com.barl_inc.opposing_force.client.render.item.TachiAnimations;
 import com.barl_inc.opposing_force.client.render.shader.ManiaTrip;
 import com.barl_inc.opposing_force.client.render.shader.SpectralLensOverlay;
 import com.barl_inc.opposing_force.client.utils.MidairJumpHandler;
+import com.barl_inc.opposing_force.client.utils.ReconDashFov;
 import com.barl_inc.opposing_force.client.utils.ReconDashHandler;
 import com.barl_inc.opposing_force.item.SpectralShieldItem;
 import com.barl_inc.opposing_force.item.base.GunItem;
@@ -399,7 +400,10 @@ public class ClientEvents {
 
     @SubscribeEvent
     public static void onComputeFov(ViewportEvent.ComputeFov event) {
-        event.setFOV(ManiaTrip.modifyFov(event.getFOV(), (float) event.getPartialTick()));
+        float partialTicks = (float) event.getPartialTick();
+        double fov = ManiaTrip.modifyFov(event.getFOV(), partialTicks);
+        fov = ReconDashFov.modifyFov(fov, partialTicks);
+        event.setFOV(fov);
     }
 
     @SubscribeEvent

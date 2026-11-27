@@ -141,6 +141,7 @@ public class OFCreativeTabs {
                         output.accept(OFItems.RANGER_MANUAL);
                         output.accept(OFItems.THORNY_BRACELET);
                         output.accept(OFItems.FIERY_CARAPACE);
+                        output.accept(OFItems.VOLTAIC_CARAPACE);
                         output.accept(OFItems.OBSIDIAN_HUSK);
 
                         output.accept(OFItems.BLACK_BELT);

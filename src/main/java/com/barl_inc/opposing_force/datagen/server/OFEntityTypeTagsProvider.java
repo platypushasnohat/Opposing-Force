@@ -28,7 +28,8 @@ public class OFEntityTypeTagsProvider extends EntityTypeTagsProvider {
 				OFEntities.GUSHER.get(),
 				OFEntities.GNAT.get(),
 				OFEntities.SCORCHER.get(),
-				OFEntities.TARANTULA.get()
+				OFEntities.TARANTULA.get(),
+				OFEntities.SHOCKER.get()
 		);
 
         this.tag(OFEntityTypeTags.SLIMY).add(
@@ -56,7 +57,8 @@ public class OFEntityTypeTagsProvider extends EntityTypeTagsProvider {
 
         this.tag(SinewEntityTags.POST_END_SPAWNS).add(
                 OFEntities.GRELL.get(),
-                OFEntities.KIRIN.get()
+                OFEntities.KIRIN.get(),
+				OFEntities.SHOCKER.get()
         );
 
         this.tag(OFEntityTypeTags.PIPSQUEAK_CANNOT_SWALLOW).add(
@@ -75,7 +77,8 @@ public class OFEntityTypeTagsProvider extends EntityTypeTagsProvider {
                 OFEntities.SCORCHER.get(),
                 OFEntities.TARANTULA.get(),
                 OFEntities.BEWILDER.get(),
-                OFEntities.GNAT.get()
+                OFEntities.GNAT.get(),
+				OFEntities.SHOCKER.get()
         );
 
         this.tag(OFEntityTypeTags.PROJECTILE_BYPASSES_BRICK).add(

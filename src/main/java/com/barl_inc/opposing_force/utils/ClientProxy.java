@@ -1,8 +1,8 @@
 package com.barl_inc.opposing_force.utils;
 
 import com.barl_inc.opposing_force.client.sound.*;
-import com.barl_inc.opposing_force.entity.Gnat;
-import com.barl_inc.opposing_force.entity.Terror;
+import com.barl_inc.opposing_force.entity.pre_nether.Gnat;
+import com.barl_inc.opposing_force.entity.post_nether.Terror;
 import com.barl_inc.opposing_force.entity.misc.DicerLaser;
 import com.barl_inc.opposing_force.entity.projectile.ElectricCharge;
 import com.barl_inc.opposing_force.entity.projectile.LaserBlade;

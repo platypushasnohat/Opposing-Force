@@ -1,6 +1,6 @@
 package com.barl_inc.opposing_force.entity.ai.goal;
 
-import com.barl_inc.opposing_force.entity.Kirin;
+import com.barl_inc.opposing_force.entity.post_end.Kirin;
 import com.platypushasnohat.sinew.entity.ai.goal.AttackGoal;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;

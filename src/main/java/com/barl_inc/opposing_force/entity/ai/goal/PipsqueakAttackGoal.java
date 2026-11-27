@@ -1,6 +1,6 @@
 package com.barl_inc.opposing_force.entity.ai.goal;
 
-import com.barl_inc.opposing_force.entity.Pipsqueak;
+import com.barl_inc.opposing_force.entity.pre_nether.Pipsqueak;
 import com.platypushasnohat.sinew.entity.ai.goal.AttackGoal;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.util.Mth;

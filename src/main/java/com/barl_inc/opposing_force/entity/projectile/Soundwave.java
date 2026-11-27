@@ -1,6 +1,6 @@
 package com.barl_inc.opposing_force.entity.projectile;
 
-import com.barl_inc.opposing_force.entity.Pipsqueak;
+import com.barl_inc.opposing_force.entity.pre_nether.Pipsqueak;
 import com.barl_inc.opposing_force.registry.OFDamageTypes;
 import com.barl_inc.opposing_force.registry.OFEntities;
 import net.minecraft.core.registries.Registries;

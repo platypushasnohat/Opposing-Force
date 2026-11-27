@@ -1,7 +1,7 @@
 package com.barl_inc.opposing_force.entity.misc;
 
 import com.barl_inc.opposing_force.OpposingForce;
-import com.barl_inc.opposing_force.entity.Dicer;
+import com.barl_inc.opposing_force.entity.post_nether.Dicer;
 import com.barl_inc.opposing_force.registry.OFDamageTypes;
 import com.barl_inc.opposing_force.registry.OFParticleTypes;
 import net.minecraft.core.Direction;

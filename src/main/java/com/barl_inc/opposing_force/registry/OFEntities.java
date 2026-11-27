@@ -1,8 +1,12 @@
 package com.barl_inc.opposing_force.registry;
 
 import com.barl_inc.opposing_force.OpposingForce;
-import com.barl_inc.opposing_force.entity.*;
 import com.barl_inc.opposing_force.entity.misc.*;
+import com.barl_inc.opposing_force.entity.post_end.Grell;
+import com.barl_inc.opposing_force.entity.post_end.Kirin;
+import com.barl_inc.opposing_force.entity.post_end.Shocker;
+import com.barl_inc.opposing_force.entity.post_nether.*;
+import com.barl_inc.opposing_force.entity.pre_nether.*;
 import com.barl_inc.opposing_force.entity.projectile.*;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.world.entity.Entity;
@@ -42,6 +46,7 @@ public class OFEntities {
     public static final DeferredHolder<EntityType<?>, EntityType<Pipsqueak>> PIPSQUEAK = registerEntity("pipsqueak", Pipsqueak::new, MobCategory.MONSTER, builder -> builder.sized(0.9F, 1.0F).eyeHeight(0.4F).clientTrackingRange(8));
     public static final DeferredHolder<EntityType<?>, EntityType<Brick>> BRICK = registerEntity("brick", Brick::new, MobCategory.MONSTER, builder -> builder.sized(2.3F, 2.5F).clientTrackingRange(8));
     public static final DeferredHolder<EntityType<?>, EntityType<Kirin>> KIRIN = registerEntity("kirin", Kirin::new, MobCategory.MONSTER, builder -> builder.sized(1.5F, 3.2F).eyeHeight(2.8F).clientTrackingRange(10));
+    public static final DeferredHolder<EntityType<?>, EntityType<Shocker>> SHOCKER = registerEntity("shocker", Shocker::new, MobCategory.MONSTER, builder -> builder.sized(1.1F, 0.5F).eyeHeight(0.35F).clientTrackingRange(8));
 
     //other
     public static final DeferredHolder<EntityType<?>, EntityType<DicerLaser>> DICER_LASER = registerEntity("dicer_laser", DicerLaser::new, MobCategory.MISC, builder -> builder.sized(0.1F, 0.1F).setUpdateInterval(1).clientTrackingRange(4).fireImmune());

@@ -1,6 +1,6 @@
 package com.barl_inc.opposing_force.entity.misc;
 
-import com.barl_inc.opposing_force.entity.Grell;
+import com.barl_inc.opposing_force.entity.post_end.Grell;
 import com.barl_inc.opposing_force.item.curios.SpectralGogglesItem;
 import com.platypushasnohat.sinew.Sinew;
 import com.platypushasnohat.sinew.entity.spectral.SpectralSight;

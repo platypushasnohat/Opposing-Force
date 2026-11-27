@@ -5,11 +5,21 @@ import com.barl_inc.opposing_force.client.model.armor.EmeraldArmorModel;
 import com.barl_inc.opposing_force.client.model.armor.ReconKnightArmorModel;
 import com.barl_inc.opposing_force.client.model.armor.StormLordArmorModel;
 import com.barl_inc.opposing_force.client.model.entity.*;
+import com.barl_inc.opposing_force.client.model.entity.post_end.GrellModel;
+import com.barl_inc.opposing_force.client.model.entity.post_end.KirinModel;
+import com.barl_inc.opposing_force.client.model.entity.post_end.ShockerModel;
+import com.barl_inc.opposing_force.client.model.entity.post_nether.*;
+import com.barl_inc.opposing_force.client.model.entity.pre_nether.*;
 import com.barl_inc.opposing_force.client.model.item.*;
 import com.barl_inc.opposing_force.client.particle.*;
 import com.barl_inc.opposing_force.client.render.ElectricArcRendering;
 import com.barl_inc.opposing_force.client.render.entity.*;
 import com.barl_inc.opposing_force.client.render.entity.layer.SpectralShieldLayer;
+import com.barl_inc.opposing_force.client.render.entity.post_end.GrellRenderer;
+import com.barl_inc.opposing_force.client.render.entity.post_end.KirinRenderer;
+import com.barl_inc.opposing_force.client.render.entity.post_end.ShockerRenderer;
+import com.barl_inc.opposing_force.client.render.entity.post_nether.*;
+import com.barl_inc.opposing_force.client.render.entity.pre_nether.*;
 import com.barl_inc.opposing_force.client.render.item.OFItemExtensions;
 import com.barl_inc.opposing_force.client.render.item.SpearAnimations;
 import com.barl_inc.opposing_force.client.render.item.TachiAnimations;
@@ -96,6 +106,7 @@ public class ClientEvents {
         event.registerEntityRenderer(OFEntities.PIPSQUEAK.get(), PipsqueakRenderer::new);
         event.registerEntityRenderer(OFEntities.BRICK.get(), BrickRenderer::new);
         event.registerEntityRenderer(OFEntities.KIRIN.get(), KirinRenderer::new);
+        event.registerEntityRenderer(OFEntities.SHOCKER.get(), ShockerRenderer::new);
 
         event.registerEntityRenderer(OFEntities.DICER_LASER.get(), DicerLaserRenderer::new);
         event.registerEntityRenderer(OFEntities.LASER_BOLT.get(), LaserBoltRenderer::new);
@@ -139,6 +150,7 @@ public class ClientEvents {
         event.registerLayerDefinition(OFModelLayers.PIPSQUEAK, PipsqueakModel::createBodyLayer);
         event.registerLayerDefinition(OFModelLayers.BRICK, BrickModel::createBodyLayer);
         event.registerLayerDefinition(OFModelLayers.KIRIN, KirinModel::createBodyLayer);
+        event.registerLayerDefinition(OFModelLayers.SHOCKER, ShockerModel::createBodyLayer);
 
         event.registerLayerDefinition(OFModelLayers.LASER_BOLT, LaserBoltModel::createBodyLayer);
         event.registerLayerDefinition(OFModelLayers.ACID_CHARGE, AcidChargeModel::createBodyLayer);

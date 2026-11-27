@@ -1,6 +1,6 @@
 package com.barl_inc.opposing_force.mixins;
 
-import com.barl_inc.opposing_force.entity.Kirin;
+import com.barl_inc.opposing_force.entity.post_end.Kirin;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.multiplayer.ClientPacketListener;
 import net.minecraft.network.chat.Component;

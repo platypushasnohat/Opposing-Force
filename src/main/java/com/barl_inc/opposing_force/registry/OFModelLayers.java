@@ -25,6 +25,7 @@ public class OFModelLayers {
     public static final ModelLayerLocation PIPSQUEAK = register("pipsqueak");
     public static final ModelLayerLocation BRICK = register("brick");
     public static final ModelLayerLocation KIRIN = register("kirin");
+    public static final ModelLayerLocation SHOCKER = register("shocker");
 
     public static final ModelLayerLocation LASER_BOLT = register("laser_bolt");
 

@@ -1,6 +1,6 @@
 package com.barl_inc.opposing_force.client.sound;
 
-import com.barl_inc.opposing_force.entity.Terror;
+import com.barl_inc.opposing_force.entity.post_nether.Terror;
 import com.barl_inc.opposing_force.registry.OFSoundEvents;
 import net.minecraft.client.resources.sounds.AbstractTickableSoundInstance;
 import net.minecraft.client.resources.sounds.SoundInstance;

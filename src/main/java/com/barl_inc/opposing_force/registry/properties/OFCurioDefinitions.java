@@ -1,6 +1,7 @@
 package com.barl_inc.opposing_force.registry.properties;
 
 import com.barl_inc.opposing_force.item.curios.CurioDefinition;
+import com.barl_inc.opposing_force.registry.OFAttributes;
 import com.platypushasnohat.sinew.registry.SinewAttributes;
 import net.minecraft.world.entity.ai.attributes.AttributeModifier;
 import net.minecraft.world.entity.ai.attributes.Attributes;
@@ -56,6 +57,11 @@ public class OFCurioDefinitions {
     public static final CurioDefinition FIERY_CARAPACE = new CurioDefinition.Builder()
             .attribute(SinewAttributes.FIRE_RESISTANCE, 0.15F, AttributeModifier.Operation.ADD_VALUE)
             .attribute(Attributes.BURNING_TIME, -0.1F, AttributeModifier.Operation.ADD_MULTIPLIED_BASE)
+            .build();
+
+    public static final CurioDefinition VOLTAIC_CARAPACE = new CurioDefinition.Builder()
+            .attribute(SinewAttributes.ELECTRIC_RESISTANCE, 0.15F, AttributeModifier.Operation.ADD_VALUE)
+            .attribute(OFAttributes.ELECTRIFIED_TIME, -0.1F, AttributeModifier.Operation.ADD_MULTIPLIED_BASE)
             .build();
 
     public static final CurioDefinition URANIUM_KNUCKLES = new CurioDefinition.Builder()

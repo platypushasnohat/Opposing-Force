@@ -1,6 +1,6 @@
 package com.barl_inc.opposing_force.entity.misc;
 
-import com.barl_inc.opposing_force.entity.Motif;
+import com.barl_inc.opposing_force.entity.pre_nether.Motif;
 import com.barl_inc.opposing_force.registry.OFEntities;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.syncher.EntityDataAccessor;

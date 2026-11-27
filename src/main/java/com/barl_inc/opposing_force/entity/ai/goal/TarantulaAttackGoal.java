@@ -1,6 +1,6 @@
 package com.barl_inc.opposing_force.entity.ai.goal;
 
-import com.barl_inc.opposing_force.entity.Tarantula;
+import com.barl_inc.opposing_force.entity.post_nether.Tarantula;
 import com.platypushasnohat.sinew.entity.ai.goal.AttackGoal;
 import net.minecraft.core.BlockPos;
 import net.minecraft.world.entity.LivingEntity;

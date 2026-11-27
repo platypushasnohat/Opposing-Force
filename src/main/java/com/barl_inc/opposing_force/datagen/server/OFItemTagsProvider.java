@@ -140,7 +140,8 @@ public class OFItemTagsProvider extends ItemTagsProvider {
                 OFItems.CURSED_RING.get(),
                 OFItems.WATER_WALKERS.get(),
                 OFItems.FIREPROOF_SHOES.get(),
-                OFItems.COMBO_BOOTS.get()
+                OFItems.COMBO_BOOTS.get(),
+                OFItems.VOLTAIC_CARAPACE.get()
         );
 
         this.tag(Tags.Items.TOOLS_SHIELD).add(

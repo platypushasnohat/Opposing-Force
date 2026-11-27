@@ -1,6 +1,6 @@
 package com.barl_inc.opposing_force.entity.projectile;
 
-import com.barl_inc.opposing_force.entity.Motif;
+import com.barl_inc.opposing_force.entity.pre_nether.Motif;
 import com.barl_inc.opposing_force.entity.misc.MudSplatter;
 import com.barl_inc.opposing_force.registry.OFEntities;
 import com.platypushasnohat.sinew.utils.SinewSoundUtils;

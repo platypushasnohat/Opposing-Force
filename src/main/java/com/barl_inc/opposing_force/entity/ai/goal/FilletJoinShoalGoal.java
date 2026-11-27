@@ -1,6 +1,6 @@
 package com.barl_inc.opposing_force.entity.ai.goal;
 
-import com.barl_inc.opposing_force.entity.Fillet;
+import com.barl_inc.opposing_force.entity.pre_nether.Fillet;
 import com.mojang.datafixers.DataFixUtils;
 import net.minecraft.world.entity.ai.goal.Goal;
 

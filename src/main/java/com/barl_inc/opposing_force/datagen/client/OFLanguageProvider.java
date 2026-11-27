@@ -137,6 +137,7 @@ public class OFLanguageProvider extends SinewLanguageProvider {
         this.add("item.opposing_force.storm_lord.set_bonus.dash", "Double tap sprint to dash");
         this.add("item.opposing_force.storm_lord.set_bonus.kirin", "The Kirin looks at you as one of its own...");
         this.add("attribute.name.opposing_force.kirin_jumps", "Kirin Jumps");
+        this.add("attribute.name.opposing_force.electrified_time", "Electrified Time");
         this.add("item.opposing_force.cloud_whistle.description", "Summons a Kirin to ride");
         this.add("entity.opposing_force.kirin.mount_tip", "Ctrl to sprint, Left Shift to dismount, Ctrl midair to air walk");
         this.add("item.opposing_force.sacrificial_sickle.description", "Grants a burst of speed on kill.");

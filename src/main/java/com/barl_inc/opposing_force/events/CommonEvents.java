@@ -2,10 +2,14 @@ package com.barl_inc.opposing_force.events;
 
 import com.barl_inc.opposing_force.OpposingForce;
 import com.barl_inc.opposing_force.config.OFConfig;
-import com.barl_inc.opposing_force.entity.*;
 import com.barl_inc.opposing_force.entity.ai.goal.LightDependentTargetGoal;
 import com.barl_inc.opposing_force.entity.misc.GrellClone;
 import com.barl_inc.opposing_force.entity.misc.MudSplatter;
+import com.barl_inc.opposing_force.entity.post_end.Grell;
+import com.barl_inc.opposing_force.entity.post_end.Kirin;
+import com.barl_inc.opposing_force.entity.post_end.Shocker;
+import com.barl_inc.opposing_force.entity.post_nether.*;
+import com.barl_inc.opposing_force.entity.pre_nether.*;
 import com.barl_inc.opposing_force.item.SpectralShieldItem;
 import com.barl_inc.opposing_force.item.armor.StormLordArmorItem;
 import com.barl_inc.opposing_force.item.curios.AbstractCurioItem;
@@ -22,7 +26,6 @@ import com.platypushasnohat.sinew.entity.base.AnimatedMonster;
 import com.platypushasnohat.sinew.entity.villager.MultipleInputsTrade;
 import com.platypushasnohat.sinew.registry.SinewDamageTypes;
 import net.minecraft.network.chat.Component;
-import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.server.packs.PackType;
 import net.minecraft.server.packs.repository.Pack;
 import net.minecraft.server.packs.repository.PackSource;
@@ -51,7 +54,6 @@ import net.neoforged.neoforge.event.entity.living.LivingDamageEvent;
 import net.neoforged.neoforge.event.entity.living.LivingFallEvent;
 import net.neoforged.neoforge.event.entity.living.LivingIncomingDamageEvent;
 import net.neoforged.neoforge.event.entity.living.LivingShieldBlockEvent;
-import net.neoforged.neoforge.event.entity.player.PlayerEvent;
 import net.neoforged.neoforge.event.entity.player.PlayerInteractEvent;
 import net.neoforged.neoforge.event.level.BlockEvent;
 import net.neoforged.neoforge.event.tick.PlayerTickEvent;
@@ -83,6 +85,7 @@ public class CommonEvents {
     @SubscribeEvent
     public static void modifyEntityAttributes(EntityAttributeModificationEvent event) {
         event.add(EntityType.PLAYER, OFAttributes.KIRIN_JUMPS);
+        event.getTypes().forEach(type -> event.add(type, OFAttributes.ELECTRIFIED_TIME));
     }
 
     @SubscribeEvent
@@ -108,6 +111,7 @@ public class CommonEvents {
         event.put(OFEntities.PIPSQUEAK.get(), Pipsqueak.registerAttributes().build());
         event.put(OFEntities.BRICK.get(), Brick.registerAttributes().build());
         event.put(OFEntities.KIRIN.get(), Kirin.registerAttributes().build());
+        event.put(OFEntities.SHOCKER.get(), Shocker.registerAttributes().build());
     }
 
     @SubscribeEvent
@@ -132,6 +136,7 @@ public class CommonEvents {
         event.register(OFEntities.PIPSQUEAK.get(), SpawnPlacementTypes.ON_GROUND, Heightmap.Types.MOTION_BLOCKING_NO_LEAVES, Pipsqueak::checkPipsqueakSpawnRules, RegisterSpawnPlacementsEvent.Operation.AND);
         event.register(OFEntities.BRICK.get(), SpawnPlacementTypes.ON_GROUND, Heightmap.Types.MOTION_BLOCKING_NO_LEAVES, Brick::checkBrickSpawnRules, RegisterSpawnPlacementsEvent.Operation.AND);
         event.register(OFEntities.KIRIN.get(), SpawnPlacementTypes.ON_GROUND, Heightmap.Types.MOTION_BLOCKING_NO_LEAVES, Kirin::checkKirinSpawnRules, RegisterSpawnPlacementsEvent.Operation.AND);
+        event.register(OFEntities.SHOCKER.get(), SpawnPlacementTypes.ON_GROUND, Heightmap.Types.MOTION_BLOCKING_NO_LEAVES, AnimatedMonster::checkMonsterSpawnRules, RegisterSpawnPlacementsEvent.Operation.AND);
     }
 
     @SubscribeEvent

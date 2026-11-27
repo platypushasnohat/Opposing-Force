@@ -1,6 +1,6 @@
 package com.barl_inc.opposing_force.entity.ai.goal;
 
-import com.barl_inc.opposing_force.entity.Mushy;
+import com.barl_inc.opposing_force.entity.post_nether.Mushy;
 import com.barl_inc.opposing_force.registry.OFParticleTypes;
 import com.platypushasnohat.sinew.entity.ai.goal.AttackGoal;
 import net.minecraft.server.level.ServerLevel;

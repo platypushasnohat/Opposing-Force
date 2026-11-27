@@ -1,6 +1,6 @@
 package com.barl_inc.opposing_force.entity.ai.goal;
 
-import com.barl_inc.opposing_force.entity.Brick;
+import com.barl_inc.opposing_force.entity.post_nether.Brick;
 import com.platypushasnohat.sinew.utils.SinewSoundUtils;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.sounds.SoundEvents;

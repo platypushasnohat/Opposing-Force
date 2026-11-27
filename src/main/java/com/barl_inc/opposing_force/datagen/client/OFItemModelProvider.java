@@ -82,7 +82,8 @@ public class OFItemModelProvider extends SinewItemModelProvider {
                 OFItems.STORM_LORD_CHESTPLATE,
                 OFItems.STORM_LORD_LEGGINGS,
                 OFItems.STORM_LORD_BOOTS,
-                OFItems.CLOUD_WHISTLE
+                OFItems.CLOUD_WHISTLE,
+                OFItems.VOLTAIC_CARAPACE
         );
 
         this.handheldItem(

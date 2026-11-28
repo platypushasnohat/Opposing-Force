@@ -28,6 +28,7 @@ import com.barl_inc.opposing_force.client.render.shader.SpectralLensOverlay;
 import com.barl_inc.opposing_force.client.utils.MidairJumpHandler;
 import com.barl_inc.opposing_force.client.utils.ReconDashFov;
 import com.barl_inc.opposing_force.client.utils.ReconDashHandler;
+import com.barl_inc.opposing_force.client.utils.ShockerHitFov;
 import com.barl_inc.opposing_force.item.SpectralShieldItem;
 import com.barl_inc.opposing_force.item.base.GunItem;
 import com.barl_inc.opposing_force.item.melee.HeroSwordItem;
@@ -183,6 +184,7 @@ public class ClientEvents {
         event.registerSpriteSet(OFParticleTypes.LASER_SWEEP.get(), LaserSweepParticle.Factory::new);
         event.registerSpriteSet(OFParticleTypes.ACID.get(), AcidParticle.Factory::new);
         event.registerSpecial(OFParticleTypes.ELECTRIC_ARC.get(), new ElectricArcParticle.Factory(1.0F, 3, 3));
+        event.registerSpecial(OFParticleTypes.PINK_ELECTRIC_ARC.get(), new ElectricArcParticle.Factory(1.0F, 3, 3, ElectricChargeRenderer.PINK_LAYERS));
         event.registerSpecial(OFParticleTypes.ELECTRIC_BOLT.get(), new ElectricArcParticle.Factory(3.0F, 4, 4));
         event.registerSpriteSet(OFParticleTypes.FIRE_BREATH.get(), FireBreathParticle.Factory::new);
         event.registerSpriteSet(OFParticleTypes.SPORE_CLOUD.get(), SporeCloudParticle.Factory::new);
@@ -204,6 +206,7 @@ public class ClientEvents {
         event.registerSpriteSet(OFParticleTypes.KIRIN_SMOKE.get(), KirinSmokeParticle.Factory::new);
         event.registerSpriteSet(OFParticleTypes.KIRIN_RING.get(), KirinRingParticle.Factory::new);
         event.registerSpecial(OFParticleTypes.LIGHTNING_CALL.get(), new LightningCallParticle.Factory());
+        event.registerSpecial(OFParticleTypes.SHOCKER_BOLT.get(), new ShockerBoltParticle.Factory());
     }
 
     @SubscribeEvent
@@ -415,6 +418,7 @@ public class ClientEvents {
         float partialTicks = (float) event.getPartialTick();
         double fov = ManiaTrip.modifyFov(event.getFOV(), partialTicks);
         fov = ReconDashFov.modifyFov(fov, partialTicks);
+        fov = ShockerHitFov.modifyFov(fov, partialTicks);
         event.setFOV(fov);
     }
 

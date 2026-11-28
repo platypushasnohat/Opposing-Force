@@ -25,10 +25,12 @@ public class ElectricArcParticle extends Particle {
     private final List<Vec3> points = new ArrayList<>();
 
     private final float scale;
+    private final float[][] layers;
 
-    protected ElectricArcParticle(ClientLevel level, double x, double y, double z, double xSpeed, double ySpeed, double zSpeed, float scale, int minLifetime, int lifetimeRange) {
+    protected ElectricArcParticle(ClientLevel level, double x, double y, double z, double xSpeed, double ySpeed, double zSpeed, float scale, int minLifetime, int lifetimeRange, float[][] layers) {
         super(level, x, y, z);
         this.scale = scale;
+        this.layers = layers;
         this.lifetime = minLifetime + this.random.nextInt(lifetimeRange);
         this.gravity = 0.0F;
         this.hasPhysics = false;
@@ -107,7 +109,7 @@ public class ElectricArcParticle extends Particle {
             Matrix4f pose = poseStack.last().pose();
 
             VertexConsumer consumer = ElectricArcRendering.getBuffer();
-            for (float[] layer : ElectricChargeRenderer.LAYERS) {
+            for (float[] layer : this.layers) {
                 ElectricChargeRenderer.drawArc(consumer, pose, toCamera, this.points, WIDTH * layer[0], layer[1], layer[2], layer[3], layer[4] * alpha);
             }
         }
@@ -123,16 +125,22 @@ public class ElectricArcParticle extends Particle {
         private final float scale;
         private final int minLifetime;
         private final int lifetimeRange;
+        private final float[][] layers;
 
         public Factory(float scale, int minLifetime, int lifetimeRange) {
+            this(scale, minLifetime, lifetimeRange, ElectricChargeRenderer.LAYERS);
+        }
+
+        public Factory(float scale, int minLifetime, int lifetimeRange, float[][] layers) {
             this.scale = scale;
             this.minLifetime = minLifetime;
             this.lifetimeRange = lifetimeRange;
+            this.layers = layers;
         }
 
         @Override
         public Particle createParticle(SimpleParticleType type, ClientLevel level, double x, double y, double z, double xSpeed, double ySpeed, double zSpeed) {
-            return new ElectricArcParticle(level, x, y, z, xSpeed, ySpeed, zSpeed, this.scale, this.minLifetime, this.lifetimeRange);
+            return new ElectricArcParticle(level, x, y, z, xSpeed, ySpeed, zSpeed, this.scale, this.minLifetime, this.lifetimeRange, this.layers);
         }
     }
 }

@@ -22,4 +22,7 @@ public class CommonProxy {
 
     public void midairJumpEffect(int entityId) {
     }
+
+    public void shockerHitFov() {
+    }
 }

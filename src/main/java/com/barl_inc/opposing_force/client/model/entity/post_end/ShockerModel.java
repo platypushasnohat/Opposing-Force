@@ -38,7 +38,12 @@ public class ShockerModel extends SinewEntityModel<Shocker> {
         this.animateSmooth(entity.tweakAnimationState, ShockerAnimations.TWEAKING, ageInTicks, partialTicks);
         this.animateSmooth(entity.chargeAnimationState, ShockerAnimations.CHARGE_BLEND, ageInTicks, partialTicks);
         this.animateSmooth(entity.shootAnimationState, ShockerAnimations.SHOOT_BLEND, ageInTicks, partialTicks);
-        this.head.yRot += (entity.getHeadSpin(partialTicks) + netHeadYaw) * Mth.DEG_TO_RAD;
+        float yaw = (entity.getHeadSpin(partialTicks) + netHeadYaw) * Mth.DEG_TO_RAD;
+        float offsetX = this.head.x - this.head.getInitialPose().x;
+        float offsetZ = this.head.z - this.head.getInitialPose().z;
+        this.head.yRot += yaw;
+        this.head.x = this.head.getInitialPose().x + offsetX * Mth.cos(yaw) + offsetZ * Mth.sin(yaw);
+        this.head.z = this.head.getInitialPose().z - offsetX * Mth.sin(yaw) + offsetZ * Mth.cos(yaw);
     }
 
     public static LayerDefinition createBodyLayer() {

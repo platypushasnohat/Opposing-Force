@@ -80,6 +80,7 @@ public class CommonEvents {
         registrar.playToClient(ReconDashEffectPayload.TYPE, ReconDashEffectPayload.STREAM_CODEC, ReconDashEffectPayload::handle);
         registrar.playToServer(MidairJumpPayload.TYPE, MidairJumpPayload.STREAM_CODEC, MidairJumpPayload::handle);
         registrar.playToClient(MidairJumpEffectPayload.TYPE, MidairJumpEffectPayload.STREAM_CODEC, MidairJumpEffectPayload::handle);
+        registrar.playToClient(ShockerHitPayload.TYPE, ShockerHitPayload.STREAM_CODEC, ShockerHitPayload::handle);
     }
 
     @SubscribeEvent

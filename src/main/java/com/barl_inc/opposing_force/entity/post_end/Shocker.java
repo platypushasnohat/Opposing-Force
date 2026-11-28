@@ -1,18 +1,25 @@
 package com.barl_inc.opposing_force.entity.post_end;
 
-import com.barl_inc.opposing_force.entity.projectile.ElectricCharge;
+import com.barl_inc.opposing_force.client.particle.ShockerBoltParticleOptions;
+import com.barl_inc.opposing_force.network.ShockerHitPayload;
+import com.barl_inc.opposing_force.registry.OFDamageTypes;
+import com.barl_inc.opposing_force.registry.OFMobEffects;
 import com.barl_inc.opposing_force.registry.OFParticleTypes;
+import com.barl_inc.opposing_force.registry.OFSoundEvents;
 import com.platypushasnohat.sinew.client.animation.SmoothAnimationState;
 import com.platypushasnohat.sinew.entity.base.AnimatedMonster;
 import net.minecraft.core.BlockPos;
 import net.minecraft.network.syncher.EntityDataAccessor;
 import net.minecraft.network.syncher.EntityDataSerializers;
 import net.minecraft.network.syncher.SynchedEntityData;
+import net.minecraft.server.level.ServerLevel;
+import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.sounds.SoundEvent;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.util.Mth;
 import net.minecraft.world.damagesource.DamageSource;
+import net.minecraft.world.effect.MobEffectInstance;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.Mob;
@@ -27,11 +34,16 @@ import net.minecraft.world.entity.ai.goal.WaterAvoidingRandomStrollGoal;
 import net.minecraft.world.entity.ai.goal.target.HurtByTargetGoal;
 import net.minecraft.world.entity.ai.goal.target.NearestAttackableTargetGoal;
 import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.level.ClipContext;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.LightLayer;
 import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.phys.AABB;
 import net.minecraft.world.phys.Vec3;
+import net.minecraft.world.phys.shapes.CollisionContext;
+import net.neoforged.neoforge.network.PacketDistributor;
 
+import javax.annotation.Nullable;
 import java.util.EnumSet;
 
 public class Shocker extends AnimatedMonster {
@@ -55,6 +67,11 @@ public class Shocker extends AnimatedMonster {
     private int tweakTicks;
     private int aggroStartTicks;
     private int chargeTicks;
+    private int boltTicks = -1;
+    private Vec3 boltStart = Vec3.ZERO;
+    private Vec3 boltEnd = Vec3.ZERO;
+    @Nullable
+    private LivingEntity boltTarget;
 
     public float prevHeadSpin;
     public float headSpin;
@@ -70,10 +87,11 @@ public class Shocker extends AnimatedMonster {
 
     public static AttributeSupplier.Builder registerAttributes() {
         return Mob.createMobAttributes()
-                .add(Attributes.MAX_HEALTH, 60.0D)
+                .add(Attributes.MAX_HEALTH, 40.0D)
                 .add(Attributes.ARMOR, 6.0D)
                 .add(Attributes.ATTACK_DAMAGE, 10.0D)
-                .add(Attributes.MOVEMENT_SPEED, 0.25F);
+                .add(Attributes.MOVEMENT_SPEED, 0.25F)
+                .add(Attributes.FOLLOW_RANGE, 40.0D);
     }
 
     @Override
@@ -161,6 +179,10 @@ public class Shocker extends AnimatedMonster {
         }
     }
 
+    private Vec3 getHeadPivot() {
+        return this.position().add(Vec3.directionFromRotation(0.0F, this.yBodyRot).scale(0.1875D)).add(0.0D, 0.40625D, 0.0D);
+    }
+
     private void spawnChargeArcs() {
         int count = this.chargeTicks / 20;
         if (this.getRandom().nextFloat() < (this.chargeTicks % 20) / 20.0F) {
@@ -169,20 +191,63 @@ public class Shocker extends AnimatedMonster {
         Vec3 forward = Vec3.directionFromRotation(0.0F, this.getYHeadRot() + this.getHeadSpin());
         Vec3 side = new Vec3(-forward.z, 0.0D, forward.x);
         for (int i = 0; i < count; i++) {
-            Vec3 pos = this.position().add(forward.scale(0.3D + this.getRandom().nextDouble() * 1.4D)).add(side.scale((this.getRandom().nextDouble() - 0.5D) * 0.8D)).add(0.0D, 0.4D, 0.0D);
-            this.level().addParticle(OFParticleTypes.ELECTRIC_ARC.get(), pos.x, pos.y, pos.z, 0.0D, 0.0D, 0.0D);
+            Vec3 pos = this.getHeadPivot().add(forward.scale(0.1D + this.getRandom().nextDouble() * 1.4D)).add(side.scale((this.getRandom().nextDouble() - 0.5D) * 0.8D));
+            this.level().addParticle(this.getRandom().nextInt(3) == 0 ? OFParticleTypes.PINK_ELECTRIC_ARC.get() : OFParticleTypes.ELECTRIC_ARC.get(), pos.x, pos.y, pos.z, 0.0D, 0.0D, 0.0D);
         }
     }
 
-    public void shootCharge(Vec3 aim) {
+    public void shootBolt(Vec3 aim, @Nullable LivingEntity target) {
         Vec3 forward = Vec3.directionFromRotation(0.0F, this.getYHeadRot());
-        Vec3 spawn = this.position().add(forward.scale(1.0D)).add(0.0D, 0.4D, 0.0D);
-        Vec3 direction = aim.subtract(spawn).normalize();
-        ElectricCharge charge = new ElectricCharge(this.level(), this);
-        charge.setPos(spawn.x, spawn.y, spawn.z);
-        charge.shoot(direction.x, direction.y, direction.z, 0.75F, 0.0F);
-        this.level().addFreshEntity(charge);
-        this.level().playSound(null, spawn.x, spawn.y, spawn.z, SoundEvents.LIGHTNING_BOLT_IMPACT, SoundSource.HOSTILE, 1.0F, 1.4F + this.getRandom().nextFloat() * 0.2F);
+        this.boltStart = this.getHeadPivot().add(forward.scale(0.9D));
+        this.boltEnd = this.clipBolt(aim);
+        this.boltTarget = target;
+        this.boltTicks = 0;
+        this.trackBoltTarget();
+        ((ServerLevel) this.level()).sendParticles(new ShockerBoltParticleOptions(target == null ? -1 : target.getId(), (float) aim.x, (float) aim.y, (float) aim.z), this.boltStart.x, this.boltStart.y, this.boltStart.z, 0, 0.0D, 0.0D, 0.0D, 0.0D);
+        this.level().playSound(null, this.boltStart.x, this.boltStart.y, this.boltStart.z, SoundEvents.LIGHTNING_BOLT_IMPACT, SoundSource.HOSTILE, 1.0F, 1.4F + this.getRandom().nextFloat() * 0.2F);
+    }
+
+    private Vec3 clipBolt(Vec3 aim) {
+        return this.level().clip(new ClipContext(this.boltStart, aim, ClipContext.Block.COLLIDER, ClipContext.Fluid.NONE, CollisionContext.empty())).getLocation();
+    }
+
+    private void trackBoltTarget() {
+        if (this.boltTarget != null && this.boltTarget.isAlive()) {
+            this.boltEnd = this.clipBolt(this.boltTarget.getBoundingBox().getCenter());
+        }
+    }
+
+    private void tickBolt() {
+        if (this.boltTicks >= 0) {
+            this.boltTicks++;
+            if (this.boltTicks < 5) {
+                this.trackBoltTarget();
+            }
+            if (this.boltTicks >= 7) {
+                this.boltTicks = -1;
+                this.boltTarget = null;
+                this.boltImpact();
+            }
+        }
+    }
+
+    private void boltImpact() {
+        ServerLevel level = (ServerLevel) this.level();
+        level.sendParticles(OFParticleTypes.ELECTRIC_ARC.get(), this.boltEnd.x, this.boltEnd.y, this.boltEnd.z, 8, 0.4D, 0.4D, 0.4D, 0.0D);
+        level.playSound(null, this.boltEnd.x, this.boltEnd.y, this.boltEnd.z, OFSoundEvents.ELECTRIC_CHARGE_ZAP.get(), SoundSource.HOSTILE, 1.5F, 0.8F + this.getRandom().nextFloat() * 0.3F);
+        for (LivingEntity living : level.getEntitiesOfClass(LivingEntity.class, new AABB(this.boltEnd, this.boltEnd).inflate(0.5D), this::canBoltHit)) {
+            float damage = (float) this.getAttributeValue(Attributes.ATTACK_DAMAGE) + (living.hasEffect(OFMobEffects.ELECTRIFIED) ? 3.0F : 0.0F);
+            if (living.hurt(OFDamageTypes.causeElectricDamage(level.registryAccess(), this, this), damage)) {
+                living.addEffect(new MobEffectInstance(OFMobEffects.ELECTRIFIED, 400, 0), this);
+                if (living instanceof ServerPlayer serverPlayer) {
+                    PacketDistributor.sendToPlayer(serverPlayer, new ShockerHitPayload());
+                }
+            }
+        }
+    }
+
+    private boolean canBoltHit(LivingEntity living) {
+        return living != this && living.isAlive() && !living.isSpectator() && !this.isAlliedTo(living) && !(living instanceof Player player && player.isCreative());
     }
 
     public boolean isTweaking() {
@@ -201,6 +266,7 @@ public class Shocker extends AnimatedMonster {
     @Override
     protected void customServerAiStep() {
         super.customServerAiStep();
+        this.tickBolt();
         this.setAggro(this.getTarget() != null);
         if (this.getTarget() != null) {
             this.setHeadSpin(Mth.approachDegrees(this.getHeadSpin(), 0.0F, 10.0F));
@@ -350,7 +416,7 @@ public class Shocker extends AnimatedMonster {
                     this.timer = 0;
                     this.cooldown = 100;
                     this.shocker.setAnimationState(SHOOT_ANIMATION);
-                    this.shocker.shootCharge(this.aim);
+                    this.shocker.shootBolt(this.aim, valid ? target : null);
                 }
             } else {
                 if (valid) {
@@ -363,7 +429,7 @@ public class Shocker extends AnimatedMonster {
                         this.timer = 0;
                         this.shocker.setAnimationState(0);
                     }
-                } else if (valid && this.cooldown <= 0 && this.shocker.distanceToSqr(target) < 256.0D && this.shocker.hasLineOfSight(target)) {
+                } else if (valid && this.cooldown <= 0 && this.shocker.distanceToSqr(target) < 1600.0D && this.shocker.hasLineOfSight(target)) {
                     this.phase = 1;
                     this.timer = 0;
                     this.shocker.getNavigation().stop();
@@ -374,13 +440,12 @@ public class Shocker extends AnimatedMonster {
         }
 
         private void keepDistance(LivingEntity target) {
-            double distance = this.shocker.distanceTo(target);
-            if (distance > 4.0D) {
-                this.shocker.getNavigation().moveTo(target, 1.25D);
-            } else if (distance < 3.0D) {
+            if (this.shocker.distanceTo(target) < 3.0D) {
                 Vec3 away = this.shocker.position().subtract(target.position()).multiply(1.0D, 0.0D, 1.0D).normalize().scale(2.0D);
                 Vec3 pos = this.shocker.position().add(away);
                 this.shocker.getNavigation().moveTo(pos.x, pos.y, pos.z, 1.25D);
+            } else if (!this.shocker.hasLineOfSight(target)) {
+                this.shocker.getNavigation().moveTo(target, 1.25D);
             } else {
                 this.shocker.getNavigation().stop();
             }

@@ -1,6 +1,7 @@
 package com.barl_inc.opposing_force.utils;
 
 import com.barl_inc.opposing_force.client.sound.*;
+import com.barl_inc.opposing_force.client.utils.ShockerHitFov;
 import com.barl_inc.opposing_force.entity.pre_nether.Gnat;
 import com.barl_inc.opposing_force.entity.post_nether.Terror;
 import com.barl_inc.opposing_force.entity.misc.DicerLaser;
@@ -168,5 +169,12 @@ public class ClientProxy extends CommonProxy {
     @Override
     public void midairJumpEffect(int entityId) {
         MidairJumpHandler.effect(entityId);
+    }
+
+    @Override
+    public void shockerHitFov() {
+        if (Minecraft.getInstance().player != null) {
+            ShockerHitFov.trigger(Minecraft.getInstance().player.tickCount);
+        }
     }
 }

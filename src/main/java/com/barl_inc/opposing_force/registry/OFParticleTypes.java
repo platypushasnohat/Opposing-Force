@@ -1,9 +1,13 @@
 package com.barl_inc.opposing_force.registry;
 
 import com.barl_inc.opposing_force.OpposingForce;
+import com.barl_inc.opposing_force.client.particle.ShockerBoltParticleOptions;
+import com.mojang.serialization.MapCodec;
 import net.minecraft.core.particles.ParticleType;
 import net.minecraft.core.particles.SimpleParticleType;
 import net.minecraft.core.registries.Registries;
+import net.minecraft.network.RegistryFriendlyByteBuf;
+import net.minecraft.network.codec.StreamCodec;
 import net.neoforged.neoforge.registries.DeferredHolder;
 import net.neoforged.neoforge.registries.DeferredRegister;
 
@@ -37,4 +41,16 @@ public class OFParticleTypes {
     public static final DeferredHolder<ParticleType<?>, SimpleParticleType> KIRIN_SMOKE = PARTICLE_TYPE.register("kirin_smoke", () -> new SimpleParticleType(false));
     public static final DeferredHolder<ParticleType<?>, SimpleParticleType> KIRIN_RING = PARTICLE_TYPE.register("kirin_ring", () -> new SimpleParticleType(true));
     public static final DeferredHolder<ParticleType<?>, SimpleParticleType> LIGHTNING_CALL = PARTICLE_TYPE.register("lightning_call", () -> new SimpleParticleType(true));
+    public static final DeferredHolder<ParticleType<?>, ParticleType<ShockerBoltParticleOptions>> SHOCKER_BOLT = PARTICLE_TYPE.register("shocker_bolt", () -> new ParticleType<>(true) {
+        @Override
+        public MapCodec<ShockerBoltParticleOptions> codec() {
+            return ShockerBoltParticleOptions.CODEC;
+        }
+
+        @Override
+        public StreamCodec<? super RegistryFriendlyByteBuf, ShockerBoltParticleOptions> streamCodec() {
+            return ShockerBoltParticleOptions.STREAM_CODEC;
+        }
+    });
+    public static final DeferredHolder<ParticleType<?>, SimpleParticleType> PINK_ELECTRIC_ARC = PARTICLE_TYPE.register("pink_electric_arc", () -> new SimpleParticleType(false));
 }

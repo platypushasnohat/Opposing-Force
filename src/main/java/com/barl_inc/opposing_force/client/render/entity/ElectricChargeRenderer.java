@@ -33,6 +33,12 @@ public class ElectricChargeRenderer extends EntityRenderer<ElectricCharge> {
             {0.7F, 1.00F, 1.00F, 1.00F, 1.00F}
     };
 
+    public static final float[][] PINK_LAYERS = {
+            {3.2F, 0.90F, 0.30F, 0.95F, 0.25F},
+            {1.8F, 1.00F, 0.55F, 1.00F, 0.55F},
+            {0.7F, 1.00F, 0.92F, 1.00F, 1.00F}
+    };
+
     private static final float BALL_SPEED = 1.15F;
     private static final float BALL_REFRESH_TICKS = 2.0F;
 

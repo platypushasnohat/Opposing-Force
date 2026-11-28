@@ -5,6 +5,7 @@ import com.barl_inc.opposing_force.config.OFConfig;
 import com.barl_inc.opposing_force.entity.ai.goal.LightDependentTargetGoal;
 import com.barl_inc.opposing_force.entity.misc.GrellClone;
 import com.barl_inc.opposing_force.entity.misc.MudSplatter;
+import com.barl_inc.opposing_force.entity.misc.SuperLightningBolt;
 import com.barl_inc.opposing_force.entity.post_end.Grell;
 import com.barl_inc.opposing_force.entity.post_end.Kirin;
 import com.barl_inc.opposing_force.entity.post_end.Shocker;
@@ -16,15 +17,19 @@ import com.barl_inc.opposing_force.item.curios.AbstractCurioItem;
 import com.barl_inc.opposing_force.item.curios.MomentumGauntletItem;
 import com.barl_inc.opposing_force.item.curios.SpectralGogglesItem;
 import com.barl_inc.opposing_force.item.utils.SlimyShielding;
+import com.barl_inc.opposing_force.mixins.LightningBoltAccessor;
 import com.barl_inc.opposing_force.network.*;
 import com.barl_inc.opposing_force.registry.OFAttributes;
 import com.barl_inc.opposing_force.registry.OFDamageTypes;
 import com.barl_inc.opposing_force.registry.OFEntities;
 import com.barl_inc.opposing_force.registry.OFItems;
 import com.barl_inc.opposing_force.registry.datapack.tags.OFItemTags;
+import com.barl_inc.opposing_force.utils.OFLightning;
 import com.platypushasnohat.sinew.entity.base.AnimatedMonster;
 import com.platypushasnohat.sinew.entity.villager.MultipleInputsTrade;
 import com.platypushasnohat.sinew.registry.SinewDamageTypes;
+import net.minecraft.core.Holder;
+import net.minecraft.core.registries.Registries;
 import net.minecraft.network.chat.Component;
 import net.minecraft.server.packs.PackType;
 import net.minecraft.server.packs.repository.Pack;
@@ -42,6 +47,8 @@ import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.entity.projectile.Projectile;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
+import net.minecraft.world.item.enchantment.Enchantment;
+import net.minecraft.world.item.enchantment.Enchantments;
 import net.minecraft.world.level.levelgen.Heightmap;
 import net.minecraft.world.phys.EntityHitResult;
 import net.neoforged.bus.api.EventPriority;
@@ -49,6 +56,7 @@ import net.neoforged.bus.api.SubscribeEvent;
 import net.neoforged.fml.common.EventBusSubscriber;
 import net.neoforged.neoforge.common.Tags;
 import net.neoforged.neoforge.event.AddPackFindersEvent;
+import net.neoforged.neoforge.event.AnvilUpdateEvent;
 import net.neoforged.neoforge.event.entity.*;
 import net.neoforged.neoforge.event.entity.living.LivingDamageEvent;
 import net.neoforged.neoforge.event.entity.living.LivingFallEvent;
@@ -158,6 +166,15 @@ public class CommonEvents {
     @SubscribeEvent(priority = EventPriority.LOWEST)
     public static void onEntityJoinLevel(EntityJoinLevelEvent event) {
         Entity entity = event.getEntity();
+        if (entity.getType() == EntityType.LIGHTNING_BOLT && entity instanceof LightningBolt bolt && !((LightningBoltAccessor) bolt).opposingForce$isVisualOnly() && !event.getLevel().isClientSide() && OFLightning.isEnabled() && event.getLevel().getRandom().nextFloat() < OFLightning.getSuperChance(bolt)) {
+            SuperLightningBolt superBolt = OFEntities.SUPER_LIGHTNING_BOLT.get().create(event.getLevel());
+            if (superBolt != null) {
+                event.setCanceled(true);
+                superBolt.moveTo(bolt.position());
+                superBolt.setCause(bolt.getCause());
+                event.getLevel().addFreshEntity(superBolt);
+            }
+        }
         if (entity instanceof Mob mob) {
             if (mob instanceof Spider spider) {
                 spider.goalSelector.addGoal(2, new AvoidEntityGoal<>(spider, Gusher.class, 8.0F, 1.0D, 1.2D));
@@ -287,6 +304,18 @@ public class CommonEvents {
         if (event.getRayTraceResult() instanceof EntityHitResult hitResult && hitResult.getEntity() instanceof Brick brick && brick.canBounce(projectile)) {
             event.setCanceled(true);
             brick.bounce(projectile);
+        }
+    }
+
+    @SubscribeEvent
+    public static void onAnvilUpdate(AnvilUpdateEvent event) {
+        if (!OFLightning.isEnabled() && event.getPlayer() != null) {
+            Holder<Enchantment> channeling = event.getPlayer().level().registryAccess().lookupOrThrow(Registries.ENCHANTMENT).getOrThrow(Enchantments.CHANNELING);
+            int left = OFLightning.getChannelingLevel(event.getLeft(), channeling);
+            int right = OFLightning.getChannelingLevel(event.getRight(), channeling);
+            if (Math.max(left, right) >= 2 || (left == 1 && right == 1)) {
+                event.setCanceled(true);
+            }
         }
     }
 }

@@ -13,6 +13,7 @@ public class OFConfig {
     public static ModConfigSpec.BooleanValue PROTECTION_TWEAKS;
     public static ModConfigSpec.BooleanValue ZOMBIE_TWEAKS;
     public static ModConfigSpec.BooleanValue GRELL_BITE_MANIA;
+    public static ModConfigSpec.BooleanValue OF_LIGHTNING;
 
     public static final String CATEGORY_ZOMBIE_TWEAKS = "zombie_tweaks";
     public static ModConfigSpec.DoubleValue ZOMBIE_LEADER_HEALTH;
@@ -28,7 +29,7 @@ public class OFConfig {
         PROTECTION_TWEAKS = builder.comment("Whether Protection should be half as effective against magic damageMultiplier").define("protectionTweaks", true);
         ZOMBIE_TWEAKS = builder.comment("Whether zombie tweaks should be enabled").define("zombieTweaks", true);
         GRELL_BITE_MANIA = builder.comment("Whether the Grell's bite after failing its illusion should inflict Mania", "WARNING: Mania distorts the audio and screen, which may cause nausea, headaches, or motion sickness").define("grellBiteMania", false);
-
+        OF_LIGHTNING = builder.comment("Whether vanilla lightning should be replaced with electric lightning").define("ofLightning", true);
 
         builder.push(CATEGORY_ZOMBIE_TWEAKS);
         ZOMBIE_LEADER_HEALTH = builder.comment("The amount of extra health zombie leaders should have").defineInRange("zombieLeaderHealth", 20.0D, 0, 100);

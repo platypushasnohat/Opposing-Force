@@ -6,6 +6,8 @@
   "mixins": [
     "CurioSlotMixin",
     "DynamicStackHandlerMixin",
+    "LightningBoltAccessor",
+    "LightningBoltMixin",
     "LiquidBlockMixin",
     "LivingEntityMixin",
     "MobCategoryMixin",

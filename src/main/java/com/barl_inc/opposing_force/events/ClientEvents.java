@@ -59,6 +59,7 @@ import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.packs.resources.ResourceManagerReloadListener;
 import net.minecraft.util.Mth;
 import net.minecraft.world.InteractionHand;
+import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.entity.HumanoidArm;
 import net.minecraft.world.entity.LivingEntity;
@@ -127,6 +128,8 @@ public class ClientEvents {
         event.registerEntityRenderer(OFEntities.TACHI_SLASH.get(), TachiSlashRenderer::new);
         event.registerEntityRenderer(OFEntities.HERO_SWORD_BEAM.get(), HeroSwordBeamRenderer::new);
         event.registerEntityRenderer(OFEntities.MANIA_BRAIN.get(), ManiaBrainRenderer::new);
+        event.registerEntityRenderer(EntityType.LIGHTNING_BOLT, OFLightningBoltRenderer::new);
+        event.registerEntityRenderer(OFEntities.SUPER_LIGHTNING_BOLT.get(), OFLightningBoltRenderer::new);
     }
 
     @SubscribeEvent
